@@ -4,6 +4,7 @@
     <title><l>JWChat - Search</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="jabber_x_data.js" language="JavaScript1.2"></script>
     <script src="switchStyle.js"></script>
     <script language="JavaScript1.2">
       <!--
@@ -12,18 +13,31 @@ function search() {
 	document.getElementById('search_results').style.display = '';
 	document.getElementById('search_form').style.display = 'none';
 
+	document.getElementById('results_header').innerHTML = loc("Querying ...");
 	// send query
 	var searchstring = '';
-	for (var i=0; i<document.forms['searchfields'].elements.length; i++)
-		if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].value != '')
-			searchstring += "&"+document.forms['searchfields'].elements[i].name+"="+document.forms['searchfields'].elements[i].value;
+	var jabberXData = (document.forms['searchfields'].elements['jwchat_form_type'] && document.forms['searchfields'].elements['jwchat_form_type'].value == 'jabber:x:data');
+
+	if (jabberXData)
+		searchstring = genJabberXDataReply(document.forms['searchfields']);
+	else {
+		for (var i=0; i<document.forms['searchfields'].elements.length; i++) 
+			if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].value != '') 
+				searchstring += "&"+msgEscape(document.forms['searchfields'].elements[i].name)+"="+msgEscape(document.forms['searchfields'].elements[i].value);
+	}
 
 	var to = document.forms['service_select'].elements['service'].options[document.forms['service_select'].elements['service'].selectedIndex].value;
 
+	srcW.fdebug("searchstring: "+ msgFormat(searchstring), 2);
+
 	if (searchstring == '')
 		srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+to+"/users&ns=jabber:iq:browse",searchW.handleIQSearch);
-	else
-		srcW.fCBLoad("iq-set","?sid="+srcW.sid+"&to="+to+"&ns=jabber:iq:search"+searchstring,searchW.handleIQSearch);
+	else {
+		if (jabberXData)
+			srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(to)+"&ns=jabber:iq:search&set="+msgEscape(searchstring),searchW.handleIQSearch);
+		else			
+			srcW.fCBLoad("iq-set","?sid="+srcW.sid+"&to="+msgEscape(to)+"&ns=jabber:iq:search"+searchstring,searchW.handleIQSearch);
+	}
 
 	return false;
 }
@@ -50,12 +64,58 @@ function handleIQSearch(jabber) {
 		document.getElementById('results_header').innerHTML = loc("An error has occured");
 		return;
 	}
-	else
-		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", jabber.from);
+
+
+	document.getElementById('results_header').innerHTML = loc("Search results for [_1]", jabber.from);
 
 	var html = "<table width='100%' border=0 cellspacing=0 cellpadding=0>";
 
-	if (jabber.ns == 'jabber:iq:browse') {
+
+		// check if it's jabber:x:data
+	var x;
+	for (var i in jabber.browse.o)
+		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].xmlns == 'jabber:x:data') {
+			x = jabber.browse.o[i];
+			break;
+		}
+
+	if (x) {
+		srcW.fdebug("x: "+x,2);
+
+		/* get header */
+		var reported;
+		for (var i in x.o)
+			if (x.o[i].tagname == 'reported') {
+				reported = x.o[i];
+				if (reported.o) {
+					html += "<tr>"
+					for (var j in reported.o)
+						if (reported.o[j].tagname == 'field')
+							html += "<th var='"+reported.o[j].far+"' nowrap>"+reported.o[j].label+"</th>";
+					html += "</tr>";
+				}
+			}
+
+		/* get items */
+		for (var i in x.o)
+			if (x.o[i].tagname == 'item') {
+				var item = x.o[i];
+				if (item.o) {
+					html += "<tr>";
+					if (reported && reported.o)
+						for (var j in reported.o)
+							for (var k in item.o)
+								if (item.o[k].tagname == 'field' && reported.o[j].far == item.o[k].far) {
+									if (item.o[k].value == '')
+										html += '<td>&nbsp;</td>';
+									else
+										html += "<td nowrap>"+item.o[k].value+"</td>";
+								}
+					html += "</tr>";
+				}
+			}
+
+	} else if (jabber.ns == 'jabber:iq:browse') {
 		html += "<tr><th>JID</th><th>Name</th></tr>";
 		for (var i in jabber.browse.o)
 			if (jabber.browse.o[i].tagname == 'user')
@@ -63,7 +123,7 @@ function handleIQSearch(jabber) {
 	} else {
 		html += "<tr><th>jid</th>";
 		for (var i=0; i<document.forms['searchfields'].elements.length; i++)
-			if (document.forms['searchfields'].elements[i].name != '')
+			if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].name != 'jwchat_form_type')
 				html += "<th>"+ document.forms['searchfields'].elements[i].name+"</th>";
 		html += "</tr>";
  		for (var i in jabber.browse.o) {
@@ -90,23 +150,37 @@ function handleIQSearchfields(jabber) {
 	srcW.fdebug(jabber,2);
 
 	if (jabber.type != 'result' || typeof(jabber.browse) == 'undefined') {
-		alert(loc("An Error Occured\nAborting..."));
+		document.getElementById('searchfields').innerHTML = loc("An Error Occured\nAborting...");
 		return;
 	}
 
-	var html = "<table>";
-	if (typeof(jabber.browse['instructions']) != 'undefined')
-			html += "<tr><th colspan=2>"+jabber.browse['instructions']+"</th></tr>";
+	// check if it's jabber:x:data
+	var x;
+	for (var i in jabber.browse.o)
+		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].type == 'form') {
+			x = jabber.browse.o[i];
+			break;
+		}
 
-	for (var i in jabber.browse) {
-		if (i == 'o' || i == 'instructions')
-			continue;
-		if (i == 'key')
-			html += "<tr><td colspan=2><input type=hidden value=\""+jabber.browse[i]+"\"></td></tr>";
-		else
-			html += "<tr><td>"+i+"&nbsp;</td><td><input type=\"text\" name=\""+i+"\" value=\""+jabber.browse[i]+"\"></td></tr>";
+	var html = '';
+	if (x) {
+		html += genJabberXDataTable(x);
+	} else {
+
+		html = "<table>";
+		if (typeof(jabber.browse['instructions']) != 'undefined')
+			html += "<tr><th colspan=2>"+jabber.browse['instructions']+"</th></tr>";
+		
+		for (var i in jabber.browse) {
+			if (i == 'o' || i == 'instructions' || i == 'oX')
+				continue;
+			if (i == 'key')
+				html += "<tr><td colspan=2><input type=hidden value=\""+jabber.browse[i]+"\"></td></tr>";
+			else
+				html += "<tr><td>"+i+"&nbsp;</td><td><input type=\"text\" name=\""+i+"\" value=\""+jabber.browse[i]+"\"></td></tr>";
+		}
+		html += "</table>";
 	}
-	html += "</table>";
 	html += "<hr noshade size=1><div align=right><button onClick='return search();'>"+loc("Search")+"</button></div>";
 
 	var searchfields = document.getElementById('searchfields');
