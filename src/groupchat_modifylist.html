@@ -203,7 +203,7 @@
 
 			var modItems;
 			function handleIQGetList(jabber) {
-				srcW.fdebug(jabber,2);
+				srcW.Debug.log(jabber,2);
 				if (jabber.type == 'error') {
 					document.getElementById('hint').innerHTML = loc("An Error has occured");
 					return;

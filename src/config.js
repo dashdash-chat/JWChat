@@ -26,7 +26,7 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var JABBERSERVER = "jabber.zeank.in-berlin.de";
+var JABBERSERVER = "jabber.zeank.in-berlin.de"
 var DEFAULTRESOURCE = "jwchat";
 
 /* sWCS2

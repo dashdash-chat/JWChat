@@ -12,7 +12,7 @@
 
 function handleIQSet(jabber) {
 	if (jabber && jabber.type == 'error')
-		opener.top.fdebug(jabber,1);
+		opener.top.Debug.log(jabber,1);
 }
 
 var ow = window;
@@ -92,7 +92,7 @@ function handleIQRegister(jabber,pane) {
 	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'jabber:iq:register')
 		return; // not for me
 
-	srcW.fdebug(jabber,2);
+	srcW.Debug.log(jabber,2);
 
 	// check if it's jabber:x:data
 	var x;

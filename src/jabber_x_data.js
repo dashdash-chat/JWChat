@@ -75,7 +75,7 @@ function genJabberXDataTable(x) {
 			html += "</td>";
 			break;
 		default:
-			srcW.fdebug("unknown type: " + x.o[i].type,1);
+			srcW.Debug.log("unknown type: " + x.o[i].type,1);
 			break;
 		}
  		html += "</tr>";

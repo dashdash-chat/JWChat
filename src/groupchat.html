@@ -191,7 +191,7 @@ function init() {
 	if (passedArgs['pass'] != 'undefined')
 		pass = passedArgs['pass'];
   
-  srcW.fdebug("groupchat room: "+jid+", nick: "+nick + ", pass: "+pass ,2);
+  srcW.Debug.log("groupchat room: "+jid+", nick: "+nick + ", pass: "+pass ,2);
   
 	srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick)+"&pass="+msgEscape(pass)+"&show="+srcW.onlstat+"&status="+srcW.onlmsg);
   

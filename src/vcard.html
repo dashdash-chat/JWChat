@@ -39,11 +39,11 @@
     function handleVCardTemp(jabber) {
 
 			if (jabber.error || jabber.type == 'error') {
-				srcW.fdebug(jabber,1);
+				srcW.Debug.log(jabber,1);
 				return;
 			}
 
-			srcW.fdebug(jabber,2);
+			srcW.Debug.log(jabber,2);
 			
 			if (typeof(jabber.ns) == 'undefined' || jabber.ns != 'vcard-temp') // not form me
 				return;

@@ -10,7 +10,7 @@
 var srcW; // the source window with necessary data
 
 function handleItemVCard(jabber) {
-	srcW.fdebug(jabber,2);
+	srcW.Debug.log(jabber,2);
 
 	// add item to table
 	if (jabber.vcard)
@@ -56,7 +56,7 @@ var disco_items;
 var disco_items_at;
 var myTableBody;
 function handleDiscoItemsResult(jabber) {
-	srcW.fdebug(jabber,2);
+	srcW.Debug.log(jabber,2);
 
 	if (jabber.browse && jabber.browse.o && !(jabber.error || jabber.type == 'error')) {
 		disco_items = new Array();

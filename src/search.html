@@ -28,7 +28,7 @@ function search() {
 
 	var to = document.forms['service_select'].elements['service'].options[document.forms['service_select'].elements['service'].selectedIndex].value;
 
-	srcW.fdebug("searchstring: "+ msgFormat(searchstring), 2);
+	srcW.Debug.log("searchstring: "+ msgFormat(searchstring), 2);
 
 	if (searchstring == '')
 		srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+to+"/users&ns=jabber:iq:browse",searchW.handleIQSearch);
@@ -57,7 +57,7 @@ function back() {
 }
 
 function handleIQSearch(jabber) {
-	srcW.fdebug(jabber,2);
+	srcW.Debug.log(jabber,2);
 
 	// set title
 	if (jabber.error == true) {
@@ -80,7 +80,7 @@ function handleIQSearch(jabber) {
 		}
 
 	if (x) {
-		srcW.fdebug("x: "+x,2);
+		srcW.Debug.log("x: "+x,2);
 
 		/* get header */
 		var reported;
@@ -147,7 +147,7 @@ function handleIQSearch(jabber) {
 }
 
 function handleIQSearchfields(jabber) {
-	srcW.fdebug(jabber,2);
+	srcW.Debug.log(jabber,2);
 
 	if (jabber.type != 'result' || typeof(jabber.browse) == 'undefined') {
 		document.getElementById('searchfields').innerHTML = loc("An Error Occured\nAborting...");

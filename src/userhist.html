@@ -21,8 +21,8 @@ function reloadHistory() {
 }
 
 function handleCollGet(jabber) {
-	if (srcW.fdebug)
-		srcW.fdebug(jabber,2);
+	if (srcW.Debug.log)
+		srcW.Debug.log(jabber,2);
 
 	if (jabber.error)
 		return;
@@ -50,8 +50,8 @@ function handleCollGet(jabber) {
 }
 
 function handleCollsGet(jabber) {
-	if (srcW.fdebug)
-		srcW.fdebug(jabber,2);
+	if (srcW.Debug.log)
+		srcW.Debug.log(jabber,2);
 
 	if (jabber.error)
 		return;

@@ -9,6 +9,7 @@
     <script src="sounds.js" language="JavaScript1.2"></script>
     <script src="statusLed.js" language="JavaScript1.2"></script>
     <script src="roster.js" language="JavaScript1.2"></script>
+    <script src="Debugger.js" language="JavaScript1.2"></script>
     <script language="JavaScript1.2">
 <!--
 
@@ -73,34 +74,6 @@ onlstatus["dnd"] = loc("do not disturb");
 onlstatus["invisible"] = loc("invisible");
 onlstatus["unavailable"] = loc("invisible");
 
-/************************************************************************
- *                         ******  DEBUGGER *******
- ************************************************************************
- */
-var debugW;
-var debugMsgs = new Array(); 
-
-function fdebug(str,lv) {
-  if (!DEBUG || (USE_DEBUGJID && cutResource(jid) != DEBUGJID)) // what the hell are we doing here
-    return;
-
-  var msg = new Object();
-  msg.str = str;
-  msg.lv = lv;
-  if (fdebug.caller)
-    msg.caller = fdebug.caller.name;
-  else
-    msg.caller = 'undefined';
-
-  debugMsgs = debugMsgs.concat(msg);
-
-  if (!debugW || debugW.closed) // open the debugger
-    debugW = window.open("debug.html",makeWindowName(jid)+"debugW","width=480,height=320,scrollbars=yes,resizable=yes");
-
-  if (!debugW || !debugW.popMsgs)
-    return;
-  debugW.popMsgs();
-}
 
 /************************************************************************
  *                         ****** Pop-Up's *******
@@ -264,7 +237,7 @@ function playSound(action) {
   if (!playSounds)
     return;
   if(!SOUNDS[action]) {
-    fdebug("no sound for '" + action + "'",2);
+    Debug.log("no sound for '" + action + "'",2);
     return;
   }
 
@@ -289,7 +262,7 @@ function fCBLoad(func,param,callback,args) {
 	cbObj.args = args || null;
 	registeredCBs[registeredCBs.length] = cbObj;
 
-	fdebug("registeredCBs: " + registeredCBs,4);
+	Debug.log("registeredCBs: " + registeredCBs,4);
 
   if (is.ie5 || is.op)
     frameLoad(frames["jwc_cb"],func,param,"parent.handleCB();");
@@ -311,7 +284,7 @@ function frameLoad(frame,func,param,onload) {
   var url2 = sWCS2 + func + ext2 + param;
   /* doesn't work with mozilla */
   if (is.ie || is.op) {
-    fdebug("frameLoad:\n" + url2,4);
+    Debug.log("frameLoad:\n" + url2,4);
     frame.document.open();
     if (onload)
       frame.document.write("<script src=\""+url2+"\"></script><script>function checkData() { if (typeof(jabber)=='undefined') setTimeout(\"checkData()\",100); else " + onload + " } onload = checkData;</script>");
@@ -319,9 +292,9 @@ function frameLoad(frame,func,param,onload) {
       frame.document.write("<script src=\""+url2+"\"></script>");
     frame.document.close();
   } else {
-    fdebug("frameLoad:\n" + url,4);
+    Debug.log("url:\n" + url,4);
     
-    frame.location.href = url;
+    frame.location.replace(url);
   }
 }
 
@@ -382,10 +355,10 @@ function handleEvent() {
     return;
   }
   
-	fdebug(jabber,4);
+	Debug.log(jabber,4);
   
   if (jabber && jabber.error && sid != 0) {
-		fdebug("From: " + jabber.from + "\n" + jabber.error,1);
+		Debug.log("From: " + jabber.from + "\n" + jabber.error,1);
     if (!jabber.type || jabber.type != "error") {
       alert(loc("An error occured!\nAborting..."));
       if (typeof(pass) == 'undefined')
@@ -408,7 +381,7 @@ function handleEvent() {
     for (var i in rh[jabber.name])
       rh[jabber.name][i](jabber);
   } else {
-    fdebug("handleEvent: unregistered type: " + jabber.name,1);
+    Debug.log("handleEvent: unregistered type: " + jabber.name,1);
   }
   
   poll(); // trigger new poll
@@ -420,10 +393,10 @@ function handleEvent() {
  */
 
 function storeCID(jabber,jid) {
-	fdebug(jabber,0);
+	Debug.log(jabber,0);
 	var user = roster.getUserByJID(jid);
 	if (user == null) {
-		fdebug("user with jid " + jid + " not found",1);
+		Debug.log("user with jid " + jid + " not found",1);
 		return;
 	}
 
@@ -433,7 +406,7 @@ function storeCID(jabber,jid) {
 
 function handleMessage(jabber) {
 
-	fdebug(jabber,2);
+	Debug.log(jabber,2);
 
 	if (jabber.type == 'error')
 		return;
@@ -453,10 +426,10 @@ function handleMessage(jabber) {
 							reason = jabber.o[i].o[j].reason;
 					}
 				}
-				fdebug("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
+				Debug.log("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
 				var user = roster.getUserByJID(from);
 				if (user == null) {// users not in roster (yet)
-					fdebug("creating new user "+from,3);
+					Debug.log("creating new user "+from,3);
 					user = roster.addUser(new RosterUser(from));
 					user.lastsrc = eval(user.status + "Led").src;
 					roster.print();
@@ -474,17 +447,17 @@ function handleMessage(jabber) {
 
   var from = cutResource(jabber.from);
   
-  fdebug("from: "+from+", jabber.from: "+jabber.from,3);
+  Debug.log("from: "+from+", jabber.from: "+jabber.from,3);
 
   var user = roster.getUserByJID(from);
   if (user == null) {// users not in roster (yet)
-    fdebug("creating new user "+from,3);
+    Debug.log("creating new user "+from,3);
     user = roster.addUser(new RosterUser(from));
     user.lastsrc = eval(user.status + "Led").src;
     roster.print();
   }
 
-  fdebug("got user jid: "+user.jid,3);
+  Debug.log("got user jid: "+user.jid,3);
 
   var aRoster = roster;
   if (jabber.type != 'groupchat' && user.roster && from != jabber.from) { // private groupchat message
@@ -604,7 +577,7 @@ function handleMessageError(jabber) {
 	if (jabber.type != 'error')
 		return;
 
-	fdebug(jabber,1);
+	Debug.log(jabber,1);
 
 	error_messages = error_messages.concat(jabber);
 
@@ -631,7 +604,7 @@ function handlePresence(jabber) {
     return;
 
   if (!is.ie)
-    fdebug(jabber,2);
+    Debug.log(jabber,2);
 
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
@@ -661,11 +634,11 @@ function handlePresence(jabber) {
 
 	/* handle presence for groupchat roster */
   if (jabber.o && user.roster) { // seems to be a special presence (assumed to be for MUC)
-    fdebug("opresence: " + jabber.o,3);
+    Debug.log("opresence: " + jabber.o,3);
     
     var ofrom = jabber.from.substring(jabber.from.indexOf('/')+1);
 
-    fdebug("jabber.from:"+jabber.from+", ofrom:"+ofrom,3);
+    Debug.log("jabber.from:"+jabber.from+", ofrom:"+ofrom,3);
 
     var ouser = user.roster.getUserByJID(jabber.from);
     if (!ouser) // no user? create one!
@@ -690,7 +663,7 @@ function handlePresence(jabber) {
 							}
 						}
 
-            fdebug("ouser.jid: "+ ouser.jid + ", ouser.fulljid:" + ouser.fulljid + ", ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,3);
+            Debug.log("ouser.jid: "+ ouser.jid + ", ouser.fulljid:" + ouser.fulljid + ", ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,3);
 
 
 						if (item.role != '') {
@@ -776,7 +749,7 @@ function handlePresence(jabber) {
       }
     }
 
-    fdebug("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,3);
+    Debug.log("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,3);
 
     if (!user.roster.getUserByJID(jabber.from) && !nickChanged) {
 			// add user
@@ -864,7 +837,7 @@ function handleIQSet(jabber) {
   if (jabber.type != "set")
     return;
 
-  fdebug("got iq type 'set':\n"+jabber,2);
+  Debug.log("got iq type 'set':\n"+jabber,2);
   
   for (var i in jabber.items) {
     var item = jabber.items[i];
@@ -872,7 +845,7 @@ function handleIQSet(jabber) {
     if (user) {
       user.subscription = item.subscription;
       if (item.subscription == 'remove') {
-				fdebug("removing user " + user.jid,2);
+				Debug.log("removing user " + user.jid,2);
         roster.removeUser(user);
       } else { // update user
         item.name = item.name? item.name : item.jid;
@@ -935,7 +908,7 @@ function handleIQResult(jabber) {
                                                          // inside specific iq handler
     return;
 
-  fdebug("got iq type 'result':\n"+jabber,2);
+  Debug.log("got iq type 'result':\n"+jabber,2);
 }
 
 registerHandler("message",handleMessage);
@@ -955,10 +928,10 @@ function handleCB(jabber) {
 	if (!jabber) // nothing to do
     return;
 
-  fdebug(jabber,3);
+  Debug.log(jabber,3);
 
 	if (registeredCBs.length == 0) {
-		fdebug("no callbacks registered ... aborting!",1);
+		Debug.log("no callbacks registered ... aborting!",1);
 		return;
 	}
 
@@ -973,7 +946,7 @@ function handleCB(jabber) {
 			 
 			}
 			else
-				fdebug("No callback assigned for this query",1);
+				Debug.log("No callback assigned for this query",1);
 
 		/* remove callback from list */
 
@@ -990,10 +963,10 @@ function handleCB(jabber) {
 var annotations = new Array();
 function handleAnnotations(jabber) {
 	if (jabber)
-		fdebug(jabber,2);
+		Debug.log(jabber,2);
 
 	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
+		Debug.log(jabber,1);
 
 	if (jabber && !(jabber.error || jabber.type == 'error')) {
 		if (jabber.browse.o[0] && jabber.browse.o[0].tagname == 'jwchat' && jabber.browse.o[0].o) {
@@ -1013,10 +986,10 @@ function handleAnnotations(jabber) {
 var bookmarks = new Array();
 function handleBookmarks(jabber) {
 	if (jabber)
-		fdebug(jabber,2);
+		Debug.log(jabber,2);
 
 	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
+		Debug.log(jabber,1);
 
 	if (jabber && !(jabber.error || jabber.type == 'error')) {
 	
@@ -1045,10 +1018,10 @@ function handleBookmarks(jabber) {
 
 function handlePrefs(jabber) {
 	if (jabber)
-		fdebug(jabber,2);
+		Debug.log(jabber,2);
 
 	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
+		Debug.log(jabber,1);
 
 	if (jabber && !(jabber.error || jabber.type == 'error')) {
 		for (var i in jabber.browse.o) {
@@ -1080,10 +1053,10 @@ function handlePrefs(jabber) {
 
 function handleSavedState(jabber) {
 	if (jabber)
-		fdebug(jabber,2);
+		Debug.log(jabber,2);
 
 	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
+		Debug.log(jabber,1);
 
 	if (jabber && !(jabber.error || jabber.type == 'error')) {
 		for (var i in jabber.browse.o) {
@@ -1116,15 +1089,15 @@ var disco = new Object();
 var disco_info_count;
 function handleDiscoItemResult(jabber) {
 
-	fdebug(jabber,2);
+	Debug.log(jabber,2);
 
 	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined' || jabber.browse.o.length == 0) {
-		fdebug("missing jabber.browse.o: " + jabber,1);
+		Debug.log("missing jabber.browse.o: " + jabber,1);
 	} else {
 
   	var target;
     if (jabber.from != JABBERSERVER)
-      fdebug("target not yet implemented",1)
+      Debug.log("target not yet implemented",1)
 	  else {
       target = disco;
 		
@@ -1145,7 +1118,7 @@ function handleDiscoItemResult(jabber) {
 
 function handleDiscoInfoResult(jabber) {
 
-	fdebug(jabber,2);
+	Debug.log(jabber,2);
 
 	if (jabber.type == 'error' || typeof(jabber.browse) == 'undefined' || !jabber.browse.o)
 		disco.items[disco_info_count].error = true;
@@ -1217,7 +1190,7 @@ function sendPresence2Groupchats(gc,val,away) {
 
 function changeStatus(val,away) {
   
-  fdebug("changeStatus: "+val+","+away, 2);
+  Debug.log("changeStatus: "+val+","+away, 2);
   
   onlstat = val;
 	if (away)
@@ -1278,10 +1251,9 @@ function changeStatus(val,away) {
   }
 }
 
-
 function init() {
 
-  fdebug("init: jid="+jid+", pass="+pass,2);
+  Debug.log("init: jid="+jid+", pass="+pass,2);
 
   /* get frames */
   fhd = frames["jwc_out"].document;
@@ -1310,7 +1282,7 @@ function init() {
 
 function run() {
   
-  fdebug("status:" + status,3);
+  Debug.log("status:" + status,0);
 	
   switch (status) {
   case 'sendPresence':
@@ -1339,7 +1311,7 @@ function run() {
     if (!sid)
       sid = jabber.sid;
     
-    fdebug("got sid:\n" + sid,2);
+    Debug.log("got sid:\n" + sid,2);
 
     //changeStatus(onlstat);
 		//break;
@@ -1349,7 +1321,7 @@ function run() {
     break;
   case 'printRoster':
     status = 'polling';
-		fdebug("got roster: "+frames["jwc_out"].jabber.items,2);
+		Debug.log("got roster: "+frames["jwc_out"].jabber.items,2);
     roster = new Roster(frames["jwc_out"].jabber.items,fmd);
 		roster.usersHidden = usersHidden;
 		roster.nick = jid.substring(0,jid.indexOf('@')); // remember nick for 1:1 Chats
@@ -1365,7 +1337,7 @@ function run() {
   case 'polling':
     break;
   default:
-    fdebug('unknown status: ' + status,1);
+    Debug.log('unknown status: ' + status,1);
     break;
   }
 }
@@ -1467,6 +1439,14 @@ jid = passedArgs['jid'];
 if (!isValidJID(jid))
   window.close();
 
+/************************************************************************
+ *                    ****** Initialise Debugger ******
+ ************************************************************************
+ */
+
+var Debug = new Debugger(DEBUG_LVL,'JWChat ' + jid);
+if (DEBUG && !(USE_DEBUGJID && DEBUGJID != cutResource(jid)))
+	Debug.start();
 
 nick = jid.substring(0,jid.indexOf('@'));
 
