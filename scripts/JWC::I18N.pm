@@ -2,7 +2,7 @@
 
 
 package JWC::I18N;
-  use base qw(Locale::Maketext);
+use base qw(Locale::Maketext);
 
 use Locale::Maketext 1.01;
 use Locale::Maketext::Lexicon 0.10;
