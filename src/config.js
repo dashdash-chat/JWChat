@@ -68,9 +68,14 @@ var USERHISTORYURL = "http://jabber.zeank.in-berlin.de/na.html";
 var ICQTRANSPORT = "icq.jabber.zeank.in-berlin.de";
 var ICQUSERURL = "http://wwp.icq.com/$user";
 
+/* DEFAULTCONFERENCEGROUP + DEFAULTCONFERENCESERVER
+ * default values for joingroupchat form
+ */
+var DEFAULTCONFERENCEGROUP = "talks";
 var DEFAULTCONFERENCESERVER = "conference.zeank.in-berlin.de";
 
-var DEBUG = true; // turn debugging on
+/* debugging options */
+var DEBUG = false; // turn debugging on
 var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger

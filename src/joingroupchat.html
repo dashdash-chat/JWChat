@@ -29,8 +29,10 @@ function init() {
   if (opener.top.roster)
     srcW = opener.top;
   
-  if (typeof(srcW.DEFAULTCONFERENCESERVER) != 'undefined')
+  if (typeof(srcW.DEFAULTCONFERENCESERVER) != 'undefined' && srcW.DEFAULTCONFERENCESERVER != '')
     document.forms[0].server.value = srcW.DEFAULTCONFERENCESERVER;
+  if (typeof(srcW.DEFAULTCONFERENCEGROUP) != 'undefined' && srcW.DEFAULTCONFERENCEGROUP != '')
+    document.forms[0].group.value = srcW.DEFAULTCONFERENCEGROUP;
 }
 
 function keyPressed(e) {
@@ -55,7 +57,7 @@ onload = init;
     <form name="sub" onsubmit="return doSub();">
       <table border=0 width="100%">
           <tr><td nowrap><l>Nickname</l></td><td width="100%"><input type="text" name="nick" size=32 style="width:100%;"></td></tr>
-          <tr><td nowrap><l>Channel/Group</l></td><td width="100%"><input type="text" name="group" size=32 style="width:100%;" value="talks"></td></tr>
+          <tr><td nowrap><l>Channel/Group</l></td><td width="100%"><input type="text" name="group" size=32 style="width:100%;"></td></tr>
           <tr><td nowrap><l>Server</l></td><td width="100%"><input type="text" name="server" size=32 style="width:100%;"></td></tr>
           <tr><td nowrap><l>Password</l></td><td width="100%"><input type="text" name="pass" size=32 style="width:100%;"></td></tr>
       </table>
