@@ -617,7 +617,7 @@ function handleIQSet(jabber) {
 				/*				if (item.subscription == "from")
 				 * fhdLoad("presence","?sid="+sid+"&to="+item.jid+"&type=subscribe");*/
 			} else {
-				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups));
+				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups,item.name));
 				openUserProps(item.jid);
 				if (item.subscription == "from")
 					openSubscription(item.jid); // subscribe to user
