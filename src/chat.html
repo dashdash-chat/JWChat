@@ -75,7 +75,7 @@ function openUserHistory() {
 }
 
 function updateUserPresence() {
-	var user = jwcMain.roster.getUserByJID(jid);
+	var user = srcW.roster.getUserByJID(jid);
 	var awaymsg = document.getElementById('awaymsg');
 	if (user.statusMsg) {
 		awaymsg.style.display = '';
