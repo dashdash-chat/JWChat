@@ -140,7 +140,7 @@ function RosterOpenMessage(jid) {
 function RosterOpenChat(jid) {
   var user = this.getUserByJID(jid);
 
-	if (!user) {
+	if (!user && fdebug) {
 		fdebug("user '"+jid+"' not found",1);
 		return;
 	}
@@ -322,7 +322,7 @@ function GroupchatRosterPrint() {
 
 function getGroupchatRosterUserByJID(jid) {
 	// need to search fulljid here
-  return getElFromArrByProp(this.users,"fulljid",jid.toLowerCase());
+  return getElFromArrByProp(this.users,"fulljid",jid);
 }
 
 function GroupchatRoster(targetW) {
