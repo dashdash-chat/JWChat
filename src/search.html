@@ -143,6 +143,8 @@ function init() {
 	var optidx = 1;
 	for (var  i=0; i<srcW.disco.items.length; i++) {
 		var item = srcW.disco.items[i];
+		if (!item.info)
+			continue;
 		for (var j=0; j<item.info.length; j++) {
 			var info = item.info[j];
 			if (info.tagname == 'feature' && info.far == 'jabber:iq:search')
