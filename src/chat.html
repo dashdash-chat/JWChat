@@ -13,17 +13,10 @@ var user;
 var srcW;
 var cFrame;
 
-function putMsgHTML(msg,user,usercolor) {
+function putMsgHTML(msg,mtime,user,usercolor) {
   var msgHTML = '';
-  var now = new Date();
   
   msg = msgFormat(msg);
-  
-  var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-  mtime += ":";
-  mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-  mtime += ":";
-  mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
   
   msgHTML += "<span class=time>["+mtime+"] </span>";
   if (msg.match(/^\/me /)) {
@@ -45,7 +38,21 @@ function popMsgs() {
       user.chatmsgs = user.chatmsgs.slice(1,user.chatmsgs.length);
     } else
       msg = user.chatmsgs.shift();
-    putMsgHTML(msg.body,user.name,"red");
+
+		// calc date
+		var now;
+		if (msg.timestamp)
+			now = msg.timestamp;
+		else
+			now = new Date();
+
+		var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+		mtime += ":";
+		mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+		mtime += ":";
+		mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+  
+    putMsgHTML(msg.body,mtime,user.name,"red");
   }
   if (jwcMain.focusWindows) document.forms.chatform.msgbox.focus();
   if (user.lastsrc != null && user.messages.length == 0) {
@@ -105,7 +112,14 @@ function displayTimestamp() {
 				jwcMain.fhdLoad("message",url); // send to client
 			
 				// insert into chat window
-				putMsgHTML(body,srcW.roster.nick,"blue");
+				var now = new Date();
+
+				var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+				mtime += ":";
+				mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+				mtime += ":";
+				mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+				putMsgHTML(body,mtime,srcW.roster.nick,"blue");
 
 				// add message to our message history
 				jwcMain.addtoHistory(body);

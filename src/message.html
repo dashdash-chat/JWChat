@@ -25,7 +25,10 @@ function showMSG() {
     var stamp = messages[curMSG].o[0].stamp;
     date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
   } else {
-    date = new Date();
+		if (messages[curMSG].timestamp)
+			date = messages[curMSG].timestamp;
+		else
+			date = new Date();
   }
   document.getElementById('date').innerHTML = date.toLocaleString();
 
