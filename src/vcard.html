@@ -85,12 +85,12 @@
 					tokenname = token.nodeName;
 					if (token.firstChild.nodeType != 3) { // found a container
 						for (var j=0; j<token.childNodes.length; j++) {
-							if (typeof(document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName]) != 'undefined')
+							if (typeof(document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName]) != 'undefined' && token.childNodes.item(j).firstChild)
 								document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName].value = token.childNodes.item(j).firstChild.nodeValue;
 						}
 
 					} else
-						if (typeof(document.forms[0].elements[tokenname]) != 'undefined')
+						if (typeof(document.forms[0].elements[tokenname]) != 'undefined' && token.childNodes.item(j).firstChild)
 							document.forms[0].elements[tokenname].value = token.firstChild.nodeValue;
 				}
 			}
