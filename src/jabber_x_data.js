@@ -1,5 +1,5 @@
 function genJabberXDataTable(x) {
-	var html = '';
+	var html = '<input type=hidden name="jwchat_form_type" value="jabber:x:data">';
 
 	if (x.title)
 		html += "<h1>"+x.title.replace(/\n/g,"<br>")+"</h1>";
@@ -83,4 +83,24 @@ function genJabberXDataTable(x) {
 	html += "</table>";
 
 	return html;
+}
+
+function genJabberXDataReply(form) {
+	var xml = "<x xmlns='jabber:x:data' type='submit'>";
+
+	var els = form.elements;
+	for (var i=0; i<els.length; i++) {
+		if (els[i].name == '' || els[i].value == '' || els[i].name == 'jwchat_form_type')
+			continue;
+		xml += "<field var='" +els[i].name + "'><value>";
+		if (els[i].type == 'checkbox')
+			xml += (els[i].checked) ? '1':'0';
+		else
+			xml += els[i].value;
+		xml += "</value></field>";
+	}
+
+	xml += "</x>";
+
+	return xml;
 }
