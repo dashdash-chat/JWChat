@@ -924,9 +924,7 @@ function handleVCardTemp(jabber) {
 
 	fdebug(jabber,2);
 
-	alert(jabber.ns);
-
-	if (jabber.ns != 'vcard-temp') // not form me
+	if (typeof(jabber.ns) == 'undefined' || jabber.ns != 'vcard-temp') // not form me
 		return;
 
   if (cutResource(jabber.from) == cutResource(jid))
