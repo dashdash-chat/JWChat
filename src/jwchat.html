@@ -386,6 +386,7 @@ function handleMessage(jabber) {
 							pass = jabber.o[i].o[j].password;
 						if (jabber.o[i].o[j].reason)
 							reason = jabber.o[i].o[j].reason;
+					}
 				}
 				fdebug("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
 				var user = roster.getUserByJID(from);
