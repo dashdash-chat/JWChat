@@ -8,12 +8,12 @@
     <script src="switchStyle.js"></script>
     <script language="JavaScript1.2">
       <!--
-       var jid;
+var jid;
 var srcW; // the source window with necessary data
 var msgbox;
 
 function sendMSG() {
-  var url = "?to=" + jid + "&type=message&sid=" + srcW.sid;
+  var url = "?to=" + jid + "&sid=" + srcW.sid;
   var body = msgbox.value;
   
   if (body == '') // don't send empty message
@@ -28,7 +28,7 @@ function sendMSG() {
   if (!opener.roster && srcW.roster.getUserByJID(jid).messages.length == 0)
     opener.close();
   window.close();
-  return false;
+  return true;
 }
 
 function init() {
@@ -58,9 +58,9 @@ function init() {
 
 function keyPressed(e) {
   if (e.ctrlKey && e.keyCode == 13)
-    sendMSG();
+    return sendMSG();
   else if (e.keyCode == 27)
-    window.close();
+    close();
 }
 
 onkeydown = keyPressed;
@@ -69,15 +69,15 @@ onload = init;
     </script>
     <script for="document" event="onkeydown()" language="JScript">
       <!--
-      if (window.event.ctrlKey && window.event.keyCode == 13)
-      sendMSG();
-      if (window.event.keyCode == 27)
-      window.close();
+       if (window.event.ctrlKey && window.event.keyCode == 13)
+         return sendMSG();
+       if (window.event.keyCode == 27)
+          window.close();
       //-->
     </script>
   </head>
   <body style="margin:8px;">
-    <form name="msg" style="border:0;padding:0;margin:0;">
+    <form name="msg" style="border:0;padding:0;margin:0;" onSubmit="return sendMSG();">
       <table width="100%" border=0 cellpadding=0 cellspacing=0 style="margin-bottom: 8px;">
           <tr width="100%">
             <td><l>Subject</l>:&nbsp</td><td width="100%"><input type="text" name="subject" size="20" style="width:100%;"></td></tr>
@@ -86,7 +86,7 @@ onload = init;
       
       <hr noshade size="1" size="100%">
       <div align="right" id="buttonbox">
-        <button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return sendMSG();"><l>Send</l></button>
+        <button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button type="submit"><l>Send</l></button>
       </div>
     </form>
   </body>
