@@ -1,3 +1,7 @@
+2004-10-25  Stefan Strigler  <steve@zeank.in-berlin.de>
+	* use JSJaC for communication. support for WebClientService has
+	been dropped in favor of HTTP-Polling/HTTP-Binding
+
 2004-09-21  Stefan Strigler  <steve@zeank.in-berlin.de>
 	* support for making annotations to users
 
