@@ -38,7 +38,7 @@ function makeWindowName(wName) {
   wName = wName.replace(/\./g,"dot");
   wName = wName.replace(/\//g,"slash");
   wName = wName.replace(/-/g,"dash");
-  return escape(wName);
+  return wName;
 }
 
 function htmlEnc(str) {
