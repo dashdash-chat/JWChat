@@ -3,153 +3,152 @@
 	<head>
     <title><l>JWChat - Options</l></title>
     <script src="switchStyle.js"></script>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<script language="JavaScript1.2">
-	<!--
-	function setOptions() {
-		// set cookie
-		var save = 'jwc=';
-		if (form.usersHidden.checked)
-			save += "usersHidden&";
-		if (form.autoPopup.checked) {
-			save += "autoPopup&";
-			if (form.autoPopupAway.checked) {
-				save += "autoPopupAway&";
-			}
-			opener.top.autoPopupAway = form.autoPopupAway.checked;
-		}
-
-		if (form.playSounds.checked)
-			save += "playSounds&";
-
-		if (form.timestamps.checked) {
-			save += "timestamps&";
-			opener.top.timestamps = true;
-		} else {
-			opener.top.timestamps = false;
-		}
-		displayTimestamps();
-
-		if (form.focusWindows.checked) {
-			save += "focusWindows&";
-			opener.top.focusWindows = true;
-		} else {
-			opener.top.focusWindows = false;
-		}
-		save += "timerval%"+form.timerval.value+";";
-
-		var now = new Date();
-		var expireT = new Date(now.getTime() + 1000*60*60*24*365*5);
-		save += "expires=" + expireT.toGMTString() + ";";
-		document.cookie = save;
-	
-		// update roster
-		if ((form.usersHidden.checked && !opener.top.roster.usersHidden) ||
-			(!form.usersHidden.checked && opener.top.roster.usersHidden)) // usersHidden changed
-			opener.top.roster.toggleHide();
-			
-		opener.top.autoPopup = form.autoPopup.checked;
-		opener.top.playSounds = form.playSounds.checked;
-		opener.top.setPollInterval(form.timerval.value);
-			
-		window.close();
-		return false;
-	}
-	
-	function displayTimestamps() {
-		opener.top.timestamps =	form.timestamps.checked;
-		/* set timestamp display in all open chat-windows */
-		for (var i=0; i<opener.top.roster.users.length; i++) {
-			if ((opener.top.roster.users[i].chatW) && (opener.top.roster.users[i].chatW.closed == false)) {
-			  opener.top.roster.users[i].chatW.top.displayTimestamp();
-      }
-      if (opener.top.roster.users[i].roster) {
-      for (var j in opener.top.roster.users[i].roster.users) {
-      if (opener.top.roster.users[i].roster.users[j].chatW && !opener.top.roster.users[i].roster.users[j].chatW.closed)
-      opener.top.roster.users[i].roster.users[j].chatW.displayTimestamp();
-      }
-      }
-		}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script language="JavaScript1.2">
+      <!--
+function setOptions() {
+  // set cookie
+  var save = 'jwc=';
+  if (form.usersHidden.checked)
+    save += "usersHidden&";
+  if (form.autoPopup.checked) {
+    save += "autoPopup&";
+    if (form.autoPopupAway.checked) {
+      save += "autoPopupAway&";
+    }
+    opener.top.autoPopupAway = form.autoPopupAway.checked;
   }
-
-	var form;
-	function getOptions() {
-		form = document.forms['options'];
-		if (opener.top.roster.usersHidden)
-			form.usersHidden.checked = true;
-		if (opener.top.autoPopup)
-			form.autoPopup.checked = true;
-		if (opener.top.autoPopupAway)
-			form.autoPopupAway.checked = true;
-		if (opener.top.playSounds == true)
-			form.playSounds.checked = true;
-		if (opener.top.timestamps == true)
-			form.timestamps.checked = true;
-		if (opener.top.focusWindows == true)
-			form.focusWindows.checked = true;
-		for (var i=0; i<form.timerval.options.length; i++) {
-			if (form.timerval.options[i].value == opener.top.timerval)
-				form.timerval.selectedIndex = i;
-		}
-		toggleAutoPopupAway(document.getElementById('autoPopup'));
-	}
+  
+  if (form.playSounds.checked)
+    save += "playSounds&";
+  
+  if (form.timestamps.checked) {
+    save += "timestamps&";
+    opener.top.timestamps = true;
+  } else {
+    opener.top.timestamps = false;
+  }
+  displayTimestamps();
+  
+  if (form.focusWindows.checked) {
+    save += "focusWindows&";
+    opener.top.focusWindows = true;
+  } else {
+    opener.top.focusWindows = false;
+  }
+  save += "timerval%"+form.timerval.value+";";
+  
+  var now = new Date();
+  var expireT = new Date(now.getTime() + 1000*60*60*24*365*5);
+  save += "expires=" + expireT.toGMTString() + ";";
+  document.cookie = save;
+  
+  // update roster
+  if ((form.usersHidden.checked && !opener.top.roster.usersHidden) ||
+      (!form.usersHidden.checked && opener.top.roster.usersHidden)) // usersHidden changed
+    opener.top.roster.toggleHide();
+  
+  opener.top.autoPopup = form.autoPopup.checked;
+  opener.top.playSounds = form.playSounds.checked;
+  opener.top.setPollInterval(form.timerval.value);
+  
+  window.close();
+  return false;
+}
 	
-	function toggleAutoPopupAway(el) {
-			document.getElementById('autoPopupAway').disabled = !el.checked;
-	}
+function displayTimestamps() {
+  opener.top.timestamps = form.timestamps.checked;
+  /* set timestamp display in all open chat-windows */
+  for (var i=0; i<opener.top.roster.users.length; i++) {
+    if ((opener.top.roster.users[i].chatW) && (opener.top.roster.users[i].chatW.closed == false)) {
+      opener.top.roster.users[i].chatW.top.displayTimestamp();
+    }
+    if (opener.top.roster.users[i].roster) {
+      for (var j in opener.top.roster.users[i].roster.users) {
+        if (opener.top.roster.users[i].roster.users[j].chatW && !opener.top.roster.users[i].roster.users[j].chatW.closed)
+          opener.top.roster.users[i].roster.users[j].chatW.displayTimestamp();
+         }
+    }
+  }
+}
 
-	onload = getOptions;
-	//-->
-	</script>
-	</head>
-	<body>
-		<form name="options">
-		<fieldset>
-		<legend><l>Options</l></legend>
-		<table border="0">
-		<tr>
-		  <td><input id="usersHidden" type="checkbox"></td>
-		  <td><label for="usersHidden"><l>Hide offline users</l></label></td>
-		</tr>
-		<tr>
-		  <td><input id="autoPopup" type="checkbox" onChange="toggleAutoPopupAway(this);"></td>
-		  <td><label for="autoPopup"><l>Automatically open messages and chats</l></label></td>
-		</tr>
-		<tr>
-		  <td><input id="autoPopupAway" type="checkbox"></td>
-		  <td><label for="autoPopupAway"><l>Auto-Pop-Up if away</l></label></td>
-		</tr>
-		<tr>
-		  <td><input id="playSounds" type="checkbox"></td>
-		  <td><label for="playSounds"><l>Play sounds</l></label></td>
-		</tr>
-		<tr>
-		  <td><input id="focusWindows" type="checkbox"></td>
-		  <td><label for="focusWindows"><l>Raise window if a new message is received</l></label></td>
-		</tr>
-		<tr>
-		  <td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
-		  <td><label for="timestamps"><l>Display timestamps in one-to-one chats</l></label></td>
-		</tr>
-		<tr>
-		  <td colspan="2">
-		  	<l>Update interval</l>:
-		  	<select name="timerval">
-				<option value="1000"><l>1 sec.</l></option>
-				<option value="2000"><l>2 sec.</l></option>
-				<option value="5000"><l>5 sec.</l></option>
-				<option value="10000"><l>10 sec.</l></option>
-				<option value="30000"><l>30 sec.</l></option>
-			</select>
-		  </td>
-		</tr>
-		</table>
-		</fieldset>
-		<hr noshade size="1">
-		<div align="right" id="buttonbox">
-			<button onClick="window.close();"><l>Close</l></button>&nbsp;<button onClick="return setOptions();"><l>OK</l></button>
-		</div>
-		</form>
+var form;
+function getOptions() {
+  form = document.forms['options'];
+  if (opener.top.roster.usersHidden)
+    form.usersHidden.checked = true;
+  if (opener.top.autoPopup)
+    form.autoPopup.checked = true;
+  if (opener.top.autoPopupAway)
+    form.autoPopupAway.checked = true;
+  if (opener.top.playSounds == true)
+    form.playSounds.checked = true;
+  if (opener.top.timestamps == true)
+    form.timestamps.checked = true;
+  if (opener.top.focusWindows == true)
+    form.focusWindows.checked = true;
+  for (var i=0; i<form.timerval.options.length; i++) {
+    if (form.timerval.options[i].value == opener.top.timerval)
+      form.timerval.selectedIndex = i;
+  }
+  toggleAutoPopupAway(document.getElementById('autoPopup'));
+}
 
-	</body>
+function toggleAutoPopupAway(el) {
+  document.getElementById('autoPopupAway').disabled = !el.checked;
+}
+
+onload = getOptions;
+      //-->
+    </script>
+  </head>
+  <body>
+    <form name="options">
+      <fieldset>
+        <legend><l>Options</l></legend>
+        <table border="0">
+            <tr>
+              <td><input id="usersHidden" type="checkbox"></td>
+              <td><label for="usersHidden"><l>Hide offline users</l></label></td>
+            </tr>
+            <tr>
+              <td><input id="autoPopup" type="checkbox" onChange="toggleAutoPopupAway(this);"></td>
+              <td><label for="autoPopup"><l>Automatically open messages and chats</l></label></td>
+            </tr>
+            <tr>
+              <td><input id="autoPopupAway" type="checkbox"></td>
+              <td><label for="autoPopupAway"><l>Auto-Pop-Up if away</l></label></td>
+            </tr>
+            <tr>
+              <td><input id="playSounds" type="checkbox"></td>
+              <td><label for="playSounds"><l>Play sounds</l></label></td>
+            </tr>
+            <tr>
+              <td><input id="focusWindows" type="checkbox"></td>
+              <td><label for="focusWindows"><l>Raise window if a new message is received</l></label></td>
+            </tr>
+            <tr>
+              <td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
+              <td><label for="timestamps"><l>Display timestamps in one-to-one chats</l></label></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <l>Update interval</l>:
+                <select name="timerval">
+                  <option value="1000"><l>1 sec.</l></option>
+                  <option value="2000"><l>2 sec.</l></option>
+                  <option value="5000"><l>5 sec.</l></option>
+                  <option value="10000"><l>10 sec.</l></option>
+                  <option value="30000"><l>30 sec.</l></option>
+                </select>
+              </td>
+            </tr>
+        </table>
+      </fieldset>
+      <hr noshade size="1">
+      <div align="right" id="buttonbox">
+        <button onClick="window.close();"><l>Close</l></button>&nbsp;<button onClick="return setOptions();"><l>OK</l></button>
+      </div>
+    </form>  
+  </body>
 </html>
