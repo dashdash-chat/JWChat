@@ -223,7 +223,7 @@ function playSound(action) {
     return;
   }
 
-	if (onlstat != 'available' || onlstat == 'chat')
+	if (onlstat != 'available' && onlstat != 'chat')
 		return;
 	
   var frameD = frames["jwc_sound"].document;
@@ -1425,10 +1425,10 @@ onresize = updateStyleIE;
   </head>
   <frameset rows="100%,0,0,0,0" border="0">
     <frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
-    <frame name="jwc_out" onload="run()" marginwidth="0" marginheight="0">
-    <frame name="jwc_in" onload="handleEvent()" marginwidth="0" marginheight="0">
-    <frame name="jwc_cb" onload="handleCB(frames['jwc_cb'].jabber)" marginwidth="0" marginheight="0">
-    <frame name="jwc_sound" marginwidth="0" marginheight="0">
+    <frame src="empty.html" name="jwc_out" onload="run()" marginwidth="0" marginheight="0">
+    <frame src="empty.html" name="jwc_in" onload="handleEvent()" marginwidth="0" marginheight="0">
+    <frame src="empty.html" name="jwc_cb" onload="handleCB(frames['jwc_cb'].jabber)" marginwidth="0" marginheight="0">
+    <frame src="empty.html" name="jwc_sound" marginwidth="0" marginheight="0">
   </frameset>
   <body>
     <l>Your browser must support frames and javascript to use this application. Please refer to our <a href="help.html">online manual</a> for a list of supported browser.</l>
