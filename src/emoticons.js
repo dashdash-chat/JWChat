@@ -7,136 +7,6 @@
 var emoticons = new Object();
 var emoticonpath = "/images/emoticons/rythmbox/";
 
-
-emoticons[':\\)'] = 'smile.gif';
-emoticons[':-\\)'] = 'smile.gif';
-emoticons['\\(:'] = 'spin.gif';
-emoticons['\\(-:'] = 'spin.gif';
-
-emoticons[';\\)'] = 'wink.gif';
-emoticons[';-\\)'] = 'wink.gif';
-emoticons['\\(;'] = 'wink.gif';
-emoticons['\\(-;'] = 'wink.gif';
-
-emoticons[':\\|'] = 'normal.gif';
-emoticons[':-\\|'] = 'normal.gif';
-
-emoticons[':-\\\\'] = 'ermm.gif';
-emoticons[':-\\/'] = 'ermm.gif';
-emoticons[':-\\\\'] = 'ermm.gif';
-
-emoticons[':S'] = 'puzzled.gif';
-emoticons[':s'] = 'puzzled.gif';
-emoticons[':-S'] = 'puzzled.gif';
-emoticons[':-s'] = 'puzzled.gif';
-
-emoticons[':\\('] = 'depressed.gif';
-emoticons[':-\\('] = 'depressed.gif';
-emoticons['\\):'] = 'depressed.gif';
-emoticons['\\)-:'] = 'depressed.gif';
-
-emoticons[':\'\\('] = 'cry.gif';
-emoticons[':\'-\\('] = 'cry.gif';
-
-emoticons[':X'] = 'speechless.gif';
-emoticons[':x'] = 'speechless.gif';
-
-emoticons[':o'] = 'surprised.gif';
-emoticons[':-o'] = 'surprised.gif';
-emoticons[':O'] = 'surprised.gif';
-emoticons[':-O'] = 'surprised.gif';
-
-emoticons['%\\)'] = 'evolved.gif';
-emoticons['%-\\)'] = 'evolved.gif';
-
-emoticons['\\&gt;:D'] = 'laugh.gif';
-
-emoticons[':D'] = 'silly.gif';
-emoticons[':-d'] = 'silly.gif';
-emoticons[':d'] = 'silly.gif';
-emoticons[':-D'] = 'silly.gif';
-
-emoticons[':o\\)'] = 'cheerful.gif';
-
-emoticons[':p'] = 'ditsy.gif';
-
-emoticons[':\\)'] = 'smiley.gif';
-
-emoticons['8-D'] = 'cheeky.gif';
-
-emoticons[':\\*\\)'] = 'embarrassed.gif';
-
-emoticons[':-0'] = 'shocked.gif';
-emoticons[':-O'] = 'shocked.gif';
-
-emoticons[':0'] = 'scared.gif';
-emoticons[':O'] = 'scared.gif';
-
-emoticons[':-P'] = 'lick.gif';
-emoticons[':-p'] = 'lick.gif';
-
-emoticons['B-\\)'] = 'cool.gif';
-
-emoticons['B-\\|'] = 'calm.gif';
-
-emoticons[':-!'] = 'smoker.gif';
-
-emoticons['\\|-\\)'] = 'bandit.gif';
-
-emoticons['P-\\)'] = 'pirate.gif';
-
-emoticons[':-\\)\\}'] = 'beard.gif';
-
-emoticons[':-\\)\\{'] = 'beard.gif';
-
-emoticons[':-\\)\\&gt;'] = 'old-man.gif';
-
-emoticons['\\[:\\|\\]'] = 'ninja.gif';
-
-emoticons[':-\\[\\]'] = 'gasmask.gif';
-
-emoticons[':-\\['] = 'vampire.gif';
-emoticons[':\\['] = 'vampire.gif';
-
-emoticons['3-\\|\\{'] = 'sleeping.gif';
-
-emoticons['8-\\/'] = 'paranoid.gif';
-
-emoticons['\\?-\\|'] = 'ponder.gif';
-
-emoticons[':-S'] = 'nervous.gif';
-
-emoticons['8-s'] = 'confused.gif';
-
-emoticons['8-\\|'] = 'tired.gif';
-
-emoticons['8-\\['] = 'bored.gif';
-
-emoticons['8-\\('] = 'disappointed.gif';
-
-emoticons[':-\\&lt;'] = 'sad.gif';
-
-emoticons['\\&gt;:-D'] = 'evil.gif';
-
-emoticons['\\&gt;:-\\|'] = 'angry.gif';
-
-emoticons['\\&gt;:-\\)'] = 'devious.gif';
-
-emoticons['\\&gt;:-o'] = 'mad.gif';
-
-emoticons[':D'] = 'grin.gif';
-
-emoticons['8\\)'] = 'classic.gif';
-
-emoticons[':-\\]'] = 'square-eyed.gif';
-
-emoticons['\\|\\|-\\)'] = 'cross-eyed.gif';
-
-emoticons['8-\\)'] = 'foureyes.gif';
-
-emoticons['x-\\)'] = 'knocked-out.gif';
-emoticons['X-\\)'] = 'knocked-out.gif';
-
 emoticons[':cat:'] = 'cat.gif';
 
 emoticons[':dog:'] = 'dog.gif';
@@ -275,3 +145,132 @@ emoticons['\:\:fxb'] = 'fxb.png';
 
 emoticons[':god:'] = 'trinity_glowing.gif';
 emoticons[':water:'] = 'water_molecule.gif';
+
+emoticons[':\\)'] = 'smile.gif';
+emoticons[':-\\)'] = 'smile.gif';
+emoticons['\\(:'] = 'spin.gif';
+emoticons['\\(-:'] = 'spin.gif';
+
+emoticons[';\\)'] = 'wink.gif';
+emoticons[';-\\)'] = 'wink.gif';
+emoticons['\\(;'] = 'wink.gif';
+emoticons['\\(-;'] = 'wink.gif';
+
+emoticons[':\\|'] = 'normal.gif';
+emoticons[':-\\|'] = 'normal.gif';
+
+emoticons[':-\\\\'] = 'ermm.gif';
+emoticons[':-\\/'] = 'ermm.gif';
+emoticons[':-\\\\'] = 'ermm.gif';
+
+emoticons[':S'] = 'puzzled.gif';
+emoticons[':s'] = 'puzzled.gif';
+emoticons[':-S'] = 'puzzled.gif';
+emoticons[':-s'] = 'puzzled.gif';
+
+emoticons[':\\('] = 'depressed.gif';
+emoticons[':-\\('] = 'depressed.gif';
+emoticons['\\):'] = 'depressed.gif';
+emoticons['\\)-:'] = 'depressed.gif';
+
+emoticons[':\'\\('] = 'cry.gif';
+emoticons[':\'-\\('] = 'cry.gif';
+
+emoticons[':X'] = 'speechless.gif';
+emoticons[':x'] = 'speechless.gif';
+
+emoticons[':o'] = 'surprised.gif';
+emoticons[':-o'] = 'surprised.gif';
+emoticons[':O'] = 'surprised.gif';
+emoticons[':-O'] = 'surprised.gif';
+
+emoticons['%\\)'] = 'evolved.gif';
+emoticons['%-\\)'] = 'evolved.gif';
+
+emoticons['\\&gt;:D'] = 'laugh.gif';
+
+emoticons[':D'] = 'silly.gif';
+emoticons[':-d'] = 'silly.gif';
+emoticons[':d'] = 'silly.gif';
+emoticons[':-D'] = 'silly.gif';
+
+emoticons[':o\\)'] = 'cheerful.gif';
+
+emoticons[':p'] = 'ditsy.gif';
+
+emoticons[':\\)'] = 'smiley.gif';
+
+emoticons['8-D'] = 'cheeky.gif';
+
+emoticons[':\\*\\)'] = 'embarrassed.gif';
+
+emoticons[':-0'] = 'shocked.gif';
+emoticons[':-O'] = 'shocked.gif';
+
+emoticons[':0'] = 'scared.gif';
+emoticons[':O'] = 'scared.gif';
+
+emoticons[':-P'] = 'lick.gif';
+emoticons[':-p'] = 'lick.gif';
+
+emoticons['B-\\)'] = 'cool.gif';
+
+emoticons['B-\\|'] = 'calm.gif';
+
+emoticons[':-!'] = 'smoker.gif';
+
+emoticons['\\|-\\)'] = 'bandit.gif';
+
+emoticons['P-\\)'] = 'pirate.gif';
+
+emoticons[':-\\)\\}'] = 'beard.gif';
+
+emoticons[':-\\)\\{'] = 'beard.gif';
+
+emoticons[':-\\)\\&gt;'] = 'old-man.gif';
+
+emoticons['\\[:\\|\\]'] = 'ninja.gif';
+
+emoticons[':-\\[\\]'] = 'gasmask.gif';
+
+emoticons[':-\\['] = 'vampire.gif';
+emoticons[':\\['] = 'vampire.gif';
+
+emoticons['3-\\|\\{'] = 'sleeping.gif';
+
+emoticons['8-\\/'] = 'paranoid.gif';
+
+emoticons['\\?-\\|'] = 'ponder.gif';
+
+emoticons[':-S'] = 'nervous.gif';
+
+emoticons['8-s'] = 'confused.gif';
+
+emoticons['8-\\|'] = 'tired.gif';
+
+emoticons['8-\\['] = 'bored.gif';
+
+emoticons['8-\\('] = 'disappointed.gif';
+
+emoticons[':-\\&lt;'] = 'sad.gif';
+
+emoticons['\\&gt;:-D'] = 'evil.gif';
+
+emoticons['\\&gt;:-\\|'] = 'angry.gif';
+
+emoticons['\\&gt;:-\\)'] = 'devious.gif';
+
+emoticons['\\&gt;:-o'] = 'mad.gif';
+
+emoticons[':D'] = 'grin.gif';
+
+emoticons['8\\)'] = 'classic.gif';
+
+emoticons[':-\\]'] = 'square-eyed.gif';
+
+emoticons['\\|\\|-\\)'] = 'cross-eyed.gif';
+
+emoticons['8-\\)'] = 'foureyes.gif';
+
+emoticons['x-\\)'] = 'knocked-out.gif';
+emoticons['X-\\)'] = 'knocked-out.gif';
