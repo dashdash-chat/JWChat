@@ -27,7 +27,7 @@
 use strict;
 use utf8;
 
-my $DEBUG = 1;
+my $DEBUG = 0;
 my $TEMPDIR = "htdocs";
 my $TEMPLATEDIR = "src";
 my $DEFAULTLANG = "en";
@@ -49,7 +49,7 @@ $SIG{__WARN__} = \&Carp::cluck;
 
 binmode(STDERR, ":utf8");
 
-print STDERR "Pre-loading Templates...\n" if ($DEBUG);
+print "Parsing Templates...\n";
 
 # get list with all languages
 my @languages;
