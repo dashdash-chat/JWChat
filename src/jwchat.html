@@ -84,7 +84,7 @@ function fdebug(str,lv) {
   debugMsgs = debugMsgs.concat(msg);
 
   if (!debugW || debugW.closed) // open the debugger
-    debugW = window.open("debug.html","debugW","width=480,height=320,scrollbars=yes,resizable=yes");
+    debugW = window.open("debug.html",makeWindowName(jid)+"debugW","width=480,height=320,scrollbars=yes,resizable=yes");
 
   if (!debugW || !debugW.popMsgs)
     return;
@@ -145,7 +145,7 @@ function openUserInfo(jid) {
   
   if (jid.indexOf("@"+JABBERSERVER) != -1 || isGateway(jid)) {
 		// query vcard-temp
-		fCBLoad("pub/vcard","?sid="+sid+"&to="+jid,"handleVCardTemp");
+		fCBLoad("pub/vcard","?sid="+sid+"&to="+jid,handleVCardTemp);
 		return false;
   } else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
     userurl = ICQUSERURL.replace(/\$user/,username);
@@ -625,18 +625,12 @@ function handleCB(jabber) {
 
 	/* loop registered callbacks */
 
-	for (var i in registeredCBs) {
-
-		/* if query is empty namespace is empty too (at least for
-		 * vcard-temp). So we have to call registered queries for unknown
-		 * namespaces too 
-		 */
-
-		if (typeof(registeredCBs[i].func) != 'undefined') {
+	for (var i=0; i<registeredCBs.length; i++) {
+		if (typeof(registeredCBs[i].func) != 'undefined' && registeredCBs[i].func) {
 			if (registeredCBs[i].args)
-				eval(registeredCBs[i].func+"("+registeredCBs[i].args+")");
+				registeredCBs[i].func(registeredCBs[i]);
 			else
-				eval(registeredCBs[i].func+"("+jabber+")");
+				registeredCBs[i].func(jabber);
 
 			/* remove callback from list */
 
@@ -688,7 +682,7 @@ function handleDiscoItemResult(jabber) {
 	}
 	// now start querying items
 	disco_info_count = 0;
-	fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info","handleDiscoInfoResult");
+	fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
 }
 
 function handleDiscoInfoResult(jabber) {
@@ -701,7 +695,7 @@ function handleDiscoInfoResult(jabber) {
 	// query next item
 	disco_info_count++;
 	if (disco_info_count < disco.items.length)
-		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info","handleDiscoInfoResult");
+		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
 
 }
 
@@ -876,7 +870,7 @@ function run() {
     playSound('connected');
 
     // start service discovery
-    fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items","handleDiscoItemResult");
+    fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
     
     poll();	// initial poll (not nice here)
     break;
