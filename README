@@ -60,9 +60,10 @@ Quick Install Guide
 ===================
 
 JWChat depends on two jabber server component which are available
-separately. You can get them from 
-http://webclientservice.jabberstudio.org. Detailed installation and 
-configuration instructions can be found there too.
+separately. Please be sure to always install the latest versions from
+there. JWChat might not work otherwise. You can get them from
+http://webclientservice.jabberstudio.org. Detailed installation and
+configuration instructions can be found there .
 
 * Compile these components by doing a "make" in both directories.
 
@@ -91,6 +92,7 @@ configuration instructions can be found there too.
   <Directory /home/zeank/src/jwchat>
     Options  +Indexes +Multiviews
   </Directory>
+  AddDefaultCharset UTF-8
   RewriteEngine on
 #  RewriteLog /tmp/rw.log
 #  RewriteLogLevel 1
