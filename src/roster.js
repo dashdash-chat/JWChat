@@ -330,6 +330,20 @@ function GroupchatRosterUser(jid,name) {
 
 GroupchatRosterUser.prototype = new RosterUser;
 
+function getRosterGetRealJIDByNick(nick) {
+	for (var i in this.users)
+		if (this.users[i].name == nick)
+			return this.users[i].realjid;
+	return null;
+}
+
+function getRosterGetFullJIDByNick(nick) {
+	for (var i in this.users)
+		if (this.users[i].name == nick)
+			return this.users[i].fulljid;
+	return null;
+}
+			
 function GroupchatRosterPrint() {
   this.targetW.document.getElementById('chan_count').innerHTML = this.users.length;
 }
@@ -353,6 +367,8 @@ function GroupchatRoster(targetW) {
 
   //  this.eprint = GroupchatRosterPrint;
 	this.getUserByJID = getGroupchatRosterUserByJID;
+	this.getRealJIDByNick = getRosterGetRealJIDByNick;
+	this.getFullJIDByNick = getRosterGetFullJIDByNick;
 }
 
 GroupchatRoster.prototype = new Roster();
