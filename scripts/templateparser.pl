@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl -w
+#!/usr/bin/perl -w
 # BEGIN LICENSE BLOCK
 ###############################################################################
 # Copyright (C) 2001-2003 Florian Bischof <flo@fxb.de>

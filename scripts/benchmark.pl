@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 #
 ###############################################################################
 # Copyright (C) 2003      Florian Bischof <flo@fxb.de>
