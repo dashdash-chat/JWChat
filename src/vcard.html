@@ -44,10 +44,10 @@
       jid = passedArgs['jid'];
       document.title += jid;
 
-      if (jid == srcW.cutResource(srcW.jid)) // it's me
+      if (cutResource(jid) == srcW.cutResource(srcW.jid)) // it's me
         vcard = srcW.vcard;
       else {
-        var user = srcW.roster.getUserByJID(jid);
+        var user = srcW.roster.getUserByJID(cutResource(jid));
         vcard = user.vcard;
       }
 
@@ -55,13 +55,13 @@
    
       for (var i=0; i<document.forms[0].elements.length;i++) {
         if (document.forms[0].elements[i].id == '') continue;
-        if (jid != srcW.cutResource(srcW.jid)) {
+        if (cutResource(jid) != srcW.cutResource(srcW.jid)) {
           document.forms[0].elements[i].className = "vcardBox";
           document.forms[0].elements[i].readOnly = true;
         }
       }
 
-      if (jid != srcW.cutResource(srcW.jid))
+      if (cutResource(jid) != srcW.cutResource(srcW.jid))
         document.getElementById("savebox").style.display = 'none';
       
       window.focus();
