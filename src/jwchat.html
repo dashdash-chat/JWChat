@@ -176,19 +176,9 @@ function removeUser(jid) {
 }
 
 function openUserInfo(jid) {
-  var userurl;
-  var username = jid.substring(0,jid.indexOf("@"));
-  
-  if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
-    userurl = ICQUSERURL.replace(/\$user/,username);
-  } else {
-		// query vcard-temp
-		fCBLoad("pub/vcard","?sid="+sid+"&to="+jid,handleVCardTemp);
-		return false;
-  }
-
-  open(userurl,"uInfo"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
-  return false;
+	// query vcard-temp
+	fCBLoad("vcard","?sid="+sid+"&to="+jid,handleVCardTemp);
+	return false;
 }
 
 function openUserHistory(jid) {
@@ -442,6 +432,8 @@ function handleMessage(jabber) {
       aRoster.print();
   }
 
+	// set current timestamp
+	jabber.timestamp = new Date();
 
   if (jabber.type == 'chat' && !(jabber.o && jabber.o[0] && typeof(jabber.o[0].stamp) != 'undefined')) {
     
@@ -875,15 +867,17 @@ function handleCB(jabber) {
 
 function handleVCardTemp(jabber) {
 
+	if (jabber.error || jabber.type == 'error') {
+		fdebug(jabber,1);
+		return;
+	}
+
 	fdebug(jabber,2);
 
-	if (jabber.error || jabber.type == 'error')
-		return;
-
-  if (jabber.from == cutResource(jid))
+  if (cutResource(jabber.from) == cutResource(jid))
     vcard = jabber.vcard; // save my own vcard
   else {
-    var user = roster.getUserByJID(jabber.from);
+    var user = roster.getUserByJID(cutResource(jabber.from));
     
     if (user == null)
       user = roster.addUser(new RosterUser(jabber.from));
