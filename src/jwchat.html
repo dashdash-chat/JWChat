@@ -613,7 +613,9 @@ registerHandler("iq",handleIQResult);
  ************************************************************************
  */
 function handleCB(jabber) {
-  if (!jabber) // nothing to do
+  jabber = jabber || frames['jwc_cb'].jabber;
+	
+	if (!jabber) // nothing to do
     return;
 
   fdebug(jabber,2);
