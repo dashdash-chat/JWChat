@@ -117,9 +117,12 @@ function openGroupchat(group,nick) {
   var user = roster.getUserByJID(group);
   if(!user) {
     user = roster.addUser(new RosterUser(group,'',[loc('Chat Rooms')],group.substring(0,group.indexOf('@'))));
+		user.type = 'groupchat';
     roster.print();
   }
-  user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
+	if (!user.chatW || user.chatW.closed)
+		user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
+	user.chatW.focus();
 }
 
 var subw;
@@ -174,15 +177,12 @@ function openUserInfo(jid) {
   var userurl;
   var username = jid.substring(0,jid.indexOf("@"));
   
-  if (jid.indexOf("@"+JABBERSERVER) != -1 || isGateway(jid)) {
+  if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
+    userurl = ICQUSERURL.replace(/\$user/,username);
+  } else {
 		// query vcard-temp
 		fCBLoad("pub/vcard","?sid="+sid+"&to="+jid,handleVCardTemp);
 		return false;
-  } else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
-    userurl = ICQUSERURL.replace(/\$user/,username);
-  } else {
-    alert(loc("Can't display User Info:\nUser not local!"));
-    return false;
   }
 
   open(userurl,"uInfo"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
@@ -361,8 +361,10 @@ function handleEvent(jabber) {
 
 function handleMessage(jabber) {
 
-  if (!is.ie)
-    fdebug(jabber,4);
+	fdebug(jabber,2);
+
+	if (jabber.type == 'error')
+		return;
   
   var from = cutResource(jabber.from);
   
@@ -448,6 +450,31 @@ function handleMessage(jabber) {
       playSound('message_queue');
     }
   }
+}
+
+/************************************************************************
+ * handleMessageError
+ ************************************************************************
+ */
+var error_messages = new Array();
+var errorW;
+function handleMessageError(jabber) {
+
+	if (jabber.type != 'error')
+		return;
+
+	fdebug(jabber,1);
+
+	error_messages = error_messages.concat(jabber);
+
+	if (!errorW || errorW.closed)
+		errorW = open("error_message.html","errorW"+makeWindowName(jid),"width=360,height=270,dependent=yes,resizable=yes");
+	else if (error_messages.length > 0 && errorW.document.forms[0])
+		errorW.document.forms[0].nextButton.disabled = false;
+
+	playSound('error');
+
+	errorW.focus();
 }
 
 /************************************************************************
@@ -622,9 +649,15 @@ function handleIQSet(jabber) {
 					item.name = item.jid;
 				
 				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups,item.name));
-				// permanently add to roster
-				//				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group="+item.groups);
-				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name); // don't set groups
+
+				var groups = '';
+				for (var i in item.groups)
+					if (item.groups[i] != '')
+						groups += item.groups[i] + ";";
+				if (groups != '')
+					fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group="+groups); // don't set groups
+				else
+					fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name); // don't set groups
 				//				openUserProps(item.jid);
 				if (item.subscription == "from")
 					openSubscription(item.jid); // subscribe to user
@@ -651,6 +684,7 @@ function handleIQResult(jabber) {
 }
 
 registerHandler("message",handleMessage);
+registerHandler("message",handleMessageError);
 registerHandler("presence",handlePresence);
 registerHandler("iq",handleIQSet);
 registerHandler("iq",handleIQResult);
@@ -692,6 +726,9 @@ function handleCB(jabber) {
 }
 
 function handleVCardTemp(jabber) {
+
+	fdebug(jabber,2);
+
 	if (jabber.type == 'error')
 		return;
 
