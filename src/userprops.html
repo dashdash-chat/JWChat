@@ -69,7 +69,7 @@ function init() {
     }
   
   for (var i in srcW.roster.groups) {
-    if (srcW.roster.groups[i].name != 'Unfiled') {
+    if (srcW.roster.groups[i].name != loc('Unfiled')) {
       allgrpbox.options[allgrpbox.length] = new Option(srcW.roster.groups[i].name,srcW.roster.groups[i].name);
     }
   }
@@ -103,7 +103,7 @@ onload = init;
         <legend><l>Edit nickname for <span id="nickjid"></span></l></legend>
         <table border=0 cellspacing=0 cellpadding=0 width="100%">
             <tr>
-              <td><l>Nickname</l>:&nbsp;</td><td width="100%"><input type="text" name="nickname" style="width:100%"></td></tr>
+              <td nowrap><l>Nickname</l>:&nbsp;</td><td width="100%"><input type="text" name="nickname" style="width:100%"></td></tr>
         </table>
       </fieldset>
       <br>
