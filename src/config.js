@@ -57,20 +57,21 @@ var BACKENDS =
 		{
 			name:"zeank.darktech.org",
 			description:"Local Ejabberd's HTTP Polling Backend",
-			httpbase:"http-poll/",
+			httpbase:"/http-poll/",
 			type:"polling",
 			servers_allowed:['zeank.darktech.org']
 		},
 		{
 			name:"Open Relay",
 			description:"HTTP Binding Backend that Allows Connecting to any Jabber Server",
-			httpbase:"/tomcat/JabberHTTPBind/",
+			httpbase:"/tomcat/JHB/",
 			type:"binding",
+			default_server: "zeank.darktech.org"
 		},
 		{
 			name:"Restricted Relay",
 			description:"This one's for demonstrational purpose only",
-			httpbase:"/tomcat/JabberHTTPBind/",
+			httpbase:"/tomcat/JHB/",
 			type:"binding",
 			servers_allowed:['zeank.darktech.org','jwchat.org']
 		},
@@ -92,5 +93,5 @@ var DEFAULTCONFERENCESERVER = "conference.zeank.darktech.org";
 var DEBUG = false; // turn debugging on
 var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
 
-var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger
+var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
 var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages

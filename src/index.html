@@ -128,7 +128,10 @@ function backendSelected() {
 			var input = document.createElement('input');
 			input.setAttribute('type','text');
 			input.setAttribute('name','server');
-			input.setAttribute('tabindex',2);
+			input.setAttribute('tabindex',"2");
+
+			if (BACKENDS[bs.selectedIndex].default_server)
+				input.setAttribute("value",BACKENDS[bs.selectedIndex].default_server);
 
 			var td = tr_server.getElementsByTagName('td').item(1);
 			for (var i=0; i<td.childNodes.length; i++)
@@ -146,7 +149,7 @@ function backendSelected() {
 		
 		var select = document.createElement('select');
 		select.setAttribute('name','server');
-		select.setAttribute('tabindex',2);
+		select.setAttribute('tabindex',"2");
 
 		for (var i in servers_allowed) {
 			var opt = new Option(servers_allowed[i]);
@@ -179,7 +182,7 @@ function init() {
 		var select = document.createElement('select');
 		select.setAttribute('id','backend_selector');
 		select.setAttribute('name','backend');
-		select.setAttribute('tabindex',1);
+		select.setAttribute('tabindex',"1");
 		select.onchange = backendSelected;
 
 		for (var i in BACKENDS) {
