@@ -9,19 +9,7 @@
     <script src="config.js" language="JavaScript1.2"></script>
     <script src="roster.js" language="JavaScript1.2"></script>   
     <script language="JavaScript1.2">
-var colors = new Array();
-colors[0] = 'maroon';
-colors[1] = 'green';
-colors[2] = 'olive';
-colors[3] = 'navy';
-colors[4] = 'purple';
-colors[5] = 'teal';
-colors[6] = 'red';
-colors[7] = 'lime';
-colors[8] = 'yellow';
-colors[9] = 'blue';
-colors[10] = 'fuchsia';
-colors[11] = 'aqua';
+var colors = new Array('maroon','green','olive','navy','purple','teal','red','blue');
 
 function putMsgHTML(msg,mtime,user,usercolor) {
   var msgHTML = '';
@@ -112,10 +100,19 @@ function displayTimestamp() {
 }
 
 function updateMe() {
-  if (roster.me.role == 'none') {
-    frames.groupchatTop.document.forms[0].subject.disabled = true;
-    frames.groupchatBottom.document.forms[0].submit.disabled = true;
-  }
+
+ 	frames.groupchatTop.document.forms[0].subject.disabled = (roster.me.role == 'none');
+ 	frames.groupchatBottom.document.forms[0].submit.disabled = (roster.me.role == 'none');
+	
+	frames.groupchatBottom.document.getElementById('config_chan_button').disabled = !(roster.me.affiliation == 'owner');
+
+	if (roster.me.role == 'none') {// seems we left
+		cFrame.body.innerHTML += "<span style='color:red';>"+loc("Disconnected.")+"</span><br>";
+		frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
+	}
+
+	if (frames.groupchatRoster.updateMe)
+		frames.groupchatRoster.updateMe();
 }
 
 function changeUserStat(jid,stat,val,confirm) {
@@ -136,25 +133,57 @@ function changeAffiliation(jid,affil,confirm) {
   changeUserStat(jid,"affiliation",affil,confirm);
 }
 
+var configW
+function openConfig() {
+	if (!configW || configW.closed)
+		configW = open("groupchatconfig.html","gccW"+makeWindowName(jid),"width=480,height=380,resizable=yes,scrollbars=yes");
+		configW.focus();
+	return false;
+}
+
+function cleanUp() {
+	if (configW && !configW.closed)
+		configW.close();
+}
+
+function part() {
+	cleanUp();
+
+  if (!srcW.fhdLoad)
+      return;
+	if (roster.me.role != 'none') // we are off anyway
+		srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
+  if (!user.messages.length && !user.chatmsgs.length) {
+    srcW.roster.removeUser(user);
+    srcW.roster.print();
+  }
+}
+
 /* global vars */
-var srcW,group,user,roster,cFrame,jid;
+var srcW,group,user,roster,cFrame,jid,nick,pass;
 
 function init() {
   getArgs();
   
   srcW = opener;
-  
+ 
   group = passedArgs['group'];
-	nick = passedArgs['nick'];
-
-	if(typeof(nick) == 'undefined' || nick == '')
-		nick = srcW.jid.substring(0,srcW.jid.indexOf('@')); // guess a nick
-
 	jid=group;
+
+	if (typeof(passedArgs['nick']) != 'undefined')
+		nick = passedArgs['nick'];
+	if(typeof(nick) == 'undefined' || nick == '')
+		nick = srcW.roster.nick; // guess a nick
+
+	if (passedArgs['pass'] != 'undefined')
+		pass = passedArgs['pass'];
   
-  srcW.fdebug("groupchat group:"+group+", nick:"+nick,3);
+  srcW.fdebug("groupchat group: "+group+", nick: "+nick + ", pass: "+pass ,2);
   
-  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
+	if (typeof(pass) != 'undefined' && pass != '')
+		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+group+"/"+nick+"&pass="+pass);
+	else
+		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
   
   cFrame = frames.groupchatChat.groupchatIChat.document;
 
@@ -171,22 +200,13 @@ function init() {
   roster = user.roster;
   //        user.roster.print();
   
-  document.title += " - " + group;
+	//  document.title += " - " + group;
+  document.title = group+'/'+nick;
 
   popMsgs();
   displayTimestamp();
 }
 
-
-function part() {
-  if (!srcW.fhdLoad)
-      return;
-  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
-  if (!user.messages.length && !user.chatmsgs.length) {
-    srcW.roster.removeUser(user);
-    srcW.roster.print();
-  }
-}
 
 function keyPressed(e) {
   if (e.keyCode == 27)

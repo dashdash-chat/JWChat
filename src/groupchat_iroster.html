@@ -118,7 +118,7 @@
 				if (firingobj.className=="menuitems"||ns6&&firingobj.parentNode.className=="menuitems"){
 					if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode;
 					if (firingobj.getAttribute("func")) {
-						var jid = selobj.id.substring(0,selobj.id.lastIndexOf("/"));
+ 						var jid = selobj.id.substring(0,selobj.id.lastIndexOf("/"));
 						eval("parent.top."+firingobj.getAttribute("func")+"('"+jid+"',"+firingobj.getAttribute("param")+")");
 					}
 				}

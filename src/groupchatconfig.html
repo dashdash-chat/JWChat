@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>JWChat - Channel Config for</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
+    <script language="JavaScript1.2">
+      <!--
+
+function doSub() {
+	var els = document.forms[0].elements;
+
+	var xml = "<x xmlns='jabber:x:data' type='submit'>";
+
+	for (var i=0; i<els.length; i++) {
+		if (els[i].name == '' || els[i].value == '')
+			continue;
+		xml += "<field var='" +els[i].name + "'><value>";
+		if (els[i].type == 'checkbox')
+			xml += (els[i].checked) ? '1':'0';
+		else
+			xml += els[i].value;
+		xml += "</value></field>";
+	}
+
+	xml += "</x>";
+	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns="+escape("http://jabber.org/protocol/muc#owner")+"&set="+msgEscape(xml));
+	window.close();
+	return false;
+}
+
+function destroy() {
+	reason = prompt(loc("Really destroy this room?\n\nReason:"),"");
+	if (!reason)
+		return false;
+
+	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns=http://jabber.org/protocol/muc%23owner&set="+msgEscape("<destroy><reason>"+reason+"</reason></destroy>"));
+	window.close();
+	return false;
+}
+	
+function handleConfig(jabber) {
+	srcW.fdebug(jabber,2);
+
+	if (jabber.type == 'error')
+		return;
+
+	// get x
+	var x;
+	for (var i in jabber.browse.o)
+		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].type == 'form') {
+			x = jabber.browse.o[i];
+			break;
+		}
+
+	if (x.title)
+		document.getElementById('title').innerHTML = x.title;
+	if (x.instructions)
+		document.getElementById('instructions').innerHTML = x.instructions.replace(/\n/g,"<br>");
+
+	if (!x.o)
+		return;
+
+	var html = '<table width="100%">';
+	for (var i in x.o) {
+		if (x.o[i].tagname != 'field')
+			continue;
+ 		html += "<tr>";
+		switch (x.o[i].type) {
+		case 'hidden':
+			html += "<td colspan=2><input type=hidden name='"+x.o[i].far+"' value='"+x.o[i].value+"'></td>";
+			break;
+		case 'fixed':
+			html += "<td colspan=2><b>"+x.o[i].value+"</b></td>";
+			break;
+		case 'text-single':
+			html += "<th>" + x.o[i].label + "</th>";
+			html += "<td>";
+			html += "<input type=text size='24' name='" + x.o[i].far + "'";
+			if (x.o[i].value)
+				html += " value='" + x.o[i].value + "'";
+			html += ">";
+			html += "</td>";
+			break;
+		case 'text-private':
+			html += "<th>" + x.o[i].label + "</th>";
+			html += "<td>";
+			html += "<input type=password size='24' name='" + x.o[i].far + "'";
+			if (x.o[i].value)
+				html += " value='" + x.o[i].value + "'";
+			html += ">";
+			html += "</td>";
+			break;
+		case 'text-multi':
+			html += "<th valign=top>" + x.o[i].label + "</th>";
+			html += "<td>";
+			html += "<textarea cols=24 rows=4 name='" + x.o[i].far + "'>";
+			if (x.o[i].value)
+				html += x.o[i].value;
+			html += "</textarea>";
+			html += "</td>";
+			break;
+		case 'list-single':
+			html += "<th>" + x.o[i].label + "</th>";
+			html += "<td>";
+			html += "<select name='" + x.o[i].far + "'>";
+			if (x.o[i].o) {
+				for (var j in x.o[i].o) {
+					if (x.o[i].o[j].tagname == 'option') {
+						html += "<option value='" + x.o[i].o[j].value + "'";
+						if (x.o[i].value == x.o[i].o[j].value)
+							html += " selected";
+						html += ">"+x.o[i].o[j].label+"</option>";
+					}
+				}
+			}
+			html += "</select>";
+			html += "</td>";
+			break;
+		case 'boolean':
+			html += "<th>" + x.o[i].label + "</th>";
+			html += "<td>";
+			html += "<input type=checkbox name='" + x.o[i].far + "'";
+			if (x.o[i].value == '1')
+				html += " checked";
+			html += ">";
+			html += "</td>";
+			break;
+		default:
+			srcW.fdebug("unknown type: " + x.o[i].type,1);
+			break;
+		}
+ 		html += "</tr>";
+	}
+	html += "</table>";
+
+	var ciTable = document.getElementById("configitems");
+
+	ciTable.innerHTML = html;
+}
+
+var srcW;
+function init() {
+  // determine source window
+	srcW = opener.srcW;
+
+	document.title += " " + opener.jid;
+
+	var roster = srcW.roster;
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns="+escape("http://jabber.org/protocol/muc#owner"),roster.getUserByJID(opener.jid).chatW.configW.handleConfig);
+}
+
+function keyPressed(e) {
+  if (e.keyCode == 13)
+    return doSub();
+  if (e.keyCode == 27)
+    window.close();
+  return true;
+}
+
+onkeydown = keyPressed;
+onload = init;
+      //-->
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      return keyPressed(window.event);
+      //-->
+    </script>
+		<style type="text/css">
+			h1 { font-size: 1.5em; padding-bottom: 12px;}
+			th { font-size: 80%; text-align: right; font-weight: normal; }
+		</style>
+  </head>
+  <body style="margin:8px;">
+		<h1 id="title"></h1>
+		<div id="instructions"></div>
+    <form name="sub" onsubmit="return doSub();">
+		<div id="configitems">
+		</div>
+      <hr noshade size="1" size="100%">
+      <div align="right" id="buttonbox">
+        <button onClick="return destroy();"><l>Destroy</l></button>&nbsp;<button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button type="submit"><l>OK</l></button>
+      </div>
+		</form>
+  </body>
+</html>

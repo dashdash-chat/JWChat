@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>JWChat - Modify</l></title>
+    <script src="switchStyle.js"></script>
+    <script src="shared.js"></script>
+		<script>
+			var deltaItems = new Array(); // contains table rows
+
+			function add2deltaItems(row,state) {
+				var item = new Object();
+				if (row.childNodes.item(0).innerHTML == '' && row.childNodes.item(1).innerHTML == '') // neither nick nor jid supplied
+					return;
+				if (row.childNodes.item(0).innerHTML != '')
+					item.nick = row.childNodes.item(0).innerHTML;
+				if (row.childNodes.item(1).innerHTML != '')
+					item.jid = row.childNodes.item(1).innerHTML;
+				if (row.childNodes.item(2).innerHTML != '')
+					item.reason = row.childNodes.item(2).innerHTML;
+				
+				if (queryType == 'role_based')
+					item.state = "role='"+state+"'";
+				else
+					item.state = "affiliation='"+state+"'";
+				
+				deltaItems[deltaItems.length] = item;
+			}
+			
+			function deltaAddItem(row,state) {
+				var statExp = /(.+)=\'(.+)\'/;
+				statExp.exec(state);
+				add2deltaItems(row,RegExp.$2);
+			}
+
+			function deltaDelItem(row) {
+				add2deltaItems(row,'none');
+			}
+
+			function handleIQSetList(jabber) {
+				// check for errors
+
+				if (jabber.type == 'result') { // sucess
+					window.close();
+					return;
+				}
+
+				var html = '';
+				if (jabber.type == 'error') {
+					for (var i in jabber.browse.o) {
+						if (jabber.browse.o[i].tagname == 'item') {
+							var item = jabber.browse.o[i];
+							if (item.jid)
+								html += "Item: "+item.jid+"<br>";
+							else if (item.nick)
+								html += "Nick: "+item.nick+"<br>";
+							for (var j in item.o)
+								if (item.o[j].tagname == 'error')
+									html += loc("Error") + " " + item.o[j].code + ": " + item.o[j].data;
+						}
+					}
+				}
+				document.getElementById('hint').innerHTML = '';
+				document.getElementById('hint').innerHTML = html;
+
+				deltaItems = new Array();
+
+				updateListFrame(modItems);
+			}
+
+			function doSub() {
+
+				var xml = '<doc>';
+
+				for (var i in deltaItems) {
+					xml += "<item " + deltaItems[i].state;
+					if (deltaItems[i].nick)
+						xml += " nick='" + deltaItems[i].nick + "'";
+					if (deltaItems[i].jid)
+						xml += " jid='" + deltaItems[i].jid + "'";
+					if (deltaItems[i].reason)
+						xml += "><reason>"+deltaItems[i].reason+"</reason></item>";
+					else
+						xml += "/>";
+				}
+				xml += '</doc>';
+
+				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+escape(opener.parent.top.jid)+"&ns="+args[1]+"&set="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQSetList);
+
+				return false;
+			}
+
+			function deleteItem() {
+				if (!modifylistF.selectedRow) {
+					alert("Nothing selected");
+					return;
+				}
+
+				deltaDelItem(modifylistF.selectedRow);
+
+				var modTableBody = modifylistF.document.getElementById('modTable').getElementsByTagName("TBODY").item(0);
+				modTableBody.removeChild(modifylistF.selectedRow);
+
+				// reset form
+				modifylistF.selectedRow = null;
+				document.getElementById('delete_button').disabled = true;
+				return false;
+			}
+
+			function addItem() {
+				var row = modifylistF.document.createElement("TR");
+
+				var cell = modifylistF.document.createElement("TD");
+				var textN = modifylistF.document.createTextNode(document.forms['add_item'].nick.value);
+				cell.appendChild(textN);
+				row.appendChild(cell);
+
+				cell = modifylistF.document.createElement("TD");
+				textN = modifylistF.document.createTextNode(document.forms['add_item'].jid.value);
+				cell.appendChild(textN);
+				row.appendChild(cell);
+
+				cell = modifylistF.document.createElement("TD");
+				textN = modifylistF.document.createTextNode(document.forms['add_item'].reason.value);
+				cell.appendChild(textN);
+				row.appendChild(cell);
+
+				deltaAddItem(row,args[0]);
+
+				modifylistF.document.getElementById('modTable').getElementsByTagName('TBODY').item(0).appendChild(row);
+
+				// tell frame about it
+				modifylistF.init();
+
+				// clear form
+				document.forms['add_item'].reset();
+				document.getElementById('add_button').disabled = true;
+				return false;
+			}
+
+			function activateAddButton() {
+				document.getElementById('add_button').disabled = false;
+			}
+
+			function updateListFrame(modItems) {
+				// clear frame
+				modifylistF.document.body.innerHTML = '';
+
+				var myTable = modifylistF.document.createElement("TABLE");
+
+				var myTableHead = modifylistF.document.createElement("THEAD");
+				var myTableBody = modifylistF.document.createElement("TBODY");
+
+				var row = modifylistF.document.createElement("TR");
+				var header = new Array(loc('Nick'),loc('JID'),loc('Reason'));
+				var cell; 
+				for (var i in header) {
+					cell = modifylistF.document.createElement("TH");
+					cell.appendChild(modifylistF.document.createTextNode(header[i]));
+					row.appendChild(cell);
+				}
+				myTableHead.appendChild(row);
+				myTable.appendChild(myTableHead);
+					
+				for (var i in modItems) {
+					var item = modItems[i];
+					if (item.tagname == 'item') {
+						row = modifylistF.document.createElement("TR");
+
+						cell = modifylistF.document.createElement("TD");
+						textN = modifylistF.document.createTextNode((typeof(item.nick) != 'undefined')?item.nick:'');
+						cell.appendChild(textN);
+						row.appendChild(cell);
+
+						cell = modifylistF.document.createElement("TD");
+						textN = modifylistF.document.createTextNode((typeof(item.jid) != 'undefined')?item.jid:'');
+						cell.appendChild(textN);
+						row.appendChild(cell);
+
+						cell = modifylistF.document.createElement("TD");
+						textN = modifylistF.document.createTextNode((typeof(item.reason) != 'undefined')?item.reason:'');
+						cell.appendChild(textN);
+						row.appendChild(cell);
+
+						myTableBody.appendChild(row);
+					}
+				}
+
+				myTable.appendChild(myTableBody);
+				
+				myTable.setAttribute("id","modTable");
+				myTable.setAttribute("WIDTH","100%");
+				myTable.setAttribute("BORDER","0");
+				myTable.setAttribute("CELLSPACING","0");
+				myTable.setAttribute("CELLPADDING","0");
+				myTable.setAttribute("RULES","rows");
+
+				// add table
+				modifylistF.document.body.appendChild(myTable);
+
+				// tell frame about it
+				modifylistF.init();
+			}
+
+			var modItems;
+			function handleIQGetList(jabber) {
+				srcW.fdebug(jabber,2);
+				if (jabber.type == 'error') {
+					document.getElementById('hint').innerHTML = loc("An Error has occured");
+					return;
+				}
+
+				if (!jabber.browse || !jabber.browse.o || jabber.browse.o.length == 0) {
+					document.getElementById('hint').innerHTML = loc("No items found");
+				}
+
+				modItems = jabber.browse.o;
+				
+				updateListFrame(modItems);
+				
+			}
+
+			var srcW;
+			var queryType;
+			function init() {
+				srcW = opener.parent.top.srcW;
+
+				// get args
+				search = self.location.href;
+				search = search.split('?');
+
+				if(search.length>1){
+					args = search[1];
+					args = args.split('&');
+					args[2] = unescape(args[2]);
+				} else
+					return;
+				
+				if (args[0].indexOf("role") != 0 && args[0].indexOf("affiliation") != 0)
+					return; // it's your fault
+
+
+				if (args[0].indexOf("role") == 0)
+					queryType = 'role_based';
+				else
+					queryType = 'affiliation_based';
+
+				roster = srcW.roster;
+				
+				xml = "<item " + args[0] + "/>";
+				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+escape(opener.parent.top.jid)+"&ns="+args[1]+"&get="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQGetList);
+
+				document.getElementById('title').innerHTML = loc("Modify [_1]",args[2]);
+				document.title += " " + args[2];
+
+				// reset selector
+				opener.document.getElementById('list_selector').selectedIndex = 0;
+
+				// disable buttons on start
+				document.getElementById('add_button').disabled = true;
+				document.getElementById('delete_button').disabled = true;
+			}
+			onload = init;
+			function keyPressed(e) {
+				if (e.keyCode == 13)
+					return doSub();
+				if (e.keyCode == 27)
+					window.close();
+				return true;
+			}
+
+			onload = init;
+			onkeydown = keyPressed;
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      return keyPressed(window.event);
+      //-->
+    </script>
+		<style type="text/css">
+			h1 { font-size: 1.5em; }
+			th { font-size: 0.8em; text-align: right; }
+		</style>
+  </head>
+  <body style="margin:8px;">
+		<table width="100%" height="100%">
+		<tr><td><h1 id="title">&nbsp;</h1></td></tr>
+		<tr><td><span id="hint">&nbsp;</span></td></tr>
+		<tr><td width="100%" height="100%"><iframe src="groupchat_modifylist_iframe.html" id="modifylistF" name="modifylistF" scrolling="auto" style="width: 100%; height: 100%"></iframe></td></tr>
+		<tr><td><form name="add_item">
+		<table>
+		<tr><th>Nick</th><td><input type="text" name="nick" onkeydown="activateAddButton();"></td></tr>
+		<tr><th>JID</th><td><input type="text" name="jid" style="width: 100%;" onkeydown="activateAddButton();"></td></tr>
+		<tr><th>Reason</th><td><input type="text" name="reason" style="width: 100%;" onkeydown="activateAddButton();"></td></tr>
+		</table></form>
+		</td></tr>
+		<tr><td><hr noshade size=1></td></tr>
+		<tr><td align="right">
+		<button id="add_button" onClick="return addItem();"><l>Add</l></button>&nbsp;<button id="delete_button" onClick="return deleteItem();"><l>Delete</l></button>&nbsp;<button type="submit" id="save_button" onClick="return doSub();"><l>Save</l></button>
+		</td>
+		</tr>
+		</table>
+  </body>
+</html>
