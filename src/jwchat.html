@@ -693,7 +693,7 @@ function handleVCardTemp(jabber) {
 var disco = new Object();
 var disco_info_count;
 function handleDiscoItemResult(jabber) {
-	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined') {
+	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined' || jabber.browse.o.length == 0) {
 		fdebug("missing jabber.browse.o: " + jabber,1);
 		return;
 	}
@@ -705,6 +705,7 @@ function handleDiscoItemResult(jabber) {
 		fdebug("target not yet implemented",0)
 		return;
 	}
+		
 	target.items = new Array();
 	for (var i in jabber.browse.o) {
 		var item = new Object();
