@@ -837,8 +837,8 @@ function init() {
   // get saved cookie data
   if (document.cookie) {
     var save = document.cookie.substring(document.cookie.indexOf("jwc=")+4);
-    if (save.indexOf("usersHidden") != -1)
-      usersHidden = true;
+    if (save.indexOf("usersHidden") != -1) 
+			usersHidden = true;
     if (save.indexOf("autoPopup") == -1)
       autoPopup = false;
     if (save.indexOf("autoPopupAway") != -1)
@@ -915,6 +915,7 @@ function run() {
     status = 'polling';
 		fdebug("got roster: "+frames["jwc_out"].jabber.items,2);
     roster = new Roster(frames["jwc_out"].jabber.items,fmd);
+		roster.usersHidden = usersHidden;
     roster.print();
     
     playSound('connected');
