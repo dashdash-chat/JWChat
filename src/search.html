@@ -80,7 +80,7 @@ function getQueryResult(iq) {
 		return false;
 	}
 
-	srcW.Debug.log("got result: " + iq.getDoc().xml,3);
+	srcW.Debug.log("got result: " + iq.getDoc().xml,2);
 
 	var html = "<table width='100%' border=0 cellspacing=0 cellpadding=0>";
 
@@ -126,29 +126,45 @@ function getQueryResult(iq) {
 				html += "</tr>";
 			}
 		}
-	} else if (iq.getQueryXMLNS() == 'jabber:iq:browse') {
+	} else if (iq.getNode().firstChild.getAttribute('xmlns') == 'jabber:iq:browse') {
 		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
 
 		// set header
 		html += "<tr><th>JID</th><th>Name</th></tr>";
-		if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].name != 'jwchat_form_type')
-			html += "<th>"+ document.forms['searchfields'].elements[i].name+"</th>";
-		html += "</tr>";
+
+		// fill in items
+ 		for (var i=0; i<iq.getNode().firstChild.childNodes.length; i++) {
+			var item = iq.getNode().firstChild.childNodes.item(i);
+ 			html += "<tr>";
+			html += "<td>"+item.getAttribute('jid')+"</td>";
+			var val = item.getAttribute('name');
+			if (!val || val == '')
+				val = '&nbsp;';
+			html += "<td nowrap>"+val+"</td>";
+ 			html += "</tr>";
+ 		}
+	} else if (iq.getQueryXMLNS() == 'jabber:iq:search') {
+		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
+
+		// set header
+		html += "<tr><th>JID</th>";
+		for (var j=0; j<document.forms['searchfields'].elements.length; j++)
+			html += "<th>"+document.forms['searchfields'].elements[j].name+"</th>";
+		html += '<tr>';
 
 		// fill in items
  		for (var i=0; i<iq.getQuery().childNodes.length; i++) {
 			var item = iq.getQuery().childNodes.item(i);
  			html += "<tr>";
 			html += "<td>"+item.getAttribute('jid')+"</td>";
- 			for (var j=0; j<document.forms['searchfields'].elements.length; j++) {
-				if (document.forms['searchfields'].elements[j].name != '') {
-					var val = item.getAttribute(document.forms['searchfields'].elements[j].name);
-					if (val == '')
-						val = '&nbsp;';
-					html += "<td nowrap>"+val+"</td>";
-				}
+			for (var j=0; j<document.forms['searchfields'].elements.length; j++) {
+				var val = item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0);
+				if (!val || !val.firstChild)
+					html += "<td nowrap>&nbsp;</td>";
+				else
+					html += "<td nowrap>"+val.firstChild.nodeValue+"</td>";
 			}
- 			html += "</tr>";
+			html += "</tr>";
  		}
 
 	}
