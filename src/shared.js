@@ -63,6 +63,7 @@ function makeWindowName(wName) {
   wName = wName.replace(/:/g,"colon");	
   wName = wName.replace(/%/g,"percent");
   wName = wName.replace(/-/g,"dash");
+  wName = wName.replace(/ /g,"blank");
   return wName;
 }
 
