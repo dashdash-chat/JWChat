@@ -75,6 +75,13 @@ function submitClicked() {
   } else if (body.match(/^\/part\s*(.*)/)) {
 		var msg = RegExp.$1;
 		parent.srcW.fhdLoad("presence","?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&type=unavailable&status="+msg);
+  } else if (body.match(/^\/whois (\S+)/)) {
+		var nick = RegExp.$1;
+		var jid = parent.roster.getFullJIDByNick(nick);
+		if (jid == null)
+			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
+		else
+			parent.srcW.openUserInfo(jid);
   } else if (body.match(/^\/help/)) {
 		open("http://www.jabber.org/jeps/jep-0045.html#impl-client-irc");
   } else {
