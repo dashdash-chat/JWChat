@@ -687,6 +687,8 @@ function handlePresence(jabber) {
 			var aMessage = new Object();
 			aMessage.from = user.jid;
 			aMessage.body = loc("[_1] has left",ouser.name);
+			if (jabber.status)
+				aMessage.body += ": " + jabber.status;
 			user.chatmsgs = user.chatmsgs.concat(aMessage);
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 				user.chatW.popMsgs();			
