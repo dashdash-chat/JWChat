@@ -40,14 +40,14 @@
 			    case 38:				// shift+up
 						if (e.ctrlKey) {
 							el = document.forms["chatform"].msgbox;
-							el.value = parent.srcW.getHistory('up', el.value);
+							el.value = parent.jwcMain.getHistory('up', el.value);
 							el.focus(); el.select();
 						}
 						break;
 				  case 40:				// shift+down 
 						if (e.ctrlKey) {
 							el = document.forms["chatform"].msgbox;
-							el.value = parent.srcW.getHistory('down', el.value);
+							el.value = parent.jwcMain.getHistory('down', el.value);
 							el.focus(); el.select();
 						}
 						break;
