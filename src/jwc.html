@@ -115,20 +115,26 @@
 	}
 
 	function openUserInfo(jid) {
-			var userurl;
-			var username = jid.substring(0,jid.indexOf("@"));
+    var userurl;
+    var username = jid.substring(0,jid.indexOf("@"));
 
-			if (jid.indexOf("@"+JABBERSERVER) != -1) {
-				userurl = USERURL.replace(/\$user/,username);
-			} else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
-				userurl = ICQUSERURL.replace(/\$user/,username);
-			} else {
-				alert(loc("Can't display User Info:\nUser not local!"));
-				return false;
-			}
-
-			open(userurl,"uInfo"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+    if (jid.indexOf("@"+JABBERSERVER) != -1) {
+      if (typeof(USERURL) != 'undefined') 
+        userurl = USERURL.replace(/\$user/,username);
+      else {
+        // query vcard-temp
+        fhdLoad("vcard","?to="+jid);
+        return false;
+      }
+    } else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
+      userurl = ICQUSERURL.replace(/\$user/,username);
+    } else {
+      alert(loc("Can't display User Info:\nUser not local!"));
       return false;
+    }
+
+    open(userurl,"uInfo"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+    return false;
 	}
 
 	function openUserHistory(jid) {
@@ -500,10 +506,42 @@
 		}
 		roster.print();
 	}
+
+/************************************************************************
+ * handleIQResult
+ ************************************************************************
+ */
 	
+	function handleIQResult(jabber) {
+    if (!jabber) // nothing to do
+      return;
+
+    if(jabber.type != 'result')
+      return;
+
+    fdebug("got iq type 'result':\n"+jabber,2);
+
+    if(jabber.ns == 'vcard-temp') {
+      handleVCardTemp(jabber);
+      return;
+    }
+  }
+
+	function handleVCardTemp(jabber) {
+    var user = roster.getUserByJID(jabber.from);
+
+    if (user == null)
+      user = roster.addUser(jabber.from);
+
+    user.vcard = jabber.vcard;
+
+    open("vcard.html?jid="+jabber.from,"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
+  }
+
 	registerHandler("message",handleMessage);
 	registerHandler("presence",handlePresence);
 	registerHandler("iq",handleIQSet);
+	registerHandler("iq",handleIQResult);
 
 	/******************* HANDLER END *******************/
 
@@ -619,7 +657,7 @@
     document.title = "JWChat - " + nick;
 
     /* set nick */
-    frames["jwc_main"].document.getElementById('nickName').innerHTML = nick;  
+    frames["jwc_main"].document.getElementById('myNickname').innerHTML = nick;  
 
     if (sid) {
       status = 'sendPresence';
@@ -678,7 +716,18 @@
 		  	break;
 		  case 'polling':
 		  	// done by onload of extra frame
-		  	// handleEvents(frames.poll.jabber); 
+        
+        /*
+         * if polling events come in asynchronously at
+         * frames["jwc_in"] this is handled by the onload handler of
+         * this frames (for most browsers)
+         *
+         * one special case are iq result packets - they come in as
+         * direct response to user actions so we have to call the
+         * handler here ourself
+         */
+
+        handleIQResult(frames["jwc_out"].jabber); 
 			break;
 		  default:
 		  	fdebug('unknown status: ' + status,2);

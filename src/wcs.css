@@ -114,9 +114,9 @@ td.menubar {
 
 #iChat { background-color: white; }
 
-#nickname { font-weight: bold; }
+#myNickname { font-weight: bold; }
 
-.nickName { 
+.nickName {
   padding-left: 2px;
 }
 
