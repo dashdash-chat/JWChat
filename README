@@ -38,8 +38,15 @@ Linux:
 Requirements
 ============
 
-JWChat needs jabberd-1.4.3 and an web-server of your choice capable
+You need to have access to a Jabber server with HTTP-Polling component
+enabled. E.g. Ejabberd has support for HTTP-Polling built in. With
+'tonneru' (http://tonneru.tanoshi.net/) you should be able to access
+any Jabber server, but this is untested so far as I didn't get tonneru
+working. If you succeed, please drop me a line!
+
+Additionally you need a web-server of your choice capable
 of doing address rewriting. Both must be installed on the same host.
+
 
 For the Makefile to work you need perl-5.8 or newer plus some perl modules.
 You can get them from CPAN (http://www.cpan.org).
@@ -59,91 +66,46 @@ download instructions.
 Quick Install Guide
 ===================
 
-JWChat depends on two jabber server component which are available
-separately. You can get them from
-http://webclientservice.jabberstudio.org. Detailed installation and
-configuration instructions can be found there.
-
-Please be sure to always install the latest versions. JWChat might not
-work otherwise.
-
-* Compile these components by doing a "make" in both directories.
-
-* Configure your jabber server according to the README's of both
-  components.
-
-* Restart jabber
-
 * Edit <jwchat-dir>/src/config.js to suit your needs.
-
-  If you plan to run jwchat with SSL make sure to set 
-	sWCS=sWCS2;
-	as WebClientService doesn't support SSL itself.
 
 * Do "make install" in the jwchat directory. This generates a htdocs
   directory. If you get an error please check the path to your local
   perl interpreter in scripts/templateparser.pl and make sure that the
   perl modules mentioned above are available on your system.
 
-* Now configure your web server. Set up a VirtualHost entry that
-  matches the FQDN of your jabber server. Set the DocumentRoot to the
-  newly generated htdocs directory above. Set up a rewrite rule which
-  redirects request from sWCS (see config.js) to sWCS2. Here is an
-  example from my local apache's httpd.conf:
+* Now you have to setup your web server so that it redirects requests to the URL given at HTTP_BASE of config.js to an http polling capable jabber server component.
+
+  Here is an example from my local apache's httpd.conf:
 
 %<-----<schnipp>-----
-<VirtualHost 192.168.99.1>
-  ServerName jabber.zeank.in-berlin.de
+<VirtualHost *>
+  ServerName zeank.darktech.org
   DocumentRoot /home/zeank/src/jwchat/htdocs
   <Directory /home/zeank/src/jwchat>
     Options  +Indexes +Multiviews
   </Directory>
   AddDefaultCharset UTF-8
   RewriteEngine on
-#  RewriteLog /tmp/rw.log
-#  RewriteLogLevel 1
-  RewriteRule ^/wcs/(.*) http://127.0.0.1:5280/$1 [P]
+  RewriteRule http://tonneru.tanoshi.net/
 </VirtualHost>
 %<-----<schnapp>-----
 
-	Note: You need to enable mod_rewrite and mod_proxy at your apache
-	configuration. Apache2 users also need to enable the protocol
-	specific proxy module mod_proxy_http.
+  If you don't plan to have a separated virtual host for jwchat you
+  could include a .htaccess file within jwchat's htdocs/ subdirectory
+  like this:
+
+%<-----<schnipp>-----
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule http-poll/ http://127.0.0.1:5280/http-poll/ [P]
+</IfModule>
+%<-----<schnapp>-----
+
+  Note: You need to enable mod_rewrite and mod_proxy at your apache
+  configuration. Apache2 users also need to enable the protocol
+  specific proxy module mod_proxy_http.
 
 * Restart your web server
-
-Troubleshooting
-===============
-
-To check if your jabber server is configured correctly please open a
-browser window and enter the following URL:
-
-http://<jabberserver>:<wcsport>/login-sid.js?jid=<jid>&pass=<password>
-
-(jid has to be a jid already registered with your jabber server)
-
-So as an example:
-
-http://jabber.zeank.in-berlin.de:5280/login-sid.js?jid=zeank@jabber.zeank.in-berlin.de&pass=secret
-
-You should see something like this:
-
-var jabber=new Object();
-jabber.sid='825d92ff0d668e7ab6aeb764c36ef5b5906ebfde@81100A8';
-
-If not your jabber.xml is misconfigured.
-
-To check if your RewriteRules are working check
-http://<server>/wcs/login-sid.js?jid=<jid>&pass=<pass> for correct functioning.
-
-Next open "http://<jabberserver>" in your browser and try to log in
-and watch out for JavaScript errors. If see a "Loading roster. Please
-wait..." in your JWChat window you most probably misconfigured your
-config.js.
-
-To test your installation you can also use scripts/benchmark.pl. Have
-a look at its source to understand what it does.
-
 
 Disclaimer
 ==========

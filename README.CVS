@@ -1,0 +1,23 @@
+If you got JWChat from anonymous CVS you have to download JSJaC
+separately. Please be sure to use CVS version of JSJaC too.
+
+JSJaC can found at http://jsjac.jabberstudio.org/
+
+Basic steps: 
+
+'cd' to jwchat's top-level directory
+$ cd lib
+$ export CVSROOT=:pserver:anonymous@jabberstudio.org:/home/cvs
+$ cvs login
+
+when prompted for a password just hit return
+
+$ cvs -z3 co jsjac
+
+If you need to Debugger integrated with JWChat go to JSJaC's download
+area and download Debugger.js.  Unpack into the jwchat's lib/
+subdirectory.
+
+When done you can install by issuing "make install" (be sure to edit
+src/config.js first!)
+
