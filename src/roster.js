@@ -221,7 +221,8 @@ function Roster(items,targetW) {
  
 	/* setup groups */
 	for (var i in items) {
-		if (items[i].jid.indexOf("@") == -1) // no user - must be a transport
+		/* if (items[i].jid.indexOf("@") == -1) */ // no user - must be a transport
+		if (typeof(items[i].jid) == 'undefined')
 			continue;
 		items[i].jid = cutResource(items[i].jid);
 		items[i].name = (items[i].name) ? items[i].name : items[i].jid;
