@@ -33,7 +33,10 @@
   * Please visit http://jwchat.sourceforge.net for more information!
   */
 
-/* vars representing some internal status information */
+/************************************************************************
+ *                       ******  GLOBAL WARS(tm) *******
+ ************************************************************************
+ */
 var jid;
 var pass;	
 var nick;
@@ -70,7 +73,10 @@ onlstatus["dnd"] = loc("do not disturb");
 onlstatus["invisible"] = loc("invisible");
 onlstatus["unavailable"] = loc("invisible");
 
-// the debugger
+/************************************************************************
+ *                         ******  DEBUGGER *******
+ ************************************************************************
+ */
 var debugW;
 var debugMsgs = new Array(); 
 
@@ -96,6 +102,142 @@ function fdebug(str,lv) {
   debugW.popMsgs();
 }
 
+/************************************************************************
+ *                         ****** Pop-Up's *******
+ ************************************************************************
+ */
+
+function openGroupchat(aJid,nick,pass) {
+	pass = pass || '';
+	nick = nick || '';
+
+  var user = roster.getUserByJID(aJid);
+  if(!user) {
+    user = roster.addUser(new RosterUser(aJid,'',[loc('Chat Rooms')],aJid.substring(0,aJid.indexOf('@'))));
+		user.type = 'groupchat';
+    roster.print();
+  }
+	if (!user.chatW || user.chatW.closed)
+		user.chatW = open("groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=390,height=520,resizable=yes");
+	user.chatW.focus();
+}
+
+var subw;
+function openSubscription(aJid) {
+  var param = (aJid) ? "?jid="+escape(aJid) : "";
+  subw = open("subscription.html"+param,"sub","width=320,height=240,resizable=yes");
+	subw.focus();
+  return false;
+}
+
+function openCustomPresence(aJid) {
+	var user = roster.getUserByJID(aJid);
+	if (!user)
+		return;
+  if (!user.onlStatW || user.onlStatW.closed)
+    user.onlStatW = open("changestatus.html?jid="+escape(aJid),"onlStatW","width=330,height=240,resizable=yes");
+  user.onlStatW.focus();
+  return false;
+}
+
+function sendCustomPresence(aJid,presence,msg) {
+	var param = "?sid="+sid+"&to="+msgEscape(aJid);
+
+	switch (presence) {
+	case 'offline':
+		param += "&type=unavailable";
+	case 'unavailable':
+		param += "&type=unavailable";
+		presence = "invisible";
+	default:
+		param += "&show="+presence;
+	}
+
+	if (typeof(msg) != 'undefined' && msg != '')
+		param += "&status="+msgEscape(msg);
+
+	fhdLoad("presence",param);
+}
+
+function openUserProps(aJid) {
+  open("userprops.html?jid="+escape(aJid),"uProps"+makeWindowName(aJid),"width=480,height=360,resizable=yes");
+  return false;
+}
+
+function removeUser(aJid) {
+	// get fulljid
+	var fulljid = roster.getUserByJID(aJid).fulljid;
+  fhdLoad("roster","?sid="+sid+"&jid="+msgEscape(fulljid)+"&subscription=remove");
+}
+
+var vcardW; // my vcardW;
+function openUserInfo(aJid) {
+	var newin = open("vcard.html?jid="+escape(aJid),"vcardW"+makeWindowName(aJid),"width=400,height=580,scrollbars=yes");
+
+	if (cutResource(aJid) == cutResource(jid))
+		vcardW = newin;
+	else {
+		var user = roster.getUserByJID(cutResource(aJid));
+		if (!user) {
+			user = new RosterUser(aJid);
+			roster.addUser(user);
+		}
+		if (user.roster) // groupchat(!)
+			user = user.roster.getUserByJID(aJid);
+		user.vcardW = newin;
+	}
+
+	return false;
+}
+
+function openUserHistory(aJid) {
+
+	if (typeof(loghost) == 'undefined' || loghost == '')
+		return;
+
+	var user = roster.getUserByJID(aJid);
+
+	if (user == null)
+		return;
+
+	if (!user.histW || user.histW.closed)
+		user.histW = open("userhist.html?jid="+escape(aJid),"histW"+makeWindowName(aJid),"width=600,height=400,resizable=yes,scrollbars=no");
+	user.histW.focus();
+}
+
+function openUserNote(aJid) { /* store annotations to a user */
+	var user = roster.getUserByJID(aJid);
+
+	if (user == null)
+		return; // unbelievable
+
+	if (!user.noteW || user.noteW.closed)
+		user.noteW = open("usernote.html?jid="+escape(aJid),"noteW"+makeWindowName(aJid),"width=300,height=200,resizable=yes,scrollbars=no");
+	user.noteW.focus();
+}
+
+var searchW;
+function openSearch() {
+	if (!searchW || searchW.closed)
+		searchW = open("search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
+	searchW.focus();
+	return false;
+}
+
+var ebW
+function openEditBookmarks() {
+	if (!ebW || ebW.closed)
+		ebW = open("editbookmarks.html","ebw"+makeWindowName(jid),"width=330,height=290,resizable=yes");
+	return false;
+}
+
+
+/************************************************************************
+ * nifty helpers - always there if you need 'em
+ ************************************************************************
+ */
+
+/* command line history */
 var messageHistory = new Array();
 var historyIndex = 0;
 function getHistory(key, message) {
@@ -117,116 +259,7 @@ function addtoHistory(message) {
   historyIndex = messageHistory.length;
 }
 
-function openGroupchat(jid,nick,pass) {
-	pass = pass || '';
-	nick = nick || '';
-
-  var user = roster.getUserByJID(jid);
-  if(!user) {
-    user = roster.addUser(new RosterUser(jid,'',[loc('Chat Rooms')],jid.substring(0,jid.indexOf('@'))));
-		user.type = 'groupchat';
-    roster.print();
-  }
-	if (!user.chatW || user.chatW.closed)
-		user.chatW = open("groupchat.html?jid="+escape(jid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(jid+"/"+nick),"width=390,height=520,resizable=yes");
-	user.chatW.focus();
-}
-
-var subw;
-function openSubscription(jid) {
-  var param = (jid) ? "?jid="+escape(jid) : "";
-  subw = open("subscription.html"+param,"sub","width=320,height=240,resizable=yes");
-	subw.focus();
-  return false;
-}
-
-function openCustomPresence(jid) {
-	var user = roster.getUserByJID(jid);
-	if (!user)
-		return;
-  if (!user.onlStatW || user.onlStatW.closed)
-    user.onlStatW = open("changestatus.html?jid="+jid,"onlStatW","width=330,height=240,resizable=yes");
-  user.onlStatW.focus();
-  return false;
-}
-
-function sendCustomPresence(jid,presence,msg) {
-	var param = "?sid="+sid+"&to="+jid;
-
-	switch (presence) {
-	case 'offline':
-		param += "&type=unavailable";
-	case 'unavailable':
-		param += "&type=unavailable";
-		presence = "invisible";
-	default:
-		param += "&show="+presence;
-	}
-
-	if (typeof(msg) != 'undfined' && msg != '')
-		param += "&status="+msg;
-
-	fhdLoad("presence",param);
-}
-
-function openUserProps(jid) {
-  open("userprops.html?jid="+escape(jid),"uProps"+makeWindowName(jid),"width=480,height=360,resizable=yes");
-  return false;
-}
-
-function removeUser(jid) {
-	// get fulljid
-	var fulljid = roster.getUserByJID(jid).fulljid;
-  fhdLoad("roster","?sid="+sid+"&jid="+fulljid+"&subscription=remove");
-}
-
-function openUserInfo(jid) {
-	// query vcard-temp
-	fCBLoad("vcard","?sid="+sid+"&to="+jid,handleVCardTemp);
-	return false;
-}
-
-function openUserHistory(jid) {
-
-	if (typeof(loghost) == 'undefined')
-		return;
-
-	var user = roster.getUserByJID(jid);
-
-	if (user == null)
-		return;
-
-	if (!user.histW || user.histW.closed)
-		user.histW = open("userhist.html?jid="+escape(jid),"histW"+makeWindowName(jid),"width=600,height=400,resizable=yes,scrollbars=no");
-	user.histW.focus();
-}
-
-function openUserNote(jid) { /* store annotations to a user */
-	var user = roster.getUserByJID(jid);
-
-	if (user == null)
-		return; // unbelievable
-
-	if (!user.noteW || user.noteW.closed)
-		user.noteW = open("usernote.html?jid="+escape(jid),"noteW"+makeWindowName(jid),"width=300,height=200,resizable=yes,scrollbars=no");
-	user.noteW.focus();
-}
-
-var searchW;
-function openSearch() {
-	if (!searchW || searchW.closed)
-		searchW = open("search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
-	searchW.focus();
-	return false;
-}
-
-var ebW
-function openEditBookmarks() {
-	if (!ebW || ebW.closed)
-		ebW = open("editbookmarks.html","ebw"+makeWindowName(jid),"width=330,height=290,resizable=yes");
-	return false;
-}
-
+/* system sounds */
 function playSound(action) {
   if (!playSounds)
     return;
@@ -954,32 +987,6 @@ function handleCB(jabber) {
  ************************************************************************
  */
 
-function handleVCardTemp(jabber) {
-
-	if (jabber.error || jabber.type == 'error') {
-		fdebug(jabber,1);
-		return;
-	}
-
-	fdebug(jabber,2);
-
-	if (typeof(jabber.ns) == 'undefined' || jabber.ns != 'vcard-temp') // not form me
-		return;
-
-  if (cutResource(jabber.from) == cutResource(jid))
-    vcard = jabber.vcard; // save my own vcard
-  else {
-    var user = roster.getUserByJID(cutResource(jabber.from));
-    
-    if (user == null)
-      user = roster.addUser(new RosterUser(jabber.from));
-    
-    user.vcard = jabber.vcard;
-  }
-
-  open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=580,scrollbars=yes");
-}
-
 var annotations = new Array();
 function handleAnnotations(jabber) {
 	if (jabber)
@@ -1169,10 +1176,16 @@ function handleDiscoInfoResult(jabber) {
 	 poll(); // now start polling
 }
 
-/******************* HANDLER END *******************/
+/************************************************************************
+ *                       ****** END HANDLERS  ******* 
+ ************************************************************************
+ */
 
 
-/******************* PROTO *******************/
+/************************************************************************
+ *                       ******  MY OWN STATE  *******
+ ************************************************************************
+ */
 
 function poll() {
   if (sid == 0 || status != 'polling')
