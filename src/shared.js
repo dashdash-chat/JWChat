@@ -44,6 +44,7 @@ function makeWindowName(wName) {
 function htmlEnc(str) {
 	str = str.replace(/</g,"&lt;");
 	str = str.replace(/>/g,"&gt;");
+	str = str.replace(/&/g,"&amp;");
   return str;
 }
 
