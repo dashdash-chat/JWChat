@@ -161,7 +161,7 @@ function RosterUpdateGroupForUser(user) {
   for (var j in user.groups) {
     if (user.groups.length > 1 && user.groups[j] == '')
       continue;
-    var groupName = (user.groups[j] == '') ? 'Unfiled' : user.groups[j];
+    var groupName = (user.groups[j] == '') ? loc('Unfiled') : user.groups[j];
     var group = this.getGroupByName(groupName);
     if(group == null) {
       group = new RosterGroup(groupName);
