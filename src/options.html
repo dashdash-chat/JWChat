@@ -3,6 +3,7 @@
     <head>
     <title><l>JWChat - Options</l></title>
     <script src="switchStyle.js"></script>
+    <script src="version.js"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script language="JavaScript1.2">
       <!--
@@ -26,7 +27,7 @@ function savePrefs() {
 
 	xml += "</jwchat>";
 
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml),ow.handleIQSet);
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
 }
 
 	
@@ -190,6 +191,12 @@ function init() {
 	for (var i in tablabels.childNodes)
 		tablabels.childNodes[i].onclick = tabclicked;
 
+	// set version
+	var jwchat_version = document.getElementById('jwchat_version');
+	jwchat_version.innerHTML = VERSION;
+	if (VERSION == "CVS")
+	  jwchat_version.innerHTML += "<br>(" + document.lastModified + ")";
+
 	var transports_selector = document.getElementById('transports_selector');
  	var transport_optidx = 1;
 	var directory_selector = document.getElementById('directory_selector');
@@ -204,7 +211,6 @@ function init() {
 			}
 		}
 	}
-
 }
 
 onload = init;
@@ -250,7 +256,7 @@ onunload = savePrefs;
 	<table border=0 cellpadding=0 cellspacing=0 height="100%" width="100%">
 		<tr>
 			<td>
-			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span><span class="tablabel"><l>User Directory</l></span></div>
+			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span><span class="tablabel"><l>User Directory</l></span><span class="tablabel"><l>About</l></span></div>
 			</td></tr>
 		<tr><td height="100%" class="tabs" valign="top">
 			<div id="tabs"><div id="tab1" class="tab">
@@ -300,7 +306,15 @@ onunload = savePrefs;
 						</table>
 					</fieldset>
 				</form>
-			</div><div class="tabinactive" id="transports_tab"><l>Register at</l> <select id="transports_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Gateway</l> - </option></select><div id="transport_pane"></div></div><div class="tabinactive" id="directory_tab"><l>Register at</l>  <select id="directory_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Directory</l> - </option></select><div id="directory_pane"></div></div></div>
+			</div><div class="tabinactive" id="transports_tab"><l>Register at</l> <select id="transports_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Gateway</l> - </option></select><div id="transport_pane"></div></div><div class="tabinactive" id="directory_tab"><l>Register at</l>  <select id="directory_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Directory</l> - </option></select><div id="directory_pane"></div></div><div class="tabinactive" id="about_tab" align="center">
+								<p>
+								<img src="images/jwchat.jpg" style="border:1px solid black;">
+								<h1 style="margin-bottom: 0px;">JWChat</h1>
+								Version <span id="jwchat_version"></span>
+								<p>
+								<nobr>&copy 2003-2004 by <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a></nobr><br>
+									<img src="images/jumpto.gif" align="middle"><a href="http://jwchat.sourceforge.net" target="_new">http://jwchat.sourceforge.net</a>
+							</div></div>
 			</td></tr>
 	</table>
   </body>
