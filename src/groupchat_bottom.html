@@ -14,7 +14,7 @@ function submitClicked() {
   
 
   if (body == '') // don't send empty message
-    return true;
+    return false;
           
   /* handle commands */
   if (body.match(/^\/nick (.+)/)) {
@@ -34,14 +34,23 @@ function submitClicked() {
   parent.srcW.addtoHistory(body);
   document.forms["chatform"].msgbox.value=''; // empty box
   document.forms["chatform"].msgbox.focus(); // set focus back on input field
+  
+  /* poll (almost) immediatly to get my own response */
+  setTimeout("parent.srcW.poll()",200);
 
   return false;
 }
 
-   function keyPressed(el,e) {
-    if (window.event) e = window.event;
-   
-     if ((e.keyCode == 13 && !e.shiftKey) || (e.metaKey && e.keyCode == 77)) 
+var iw;
+function openInvite() {
+	if (!iw || iw.closed)
+		iw = open("groupchat_invite_dialog.html","iw"+makeWindowName(parent.group),"width=300,height=200");
+	iw.focus();
+	return false;
+}
+
+   function keyPressed(e) {
+     if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 77)) 
        return submitClicked();
      else {
        switch (e.keyCode) {
@@ -71,6 +80,19 @@ function submitClicked() {
      }
      return true;
    }
+
+function cleanUp() {
+	if (iw && !iw.closed)
+		iw.close();
+}
+
+onunload = cleanUp
+onkeydown = keyPressed;
+      //-->
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      return keyPressed(window.event);
       //-->
     </script>
   </head>
@@ -78,10 +100,10 @@ function submitClicked() {
     <form name="chatform">
       <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
           <tr height="100%">
-            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;" onKeyPress="return keyPressed(this,event);"></textarea></td></tr>
+            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;"></textarea></td></tr>
           <tr><td height=5></td></tr>
           <tr>
-            <td align="right"><button id="config_chan_button" onClick="return parent.openConfig();" disabled><l>Config</l></button>&nbsp;<button id='submit' name='submit' type='submit' onClick="return submitClicked();"><l>Send</l></button></td></tr>
+            <td align="right"><button id="config_chan_button" onClick="return parent.openConfig();" disabled><l>Config</l></button>&nbsp;<button id="invite_button" onClick="return openInvite();"><l>Invite</l></button>&nbsp;<button id='submit' name='submit' type='submit' onClick="return submitClicked();"><l>Send</l></button></td></tr>
       </table>
     </form>
   </body>

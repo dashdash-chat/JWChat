@@ -113,17 +113,17 @@ function addtoHistory(message) {
   historyIndex = messageHistory.length;
 }
 
-function openGroupchat(group,nick,pass) {
+function openGroupchat(jid,nick,pass) {
 	pass = pass || '';
 
-  var user = roster.getUserByJID(group);
+  var user = roster.getUserByJID(jid);
   if(!user) {
-    user = roster.addUser(new RosterUser(group,'',[loc('Chat Rooms')],group.substring(0,group.indexOf('@'))));
+    user = roster.addUser(new RosterUser(jid,'',[loc('Chat Rooms')],jid.substring(0,jid.indexOf('@'))));
 		user.type = 'groupchat';
     roster.print();
   }
 	if (!user.chatW || user.chatW.closed)
-		user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
+		user.chatW = open("groupchat.html?jid="+escape(jid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(jid+"/"+nick),"width=390,height=520,resizable=yes");
 	user.chatW.focus();
 }
 
@@ -372,7 +372,27 @@ function handleMessage(jabber) {
 
 	if (jabber.type == 'error')
 		return;
-  
+
+	/* check if this is a groupchat invite */
+	if (jabber.o) {
+		for (var i in jabber.o) {
+			if (jabber.o[i].tagname == 'x' && jabber.o[i].xmlns == 'http://jabber.org/protocol/muc#user' && jabber.o[i].o) {
+				var from, jid, reason;
+				for (var j in jabber.o[i].o) { // collect data
+					if (jabber.o[i].o[j].tagname == 'invite')
+						from = jabber.o[i].o[j].from;
+					if (jabber.o[i].o[j].tagname == 'x' && jabber.o[i].o[j].xmlns == 'jabber:x:conference') {
+						jid = jabber.o[i].o[j].jid;
+						if (jabber.o[i].o[j].data)
+							reason = jabber.o[i].o[j].data;
+					}
+				}
+				fdebug("You have been invited to " + jid + " by " + from + "\nreason:" + reason,2);
+				return;
+			}
+		}
+	}
+
   var from = cutResource(jabber.from);
   
   fdebug("from: "+from+", jabber.from: "+jabber.from,3);
