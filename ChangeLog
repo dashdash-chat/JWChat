@@ -1,6 +1,7 @@
 2004-07-08  Stefan Strigler <steve@zeank.in-berlin.de>
 	* support for muc invite
 	* muc room names are escaped now
+	* redesign chat dialog
 
 2004-07-02  Stefan Strigler <steve@zeank.in-berlin.de>
 	* load/store roster preferences (hidden/collapsed groups)
