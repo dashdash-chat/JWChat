@@ -40,11 +40,15 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 	}
 
 	msgHTML += "</div>";
-  
+
+	var scroll_bottom = false;
+	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= cFrame.body.scrollHeight)
+		scroll_bottom = true;
+				
   cFrame.body.innerHTML += msgHTML;
-	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= scrollHeight)
-		frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
-	scrollHeight = cFrame.body.scrollHeight;
+
+	if (scroll_bottom)
+				frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
 }
 
 function popMsgs() {
