@@ -843,7 +843,7 @@ function handleVCardTemp(jabber) {
 
 	fdebug(jabber,2);
 
-	if (jabber.type == 'error')
+	if (jabber.error || jabber.type == 'error')
 		return;
 
   if (jabber.from == cutResource(jid))
@@ -863,14 +863,13 @@ function handleVCardTemp(jabber) {
 
 var bookmarks = new Array();
 function handleBookmarks(jabber) {
-
 	if (jabber)
 		fdebug(jabber,2);
 
-	if (jabber && jabber.type == 'error') {
+	if (jabber && (jabber.error || jabber.type == 'error'))
 		fdebug(jabber,1);
-		alert(loc("Error loading bookmarks"));
-	} else if (typeof(jabber.browse) != 'undefined') {
+
+	if (jabber && !(jabber.error || jabber.type == 'error')) {
 	
 		for (i in jabber.browse.o) {
 			var idx = 0;
@@ -899,13 +898,10 @@ function handleRosterPrefs(jabber) {
 	if (jabber)
 		fdebug(jabber,2);
 
-	if (jabber && jabber.type == 'error')
+	if (jabber && (jabber.error || jabber.type == 'error'))
 		fdebug(jabber,1);
 
-	if (!jabber || jabber.type == 'error') {
-		alert(loc('Error loading roster preferences'));
-	} else {
-	
+	if (jabber && !(jabber.error || jabber.type == 'error')) {
 		for (var i in jabber.browse.o) {
 			if (jabber.browse.o[i].tagname == 'jwchat' && jabber.browse.o[i].xmlns == 'jwchat:rosterprefs') {
 				if (typeof(jabber.browse.o[i].hiddenGroups) != 'undefined'  && jabber.browse.o[i].hiddenGroups != '') {
@@ -927,19 +923,17 @@ function handlePrefs(jabber) {
 	if (jabber)
 		fdebug(jabber,2);
 
-	if (jabber && jabber.type == 'error')
+	if (jabber && (jabber.error || jabber.type == 'error'))
 		fdebug(jabber,1);
 
-	if (!jabber || jabber.type == 'error') {
-		alert(loc('Error loading preferences'));
-	} else {
+	if (jabber && !(jabber.error || jabber.type == 'error')) {
 		for (var i in jabber.browse.o) {
 			var item = jabber.browse.o[i];
 			if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:prefs') {
 				if (eval(item.usersHidden))
 					roster.toggleHide();
 				if (typeof(item.timerval) != 'undefined' && !isNaN(item.timerval))
-					setPollInterval(item.timerval);
+					timerval = item.timerval;
 				if (typeof(item.autoPopup) != 'undefined' && item.autoPopup != 'undefined')
 					autoPopup = eval(item.autoPopup);
 				if (typeof(item.autoPopupAway) != 'undefined' && item.autoPopupAway != 'undefined')
@@ -953,7 +947,6 @@ function handlePrefs(jabber) {
 			}
 		}
 	}
-
 	// get rosterprefs
 	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:rosterprefs' />"),handleRosterPrefs);
 }
@@ -966,26 +959,27 @@ function handleDiscoItemResult(jabber) {
 
 	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined' || jabber.browse.o.length == 0) {
 		fdebug("missing jabber.browse.o: " + jabber,1);
-		return;
-	}
+	} else {
 
-	var target;
-	if (jabber.from == JABBERSERVER)
-		target = disco;
-	else {
-		fdebug("target not yet implemented",1)
-		return;
-	}
+  	var target;
+    if (jabber.from != JABBERSERVER)
+      fdebug("target not yet implemented",1)
+	  else {
+      target = disco;
 		
-	target.items = new Array();
-	for (var i in jabber.browse.o) {
-		var item = new Object();
-		item = jabber.browse.o[i];
-		target.items = target.items.concat(item);
-	}
-	// now start querying items
-	disco_info_count = 0;
-	fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
+    	target.items = new Array();
+    	for (var i in jabber.browse.o) {
+		    var item = new Object();
+        item = jabber.browse.o[i];
+		    target.items = target.items.concat(item);
+      }
+	    // now start querying items
+      disco_info_count = 0;
+      fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
+      return;
+    }
+  }  
+  poll();
 }
 
 function handleDiscoInfoResult(jabber) {
@@ -1003,8 +997,7 @@ function handleDiscoInfoResult(jabber) {
 	if (disco_info_count < disco.items.length)
 		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
 	else
-		poll(); // we're done - start polling
-
+	 poll(); // now start polling
 }
 
 /******************* HANDLER END *******************/
