@@ -153,6 +153,8 @@ function init() {
 
 
 function part() {
+  if (!srcW.fhdLoad)
+      return;
   srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
   if (!user.messages.length && !user.chatmsgs.length) {
     srcW.roster.removeUser(user);
