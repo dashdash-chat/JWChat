@@ -52,7 +52,7 @@ var sWCS = "http://jabber.zeank.in-berlin.de/wcs/";
 var timerval = 2000; // poll frequency in msec
 var timeout = 150; // timeout of wcs
 
-var stylesheet = "wcs.css";
+var stylesheet = "jwchat.css";
 var THEMESDIR = "themes";
 
 /* USERHISTORYURL
@@ -75,5 +75,5 @@ var DEFAULTCONFERENCESERVER = "conference.zeank.in-berlin.de";
 var DEBUG = true; // turn debugging on
 var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
 
-var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger
+var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
 var DEBUGJID = "zeank@jabber.zeank.in-berlin.de"; // which user get's debug messages

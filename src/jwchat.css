@@ -3,7 +3,8 @@ body {
   font-size: 12px;
   margin: 0;
   padding: 0;
-	background-color: #b8dbff;
+/*  background-color: #b8dbff; */
+  background-color: #81addc;
 }
 
 button {
@@ -32,7 +33,16 @@ fieldset {
 #roster {
   width: 100%;
   cursor: default;
+}
+
+.roster { 
   background-color: white;
+	color: black;
+}
+
+.chatbox { 
+	background-color: white;
+	color: black;
 }
 
 .hidden {
@@ -67,6 +77,7 @@ fieldset {
   /*width:100px;*/
   border:2px outset threedhighlight;
   background-color:menu;
+	color: menutext;
   font-family: Verdana, sans-serif;
   line-height:16px;
   cursor:default;
@@ -103,8 +114,6 @@ td.menubar {
   border-bottom: 1px outset threedface;
   background-color: menu;
 }
-
-#iChat { background-color: white; }
 
 #myNickname {
   font-weight: bold;
