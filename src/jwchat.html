@@ -113,7 +113,9 @@ function addtoHistory(message) {
   historyIndex = messageHistory.length;
 }
 
-function openGroupchat(group,nick) {
+function openGroupchat(group,nick,pass) {
+	pass = pass || '';
+
   var user = roster.getUserByJID(group);
   if(!user) {
     user = roster.addUser(new RosterUser(group,'',[loc('Chat Rooms')],group.substring(0,group.indexOf('@'))));
@@ -121,7 +123,7 @@ function openGroupchat(group,nick) {
     roster.print();
   }
 	if (!user.chatW || user.chatW.closed)
-		user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
+		user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
 	user.chatW.focus();
 }
 
@@ -198,6 +200,13 @@ function openSearch() {
 	if (!searchW || searchW.closed)
 		searchW = open("search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
 	searchW.focus();
+	return false;
+}
+
+var ebW
+function openEditBookmarks() {
+	if (!ebW || ebW.closed)
+		ebW = open("editbookmarks.html","ebw"+makeWindowName(jid),"width=330,height=290,resizable=yes");
 	return false;
 }
 
@@ -529,7 +538,7 @@ function handlePresence(jabber) {
     if (!ouser) // no user? create one!
       ouser = new GroupchatRosterUser(jabber.from,ofrom);
 
-    /* grep for affiliation and role */
+    /* grep for extended attributes */
     for (var i in jabber.o) {
       if (jabber.o[i].tagname = 'x' && jabber.o[i].o) {
         for (var j in jabber.o[i].o) {
@@ -549,6 +558,19 @@ function handlePresence(jabber) {
                 user.chatW.updateMe();
             }
           }
+					else if (jabber.o[i].o[j].tagname == 'status' && typeof(jabber.o[i].o[j].code) != 'undefined') {
+						switch (jabber.o[i].o[j].code) {
+						case '201': // room created
+							/* popup dialog to ask for whether to accept default
+							 * configuration or make a custom room 
+							 */
+							if (confirm(loc("A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\nNote: Click on 'Cancel' to start with a default configuration!")))
+								user.chatW.openConfig();
+							else
+								
+							break;
+						}
+					}
         }
       }
     }
@@ -700,7 +722,7 @@ function handleCB(jabber) {
 	if (!jabber) // nothing to do
     return;
 
-  fdebug(jabber,3);
+  fdebug(jabber,2);
 
 	if (registeredCBs.length == 0) {
 		fdebug("no callbacks registered ... aborting!",1);
@@ -716,12 +738,14 @@ function handleCB(jabber) {
 			else
 			 	registeredCBs[i].func(jabber);
 			 
-			/* remove callback from list */
-
-			registeredCBs = registeredCBs.slice(0,i).concat(registeredCBs.slice(i+1,registeredCBs.length));
 			}
 			else
 				fdebug("No callback assigned for this query",1);
+
+		/* remove callback from list */
+
+		registeredCBs = registeredCBs.slice(0,i).concat(registeredCBs.slice(i+1,registeredCBs.length));
+
 	}
 }
 
@@ -744,6 +768,40 @@ function handleVCardTemp(jabber) {
   }
 
   open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
+}
+
+
+var bookmarks = new Array();
+function handleBookmarks(jabber) {
+
+	// start service discovery
+	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
+    
+	if (jabber.type == 'error')
+		return;
+
+	if (typeof(jabber.browse.o) == 'undefined')
+		return;
+
+	for (i in jabber.browse.o) {
+		var idx = 0;
+		if (jabber.browse.o[i].tagname == 'storage') {
+			for (var j in jabber.browse.o[i].o) {
+				var bookmark = jabber.browse.o[i].o[j];
+
+				if (bookmark.tagname != 'conference')
+					continue;
+
+				bookmarks[idx++] = bookmark; // store bookmark
+
+				// do autojoin
+				if (bookmark.autojoin == '1')
+					openGroupchat(bookmark.jid,bookmark.nick,bookmark.pass);
+			}
+		}
+	}
+
+ 
 }
 
 var disco = new Object();
@@ -964,9 +1022,9 @@ function run() {
     
     playSound('connected');
 
-    // start service discovery
-    fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
-    
+		// get bookmarks
+		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
+
     poll();	// initial poll (not nice here)
     break;
   case 'polling':
@@ -993,6 +1051,9 @@ function cleanUp() {
 
 	if (searchW && !searchW.closed)
 		searchW.close();
+
+	if (ebW && !ebW.closed)
+		ebW.close();
 
   fmd.getElementById('roster').innerHTML = '';
 
