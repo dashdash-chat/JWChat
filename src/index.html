@@ -32,8 +32,12 @@
   */
 
 function openRoster(form) {
-  var jid = msgEscape(form.jid.value + "@" + JABBERSERVER + "/" + DEFAULTRESOURCE);
-  var pass = msgEscape(form.pass.value);
+  var jid = form.jid.value + "@" + JABBERSERVER + "/" + DEFAULTRESOURCE;
+
+  if(!isValidJID(jid))
+    return false;
+
+  var pass = form.pass.value;
   window.open('jwchat.html?jid='+escape(jid)+'&pass='+escape(pass),makeWindowName(jid),'width=160,height=320,resizable=yes');
   return false;
 }
@@ -74,6 +78,7 @@ onload = init;
         <td align=right><b><l>Username</l></b></td>
         <td><input type="text" name="jid"></td>
       </tr>
+<tr><td colspan=2 nowrap>Username must not contain: <script>document.write(prohibited)</script></td></tr>
       <tr>
         <td align=right><b><l>Password</l></b></td>
         <td><input type="password" name="pass"></td>
@@ -91,7 +96,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Thu Mar 18 12:56:57 CET 2004
+Last modified: Thu Mar 18 15:25:39 CET 2004
 <!-- hhmts end -->
     </div>
   </body>

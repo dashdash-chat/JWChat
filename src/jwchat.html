@@ -822,6 +822,11 @@ if (!passedArgs['jid']) {
   // return false;
 }
 jid = passedArgs['jid'];
+
+if (!isValidJID(jid))
+  window.close();
+
+
 nick = jid.substring(0,jid.indexOf('@'));
 
 /* get style */

@@ -73,3 +73,19 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 
   return msg;
 }
+
+/* isValidJID
+ * checks whether jid is valid
+ */
+var prohibited = ['"',' ','&','\'','/',':','<','>','@']; // invalid chars
+function isValidJID(jid) {
+  var nodeprep = jid.substring(0,jid.lastIndexOf('@')); // node name (string before the @)
+
+  for (var i in prohibited) {
+    if (nodeprep.indexOf(prohibited[i]) != -1) {
+      alert(loc("Invalid JID\n'[_1]' not allowed in JID.\nChoose another one!",prohibited[i]));
+      return false;
+    }
+  }
+  return true;
+}
