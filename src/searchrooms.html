@@ -12,8 +12,32 @@ var srcW; // the source window with necessary data
 function handleItemVCard(jabber) {
 	srcW.fdebug(jabber,2);
 
+	// add item to table
 	if (jabber.vcard)
 		disco_items[disco_items_at].vcard = jabber.vcard;
+	var item = disco_items[disco_items_at];
+	if (item.tagname == 'item') {
+		row = search_result_iframe.document.createElement("TR");
+		
+		cell = search_result_iframe.document.createElement("TD");
+		textN = search_result_iframe.document.createTextNode(item.name);
+		cell.appendChild(textN);
+		row.appendChild(cell);
+		
+		cell = search_result_iframe.document.createElement("TD");
+		if (item.vcard && item.vcard.DESC)
+			textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
+		else
+			textN = search_result_iframe.document.createTextNode('\ ');
+		cell.appendChild(textN);
+		row.appendChild(cell);
+		
+		row.setAttribute("jid",item.jid);
+		myTableBody.appendChild(row);
+	}
+
+	// tell frame about it
+	search_result_iframe.init();
 
 	if (disco_items_at < disco_items.length-1) {
 		// query next
@@ -22,92 +46,69 @@ function handleItemVCard(jabber) {
 
 	} else { // got them all
 
-		// create result table
-		var myTable = search_result_iframe.document.createElement("TABLE");
-
-		var myTableHead = search_result_iframe.document.createElement("THEAD");
-		var myTableBody = search_result_iframe.document.createElement("TBODY");
-
-		var row = search_result_iframe.document.createElement("TR");
-		var header = new Array(loc('Room'),loc('Description'));
-		var cell; 
-		for (var i in header) {
-			cell = search_result_iframe.document.createElement("TH");
-			cell.appendChild(search_result_iframe.document.createTextNode(header[i]));
-			row.appendChild(cell);
-		}
-		myTableHead.appendChild(row);
-		myTable.appendChild(myTableHead);
-
-		for (var i in disco_items) {
-			var item = disco_items[i];
-			if (item.tagname == 'item') {
-				row = search_result_iframe.document.createElement("TR");
-				
-				cell = search_result_iframe.document.createElement("TD");
-				textN = search_result_iframe.document.createTextNode(item.name);
-				cell.appendChild(textN);
-				row.appendChild(cell);
-				
-				cell = search_result_iframe.document.createElement("TD");
-				if (item.vcard && item.vcard.DESC)
-					textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
-				else
-					textN = search_result_iframe.document.createTextNode('\ ');
-				cell.appendChild(textN);
-				row.appendChild(cell);
-
-				row.setAttribute("jid",item.jid);
-				myTableBody.appendChild(row);
-			}
-		}
-
-
-		myTable.appendChild(myTableBody);
-				
-		myTable.setAttribute("id","modTable");
-		myTable.setAttribute("WIDTH","100%");
-		myTable.setAttribute("BORDER","0");
-		myTable.setAttribute("CELLSPACING","0");
-		myTable.setAttribute("CELLPADDING","0");
-		myTable.setAttribute("RULES","rows");
-		
-		// add table
-		search_result_iframe.document.body.appendChild(myTable);
-		
-		// tell frame about it
-		search_result_iframe.init();
-
 		// update form
-		document.getElementById("search_result_info").innerHTML = '';
-		document.getElementById("search_result_iframe").style.display = '';
-		document.getElementById("addbookmark_button").style.display = '';
-		//document.getElementById("show_users_button").style.display = '';
-		document.getElementById("join_room_button").style.display = '';
-		document.getElementById("addbookmark_button").disabled = true;
-		document.getElementById("show_users_button").disabled = true;
-		document.getElementById("join_room_button").disabled = true;
+		document.getElementById("search_result_info").innerHTML = loc('Finished.');
 	}
 
 }
+
 var disco_items;
 var disco_items_at;
+var myTableBody;
 function handleDiscoItemsResult(jabber) {
 	srcW.fdebug(jabber,2);
 
-	if (jabber.browse && jabber.browse.o) {
+	if (jabber.browse && jabber.browse.o && !(jabber.error || jabber.type == 'error')) {
 		disco_items = new Array();
 		for (var i in jabber.browse.o) {
 			if (jabber.browse.o[i].tagname == 'item') // it's really an item
 				disco_items[disco_items.length] = jabber.browse.o[i];
 		}
-	} else
+	} else {
+		document.getElementById("search_result_info").innerHTML = loc("An Error Occured!");
 		return;
+	}
 
 	if (disco_items.length == 0) {
 		document.getElementById("search_result_info").innerHTML = loc("No items found");
 		return;
 	}
+
+	var myTable = search_result_iframe.document.createElement("TABLE");
+
+	var myTableHead = search_result_iframe.document.createElement("THEAD");
+	myTableBody = search_result_iframe.document.createElement("TBODY");
+
+	var row = search_result_iframe.document.createElement("TR");
+	var header = new Array(loc('Room'),loc('Description'));
+	var cell; 
+	for (var i in header) {
+		cell = search_result_iframe.document.createElement("TH");
+		cell.appendChild(search_result_iframe.document.createTextNode(header[i]));
+		row.appendChild(cell);
+	}
+	myTableHead.appendChild(row);
+	myTable.appendChild(myTableHead);
+
+	myTable.appendChild(myTableBody);
+				
+	myTable.setAttribute("id","modTable");
+	myTable.setAttribute("WIDTH","100%");
+	myTable.setAttribute("BORDER","0");
+	myTable.setAttribute("CELLSPACING","0");
+	myTable.setAttribute("CELLPADDING","0");
+	myTable.setAttribute("RULES","rows");
+		
+	// add table
+	search_result_iframe.document.body.appendChild(myTable);	
+
+	document.getElementById("search_result_iframe").style.display = '';
+	document.getElementById("addbookmark_button").style.display = '';
+	//document.getElementById("show_users_button").style.display = '';
+	document.getElementById("join_room_button").style.display = '';
+	document.getElementById("addbookmark_button").disabled = true;
+	document.getElementById("show_users_button").disabled = true;
+	document.getElementById("join_room_button").disabled = true;
 
 	// start querying each item
 	disco_items_at = 0;
@@ -122,7 +123,7 @@ function doSub() {
 
 	/* check for errors */
 	if (conference_server.indexOf('@') != -1 || conference_server.indexOf('/') != -1) {
-		alert(loc("this doesn't look like a valid domain name"));
+		alert(loc("this doesn't look like a valid hostname"));
 		return false;
 	}
 	
@@ -137,7 +138,7 @@ function doSub() {
 	document.getElementById("show_users_button").style.display = 'none';
 	document.getElementById("join_room_button").style.display = 'none';
 	document.getElementById("search_result_header").innerHTML = loc("Search results for [_1]",conference_server);
-	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by!",conference_server);
+	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by...",conference_server);
 	search_result_iframe.document.body.innerHTML = '';
 	search_result_iframe.selectedRow = null;
 
