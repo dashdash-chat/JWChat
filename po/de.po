@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2004-07-10 16:29+0200\n"
+"PO-Revision-Date: 2004-07-10 17:04+0200\n"
 "Last-Translator: Stefan Strigler <steve@zeank.in-berlin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr "Auto-Popup falls abwesend"
 
 #: src/editbookmarks.html:172
 msgid "Autojoin"
-msgstr "Automatisch verbinden"
+msgstr ""
 
 #~ #: NOT FOUND IN SOURCE
 #~ #, fuzzy
@@ -213,15 +213,15 @@ msgstr "Chat-Kanäle"
 
 #: src/editbookmarks.html:164 src/joingroupchat.html:98
 msgid "Choose Bookmark"
-msgstr "Wähle ein Lesezeichen"
+msgstr "auswählen"
 
 #: src/options.html:293
 msgid "Choose Directory"
-msgstr "Wähle ein Verzeichnis"
+msgstr "auswählen"
 
 #: src/options.html:293
 msgid "Choose Gateway"
-msgstr "Wähle ein Gateway"
+msgstr "auswählen"
 
 #: src/vcard.html:119
 msgid "City"
@@ -822,7 +822,7 @@ msgstr "Nach Benutzer suchen"
 
 #: src/subscription.html:100
 msgid "Search for a User"
-msgstr "Nach einem Benutzer suchen"
+msgstr "Benutzer suchen"
 
 #: src/search.html:54
 #. (jabber.from)
