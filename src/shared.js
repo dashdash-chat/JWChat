@@ -86,12 +86,14 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 	if (typeof(emoticons) != 'undefined') {
 		for (var i in emoticons) {
 			var iq = i.replace(/\\/g, '');
-			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emoticonpath+emoticons[i]+"\" alt=\""+iq+"\" title=\""+iq+"\">");
+			var emo = new Image();
+			emo.src = emoticonpath+emoticons[i];
+			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emo.src+"\" width='"+emo.width+"' height='"+emo.height+"' alt=\""+iq+"\" title=\""+iq+"\">");
 		}
 	}
 	
   // replace http://<url>
-  msg = msg.replace(/(\s|^)(https{0,1}:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
+  msg = msg.replace(/(\s|^)(https?:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
   
   // replace mail-links
   msg = msg.replace(/(\s|^)(\w+\@\S+\.\S+)/g,"$1<a href=\"mailto:$2\">$2</a>");
