@@ -82,8 +82,9 @@ function getOptions() {
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
+var pane;
 function service_selected(el) {
-	var pane = el.nextSibling;
+	pane = el.nextSibling;
 	if (el.options[el.selectedIndex].value == '') {
 		pane.innerHTML = '';
 		return;
