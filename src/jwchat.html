@@ -541,7 +541,7 @@ function handlePresence(jabber) {
     if (user.status == 'unavailable')
       playSound('online');
 		if (jabber.show == 'online') // quick fix for JIT which sends this presence ...
-			jaber.show = 'available';
+			jabber.show = 'available';
     user.status = jabber.show;
   } else if (jabber.type) {
     if (jabber.type == 'unsubscribe') {
