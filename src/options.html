@@ -160,8 +160,9 @@ function tabclicked(e) {
 				var optidx = 1;
 				for (var j in srcW.disco.items) {
 					if (typeof(srcW.disco.items[j].info) != 'undefined') {
+						srcW.fdebug("info: "+srcW.disco.items[j].info,2);
 						for (var k in srcW.disco.items[j].info) {
-							if (srcW.disco.items[j].info[k].name == 'feature' && srcW.disco.items[j].info[k].far == 'jabber:iq:gateway')
+							if (srcW.disco.items[j].info[k].tagname == 'identity' && srcW.disco.items[j].info[k].category == 'gateway')
 								transports_selector.options[optidx++] = new Option(srcW.disco.items[j].name,srcW.disco.items[j].jid);
 						}
 					}

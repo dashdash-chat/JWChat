@@ -259,7 +259,7 @@ function isGateway(aJid) {
 		if (aJid == disco.items[i].jid)
 			if (typeof(disco.items[i].info) != 'undefined') {
 				for (var j in disco.items[i].info)
-					if (disco.items[i].info[j].name == 'feature' && disco.items[i].info[j].far == 'jabber:iq:gateway') {
+					if (disco.items[i].info[j].tagname == 'identity' && disco.items[i].info[j].category == 'gateway') {
 						return true;
 					}
 			}
@@ -470,7 +470,7 @@ function handlePresence(jabber) {
 
 		if (jabber.type == 'error' && typeof(jabber.o) != 'undefined') {
 			for (var i in jabber.o) {
-				if (jabber.o[i].name == 'error' && jabber.o[i].data != '')
+				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
 					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
 			}
 		}
@@ -493,9 +493,9 @@ function handlePresence(jabber) {
 
     /* grep for affiliation and role */
     for (var i in jabber.o) {
-      if (jabber.o[i].name = 'x' && jabber.o[i].o) {
+      if (jabber.o[i].tagname = 'x' && jabber.o[i].o) {
         for (var j in jabber.o[i].o) {
-          if (jabber.o[i].o[j].name == 'item' && jabber.o[i].o[j].role != '') {
+          if (jabber.o[i].o[j].tagname == 'item' && jabber.o[i].o[j].role != '') {
             ouser.affiliation = jabber.o[i].o[j].affiliation;
             ouser.role = jabber.o[i].o[j].role;
             ouser.add2Group(ouser.role+'s');
