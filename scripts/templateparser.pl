@@ -30,10 +30,12 @@ use utf8;
 my $DEBUG = 1;
 my $TEMPDIR = "htdocs";
 my $TEMPLATEDIR = "src";
+my $DEFAULTLANG = "en";
 
 require "scripts/JWC::I18N.pm";
 use File::Find;
 use File::Path;
+use File::Basename;
 use Encode 'encode_utf8';
 use Regexp::Common;
 
@@ -81,7 +83,7 @@ foreach my $filename (keys %templates) {
 
     unless (open _, $file) {
         print STDERR "Cannot open $file for reading ($!), skipping.\n" if ($DEBUG);
-        return;
+        next;
     }
 
 		my $langfilename = "$filename.$lang";
@@ -91,7 +93,7 @@ foreach my $filename (keys %templates) {
 
     unless (open LANGFILE, ">$langfile") {
         print STDERR "Cannot open $langfile for writing ($!), skipping.\n" if ($DEBUG);
-        return;
+        next;
     }
 		binmode(LANGFILE, ":utf8");
 
@@ -194,6 +196,18 @@ foreach my $filename (keys %templates) {
     print LANGFILE $translation;
     close(LANGFILE);
     close(_);
+
+	if($lang eq $DEFAULTLANG) { # create default files
+		my ($name,$path,$suffix) = fileparse($filename,".html",".js");
+
+		unless (open LANGFILE, ">$TEMPDIR/$filename$suffix") {
+			print STDERR "can't open $TEMPDIR/$filename.$suffix for writing ... skipping\n";
+			next;
+		}
+		print LANGFILE $translation;
+		close LANGFILE;
+	}
+
   }
 }
 
