@@ -121,7 +121,7 @@ function RosterToggleGrp(name) {
 
 function RosterOpenMessage(jid) {
   var user = this.getUserByJID(jid);
-  var wName = makeWindowName(user.name); 
+  var wName = makeWindowName(user.jid); 
 
   if (user.chatmsgs.length > 0) {
     this.openChat(jid);
@@ -139,7 +139,7 @@ function RosterOpenChat(jid) {
   var user = this.getUserByJID(jid);
   
   if (!user.chatW || user.chatW.closed)
-    user.chatW = open("chat.html?jid="+jid,"chatW"+makeWindowName(user.name),"width=320,height=360,resizable=yes");
+    user.chatW = open("chat.html?jid="+jid,"chatW"+makeWindowName(user.jid),"width=320,height=360,resizable=yes");
   else if (user.chatW.popMsgs)
     user.chatW.popMsgs();
 }
