@@ -1285,7 +1285,7 @@ function init() {
 			Debug.start = function() {};
 		}
 	}
-	if (DEBUG || (USE_DEBUGJID && DEBUGJID == cutResource(jid)))
+	if (DEBUG &&  (!USE_DEBUGJID || DEBUGJID == cutResource(jid)))
 		Debug.start();
 
   Debug.log("jid: "+jid+"\npass: "+pass,2);
