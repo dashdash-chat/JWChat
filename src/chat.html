@@ -26,9 +26,9 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 	if (err) {
 		msgHTML += "<span style='color:red;'>";
   } else if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">*&nbsp;"+user+"</span> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+user+"</span> ");
   } else {
-    msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick>&lt;" + user + "&gt;</span>";
   }
   msgHTML += "&nbsp;" + msg;
 	if (err)

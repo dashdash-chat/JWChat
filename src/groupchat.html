@@ -22,9 +22,9 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
   msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">*&nbsp;"+user+"</span> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+user+"</span> ");
   } else if (user != group) {
-    msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick>&lt;" + user + "&gt;</span>";
   }
 
   if (user == group) {/* channel status messages */
