@@ -526,7 +526,7 @@
 		onlstat = val;
 		if (sid == 0) { // login first
 			status = 'sendPresence';
-			fhdLoad("login-sid","?jid=" + jid + "&pass=" + pass + "&timeout=" + timeout);
+			fhdLoad("login-sid","?jid=" + msgEscape(jid) + "&pass=" + msgEscape(pass) + "&timeout=" + timeout);
 			return;
 		}
 
