@@ -594,12 +594,12 @@ function handleIQSet(jabber) {
 						item.name = disco.items[i].name;
 
 				// add to roster
-				var aUser = new RosterUser(cutResource(item.jid),item.subscription,["Transports"],item.name);
+				var aUser = new RosterUser(cutResource(item.jid),item.subscription,["Gateways"],item.name);
 				aUser.fulljid = item.jid;
 				roster.addUser(aUser);
 
 				// tell server about it
-				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group=Transports");
+				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group=Gateways");
 
 				// send subscription
 				/*				if (item.subscription == "from")
