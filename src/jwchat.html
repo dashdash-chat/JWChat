@@ -9,7 +9,6 @@
     <script src="browsercheck.js"></script>
     <script src="sounds.js"></script>
     <script src="statusLed.js"></script>
-    <script src="roster.js"></script>
 
 <!-- Debugger -->
     <script src="Debugger.js"></script>
@@ -19,6 +18,7 @@
     <script src="xmlextras.js"></script>
     <script src="JSJaCConnection.js"></script>
     <script src="JSJaCHttpPollingConnection.js"></script>
+    <script src="JSJaCHttpBindingConnection.js"></script>
     <script src="JSJaCPacket.js"></script>
 
     <script>
@@ -1304,7 +1304,10 @@ function init() {
 	/* ***
 	 * create new connection
 	 */
-	con = new JSJaCHttpPollingConnection(Debug);
+	if (BACKEND_TYPE == 'binding')
+		con = new JSJaCHttpBindingConnection(Debug);
+	else
+		con = new JSJaCHttpPollingConnection(Debug);
 
 	/* register handlers */
 	con.registerHandler('iq',handleIQSet);
@@ -1408,6 +1411,25 @@ if (is.b == 'op' ||
 /* get args */
 getArgs();
 
+var JABBERSERVER;
+var BACKEND_TYPE;
+var HTTPBASE;
+
+if (opener && opener.JABBERSERVER)
+	JABBERSERVER = opener.JABBERSERVER;
+else if (passedArgs['server'])
+	JABBERSERVER = passedArgs['server'];
+
+if (opener && opener.BACKEND_TYPE)
+	BACKEND_TYPE = opener.BACKEND_TYPE;
+else if (passedArgs['btype'])
+	BACKEND_TYPE = passedArgs['btype'];
+
+if (opener && opener.HTTPBASE)
+	HTTPBASE = opener.HTTPBASE;
+else if (passedArgs['base'])
+	HTTPBASE = passedArgs['base'];
+
 if (opener && opener.pass)
 	pass = opener.pass;
 else if (passedArgs['pass'])
@@ -1454,6 +1476,7 @@ onresize = updateStyleIE;
 
 //-->
     </script>
+    <script src="roster.js"></script>
   </head>
   <frameset rows="100%,0,0,0,0" border="0">
     <frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">

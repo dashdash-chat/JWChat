@@ -8,7 +8,6 @@
     <script src="emoticons.js"></script>
     <script src="config.js"></script>
     <script src="statusLed.js"></script>
-    <script src="roster.js"></script>
     <script src="xmlextras.js"></script>
     <script src="JSJaCPacket.js"></script>
     <script>
@@ -281,11 +280,14 @@ function updateStyleIE() {
     user.roster.updateStyleIE();
 }
 
+var JABBERSERVER = opener.JABBERSERVER;
+
 onkeydown = keyPressed;
 onload = init;
 onunload = part;
 onresize = updateStyleIE;
     </script>
+    <script src="roster.js"></script>
 
     <script for="document" event="onkeydown()" language="JScript">
       <!--

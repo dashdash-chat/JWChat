@@ -26,11 +26,55 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var JABBERSERVER = "zeank.darktech.org"
+var SITENAME = "zeank.darktech.org"
 var DEFAULTRESOURCE = "jwchat";
 
-//var HTTPBASE = "/cgi-bin/httppoll.cgi?server="+JABBERSERVER+"&port=5222";
-var HTTPBASE = "http-poll/";
+/* BACKENDS
+ * Array of objects each describing a backend.
+ *
+ * Required object fields:
+ * name      - human readable short identifier for this backend
+ * httpbase  - base address of http service [see README for details]
+ * type      - type of backend, must be 'polling' or 'binding'
+ *
+ * Optional object fields:
+ * description     - a human readable description for this backend
+ * servers_allowed - array of jabber server addresses users can connect to 
+ *                   using this backend
+ *
+ * If BACKENDS contains more than one entry users may choose from a
+ * select box which one to use when logging in.
+ *
+ * If 'servers_allowed' is empty or omitted user is presented an input
+ * field to enter the jabber server to connect to by hand.
+ * If 'servers_allowed' contains more than one element user is
+ * presented a select box to choose a jabber server to connect to.
+ * If 'servers_allowed' contains one single element no option is
+ * presented to user.
+ */
+var BACKENDS = 
+[
+		{
+			name:"zeank.darktech.org",
+			description:"Local Ejabberd's HTTP Polling Backend",
+			httpbase:"http-poll/",
+			type:"polling",
+			servers_allowed:['zeank.darktech.org']
+		},
+		{
+			name:"Open Relay",
+			description:"HTTP Binding Backend that Allows Connecting to any Jabber Server",
+			httpbase:"/tomcat/JabberHTTPBind/",
+			type:"binding",
+		},
+		{
+			name:"Restricted Relay",
+			description:"This one's for demonstrational purpose only",
+			httpbase:"/tomcat/JabberHTTPBind/",
+			type:"binding",
+			servers_allowed:['zeank.darktech.org','jwchat.org']
+		},
+];
 
 var timerval = 2000; // poll frequency in msec
 var timeout = 150; // timeout of wcs
@@ -48,5 +92,5 @@ var DEFAULTCONFERENCESERVER = "conference.zeank.darktech.org";
 var DEBUG = false; // turn debugging on
 var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
 
-var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
+var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger
 var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages
