@@ -1197,10 +1197,12 @@ function getDiscoItems(iq) {
 	}
 }
 
-var disco = new Array();
+var disco;
 function getDiscoInfo(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
+
+	disco = new Array();
 
 	Debug.log(iq.getDoc().xml,3);
 	if (iq.getType() == 'result') {
@@ -1220,12 +1222,14 @@ function getDiscoInfo(iq) {
 	}
 }
 
-var bookmarks = new Array();
+var bookmarks;
 function getBookmarks(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 
 	Debug.log(iq.getDoc().xml,3);
+
+	bookmarks = new Array();
 
 	if (iq.getNode().getElementsByTagName('storage').item(0)) {
 		var jNode = iq.getNode().getElementsByTagName('storage').item(0);
@@ -1250,13 +1254,15 @@ function getBookmarks(iq) {
 	}
 }
 
-var annotations = new Array();
+var annotations;
 function getAnnotations(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 	
 	Debug.log(iq.getDoc().xml,3);
 	
+	annotations = new Array();
+
 	if (iq.getType() == 'result') {
 		if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
 			var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
