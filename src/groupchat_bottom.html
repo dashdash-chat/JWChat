@@ -16,11 +16,15 @@
 				if (body == '') // don't send empty message
           return false;
           
-        /* handle commands - only nick change for now */
+        /* handle commands */
         if (body.match(/^\/nick (.+)/)) {
           var nick = body.replace(/^\/nick (.+)/,"$1");
           url += "/"+msgEscape(nick);
           parent.srcW.fhdLoad("presence",url);
+        } else if (body.match(/^\/topic (.+)/)) {
+          var topic = body.replace(/^\/topic (.+)/,"$1");
+          url += "&type=groupchat&subject="+msgEscape(topic);
+          parent.srcW.fhdLoad("message",url);
         } else {
           url += "&body=" + msgEscape(body) + "&type=groupchat";
           parent.srcW.fhdLoad("message",url); // send to client
