@@ -199,7 +199,7 @@ function part() {
 		srcW.con.syncSend(presence);
 	}
 
-  if (!user.messages.length && !user.chatmsgs.length) {
+  if (!user.messages.length && !user.chatmsgs.length && srcW && srcW.roster) {
     srcW.roster.removeUser(user);
     srcW.roster.print();
   }
