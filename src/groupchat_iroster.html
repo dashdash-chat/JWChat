@@ -21,9 +21,20 @@
   </head>
 	<body>
 		<div id="ie5menu" class="skin0" onMouseover="highlightie5(event)" onMouseout="lowlightie5(event)" onClick="jumptoie5(event)" display:none>
-			<nobr><div class="menuitems" func="openChat"><l>Start Chat</l></div></nobr>
+			<nobr><div class="menuitems" func="user.roster.openChat"><l>Start Chat</l></div></nobr>
     <hr noshade size=1>
-			<nobr><div class="menuitems" func="openUserInfo"><l>Show Info</l></div></nobr>
+			<nobr><div class="menuitems" func="changeRole" param="'none',1"><l>Kick</l></div></nobr>
+			<nobr><div class="menuitems" func="changeAffiliation" param="'outcast',1"><l>Ban</l></div></nobr>
+			<nobr><div class="menuitems" func="changeRole" param="'participant'"><l>Grant Voice</l></div></nobr>
+			<nobr><div class="menuitems" func="changeRole" param="'visitor'"><l>Revoke Voice</l></div></nobr>
+			<nobr><div class="menuitems" func="changeAffiliation" param="'member'"><l>Grant Membership</l></div></nobr>
+			<nobr><div class="menuitems" func="changeAffiliation" param="'none'"><l>Revoke Memebership</l></div></nobr>
+			<nobr><div class="menuitems" func="changeRole" param="'moderator'"><l>Grant Moderator Privilege</l></div></nobr>
+			<nobr><div class="menuitems" func="changeRole" param="'participant'"><l>Revoke Moderator Privilege</l></div></nobr>
+			<nobr><div class="menuitems" func="changeAffiliation" param="'admin'"><l>Grant Administrative Privilege</l></div></nobr>
+			<nobr><div class="menuitems" func="changeAffiliation" param="'member'"><l>Revoke Administrative Privilege</l></div></nobr>
+    <hr noshade size=1>
+			<nobr><div class="menuitems" func="user.roster.openUserInfo" disabled><l>Show Info</l></div></nobr>
 		</div>
 
 		<div id="roster" class="roster">
@@ -108,7 +119,7 @@
 					if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode;
 					if (firingobj.getAttribute("func")) {
 						var jid = selobj.id.substring(0,selobj.id.lastIndexOf("/"));
-						eval("parent.top.user.roster."+firingobj.getAttribute("func")+"('"+jid+"')");
+						eval("parent.top."+firingobj.getAttribute("func")+"('"+jid+"',"+firingobj.getAttribute("param")+")");
 					}
 				}
 			}

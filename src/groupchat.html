@@ -109,10 +109,22 @@ function updateMe() {
   }
 }
 
-function kick(jid) {
+function changeUserStat(jid,stat,val,confirm) {
   var user = roster.getUserByJID(jid);
+  var url = "?sid="+srcW.sid+"&to="+group+"&nick="+user.name+"&"+stat+"="+val;
+  var reason;
+  if (confirm && (reason = prompt("Reason","")) != '')
+    srcW.fhdLoad("muc-set",url+"&reason="+reason);
+  else
+    srcW.fhdLoad("muc-set",url);
+}
 
-  srcW.fhdLoad("muc-set","?sid="+srcW.sid+"&to="+group+"&nick="+user.name+"&role=none");
+function changeRole(jid,role,confirm) {
+  changeUserStat(jid,"role",role,confirm);
+}
+
+function changeAffiliation(jid,affil,confirm) {
+  changeUserStat(jid,"affiliation",affil,confirm);
 }
 
 /* global vars */
