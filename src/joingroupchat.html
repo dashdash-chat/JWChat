@@ -34,10 +34,11 @@
 		}
 		
 		function keyPressed(e) {
-			if (e.ctrlKey && e.keyCode == 13)
-				return doSub();
-			else if (e.keyCode == 27)
+      if (e.keyCode == 13)
+        return doSub();
+      if (e.keyCode == 27)
         window.close();
+      return true;
 		}
 
 		onkeydown = keyPressed;
@@ -46,15 +47,12 @@
 		</script>
 		<script for="document" event="onkeydown()" language="JScript">
 		<!--
-			if (window.event.ctrlKey && window.event.keyCode == 13)
-				return doSub();
-			if (window.event.keyCode == 27)
-				window.close();
+    return keyPressed(window.event);
 		//-->
 		</script>
 	</head>
 	<body style="margin:8px;">
-		<form name="sub">
+		<form name="sub" onSubmit="alert('submit');">
       <table border=0 width="100%">
           <tr><td><l>Nickname</l></td><td width="100%"><input type="text" name="nick" size=32 style="width:100%;"></td></tr>
           <tr><td><l>Channel/Group</l></td><td width="100%"><input type="text" name="group" size=32 style="width:100%;"></td></tr>
