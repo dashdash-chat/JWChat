@@ -167,7 +167,7 @@ msgstr "Cerrar"
 #: src/jwchat.html:314
 msgid "Connection lost!\\nReconnect?"
 msgstr ""
-"¡Conexi&oacute;n perdida!\\n"
+"¡Conexión perdida!\\n"
 "¿Reconectar?"
 
 #: src/jwchat.html:929
@@ -389,7 +389,7 @@ msgstr "JWChat - Opciones"
 
 #: src/groupchat_iroster.html:4 src/iRoster.html:4
 msgid "JWChat - Roster"
-msgstr "JWChat - Roster"
+msgstr "JWChat - Lista de Contactos"
 
 #: src/search.html:4
 msgid "JWChat - Search"
@@ -413,7 +413,7 @@ msgstr "JWChat - A&ntilde;adir usuario"
 
 #: src/subscriptionRequest.html:4
 msgid "JWChat - Subscription-Request"
-msgstr "JWChat - Petici&oacute;n de subscripci&oacute;n"
+msgstr "JWChat - Petición de subscripción"
 
 #: src/userprops.html:4
 msgid "JWChat - User Properties"
@@ -437,7 +437,7 @@ msgstr "Unirse"
 
 #: src/roster.html:148
 msgid "Join Groupchat"
-msgstr "Unirse a grupo de chateo"
+msgstr "Unirse a conferencia"
 
 #: src/groupchat_iroster.html:26
 msgid "Kick"
@@ -450,12 +450,16 @@ msgstr "Haciendo click izquierdo en un usuario aparecer&aacute; una caja de mens
 #: src/jwchat.html:939
 msgid "Loading Roster...<br>Please wait!"
 msgstr ""
-"Cargando Roster...<br> "
+"Cargando lista de contactos...<br> "
 "¡Por favor espere!"
 
-#: src/index.html:74 src/index.html:86
+#: src/index.html:74
 msgid "Login"
 msgstr "Autenticaci&oacute;n"
+
+#: src/index.html:86
+msgid "Login"
+msgstr "Entrar"
 
 #: src/help.html:45
 msgid "MS Internet Explorer since version 5.0"
@@ -513,7 +517,7 @@ msgstr "Contrase&ntilde;a"
 #: src/jwchat.html:1039
 msgid "Password is missing.\\nAborting..."
 msgstr ""
-"Falta la contrase&ntilde;a\\n"
+"Falta la contraseña\\n"
 "Abortando..."
 
 #: src/search.html:186
@@ -650,7 +654,7 @@ msgstr "Enviar mensaje para %1"
 
 #: src/subscription.html:57
 msgid "Send subscription"
-msgstr "Enviar subscripci&oacute;n"
+msgstr "Enviar subscripción"
 
 #: src/subscription.html:100
 msgid "Send subscription to"
@@ -703,7 +707,7 @@ msgstr "Asunto"
 #: src/subscriptionRequest.html:35
 #. (jid)
 msgid "Subscribe request from %1"
-msgstr "Petici&oacute;n de subscripci&oacute;n de %1"
+msgstr "Petición de subscripción de %1"
 
 #: src/help.html:56
 msgid "Support for safari coming soon..."
@@ -910,7 +914,7 @@ msgstr "anterior"
 #: src/subscriptionRequest.html:39
 #. (from)
 msgid "show user info for %1"
-msgstr "mostrar informaci&oacute;n de usuario para %1"
+msgstr "mostrar informaci&oacute;n del usuario %1"
 
 #: src/subscription.html:58
 msgid "to"
@@ -918,4 +922,7 @@ msgstr "a"
 
 #: src/subscriptionRequest.html:69
 msgid "wants to add you to his roster"
-msgstr "quiero a&ntilde;adirlo a mi roster"
+msgstr "quiero a&ntilde;adirlo a mi lista de contactos"
+
+
+
