@@ -50,22 +50,26 @@ function popMsgs() {
       msg.from = msg.from.substring(msg.from.indexOf('/')+1);
 
 		/* get date */
-		var date = new Date();
+		var timestamp;
+		if (msg.timestamp)
+			timestamp = msg.timestamp;
+		else
+			timestamp = new Date();
 
 		if (typeof(msg.o) != 'undefined' && msg.o.length > 0) { // chan-history
 			for (var i in msg.o)
 				if (msg.o[i].tagname == 'x' && typeof(msg.o[i].stamp) != 'undefined' && msg.o[i].xmlns == 'jabber:x:delay') { // found timestamp
 					var stamp = msg.o[i].stamp;
-					date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
+					timestamp = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
 					break; // done
 				}
 		}
 
 		var mtime = '';
-		if (new Date() - date > 24*3600*1000)
-			mtime += date.toLocaleDateString() + " ";
+		if (new Date() - timestamp > 24*3600*1000)
+			mtime += timestamp.toLocaleDateString() + " ";
 		
-		mtime += date.toLocaleTimeString();
+		mtime += timestamp.toLocaleTimeString();
     
     /* look for a subject */
     if (msg.subject) { // set topic
@@ -103,8 +107,11 @@ function updateMe() {
 
  	frames.groupchatTop.document.forms[0].subject.disabled = (roster.me.role == 'none');
  	frames.groupchatBottom.document.forms[0].submit.disabled = (roster.me.role == 'none');
-	
-	frames.groupchatBottom.document.getElementById('config_chan_button').disabled = !(roster.me.affiliation == 'owner');
+
+	if (roster.me.affiliation == 'owner')
+		frames.groupchatBottom.document.getElementById('config_chan_button').style.display = '';
+	else
+		frames.groupchatBottom.document.getElementById('config_chan_button').style.display = 'none';
 
 	if (roster.me.role == 'none') {// seems we left
 		cFrame.body.innerHTML += "<span style='color:red';>"+loc("Disconnected.")+"</span><br>";
