@@ -864,62 +864,98 @@ function handleVCardTemp(jabber) {
 var bookmarks = new Array();
 function handleBookmarks(jabber) {
 
-	if (jabber.type == 'error')
-		return;
+	if (jabber)
+		fdebug(jabber,2);
 
-	if (typeof(jabber.browse.o) == 'undefined')
-		return;
-
-	for (i in jabber.browse.o) {
-		var idx = 0;
-		if (jabber.browse.o[i].tagname == 'storage') {
-			for (var j in jabber.browse.o[i].o) {
-				var bookmark = jabber.browse.o[i].o[j];
-
-				if (bookmark.tagname != 'conference')
-					continue;
-
-				bookmarks[idx++] = bookmark; // store bookmark
-
-				// do autojoin
-				if (bookmark.autojoin == '1')
-					openGroupchat(bookmark.jid,bookmark.nick,bookmark.pass);
+	if (jabber && jabber.type == 'error') {
+		fdebug(jabber,1);
+		alert(loc("Error loading bookmarks"));
+	} else if (typeof(jabber.browse) != 'undefined') {
+	
+		for (i in jabber.browse.o) {
+			var idx = 0;
+			if (jabber.browse.o[i].tagname == 'storage') {
+				for (var j in jabber.browse.o[i].o) {
+					var bookmark = jabber.browse.o[i].o[j];
+					
+					if (bookmark.tagname != 'conference')
+						continue;
+					
+					bookmarks[idx++] = bookmark; // store bookmark
+					
+					// do autojoin
+					if (bookmark.autojoin == '1')
+						openGroupchat(bookmark.jid,bookmark.nick,bookmark.pass);
+				}
 			}
 		}
 	}
 
 	// start service discovery
-	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
- 
+	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult); 
 }
 
-function handlePrefs(jabber) {
+function handleRosterPrefs(jabber) {
+	if (jabber)
+		fdebug(jabber,2);
+
 	if (jabber && jabber.type == 'error')
 		fdebug(jabber,1);
 
 	if (!jabber || jabber.type == 'error') {
-		alert(loc('Error loading preferences'));
-		return;
-	}
-
-
-	for (var i in jabber.browse.o) {
-		var item = jabber.browse.o[i];
-		if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:prefs') {
-			if (eval(item.usersHidden))
-				roster.toggleHide();
-			setPollInterval(item.timerval);
-			autoPopup = eval(item.autoPopup);
-			autPopupAway = eval(item.autoPopupAway);
-			playSounds = eval(item.playSounds);
-			focusWindows = eval(item.focusWindows);
-			timestamps = eval(item.timestamps);
+		alert(loc('Error loading roster preferences'));
+	} else {
+	
+		for (var i in jabber.browse.o) {
+			if (jabber.browse.o[i].tagname == 'jwchat' && jabber.browse.o[i].xmlns == 'jwchat:rosterprefs') {
+				if (typeof(jabber.browse.o[i].hiddenGroups) != 'undefined'  && jabber.browse.o[i].hiddenGroups != '') {
+					var hiddenGroups = jabber.browse.o[i].hiddenGroups.split(",");
+					for (var i in hiddenGroups)
+						if (hiddenGroups[i] != '')
+							roster.hiddenGroups[hiddenGroups[i]] = true;
+					roster.print();
+				}
+			}
 		}
 	}
 
 	// get bookmarks
 	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
+}
 
+function handlePrefs(jabber) {
+	if (jabber)
+		fdebug(jabber,2);
+
+	if (jabber && jabber.type == 'error')
+		fdebug(jabber,1);
+
+	if (!jabber || jabber.type == 'error') {
+		alert(loc('Error loading preferences'));
+	} else {
+		for (var i in jabber.browse.o) {
+			var item = jabber.browse.o[i];
+			if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:prefs') {
+				if (eval(item.usersHidden))
+					roster.toggleHide();
+				if (typeof(item.timerval) != 'undefined' && !isNaN(item.timerval))
+					setPollInterval(item.timerval);
+				if (typeof(item.autoPopup) != 'undefined' && item.autoPopup != 'undefined')
+					autoPopup = eval(item.autoPopup);
+				if (typeof(item.autoPopupAway) != 'undefined' && item.autoPopupAway != 'undefined')
+					autoPopupAway = eval(item.autoPopupAway);
+				if (typeof(item.playSounds) != 'undefined' && item.playSounds != 'undefined')
+					playSounds = eval(item.playSounds);
+				if (typeof(item.focusWindows) != 'undefined' && item.focusWindows != 'undefined')
+					focusWindows = eval(item.focusWindows);
+				if (typeof(item.timestamps) != 'undefined' && item.timestamps != 'undefined')
+					timestamps = eval(item.timestamps);
+			}
+		}
+	}
+
+	// get rosterprefs
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:rosterprefs' />"),handleRosterPrefs);
 }
 
 var disco = new Object();
@@ -966,6 +1002,8 @@ function handleDiscoInfoResult(jabber) {
 	disco_info_count++;
 	if (disco_info_count < disco.items.length)
 		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
+	else
+		poll(); // we're done - start polling
 
 }
 
@@ -1123,7 +1161,7 @@ function run() {
 		// get prefs
 		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
 
-    poll();	// initial poll (not nice here)
+    //poll();	// initial poll (not nice here)
     break;
   case 'polling':
     break;
@@ -1170,8 +1208,25 @@ function cleanUp() {
   frames["jwc_out"].document.close();  
 }
 
+function handleSaveHiddenGroups(jabber) {
+	if (jabber && jabber.type == 'error') {
+		fdebug(jabber,1);
+		alert(loc("Error saving roster preferences"));
+	}
+}
+
 function logout() {
-  changeStatus("offline");
+	// save roster.hiddenGroups
+	var xml = "<jwchat xmlns='jwchat:rosterprefs'><hiddenGroups>";
+
+	for (var i in roster.hiddenGroups)
+		if (roster.hiddenGroups[i])
+			xml += i+",";
+	
+	xml += "</hiddenGroups></jwchat>";
+
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml),handleSaveHiddenGroups);
+	changeStatus("offline");
 }
 
 /* check for unsupported browsers */
