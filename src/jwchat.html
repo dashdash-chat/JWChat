@@ -223,6 +223,9 @@ function playSound(action) {
     return;
   }
 
+	if (onlstat != 'available' || onlstat == 'chat')
+		return;
+	
   var frameD = frames["jwc_sound"].document;
   var html = "<embed src=\""+SOUNDS[action]+"\" width=\"1\" height=\"1\" quality=\"high\" pluginspage=\"http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash\" type=\"application/x-shockwave-flash\">";
   frameD.open();
@@ -478,6 +481,15 @@ function handleMessage(jabber) {
     } else {
       if (focusWindows) window.focus();
       playSound('chat_queue');
+
+			// let arrow blink for toggled groups
+			for (var i in user.groups) {
+				if (user.groups[i] != '') {
+					//fmd.getElementById(user.groups[i]+"Head").style.color = "red";
+					if (roster.hiddenGroups[user.groups[i]])
+						fmd.images[user.groups[i]+"Img"].src = arrow_right_blinking.src;
+				}					
+			}
     }
 
 		// send back to server
@@ -518,6 +530,15 @@ function handleMessage(jabber) {
     }	else {
       if (focusWindows) window.focus();
       playSound('message_queue');
+			// let arrow blink for toggled groups
+			for (var i in user.groups) {
+				if (user.groups[i] != '') {
+					//fmd.getElementById(user.groups[i]+"Head").style.color = "red";
+					if (roster.hiddenGroups[user.groups[i]])
+						fmd.images[user.groups[i]+"Img"].src = arrow_right_blinking.src;
+				}					
+			}
+
     }
 
 		// store message
