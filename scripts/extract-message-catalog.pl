@@ -103,7 +103,7 @@ sub extract_strings_from_code {
       }
     }
 
-    # pxx.to filter: <l>...</l>
+    # jwchat filter: <l>...</l>
     $line = 1;
     pos($_) = 0;
     if ($file =~ /html/) {
@@ -186,6 +186,12 @@ sub update {
     open LEXICON, $file or die $!;
 
     my @lines = (<LEXICON>);
+    # preserve header
+    my $line;
+    foreach $line (@lines) {
+	$out .= $line;
+        last if ($line =~ /^\s+/);
+    }
     @lines = grep { !/^(#(:|\.)\s*|$)/ } @lines;
     while (@lines) {
         my $msghdr = "";
