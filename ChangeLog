@@ -1,3 +1,8 @@
+2004-07-09  Stefan Strigler <steve@zeank.in-berlin.de>
+	* fixed user info - fetching vcard works now
+	* implemented irc-style commands for muc
+	* fixed timestamps for messages
+
 2004-07-08  Stefan Strigler <steve@zeank.in-berlin.de>
 	* support for muc invite
 	* muc room names are escaped now
