@@ -46,7 +46,7 @@
 		// update roster
 		if ((form.usersHidden.checked && !opener.top.roster.usersHidden) ||
 			(!form.usersHidden.checked && opener.top.roster.usersHidden)) // usersHidden changed
-			opener.top.toggleHide();
+			opener.top.roster.toggleHide();
 			
 		opener.top.autoPopup = form.autoPopup.checked;
 		opener.top.playSounds = form.playSounds.checked;
