@@ -170,7 +170,7 @@ td.menubar {
 .link { 
   font-weight: bold;
   text-decoration: underline;
-  cursor: hand;
+  cursor: pointer;
 }
 
 a.menubar { 
