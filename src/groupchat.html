@@ -20,7 +20,7 @@ function putMsgHTML(msg,mtime,user,usercolor) {
   msgHTML += "<span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>*** "+user+"</b></font> ");
+    msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>* "+user+"</b></font> ");
   } else if (user != group) {
     msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
   }
