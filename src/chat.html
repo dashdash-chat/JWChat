@@ -16,6 +16,7 @@ var user;
 var srcW;
 var cFrame;
 
+var scrollHeight=0;
 function putMsgHTML(msg,mtime,user,usercolor,err) {
   var msgHTML = '';
   
@@ -25,16 +26,20 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 	if (err) {
 		msgHTML += "<span style='color:red;'>";
   } else if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">* "+user+"</span> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">*&nbsp;"+user+"</span> ");
   } else {
     msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
   }
-  msgHTML += " " + msg;
+  msgHTML += "&nbsp;" + msg;
 	if (err)
 		msgHTML += '</span>';
 	msgHTML += "</div>";
   cFrame.body.innerHTML += msgHTML;
-  chat.scrollTo(0,cFrame.body.scrollHeight);
+
+	// autoscroll if scrollbar at bottom
+	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= scrollHeight)
+		chat.scrollTo(0,cFrame.body.scrollHeight);
+	scrollHeight = cFrame.body.scrollHeight;
 }
 			
 
