@@ -41,7 +41,9 @@ function RosterUser(jid,subscription,groups,name) {
 
   if (name)
     this.name = name;
-  else if (this.jid.substring(this.jid.indexOf('@')+1) == JABBERSERVER)
+  else if (this.jid == JABBERSERVER)
+    this.name = loc("System");
+  else if (this.jid.indexOf('@') != -1 && this.jid.substring(this.jid.indexOf('@')+1) == JABBERSERVER)
     this.name = this.jid.substring(0,jid.indexOf('@'));
   else
     this.name = this.jid;
