@@ -153,7 +153,7 @@ function backendSelected() {
 
 		for (var i in servers_allowed) {
 			var opt = new Option(servers_allowed[i]);
-			select.appendChild(opt);
+			select.options.add(opt);
 		}
 
 		var td = tr_server.getElementsByTagName('td').item(1);
@@ -188,7 +188,7 @@ function init() {
 		for (var i in BACKENDS) {
 			var opt = new Option(BACKENDS[i].name,BACKENDS[i].httpbase);
 			opt.setAttribute('description',BACKENDS[i].description);
-			select.appendChild(opt);
+			select.options.add(opt);
 		}
 
 		var tr = document.createElement('tr');
@@ -296,7 +296,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Wed Feb  9 14:03:45 CET 2005
+Last modified: Wed Feb 23 15:12:22 CET 2005
 <!-- hhmts end -->
     </div>
   </body>
