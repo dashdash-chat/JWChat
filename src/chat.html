@@ -6,6 +6,7 @@
     <script src="shared.js" language="JavaScript1.2"></script>
     <script src="browsercheck.js" language="JavaScript1.2"></script>
     <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
     <script language="JavaScript1.2">
       <!--
 var user;
@@ -32,7 +33,7 @@ function putMsgHTML(msg,user,usercolor) {
   }
   msgHTML += " " + msg + "<br>";
   cFrame.body.innerHTML += msgHTML;
-  frames.cframe.chat.scrollTo(0,cFrame.body.scrollHeight);
+  chat.scrollTo(0,cFrame.body.scrollHeight);
 }
 			
 
@@ -46,7 +47,7 @@ function popMsgs() {
       msg = user.chatmsgs.shift();
     putMsgHTML(msg.body,user.name,"red");
   }
-  if (jwcMain.focusWindows) frames.bottom.document.forms.chatform.msgbox.focus();
+  if (jwcMain.focusWindows) document.forms.chatform.msgbox.focus();
   if (user.lastsrc != null && user.messages.length == 0) {
     var images = srcW.roster.getUserIcons(jid);
     for (var i=0; i<images.length; i++)
@@ -75,7 +76,7 @@ function init() {
     window.close();
   }
 
-  cFrame = frames.cframe.chat.document;
+  cFrame = chat.document;
   user = srcW.roster.getUserByJID(jid);
   document.title = "Chat with " + user.name;
   popMsgs();
@@ -93,10 +94,86 @@ function displayTimestamp() {
   }
 }
 
-function keyPressed(e) {
-  if (e.keyCode == 27)
-    window.close();
-}
+			function submitClicked() {
+				var url = "?to=" + parent.jid + "&type=chat&sid=" + parent.jwcMain.sid;
+				var body = document.forms[0].elements["msgbox"].value;
+
+				if (body == '') // don't send empty message
+				return true;
+
+				url += "&body=" + msgEscape(body);
+				jwcMain.fhdLoad("message",url); // send to client
+			
+				// insert into chat window
+				putMsgHTML(body,srcW.roster.nick,"blue");
+
+				// add message to our message history
+				jwcMain.addtoHistory(body);
+				document.forms["chatform"].msgbox.value=''; // empty box
+				document.forms["chatform"].msgbox.focus(); // set focus back on input field
+						
+				return false;
+			}
+			
+      var group_open = new Image();
+      group_open.src = 'images/group_open.gif';
+      var group_close = new Image();
+      group_close.src = 'images/group_close.gif';
+      var msgbox_toggled = false;
+			function toggle_msgbox(el) {
+			  if (msgbox_toggled) {
+  			  document.getElementById('msgbox').style.height = '1.4em';
+          document.getElementById('chat').style.height = '100%';
+          document.getElementById('submitbutton').style.display = 'none';
+			    el.src = group_close.src;
+			  } else {
+			    document.getElementById('msgbox').style.height = '4.2em';
+          document.getElementById('chat').style.height = '99%';
+          document.getElementById('submitbutton').style.display = '';
+			    el.src = group_open.src;
+			  }
+			  msgbox_toggled = !msgbox_toggled;
+  		}
+
+      function msgboxKeyPressed(el,e) {
+        if (window.event) e = window.event;
+        
+        switch (e.keyCode) {
+          case 13:
+            if ((msgbox_toggled && !e.ctrlKey) || e.shiftKey)
+              return true;
+            else
+              return submitClicked();
+            break;
+			    case 38:				// shift+up
+						if (e.ctrlKey) {
+							el.value = jwcMain.getHistory('up', el.value);
+							el.focus(); el.select();
+						}
+						break;
+				  case 40:				// shift+down 
+						if (e.ctrlKey) {
+							el.value = jwcMain.getHistory('down', el.value);
+							el.focus(); el.select();
+						}
+						break;
+				}
+      }
+
+
+      function keyPressed(e) {
+	      switch (e.keyCode) {
+			    case 27:
+		        window.close();
+			      break;
+			    case 76:
+   			    if (e.ctrlKey) {   // ctrl+l
+			        chat.document.body.innerHTML = '';
+							return false;
+			      }
+			  }
+				return true;
+      }
 
 onkeydown = keyPressed;
 onload = init;
@@ -108,9 +185,19 @@ onload = init;
       window.close();
       //-->
     </script>
-    <frameset rows="*,90" id="chatFramset" frameborder=2 border=2>
-      <frame src="chat_top.html" name="cframe" scrolling="no">
-        <frame src="chat_bottom.html" name="bottom" scrolling="no">
-    </frameset>
   </head>
+  <body style="margin:8px;">
+  <table width="100%" height="100%">
+    <tr><td width="100%" height="100%" colspan=2><iframe src="chat_iframe.html" id="chat" name="chat" scrolling="yes" style="width:100%;height:100%;"></iframe></td></tr>
+ 		<form name="chatform" style="border:0px;margin:0px;padding:0px;">
+    <tr>
+      <td valign=top><img src="images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
+      <td width="100%">
+          <textarea id="msgbox" wrap="virtual" style="width:100%;height:1.4em;" onKeyPress="return msgboxKeyPressed(this,event);"></textarea>
+      </td>
+    </tr>
+    <tr id="submitbutton" style="display:none;"><td colspan=2 align=right><button onClick="submitClicked(); return false;"><l>Send</l></button></td></tr>
+	  </form>
+  </table>
+  </body>
 </html>
