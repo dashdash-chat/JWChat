@@ -4,6 +4,7 @@
     <title><l>JWChat - Options</l></title>
     <script src="switchStyle.js"></script>
     <script src="version.js"></script>
+    <script src="shared.js"></script>
     <script src="jabber_x_data.js" language="JavaScript1.2"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script language="JavaScript1.2">
@@ -178,18 +179,28 @@ function registerService(jid,paneid) {
 	var pane = document.getElementById(paneid);
 
 	for (var i in pane.childNodes) {
-		if (pane.childNodes[i].tagName == 'FORM')
+		if (pane.childNodes[i].tagName == 'FORM') {
 			aForm = pane.childNodes[i];
+			break; // found
+		}
 	}
 
 	var setxml = '';
-	for (var i=0; i<aForm.elements.length; i++) {
-		var el = aForm.elements[i];
-		setxml += "&"+el.name+"="+el.value;
+	
+	var jabberXData = (aForm.elements['jwchat_form_type'] && aForm.elements['jwchat_form_type'].value == 'jabber:x:data');
+	
+	if (jabberXData) {
+		setxml = genJabberXDataReply(aForm);
+		srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(jid)+"&ns=jabber:iq:register&set="+msgEscape(setxml));
+	}	else {
+		for (var i=0; i<aForm.elements.length; i++) {
+			var el = aForm.elements[i];
+			setxml += "&"+msgEscape(el.name)+"="+msgEscape(el.value);
+		}
+		var param = "?sid="+srcW.sid+"&to="+msgEscape(jid)+"&ns=jabber:iq:register"+setxml;
+		srcW.fhdLoad("iq-set",param);
 	}
 
-	var param = "?sid="+srcW.sid+"&to="+jid+"&ns=jabber:iq:register"+setxml;
-	srcW.fhdLoad("iq-set",param);
 	window.close();
 }
 
