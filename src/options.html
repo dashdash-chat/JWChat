@@ -173,8 +173,10 @@ function unregisterGateway(jid) {
 	window.close();
 }
 
-var srcW = opener.top;
+var srcW;
 function init() {
+	srcW = opener.top;
+
 	getOptions();
 
 	// initialise handlers for tabs
