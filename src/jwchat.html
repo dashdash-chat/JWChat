@@ -1255,7 +1255,7 @@ function getAnnotations(iq) {
 		if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
 			var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
 			for (var i=0; i<jNode.childNodes.length; i++)
-				if (jNode.childNodes.item(i).nodeName == 'item')
+				if (jNode.childNodes.item(i).nodeName == 'item' && jNode.childNodes.item(i).firstChild)
 					annotations[jNode.childNodes.item(i).getAttribute('jid')] = jNode.childNodes.item(i).firstChild.nodeValue;
 		}
 	}
