@@ -32,7 +32,7 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 		else
 			msgHTML += "<span style=\"font-weight:bold;\">"+msg+"</span>";
   } else
-    msgHTML += " " + msg;
+    msgHTML += "&nbsp" + msg;
 	msgHTML += "</div>";
   
   cFrame.body.innerHTML += msgHTML;
