@@ -32,40 +32,42 @@
   */
 
 function openRoster(form) {
-  var jid = msgEscape(form.jid.value + "@" + JABBERSERVER + "/" +DEFAULTRESOURCE);
+  var jid = msgEscape(form.jid.value + "@" + JABBERSERVER + "/" + DEFAULTRESOURCE);
   var pass = msgEscape(form.pass.value);
-  window.open('jwchat.html?jid='+jid+'&pass='+pass,makeWindowName(jid),'width=160,height=320,resizable=yes');
+  window.open('jwchat.html?jid='+escape(jid)+'&pass='+escape(pass),makeWindowName(jid),'width=160,height=320,resizable=yes');
   return false;
 }
    
 function init() {
-  var welcome = "<l>Welcome to JWChat at</l> ";
-  document.title = welcome + JABBERSERVER;
-  document.getElementById("h1").innerHTML = welcome + "<br>" + JABBERSERVER;
+  var welcome = loc("Welcome to JWChat at [_1]", JABBERSERVER);
+  document.title = welcome;
+  document.getElementById("welcomeh1").innerHTML = welcome;
 }
       
 onload = init;
 //-->
     </script>
     <style type="text/css">
-      body { color: #0f4378; }
-      h1 { padding-top: 20px; }
+      body { color: #0f4378; font-size: 80%; }
       a { color: black; }
+      h1 { font-size: 140%; margin-top:0px; }
     </style>
   </head>
   
   <body>
-    <div align=center>
-    <div style="width: 480px; text-align: left;">
-    <h1 id="h1" align=center><l>Welcome to JWChat at<br>jwchat.org</l></h1>
 
-      <l>JWChat is a web based, full featured jabber client. <a href="http://www.jabber.org">Jabber</a> is an advanced  instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger.</l>
-        <p>
-      <l>Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program.</l>
-        <p>
-      <l>If don't have an account yet a new one will be created automatically for you on login (Note: If it fails to register this username might be taken already. Try to choose something else).</l>
+    <div style="padding: 20px;">
 
-    <p>&nbsp;
+    <h1 id="welcomeh1"></h1>
+
+      <p>
+      <l>JWChat is a web based, full featured jabber client. <a href="http://www.jabber.org">Jabber</a> is an advanced  instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger.</l></p>
+        <p>
+      <l>Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program.</l></p>
+        <p>
+      <l>If don't have an account yet a new one will be created automatically for you on login (Note: If it fails to register this username might be taken already. Try to choose something else).</l></p>
+
+    <fieldset style="width: 10px; margin: 20px; padding: 10px;" align=center><legend><l>Login</l></legend>
     <table border=0 cellspacing=0 cellpadding=2">
       <form name="login" onSubmit="return openRoster(this);">
       <tr>
@@ -79,20 +81,18 @@ onload = init;
       <tr><td colspan="2" align=right><button type="submit"><l>Login</l></button></td></tr>
       </form>
     </table>
-
+      </fieldset>
         <p>
       <l>If you want to learn more about JWChat please visit our homepage at <a href="http://jwchat.sourceforge.net">http://jwchat.sourceforge.net</a>!</l>
 
     </div>
-    </div>
-
-<div style="position: absolute; bottom: 10px; font-size: 8pt;">    
-    <hr noshade size=1 width=120 align=left color="#6c8bb1">
-    &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
-<!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
-<!-- hhmts start -->
-Last modified: Thu Mar  4 15:16:00 CET 2004
+    <div style="padding-top: 10px; font-size: 8pt;">
+      <hr noshade size=1 width=120 align=left color="#6c8bb1">
+      &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
+      <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
+      <!-- hhmts start -->
+Last modified: Thu Mar 18 12:56:57 CET 2004
 <!-- hhmts end -->
-</div>
+    </div>
   </body>
 </html>
