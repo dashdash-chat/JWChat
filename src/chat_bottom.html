@@ -19,7 +19,7 @@
 				parent.jwcMain.fhdLoad("message",url); // send to client
 			
 				// insert into chat window
-				parent.putMsgHTML(body,parent.srcW.jid.substring(0,parent.srcW.jid.indexOf("@")),"blue");
+				parent.putMsgHTML(body,parent.srcW.roster.nick,"blue");
 
 				// add message to our message history
 				parent.jwcMain.addtoHistory(body);
