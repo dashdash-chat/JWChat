@@ -2,15 +2,13 @@
 <html>
   <head>
     <title>JWChat - Groupchat</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<script src="shared.js" language="JavaScript1.2"></script>
-		<script src="browsercheck.js" language="JavaScript1.2"></script>
-		<script src="emoticons.js" language="JavaScript1.2"></script>
-		<script src="config.js" language="JavaScript1.2"></script>
-		<script src="roster.js" language="JavaScript1.2"></script>
-
-    <script>
-
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="browsercheck.js" language="JavaScript1.2"></script>
+    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="config.js" language="JavaScript1.2"></script>
+    <script src="roster.js" language="JavaScript1.2"></script>   
+    <script language="JavaScript1.2">
 var colors = new Array();
 colors[0] = 'maroon';
 colors[1] = 'green';
@@ -189,17 +187,16 @@ onkeydown = keyPressed;
 onload = init;
 onunload = part;
 onresize = updateStyleIE;
-
     </script>
 
-		<script for="document" event="onkeydown()" language="JScript">
-		<!--
-    if (window.event.keyCode == 27)
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      if (window.event.keyCode == 27)
       window.close();
-		//-->
-		</script>
+      //-->
+    </script>
 
-    <frameset rows="40,*,80" frameborder=2 framespacing=2 border=2 bordercolor=black>
+    <frameset rows="40,*,90" frameborder=2 framespacing=2 border=2 bordercolor=black>
       <frame src="groupchat_top.html" name="groupchatTop" scrolling="no">
       <frameset cols="70%,*">
         <frame src="groupchat_chat.html" name="groupchatChat" scrolling="no">
