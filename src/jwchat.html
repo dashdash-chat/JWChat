@@ -191,7 +191,7 @@ function fCBLoad(func,param,callback,args) {
 	fdebug("registeredCBs: " + registeredCBs,4);
 
   if (is.ie5 || is.op)
-    frameLoad(frames["jwc_cb"],func,param,"parent.handleCBEvent();");
+    frameLoad(frames["jwc_cb"],func,param,"parent.handleCB();");
   else
     frameLoad(frames["jwc_cb"],func,param);
 }
@@ -628,10 +628,10 @@ function handleCB(jabber) {
 	for (var i=0; i<registeredCBs.length; i++) {
 		if (typeof(registeredCBs[i].func) != 'undefined' && registeredCBs[i].func) {
 			if (registeredCBs[i].args)
-				registeredCBs[i].func(registeredCBs[i]);
+			 	registeredCBs[i].func(registeredCBs[i]);
 			else
-				registeredCBs[i].func(jabber);
-
+			 	registeredCBs[i].func(jabber);
+			 
 			/* remove callback from list */
 
 			registeredCBs = registeredCBs.slice(0,i).concat(registeredCBs.slice(i+1,registeredCBs.length));
