@@ -27,19 +27,26 @@ function msgEscape(msg) {
 	if (typeof(msg) == 'undefined' || !msg || msg == '')
 		return;
 
+  msg = msg.replace(/%/g,"%25"); // must be done first
+
   msg = msg.replace(/\n/g,"%0A");
   msg = msg.replace(/\r/g,"%0D");
   msg = msg.replace(/ /g,"%20");
-  msg = msg.replace(/&/g,"%26");
-  msg = msg.replace(/=/g,"%3D");
-  msg = msg.replace(/\?/g,"%3F");
-  msg = msg.replace(/\:/g,"%3A");
-  msg = msg.replace(/>/g,"%3E");
-  msg = msg.replace(/</g,"%3C");
-  msg = msg.replace(/\)/g,"%29");
-  msg = msg.replace(/\(/g,"%28");
   msg = msg.replace(/\"/g,"%22");
   msg = msg.replace(/#/g,"%23");
+  msg = msg.replace(/\$/g,"%24");
+  msg = msg.replace(/&/g,"%26");
+  msg = msg.replace(/\(/g,"%28");
+  msg = msg.replace(/\)/g,"%29");
+  msg = msg.replace(/\+/g,"%2B");
+  msg = msg.replace(/,/g,"%2C");
+  msg = msg.replace(/\//g,"%2F");
+  msg = msg.replace(/\:/g,"%3A");
+  msg = msg.replace(/\;/g,"%3B");
+  msg = msg.replace(/</g,"%3C");
+  msg = msg.replace(/=/g,"%3D");
+	msg = msg.replace(/>/g,"%3E");
+	msg = msg.replace(/@/g,"%40");
 
   return msg;
 }
