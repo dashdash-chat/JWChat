@@ -33,7 +33,6 @@ function rowClicked(e) {
 		selectedRow.className = '';
 	else { 
 		parent.document.getElementById('join_room_button').disabled = false;
-		parent.document.getElementById('show_users_button').disabled = false;
 	}
  	selectedRow = ie5 ? event.srcElement.parentNode : e.target.parentNode;
 	selectedRow.className = 'highlighted';

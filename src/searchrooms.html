@@ -104,10 +104,8 @@ function handleDiscoItemsResult(jabber) {
 
 	document.getElementById("search_result_iframe").style.display = '';
 	document.getElementById("addbookmark_button").style.display = '';
-	//document.getElementById("show_users_button").style.display = '';
 	document.getElementById("join_room_button").style.display = '';
 	document.getElementById("addbookmark_button").disabled = true;
-	document.getElementById("show_users_button").disabled = true;
 	document.getElementById("join_room_button").disabled = true;
 
 	// start querying each item
@@ -135,7 +133,6 @@ function doSub() {
 	document.getElementById("search_result_tab").style.display = '';
 	document.getElementById("search_result_iframe").style.display = 'none';
 	document.getElementById("addbookmark_button").style.display = 'none';
-	document.getElementById("show_users_button").style.display = 'none';
 	document.getElementById("join_room_button").style.display = 'none';
 	document.getElementById("search_result_header").innerHTML = loc("Search results for [_1]",conference_server);
 	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by...",conference_server);
@@ -145,86 +142,8 @@ function doSub() {
 	return false;
 }
 
-function handleDiscoItemItemsResult(jabber) {
-	srcW.fdebug(jabber,2);
-
-	var myTable = show_users_iframe.document.createElement("TABLE");
-	
-	var myTableHead = show_users_iframe.document.createElement("THEAD");
-	var myTableBody = show_users_iframe.document.createElement("TBODY");
-	
-	var row = show_users_iframe.document.createElement("TR");
-	var cell; 
-	cell = show_users_iframe.document.createElement("TH");
-	cell.appendChild(show_users_iframe.document.createTextNode('JID'));
-	row.appendChild(cell);
-	myTableHead.appendChild(row);
-	myTable.appendChild(myTableHead);
-	
-	for (var i in jabber.browse.o) {
-		var item = jabber.browse.o[i];
-		if (item.tagname == 'item') {
-			row = show_users_iframe.document.createElement("TR");
-			
-			cell = show_users_iframe.document.createElement("TD");
-			textN = show_users_iframe.document.createTextNode(item.jid);
-			cell.appendChild(textN);
-			row.appendChild(cell);
-							
-			row.setAttribute("jid",item.jid);
-			myTableBody.appendChild(row);
-		}
-	}
-
-
-	myTable.appendChild(myTableBody);
-	
-	myTable.setAttribute("id","modTable");
-	myTable.setAttribute("WIDTH","100%");
-	myTable.setAttribute("BORDER","0");
-	myTable.setAttribute("CELLSPACING","0");
-	myTable.setAttribute("CELLPADDING","0");
-	myTable.setAttribute("RULES","rows");
-		
-	// add table
-	show_users_iframe.document.body.appendChild(myTable);
-		
-	// tell frame about it
-	show_users_iframe.init();
-	
-	document.getElementById('show_users_iframe').style.display = '';
-	document.getElementById('show_users_info').style.display = 'none';
-}
-
-function showUsers() {
-	frames['jwc_main'] = srcW.frames['jwc_main'];
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+search_result_iframe.selectedRow.getAttribute('jid')+"&ns=http://jabber.org/protocol/disco%23items",frames['jwc_main'].groupw.srw.handleDiscoItemItemsResult); 
-
-	document.getElementById('show_users_header').innerHTML = loc('Show Users for [_1]',search_result_iframe.selectedRow.getAttribute('jid'));
-	document.getElementById('show_users_info').innerHTML = loc('Querying [_1]. Please stand by!',search_result_iframe.selectedRow.getAttribute('jid'));
-
-	document.getElementById('show_users_iframe').style.display = 'none';
-
-	document.getElementById('start_chat_button').disabled = true;
-	document.getElementById('user_info_button').disabled = true;
-	
-	show_users_iframe.document.body.innerHTML = '';
-	show_users_iframe.selectedRow = null;
-
-	document.getElementById('search_result_tab').style.display = 'none';
-	document.getElementById('show_users_tab').style.display = '';
-
-	return false;
-}
-
 function joinRoom() {
 	srcW.openGroupchat(search_result_iframe.selectedRow.getAttribute('jid'),srcW.nick);
-	return false;
-}
-
-function backtoresult() {
-	document.getElementById("show_users_tab").style.display = 'none';
-	document.getElementById("search_result_tab").style.display = '';
 	return false;
 }
 
@@ -239,7 +158,6 @@ function init() {
 	if (srcW.DEFAULTCONFERENCESERVER)
 		document.forms[0].conference_server.value = srcW.DEFAULTCONFERENCESERVER;
 	document.getElementById("search_result_tab").style.display = 'none';
-	document.getElementById("show_users_tab").style.display = 'none';
 }
 
 function cleanUp() {
@@ -294,18 +212,7 @@ onunload = cleanUp;
 				<tr><td><hr noshade size=1></td></tr>
 				<tr>
 					<td align=right>
-						<button id="show_users_button" onClick="return showUsers();"><l>Show Users</l></button>&nbsp;<button id="addbookmark_button" onClick="return addBookmark();" disabled><l>Bookmark</l></button>&nbsp;<button id="join_room_button" onClick="return joinRoom();"><l>Join</l></button>&nbsp;<button onClick="return backtosearch();"><l>Back</l></button>
-					</td>
-				</tr>
-		</table>
-		<table id="show_users_tab" width="100%" height="100%">
-				<tr><td><h2 id="show_users_header"></h2></td></tr>
-				<tr><td id="show_users_info"></td></tr>
-				<tr><td width="100%" height="100%"><iframe id="show_users_iframe" name="show_users_iframe" src="searchrooms_show_users_iframe.html" style="width:100%;height:100%;"></iframe></tr></td>
-				<tr><td><hr noshade size=1></td></tr>
-				<tr>
-					<td align=right>
-						<button id="user_info_button" onClick="return openUserInfo();"><l>User Info</l></button>&nbsp;<button id="start_chat_button" onClick="return openChat();"><l>Start Chat</l></button>&nbsp;<button onClick="return backtoresult();"><l>Back</l></button>
+						<button id="addbookmark_button" onClick="return addBookmark();" disabled><l>Bookmark</l></button>&nbsp;<button id="join_room_button" onClick="return joinRoom();"><l>Join</l></button>&nbsp;<button onClick="return backtosearch();"><l>Back</l></button>
 					</td>
 				</tr>
 		</table>
