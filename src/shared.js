@@ -81,7 +81,7 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 	if (typeof(emoticons) != 'undefined') {
 		for (var i in emoticons) {
 			var iq = i.replace(/\\/g, '');
-			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emoticonpath+emoticons[i]+"\" alt=\""+iq+"\">");
+			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emoticonpath+emoticons[i]+"\" alt=\""+iq+"\" title=\""+iq+"\">");
 		}
 	}
 	
