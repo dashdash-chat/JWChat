@@ -115,7 +115,7 @@ function addtoHistory(message) {
 function openGroupchat(group,nick) {
   var user = roster.getUserByJID(group);
   if(!user) {
-    user = roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
+    user = roster.addUser(new RosterUser(group,'',[loc('Chat Rooms')],group.substring(0,group.indexOf('@'))));
     roster.print();
   }
   user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
@@ -181,8 +181,8 @@ function playSound(action) {
 
 function frameLoad(frame,func,param,onload) {
   var ext = ".jsx"; // protocol extension for wcs
-  var ext2 = ".js" 
-    var url = sWCS + func + ext + param;
+  var ext2 = ".js";
+  var url = sWCS + func + ext + param;
   var url2 = sWCS2 + func + ext2 + param;
   /* doesn't work with mozilla */
   if (is.ie || is.op) {
