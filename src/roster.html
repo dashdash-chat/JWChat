@@ -16,10 +16,10 @@ function openHelp(button) {
       
 var ow;
 function openOptions(el) {
-  if (!ow || ow.closed)
-    ow = open("options.html","ow","width=330,height=270,resizable=yes");
+  if (!top.ow || top.ow.closed)
+    top.ow = open("options.html","ow","width=330,height=310,resizable=yes");
   el.blur();
-  ow.focus();
+  top.ow.focus();
   return false;
 }
 
