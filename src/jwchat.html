@@ -310,7 +310,7 @@ function handleEvent() {
   if (status != 'polling')
     return;
 
-  jabber = frames["jwc_in"].jabber;
+  var jabber = frames["jwc_in"].jabber;
 
   /* error handling */
   if (!jabber) { // connection lost
