@@ -113,11 +113,6 @@ function RosterOpenMessage(jid) {
   var user = this.getUserByJID(jid);
   var wName = makeWindowName(user.jid); 
 
-  if (user.chatmsgs.length > 0) {
-    this.openChat(jid);
-    return false;
-  }
-
   if (user.messages.length > 0 && (!user.mW || user.mW.closed)) // display messages
     user.mW = open('message.html?jid='+escape(jid),"mw"+wName,'width=360,height=270,dependent=yes,resizable=yes');
   else if (!user.sW || user.sW.closed) // open send dialog
@@ -131,7 +126,10 @@ function RosterOpenChat(jid) {
 
 	if (!user)
 		return;
-  
+
+	if (user.messages.length > 0 && (!user.mW || user.mW.closed)) // display messages
+		this.openMessage(jid);
+		
   if (!user.chatW || user.chatW.closed)
     user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=360,resizable=yes");
   else if (user.chatW.popMsgs)
@@ -180,7 +178,7 @@ function RosterUserAdd(user) {
   this.updateGroupsForUser(user);
   return user;
 }
-	
+
 function RosterRemoveUser(user) {
   var uLen = this.users.length;
   for (var i=0; i<uLen; i++) {
@@ -196,7 +194,7 @@ function RosterGetGroupchats() {
 	var groupchats = new Array();
 	for (var i in this.users)
 		if (this.users[i].roster)
-			groupchats[groupchats.length] = this.users[i].jid;
+			groupchats[groupchats.length] = this.users[i].jid+'/'+this.users[i].roster.nick;
 	return groupchats;
 }
 	
