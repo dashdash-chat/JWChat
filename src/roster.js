@@ -6,6 +6,9 @@ var grp_open_img = new Image();
 grp_open_img.src = 'images/group_open.gif';
 var grp_close_img = new Image();
 grp_close_img.src = 'images/group_close.gif';
+var arrow_right_blinking = new Image();
+arrow_right_blinking.src = 'images/arrow_right_blinking.gif';
+
 
 function RosterGroup(name) {
   this.name = name;
