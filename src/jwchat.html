@@ -119,6 +119,7 @@ function addtoHistory(message) {
 
 function openGroupchat(jid,nick,pass) {
 	pass = pass || '';
+	nick = nick || '';
 
   var user = roster.getUserByJID(jid);
   if(!user) {
