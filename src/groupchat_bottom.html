@@ -17,7 +17,11 @@ function submitClicked() {
     return false;
           
   /* handle commands */
-  if (body.match(/^\/nick (.+)/)) {
+  if (body.match(/^\/say (.+)/)) {
+		body = RegExp.$1;
+		url += "&body=" + msgEscape(body) + "&type=groupchat";
+    parent.srcW.fhdLoad("message",url); // send to client
+  } else if (body.match(/^\/nick (.+)/)) {
     var nick = body.replace(/^\/nick (.+)/,"$1");
     url += "/"+msgEscape(nick);
     parent.srcW.fhdLoad("presence",url);
@@ -25,6 +29,54 @@ function submitClicked() {
     var topic = body.replace(/^\/topic (.+)/,"$1");
     url += "&type=groupchat&subject="+msgEscape(topic);
     parent.srcW.fhdLoad("message",url);
+  } else if (body.match(/^\/ban (\S+)\s*(.*)/)) {
+		var nick = RegExp.$1;
+		var reason = RegExp.$2;
+
+		var jid = parent.roster.getRealJIDByNick(nick);
+		if (jid == null) {
+			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
+		} else {
+
+			var param = "?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&ns="+escape("http://jabber.org/protocol/muc#admin");
+			param += "&set="+msgEscape("<item jid='"+jid+"' affiliation='outcast'><reason>"+reason+"</reason></item>");
+			parent.srcW.fhdLoad("iq",param);
+		}
+  } else if (body.match(/^\/kick (\S+)\s*(.*)/)) {
+		var nick = RegExp.$1;
+		var reason = RegExp.$2;
+
+		var jid = parent.roster.getRealJIDByNick(nick);
+		if (jid == null) {
+			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
+		} else {
+
+			var param = "?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&ns="+escape("http://jabber.org/protocol/muc#admin");
+			param += "&set="+msgEscape("<item jid='"+jid+"' role='none'><reason>"+reason+"</reason></item>");
+			parent.srcW.fhdLoad("iq",param);
+		}
+  } else if (body.match(/^\/invite (\S+)\s*(.*)/)) {
+		var jid = RegExp.$1;
+		var reason = RegExp.$2;
+		parent.srcW.fhdLoad("muc-invite","?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&invitee="+msgEscape(jid)+"&reason="+reason);
+  } else if (body.match(/^\/join (\S+)\s*(.*)/)) {
+		var room = RegExp.$1;
+		var pass = RegExp.$2;
+		parent.srcW.openGroupchat(room,parent.nick,pass);
+  } else if (body.match(/^\/msg (\S+)\s*(.*)/)) {
+		var nick = RegExp.$1;
+		var body = RegExp.$2;
+
+		var jid = parent.roster.getFullJIDByNick(nick);
+		if (jid == null)
+			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
+		else
+			parent.srcW.fhdLoad("message","?sid="+parent.srcW.sid+"&to="+msgEscape(jid)+"&body="+msgEscape(body));
+  } else if (body.match(/^\/part\s*(.*)/)) {
+		var msg = RegExp.$1;
+		parent.srcW.fhdLoad("presence","?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&type=unavailable&status="+msg);
+  } else if (body.match(/^\/help/)) {
+		open("http://www.jabber.org/jeps/jep-0045.html#impl-client-irc");
   } else {
     url += "&body=" + msgEscape(body) + "&type=groupchat";
     parent.srcW.fhdLoad("message",url); // send to client
@@ -35,10 +87,16 @@ function submitClicked() {
   document.forms["chatform"].msgbox.value=''; // empty box
   document.forms["chatform"].msgbox.focus(); // set focus back on input field
   
-  /* poll (almost) immediatly to get my own response */
-  setTimeout("parent.srcW.poll()",200);
-
   return false;
+}
+
+var rw;
+function openRegisterRoom() {
+	if (!rw || rw.closed)
+		rw = open("groupchat_register.html","rw"+makeWindowName(parent.jid),"width=300,height=400,resizable=yes");
+	rw.focus();
+
+	return false;
 }
 
 var iw;
@@ -49,50 +107,61 @@ function openInvite() {
 	return false;
 }
 
-   function keyPressed(e) {
-     if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 77)) 
-       return submitClicked();
-     else {
-       switch (e.keyCode) {
-       case 27:
-         parent.close();
-         break;
-       case 38:				// shift+up
-         if (e.ctrlKey) {
-           el = document.forms["chatform"].msgbox;
-           el.value = parent.srcW.getHistory('up', el.value);
-           el.focus(); el.select();
-         }
-         break;
-       case 40:				// shift+down 
-         if (e.ctrlKey) {
-           el = document.forms["chatform"].msgbox;
-           el.value = parent.srcW.getHistory('down', el.value);
-           el.focus(); el.select();
-         }
-         break;
-       case 76:
-         if (e.ctrlKey) {   // ctrl+l
-           parent.cFrame.body.innerHTML = '';
-           return false;
-         }
-       }
-     }
-     return true;
-   }
-
 function cleanUp() {
 	if (iw && !iw.closed)
 		iw.close();
+	if (rw && !rw.closed)
+		rw.close();
+}
+
+function msgboxKeyPressed(el,e) {
+	var keycode;
+	if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+	else if (e) keycode = e.which;
+	else return true;
+	
+	switch (keycode) {
+	case 13:
+		if (!e.shiftKey && !e.ctrlKey)
+			return submitClicked();
+		break;
+	}
+	return true;
+}
+
+function msgboxKeyDown(el,e) {
+	var keycode;
+	if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+	else if (e) keycode = e.which;
+	else return true;
+
+	switch (keycode) {
+	case 38:				// shift+up
+		if (e.ctrlKey) {
+			el.value = parent.srcW.getHistory('up', el.value);
+			el.focus(); el.select();
+		}
+		break;
+	case 40:				// shift+down 
+		if (e.ctrlKey) {
+			el.value = parent.srcW.getHistory('down', el.value);
+			el.focus(); el.select();
+		}
+		break;
+	case 76:
+		if (e.ctrlKey) {   // ctrl+l
+			parent.cFrame.body.innerHTML = '';
+			return false;
+		}
+		break;
+	case 27:
+		window.close();
+		break;
+	}
+	return true;
 }
 
 onunload = cleanUp
-onkeydown = keyPressed;
-      //-->
-    </script>
-    <script for="document" event="onkeydown()" language="JScript">
-      <!--
-      return keyPressed(window.event);
       //-->
     </script>
   </head>
@@ -100,10 +169,10 @@ onkeydown = keyPressed;
     <form name="chatform">
       <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
           <tr height="100%">
-            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;"></textarea></td></tr>
+            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;" tabindex=1 onKeyPress="return msgboxKeyPressed(this,event);" onKeyDown="return msgboxKeyDown(this,event);"></textarea></td></tr>
           <tr><td height=5></td></tr>
           <tr>
-            <td align="right"><button id="config_chan_button" onClick="return parent.openConfig();" disabled><l>Config</l></button>&nbsp;<button id="invite_button" onClick="return openInvite();"><l>Invite</l></button>&nbsp;<button id='submit' name='submit' type='submit' onClick="return submitClicked();"><l>Send</l></button></td></tr>
+            <td align="right"><button id="config_chan_button" onClick="return parent.openConfig();" style="display:none;" tabindex=5><l>Config</l></button>&nbsp;<span id="register_room_span" style="display:none;"><button id="register_room_button" onClick="return openRegisterRoom();" tabindex=4><l>Register</l></button>&nbsp;</span><button id="invite_button" onClick="return openInvite();" tabindex=3><l>Invite</l></button>&nbsp;<button id='submit' name='submit' type='submit' onClick="return submitClicked();" tabindex=2><l>Send</l></button></td></tr>
       </table>
     </form>
   </body>
