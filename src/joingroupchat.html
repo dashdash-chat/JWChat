@@ -71,6 +71,8 @@ function init() {
   if (typeof(srcW.DEFAULTCONFERENCEROOM) != 'undefined' && srcW.DEFAULTCONFERENCEROOM != '')
     document.forms[0].group.value = srcW.DEFAULTCONFERENCEROOM;
 
+	document.forms[0].nick.value = srcW.nick;
+
 	updateBookmarks();
 }
 
