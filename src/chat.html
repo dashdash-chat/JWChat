@@ -61,7 +61,7 @@ function popMsgs() {
     for (var i=0; i<images.length; i++)
       images[i].src = user.lastsrc;
     user.lastsrc = null;
-    if (srcW.usersHidden && user.status == 'unavailable') // remove user from roster if not available any more
+    if (srcW.roster.usersHidden && user.status == 'unavailable') // remove user from roster if not available any more 
       srcW.roster.print();
   }
 }
