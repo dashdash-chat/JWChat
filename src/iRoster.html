@@ -12,8 +12,8 @@
   </head>
   <body class="roster">
     <div id="ie5menu" class="skin0" onMouseover="highlightie5(event)" onMouseout="lowlightie5(event)" onClick="jumptoie5(event)" display:none>
-			<nobr><div class="menuitems" func="roster.openMessage"><l>Send Message</l></div></nobr>
     <nobr><div class="menuitems" func="roster.openChat"><l>Start Chat</l></div></nobr>
+		<nobr><div class="menuitems" func="roster.openMessage"><l>Send Message</l></div></nobr>
     <nobr><div class="menuitems" func="openCustomPresence"><l>Presence</l></div></nobr>
     <nobr><div class="menuitems" func="openUserProps"><l>Edit User</l></div></nobr>
     <nobr><div class="menuitems" func="openUserInfo"><l>Show Info</l></div></nobr>
@@ -153,7 +153,7 @@ function userClicked(el,jid) {
 		return parent.top.openGroupchat(jid);
 
 	if (!parent.top.isGateway(jid))
-		return parent.top.roster.openMessage(jid);
+		return parent.top.roster.openChat(jid);
 }
 if (ie5||ns6){
   menuobj.style.display='';
