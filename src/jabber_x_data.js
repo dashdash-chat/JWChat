@@ -24,7 +24,7 @@ function genJabberXDataTable(x) {
 			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
 			html += "<input type=text size='24' name='" + aField.getAttribute('var') + "'";
-			if (aField.firstChild.firstChild)
+			if (aField.firstChild && aField.firstChild.firstChild)
 				html += " value='" + aField.firstChild.firstChild.nodeValue + "'";
 			html += ">";
 			html += "</td>";
@@ -33,7 +33,7 @@ function genJabberXDataTable(x) {
 			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
 			html += "<input type=password size='24' name='" + aField.getAttribute('var') + "'";
-			if (aField.firstChild.firstChild)
+			if (aField.firstChild && aField.firstChild.firstChild)
 				html += " value='" + aField.firstChild.firstChild.nodeValue + "'";
 			html += ">";
 			html += "</td>";
@@ -42,7 +42,7 @@ function genJabberXDataTable(x) {
 			html += "<th valign=top>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
 			html += "<textarea cols=24 rows=4 name='" + aField.getAttribute('var') + "'>";
-			if (aField.firstChild.firstChild)
+			if (aField.firstChild && aField.firstChild.firstChild)
 				html += aField.firstChild.firstChild.nodeValue;
 			html += "</textarea>";
 			html += "</td>";
@@ -68,7 +68,7 @@ function genJabberXDataTable(x) {
 			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
 			html += "<input type=checkbox name='" +aField.getAttribute('var') + "'";
-			if (aField.firstChild.firstChild.nodeValue == '1')
+			if (aField.firstChild && aField.firstChild.firstChild.nodeValue == '1')
 				html += " checked";
 			html += ">";
 			html += "</td>";
