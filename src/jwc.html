@@ -14,6 +14,7 @@
 	var jid;
 	var pass;	
   var nick;
+  var vcard;
 	var status = '';
 	var sid = 0;
 	var onlstat = 'available';
@@ -123,7 +124,7 @@
         userurl = USERURL.replace(/\$user/,username);
       else {
         // query vcard-temp
-        fhdLoad("vcard","?to="+jid);
+        fhdLoad("pub/vcard","?to="+jid);
         return false;
       }
     } else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
@@ -528,12 +529,16 @@
   }
 
 	function handleVCardTemp(jabber) {
-    var user = roster.getUserByJID(jabber.from);
+    if (jabber.from == cutResource(jid))
+      vcard = jabber.vcard; // save my own vcard
+    else {
+      var user = roster.getUserByJID(jabber.from);
 
-    if (user == null)
-      user = roster.addUser(jabber.from);
+      if (user == null)
+        user = roster.addUser(new RosterUser(jabber.from));
 
-    user.vcard = jabber.vcard;
+      user.vcard = jabber.vcard;
+    }
 
     open("vcard.html?jid="+jabber.from,"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
   }

@@ -125,7 +125,7 @@
 
 <!-- me myself and my microphone -->
 <tr><td colspan=2 class="rosterInnerElement" style="padding-bottom:0px;">
-            <img id="statusLed" name="statusLed" src="images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="myNickname" class="nickName"></span><br>
+            <img id="statusLed" name="statusLed" src="images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="myNickname" class="nickName" onClick='return top.openUserInfo(top.cutResource(top.jid))' title="<l>Change User Info</l>"></span><br>
             <input type="text" id="statusMsg" title="<l>Change Status Message</l>" class="myStatusMsg"></div>
           </td></tr>
 

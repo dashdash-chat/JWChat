@@ -114,7 +114,10 @@ td.menubar {
 
 #iChat { background-color: white; }
 
-#myNickname { font-weight: bold; }
+#myNickname {
+  font-weight: bold;
+  cursor: pointer;
+}
 
 .nickName {
   padding-left: 2px;
@@ -143,6 +146,17 @@ td.menubar {
   background-color: white;
 }
 
+.vcardBox { 
+  border: 0;
+  background-color: #b8dbff;
+  width: 100%;
+}
+
+.vcardBoxEditable { 
+  border: 1px;
+  background-color: white;
+  width: 100%;
+}
 
 #statusLed { 
   cursor: pointer;

@@ -7,27 +7,64 @@
     <script src="switchStyle.js"></script>
 		<script language="JavaScript1.2">
 		<!--
-		var jid;
+		var jid , vcard;
 		var srcW; // the source window with necessary data
 
+    function sendSub() {
+      var params = "?sid="+srcW.sid;
+
+      for (var i=0; i<document.forms[0].elements.length; i++) {
+        if (document.forms[0].elements[i].id == '') continue;
+        if (document.forms[0].elements[i].value == '' ) continue;
+        params += "&"+document.forms[0].elements[i].id+"="+document.forms[0].elements[i].value;
+      }
+
+      srcW.fhdLoad("vcard-set",params);
+      window.close();
+      return false;
+    }
+
+    function fillVCard(vcard,prefix) {
+      for (var i in vcard) {
+        if (typeof(vcard[i]) == 'object') {
+          fillVCard(vcard[i],i+".");
+          continue;
+        }
+        if (typeof(document.forms[0].elements[prefix+i]) == 'undefined') continue;
+        document.forms[0].elements[prefix+i].value = vcard[i];
+      }
+
+    }
+
     function init() {
-      srcW = opener;
+      srcW = opener.top;
 
       getArgs();
 
       jid = passedArgs['jid'];
       document.title += jid;
 
-      var user = srcW.roster.getUserByJID(jid);
-      
-      document.getElementById('FN').innerHTML = user.vcard.FN;
-
-      var tags = document.getElementsByTagName("td");
-
-      for (var i=0; i<tags.length;i++) {
-      if (typeof(eval("user.vcard."+tags[i].id)) != 'undefined')
-      tags[i].innerHTML = eval("user.vcard."+tags[i].id);
+      if (jid == srcW.cutResource(srcW.jid)) // it's me
+        vcard = srcW.vcard;
+      else {
+        var user = srcW.roster.getUserByJID(jid);
+        vcard = user.vcard;
       }
+
+      fillVCard(vcard,'');
+   
+      for (var i=0; i<document.forms[0].elements.length;i++) {
+        if (document.forms[0].elements[i].id == '') continue;
+        if (jid != srcW.cutResource(srcW.jid)) {
+          document.forms[0].elements[i].className = "vcardBox";
+          document.forms[0].elements[i].readOnly = true;
+        }
+      }
+
+      if (jid != srcW.cutResource(srcW.jid))
+        document.getElementById("savebox").style.display = 'none';
+      
+      window.focus();
     }
 
 		function keyPressed(e) {
@@ -55,53 +92,60 @@
     </style>
 	</head>
 	<body style="margin:8px">
+    <form>
     <fieldset>
       <legend><l>Name</l></legend>
       <table>
-          <tr><th><l>Full Name</l>:</th><td id="FN"></td></tr>
-          <tr><th><l>Family Name</l>:</th><td id="N.FAMILY"></td></tr>
-          <tr><th><l>Name</l>:</th><td id="N.GIVEN"></td></tr>
-          <tr><th><l>Nickname</l>:</th><td id="NICKNAME"></td></tr>
+          <tr><th nowrap><l>Full Name</l>:</th><td width="100%"><input type=text id="FN" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Family Name</l>:</th><td width="100%"><input type=text id="N.FAMILY" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Name</l>:</th><td width="100%"><input type=text id="N.GIVEN" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Nickname</l>:</th><td width="100%"><input type=text id="NICKNAME" class="vcardBoxEditable"></td></tr>
       </table>
     </fieldset>
     
     <fieldset>
       <legend><l>Information</l></legend>
       <table>
-          <tr><th><l>E-mail</l>:</th><td id="EMAIL"></td></tr>
-          <tr><th><l>Web Site</l>:</th><td id="URL"></td></tr>
+          <tr><th nowrap><l>E-mail</l>:</th><td width="100%"><input type=text id="EMAIL" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Web Site</l>:</th><td width="100%"><input type=text id="URL" class="vcardBoxEditable"></td></tr>
       </table>
     </fieldset>
     
     <fieldset>
       <legend><l>Address</l></legend>
       <table>
-          <tr><th><l>Address</l>:</th><td id="ADR.STREET"></td></tr>
-          <tr><th><l>Address2</l>:</th><td id="ADR.EXTADD"></td></tr>
-          <tr><th><l>City</l>:</th><td id="ADR.LOCALITY"></td></tr>
-          <tr><th><l>State</l>:</th><td id="ADR.REGION"></td></tr>
-          <tr><th><l>Postal Code</l>:</th><td id="ADR.PCODE"></td></tr>
-          <tr><th><l>Country</l>:</th><td id="ADR.CTRY"></td></tr>
+          <tr><th nowrap><l>Address</l>:</th><td width="100%"><input type=text id="ADR.STREET" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Address2</l>:</th><td width="100%"><input type=text id="ADR.EXTADD" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>City</l>:</th><td width="100%"><input type=text id="ADR.LOCALITY" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>State</l>:</th><td width="100%"><input type=text id="ADR.REGION" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Postal Code</l>:</th><td width="100%"><input type=text id="ADR.PCODE" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Country</l>:</th><td width="100%"><input type=text id="ADR.CTRY" class="vcardBoxEditable"></td></tr>
       </table>
     </fieldset>
 
     <fieldset>
       <legend><l>Organization</l></legend>
       <table>
-          <tr><th><l>Name</l>:</th><td id="ORG.ORGNAME"></td></tr>
-          <tr><th><l>Unit</l>:</th><td id="ORG.ORGUNIT"></td></tr>
-          <tr><th><l>Title</l>:</th><td id="TITLE"></td></tr>
-          <tr><th><l>Role</l>:</th><td id="ROLE"></td></tr>
+          <tr><th nowrap><l>Name</l>:</th><td width="100%"><input type=text id="ORG.ORGNAME" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Unit</l>:</th><td width="100%"><input type=text id="ORG.ORGUNIT" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Title</l>:</th><td width="100%"><input type=text id="TITLE" class="vcardBoxEditable"></td></tr>
+          <tr><th nowrap><l>Role</l>:</th><td width="100%"><input type=text id="ROLE" class="vcardBoxEditable"></td></tr>
       </table>
     </fieldset>
 
     <fieldset>
       <legend><l>About</l></legend>
       <table>
-          <tr><th><l>Birthday</l>:</th><td id="BDAY"></td></tr>
-          <tr><th><l>Description</l>:</th><td colspan=2 id="DESC"></td></tr>
+          <tr><th><l>Birthday</l>:</th><td width="100%"><input type=text id="BDAY" class="vcardBoxEditable"></td></tr>
+          <tr><th><l>Description</l>:</th><td width="100%"><input type=text id="DESC" class="vcardBoxEditable"></td></tr>
       </table>
     </fieldset>
+    <div id="savebox">
+		<hr noshade size="1" size="100%">
+		<div align="right">
+			<button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return sendSub();"><l>Save</l></button>
+		</div>
+      </div>
     </form>
 	</body>
 </html>
