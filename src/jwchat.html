@@ -7,6 +7,7 @@
     <script src="shared.js" language="JavaScript1.2"></script>
     <script src="browsercheck.js" language="JavaScript1.2"></script>
     <script src="sounds.js" language="JavaScript1.2"></script>
+    <script src="statusLed.js" language="JavaScript1.2"></script>
     <script src="roster.js" language="JavaScript1.2"></script>
     <script language="JavaScript1.2">
 <!--
@@ -775,6 +776,10 @@ function handlePresence(jabber) {
   else
     user.statusMsg = null;
   
+	// update presence indicator of chat window
+	if (user.chatW && !user.chatW.closed) 
+		user.chatW.updateUserPresence();
+
   aRoster.print(); // update roster
 }
 
