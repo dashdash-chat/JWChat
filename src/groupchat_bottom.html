@@ -29,6 +29,11 @@ function submitClicked() {
 		aMessage.setBody(body);
 		aMessage.setType('groupchat');
 		parent.srcW.con.send(aMessage);
+  } else if (body.match(/^\/clear/)) {
+
+		/* *** clear *** */
+
+		cFrame.body.innerHTML = '';
   } else if (body.match(/^\/nick (.+)/)) {
 
 		/* *** nick *** */
