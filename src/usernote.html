@@ -40,7 +40,8 @@ function saveNotes() {
   var xml = "<jwchat xmlns='jwchat:notes'>";
 
 	for (var i in srcW.annotations)
-		xml += "<item jid='"+i+"'>"+srcW.annotations[i]+"</item>";
+		if (srcW.annotations[i] != '')
+			xml += "<item jid='"+i+"'>"+srcW.annotations[i]+"</item>";
 
 	xml += '</jwchat>';
 
