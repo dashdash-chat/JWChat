@@ -27,7 +27,7 @@ function sendMSG() {
   if(document.forms[0].subject.value != '')
 		aMessage.setSubject(document.forms[0].subject.value);
 
-	srcW.con.send(aMessage);
+	srcW.con.syncSend(aMessage);
   
 	// save message
 	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined') {
@@ -37,7 +37,7 @@ function sendMSG() {
 		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
 		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
 		aNode.appendChild(aMessage.getNode().cloneNode(true));
-		srcW.con.send(aIQ);
+		srcW.con.syncSend(aIQ);
 	}
   
   if (!opener.roster && srcW.roster.getUserByJID(jid).messages.length == 0)

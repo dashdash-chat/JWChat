@@ -19,7 +19,7 @@ function sendSub() {
 	aPresence.setTo(jid);
 	aPresence.setType('subscribed');
 
-	srcW.con.send(aPresence);
+	srcW.con.syncSend(aPresence);
   window.close();
 }
 

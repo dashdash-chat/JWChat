@@ -52,7 +52,7 @@ function saveNotes() {
 		}
 
 	srcW.Debug.log(iq.getDoc().xml,3);
-	srcW.con.send(iq);
+	srcW.con.syncSend(iq);
 }
 
 onload = init;
