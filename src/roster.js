@@ -139,6 +139,11 @@ function RosterOpenMessage(jid) {
 
 function RosterOpenChat(jid) {
   var user = this.getUserByJID(jid);
+
+	if (!user) {
+		fdebug("user '"+jid+"' not found",1);
+		return;
+	}
   
   if (!user.chatW || user.chatW.closed)
     user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=360,resizable=yes");
@@ -302,7 +307,7 @@ function GroupchatRosterUserAdd2Group(group) {
 function GroupchatRosterUser(jid,name) {
   this.base = RosterUser;
   this.base(jid,'',[''],name);
-
+	this.jid = this.fulljid; // always use fulljid
   this.affiliation = 'none';
   this.role = 'none';
 
