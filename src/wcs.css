@@ -24,7 +24,8 @@ input,label,td {
 }
 
 fieldset { 
-  margin: 4px;
+  margin: 2px;
+  padding: 2px;
 }
 
 /* roster */
@@ -66,7 +67,7 @@ fieldset {
   /*width:100px;*/
   border:2px outset threedhighlight;
   background-color:menu;
-  font-family: sans-serif;
+  font-family: Verdana, sans-serif;
   line-height:16px;
   cursor:default;
   font-size:12px;
@@ -82,14 +83,13 @@ fieldset {
 
 /* message windows */
 #buttonbox { 
-  position: absolute;
   bottom: 8px;
   right: 8px; 
 }
 
 .msgBox {
   width: 100%;
-  height: 100px;
+  height: 100%;
 }
 
 .rosterInnerElement { padding: 4px; padding-left:10px; padding-right:12px; }
@@ -105,11 +105,10 @@ button.menubar {
 button.menubar:hover { border-color: black; border-style: solid; }
 button.menubar:active { border-color: black; border-style: inset; }
 
-td.menubar { 
-  padding-bottom: 1px;
-  border-bottom: 2px outset;
-  border-color: #6c8bb1;
-  background-color: #6c8bb1;
+td.menubar {
+  padding: 2px;
+  border-bottom: 1px outset threedface;
+  background-color: menu;
 }
 
 #iChat { background-color: white; }
@@ -118,6 +117,8 @@ td.menubar {
   font-weight: bold;
   cursor: pointer;
 }
+
+#myNickname:hover { text-decoration: underline; }
 
 .nickName {
   padding-left: 2px;
@@ -160,6 +161,7 @@ td.menubar {
 
 #statusLed { 
   cursor: pointer;
+  padding-bottom: 4px;
 }
 
 .link { 
@@ -167,3 +169,17 @@ td.menubar {
   text-decoration: underline;
   cursor: pointer;
 }
+
+a.menubar { 
+  font-size: 90%;
+/*  font-weight: bold; */
+  cursor: pointer;
+  text-decoration: none;
+  color: menutext;
+}
+
+a.menubar:hover { 
+  text-decoration: underline;
+}
+
+img.actionButton { cursor: pointer; }
