@@ -624,9 +624,6 @@ function handlePresence(jabber) {
 							user.chatmsgs = user.chatmsgs.concat(aMessage);
 							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 								user.chatW.popMsgs();			
-							
-							playSound('chat_recv');
-
 
 							// update nick if it's me
 							if (ouser.name == user.roster.nick)
@@ -681,7 +678,7 @@ function handlePresence(jabber) {
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 				user.chatW.popMsgs();			
 
-			playSound('chat_recv');
+			playSound('online');
 
     } else if (jabber.type && jabber.type == 'unavailable' && !nickChanged) {
 			// show part message
@@ -694,7 +691,7 @@ function handlePresence(jabber) {
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 				user.chatW.popMsgs();			
 
-			playSound('chat_recv');
+			playSound('offline');
 
 		} else
       user.roster.updateGroups();
