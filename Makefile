@@ -16,7 +16,9 @@ install:
 		cp -r ./src/sounds htdocs;\
 		echo ""; \
 	fi
-	@./scripts/templateparser.pl
+	@echo "Copying additional libs ...";
+	@	./scripts/cplibs.sh;
+	@./scripts/templateparser.pl;
 
 clean:
 	@rm -r ./htdocs
