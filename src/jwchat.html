@@ -129,7 +129,7 @@ function openSubscription(jid) {
 }
 
 function openUserProps(jid) {
-  open("userprops.html?jid="+jid,"uProps"+makeWindowName(jid),"width=480,height=400,resizable=yes");
+  open("userprops.html?jid="+jid,"uProps"+makeWindowName(jid),"width=480,height=420,resizable=yes");
   return false;
 }
 
@@ -403,7 +403,7 @@ function handlePresence(jabber) {
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
 
-      window.open("subscriptionRequest.html?jid="+from+"&msg="+jabber.status,"sr"+makeWindowName(from),"width=320,height=210");
+      window.open("subscriptionRequest.html?jid="+from+"&msg="+jabber.status,"sr"+makeWindowName(from),"width=320,height=190");
 
       return;
     }
