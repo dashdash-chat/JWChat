@@ -161,3 +161,9 @@ td.menubar {
 #statusLed { 
   cursor: pointer;
 }
+
+.link { 
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
