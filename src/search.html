@@ -96,11 +96,14 @@ function handleIQSearchfields(jabber) {
 
 	var searchfields = document.getElementById('searchfields');
 	var html = "<table>";
+	if (typeof(jabber.browse['instructions']) != 'undefined')
+			html += "<tr><th colspan=2>"+jabber.browse['instructions']+"</th></tr>";
+
 	for (var i in jabber.browse) {
-		if (i == 'o')
+		if (i == 'o' || i == 'instructions')
 			continue;
-		if (i == 'instructions')
-			html += "<tr><th colspan=2>"+jabber.browse[i]+"</th></tr>";
+		if (i == 'key')
+			html += "<tr><td colspan=2><input type=hidden value=\""+jabber.browse[i]+"\"></td></tr>";
 		else
 			html += "<tr><td>"+i+"&nbsp;</td><td><input type=\"text\" name=\""+i+"\" value=\""+jabber.browse[i]+"\"></td></tr>";
 	}
