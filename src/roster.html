@@ -2,126 +2,129 @@
 <html>
   <head>
     <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="switchStyle.js"></script>
     <script type="text/javascript" src="pngfix.js"></script>
     <script language="JavaScript1.2">
       <!--
-      function openHelp(button) {
-      window.open("help.html","help","width=480,height=640,scrollbars=yes,resizable=yes");
-      button.blur();
-      return true;
-      }
 
-      var ow;
-      function openOptions(el) {
-      if (!ow || ow.closed)
-			ow = open("options.html","ow","width=330,height=270,resizable=yes");
-      el.blur();
-      ow.focus();
-      return false;
-      }
+function openHelp(button) {
+  window.open("help.html","help","scrollbars=yes,resizable=yes");
+  button.blur();
+  return false;
+}
 
-      function addUser() {
-      top.openSubscription();
-      return false;
-      }
+   var ow;
+function openOptions(el) {
+  if (!ow || ow.closed)
+    ow = open("options.html","ow","width=330,height=270,resizable=yes");
+  el.blur();
+  ow.focus();
+  return false;
+}
 
-      var groupw;
-      function openGroupchat() {
-      if (!groupw || groupw.closed)
-        groupw = open("joingroupchat.html","joingroupw","width=330,height=170,resizable=yes");
-      groupw.focus();
-      return false;
-      }
+function addUser() {
+  top.openSubscription();
+  return false;
+}
 
-      var onlStatW;
-      function openChangeStatus() {
-      if (!onlStatW || onlStatW.closed)
-      onlStatW = open("changestatus.html","onlStatW","width=330,height=240,resizable=yes");
-      onlStatW.focus();
-      return false;
-      }
+var groupw;
+function openGroupchat() {
+  if (!groupw || groupw.closed)
+    groupw = open("joingroupchat.html","joingroupw","width=330,height=170,resizable=yes");
+  groupw.focus();
+  return false;
+}
 
-      function selStatusMessage(el) {
-      if (!el.selected)
-      el.className = 'myStatusMsgSelected';
-      else
-      el.className = 'myStatusMsg';
-      el.selected = !el.selected;
-      return true;
-      }
+var onlStatW;
+function openChangeStatus() {
+  if (!onlStatW || onlStatW.closed)
+    onlStatW = open("changestatus.html","onlStatW","width=330,height=240,resizable=yes");
+  onlStatW.focus();
+  return false;
+}
 
-      function setStatusMessage() {
-      var el = document.getElementById('statusMsg');
-      if (!el.selected)
-      return true;
-      selStatusMessage(el);
-      top.changeStatus(top.onlstat,el.value);
-      el.blur()
-      return true;
-      }
+function selStatusMessage(el) {
+  if (!el.selected)
+    el.className = 'myStatusMsgSelected';
+  else
+    el.className = 'myStatusMsg';
+  el.selected = !el.selected;
+  return true;
+}
 
-      function keyPressed(e) {
-      if (e.keyCode != 13)
-      return;
-      var firingObj = (top.is.ie)?event.srcElement:e.target;
-      if (firingObj.id != 'statusMsg')
-      return;
-      return setStatusMessage();
-      }      
-      
-      function handleClick(e) {
-      var firingObj = (top.is.ie)?event.srcElement:e.target;
-      if (firingObj.id == 'statusMsg' && !firingObj.selected)
-      return selStatusMessage(firingObj);
-      else
-      return setStatusMessage();
-      }      
+function setStatusMessage() {
+  var el = document.getElementById('statusMsg');
+  if (!el.selected)
+    return true;
+  selStatusMessage(el);
+  top.changeStatus(top.onlstat,el.value);
+  el.blur();
+  return true;
+}
 
-      var adduser = new Image();
-      adduser.src = "images/adduser.png";
-      var adduserOver = new Image();
-      adduserOver.src = "images/adduser_over.png";
-      var groupchat = new Image();
-      groupchat.src = "images/groupchat.png";
-      var groupchatOver = new Image();
-      groupchatOver.src = "images/groupchat_over.png";
+function keyPressed(e) {
+  if (e.keyCode != 13)
+    return;
+  var firingObj = (top.is.ie)?event.srcElement:e.target;
+  if (firingObj.id != 'statusMsg')
+    return;
+  return setStatusMessage();
+}      
 
-      function changePic(oldEl,newEl) {
-      if (oldEl.tagName == "SPAN") // from pngfix.js
-      oldEl.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src="+newEl.src+", sizingMethod='scale')";
-      else
-      oldEl.src = newEl.src;
-      }
+function handleClick(e) {
+  var firingObj = (top.is.ie)?event.srcElement:e.target;
+  if (firingObj.id == 'statusMsg' && !firingObj.selected)
+    return selStatusMessage(firingObj);
+  else
+    return setStatusMessage();
+}      
 
-      function cleanUp() { //close dependant windows
-      if (ow && !ow.closed)
-      ow.close();
-      if(groupw && !groupw.closed)
-      groupw.close();
-      if (onlStatW && !onlStatW.closed)
-      onlStatW.close();
-      }
+var adduser = new Image();
+adduser.src = "images/adduser.png";
+var adduserOver = new Image();
+adduserOver.src = "images/adduser_over.png";
+var groupchat = new Image();
+groupchat.src = "images/groupchat.png";
+var groupchatOver = new Image();
+groupchatOver.src = "images/groupchat_over.png";
 
-      onclick = handleClick;
-      onunload = cleanUp;
-      onkeydown = keyPressed;
+function changePic(oldEl,newEl) {
+  if (oldEl.tagName == "SPAN") // from pngfix.js
+    oldEl.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src="+newEl.src+", sizingMethod='scale')";
+  else
+    oldEl.src = newEl.src;
+  oldEl.style.cursor = 'pointer';
+}
+
+function cleanUp() { //close dependant windows
+  if (ow && !ow.closed)
+    ow.close();
+  if(groupw && !groupw.closed)
+    groupw.close();
+  if (onlStatW && !onlStatW.closed)
+    onlStatW.close();
+}
+
+onclick = handleClick;
+onunload = cleanUp;
+onkeydown = keyPressed;
       //-->
     </script>
-		<script for="document" event="onclick()" language="JScript">
+    <script for="document" event="onclick()" language="JScript">
       handleClick();
-		</script>
+    </script>
 
-		<script for="document" event="onkeydown()" language="JScript">
+    <script for="document" event="onkeydown()" language="JScript">
       keyPressed(window.event);
-		</script>
+    </script>
   </head>
 
   <body>
 <table height="100%" width="100%" border=0 cellspacing=0 cellpadding=0>
 
 <!-- the menubar -->
-<tr style=""><td class="menubar"><button class="menubar" onClick="return openOptions(this);"><l>Preferences</l></button></td><td align="right" class="menubar"><button class="menubar" onClick="return openHelp(this);"><l>Help</l></button></td></tr>
+<tr style=""><td class="menubar"><a href="" class="menubar" onClick="return openOptions(this);"><l>Preferences</l></a></td><td align="right" class="menubar"><a href="" class="menubar" onClick="return openHelp(this);"><l>Help</l></a></td></tr>
 
 <!-- me myself and my microphone -->
 <tr><td colspan=2 class="rosterInnerElement" style="padding-bottom:0px;">
@@ -133,7 +136,7 @@
 <tr><td height="100%" colspan=2 class="rosterInnerElement"><iframe src="iRoster.html" name="iRoster" id="iRoster" scrolling="auto" style="width:100%;height:100%;border:2px groove;" frameborder=0></iframe></td></tr>
 
 <!-- buttonbar -->
-<tr><td colspan=2 class="rosterInnerElement"><img src="images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><img src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
+<tr><td colspan=2 class="rosterInnerElement"><img class="actionButton" src="images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><img class="actionButton" src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
 
 </table>
   </body>
