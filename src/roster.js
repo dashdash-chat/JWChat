@@ -111,11 +111,11 @@ function RosterToggleGrp(name) {
   var el = this.rosterW.getElementById(name);
   if (el.className == 'hidden') {
     el.className = 'rosterGroup';
-    this.getGroupByName(name).toggled = false;
+    this.hiddenGroups[name] = false;
     this.rosterW.images[name+"Img"].src = grp_open_img.src;
   } else {
     el.className = 'hidden';
-    this.getGroupByName(name).toggled = true;
+    this.hiddenGroups[name] = true;
     this.rosterW.images[name+"Img"].src = grp_close_img.src;
   }
   this.updateStyleIE();
@@ -205,6 +205,7 @@ function RosterRemoveUser(user) {
 function Roster(items,targetW) {
   this.users = new Array();
   this.groups = new Array();
+	this.hiddenGroups = new Array();
   this.name = 'Roster';
 
   this.rosterW = targetW;
@@ -257,17 +258,24 @@ function printRoster() {
   
   this.groups = this.groups.sort(rosterSort);
   
+	/* ***
+	 * loop rostergroups 
+	 */
   for (var i=0; i<this.groups.length; i++) {
     var rosterGroupHeadClass = (this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
-    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"' onDblClick='toggleGrp(\""+this.groups[i].name+"\");'><nobr>";
-    var toggleImg = (this.groups[i].toggled)?'images/group_close.gif':'images/group_open.gif';
-    rosterHTML += "<img src='"+toggleImg+"' name='"+this.groups[i].name+"Img' align='middle' onClick='toggleGrp(\""+this.groups[i].name+"\");'> ";
+    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"' onClick='toggleGrp(\""+this.groups[i].name+"\");'><nobr>";
+    var toggleImg = (this.hiddenGroups[this.groups[i].name])?'images/group_close.gif':'images/group_open.gif';
+    rosterHTML += "<img src='"+toggleImg+"' name='"+this.groups[i].name+"Img'> ";
     rosterHTML += this.groups[i].name+ " (<span id='"+this.groups[i].name+"On'>"+this.groups[i].onlUserCount+"</span>/" + this.groups[i].users.length + ")";
     rosterHTML += "</nobr></div>";
-    var rosterGroupClass = ((this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) || this.groups[i].toggled)?'hidden':'rosterGroup';
+    var rosterGroupClass = ((this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) || this.hiddenGroups[this.groups[i].name])?'hidden':'rosterGroup';
     rosterHTML += "<div id='"+this.groups[i].name+"' class='"+rosterGroupClass+"'>";
     
     this.groups[i].users = this.groups[i].users.sort(rosterSort);
+
+		/* ***
+		 * loop users in rostergroup 
+		 */
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
       var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
@@ -289,7 +297,7 @@ function printRoster() {
       if (user.statusMsg)
         rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
       rosterHTML += "</div></nobr></div>";
-    }
+    } /* END inner loop */
     rosterHTML += "</div>";
   }
 
