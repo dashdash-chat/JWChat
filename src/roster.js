@@ -182,10 +182,10 @@ function RosterUserAdd(user) {
 }
 	
 function RosterRemoveUser(user) {
-  this.groups = new Array();
-  for (var i in this.users) {
+  var uLen = this.users.length;
+  for (var i=0; i<uLen; i++) {
     if (user == this.users[i]) {
-      this.users = this.users.slice(0,i).concat(this.users.slice(i+1,this.users.length));
+      this.users = this.users.slice(0,i).concat(this.users.slice(i+1,uLen));
       break;
     }
   }
