@@ -65,6 +65,7 @@ var timestamps = false;
 var usersHidden = false;
 var enableLog = false;
 var loghost;
+var timerval = 1000; // keep low on startup
 
 /* some globals */
 var roster;
@@ -571,8 +572,8 @@ function handleMessage(aMessage) {
 
     }
 
-		// store message - [TODO]
-		if (enableLog && typeof(loghost) != 'undefined')
+		// store message
+		if (enableLog && typeof(loghost) != 'undefined') {
 			var aIQ = new JSJaCIQ();
 			aIQ.setType('set');
 			aIQ.setTo(loghost);
@@ -580,8 +581,8 @@ function handleMessage(aMessage) {
 			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
 			aNode.appendChild(aMessage.getNode().cloneNode(true));
 			con.send(aIQ);
+		}
   }
-
 }
 
 /************************************************************************
@@ -1113,6 +1114,7 @@ function getPrefs(iq) {
 					break;
 				case 'timerval':
 					timerval = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					con.setPollInterval(timerval);
 					break;
 				case 'autoPopup':
 					autoPopup = eval(jNode.childNodes.item(i).firstChild.nodeValue);
@@ -1146,9 +1148,6 @@ function getPrefs(iq) {
 	changeStatus(onlstat);
 
 	playSound('connected');
-
-	// start polling
-	con.process(timerval);
 
 	// Start Service Discovery
 	iq = new JSJaCIQ();
@@ -1305,7 +1304,7 @@ function init() {
 	/* ***
 	 * create new connection
 	 */
-	con = new JSJaCHttpPollingConnection();
+	con = new JSJaCHttpPollingConnection(Debug);
 
 	/* register handlers */
 	con.registerHandler('iq',handleIQSet);
@@ -1317,7 +1316,7 @@ function init() {
 	con.registerHandler('onerror',handleConError);
 
 	/* connect to remote */
-	con.connect(HTTPBASE,JABBERSERVER,jid.substring(0,jid.indexOf('@')),jid.substring(jid.indexOf('/')+1),pass,register);
+	con.connect(HTTPBASE,JABBERSERVER,jid.substring(0,jid.indexOf('@')),jid.substring(jid.indexOf('/')+1),pass,timerval,register);
 }
 
 /************************************************************************
