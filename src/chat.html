@@ -236,8 +236,8 @@ function displayTimestamp() {
 			}
 
 function cleanUp() {
-	if (typeof(cid) != 'undefined')
-		jwcMain.fhdLoad("archive-done","?sid="+jwcMain.sid+"&to="+jwcMain.datasink+"&cid="+cid);
+	if (typeof(window.cid) != 'undefined')
+		jwcMain.fhdLoad("archive-done","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&cid="+window.cid);
 }
 
 onload = init;
