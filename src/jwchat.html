@@ -1179,10 +1179,15 @@ function getPrefs(iq) {
 	con.send(iq,getAnnotations);
 }
 
+var disco;
 function getDiscoItems(iq) {
 	if (!iq)
 		return;
 	
+	Debug.log(iq.getDoc().xml,2);
+
+	disco = new Array();
+
 	var items = iq.getNode().firstChild.childNodes;
 
 	/* query items */
@@ -1197,17 +1202,18 @@ function getDiscoItems(iq) {
 	}
 }
 
-var disco;
 function getDiscoInfo(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 
-	disco = new Array();
-
-	Debug.log(iq.getDoc().xml,3);
+	Debug.log(iq.getDoc().xml,2);
 	if (iq.getType() == 'result') {
 		disco[iq.getFrom()] = iq;
 		
+		// If the identity does not have a name, set the name to jid
+		if(iq.getNode().getElementsByTagName('identity').item(0).getAttribute('name') == null)
+			iq.getNode().getElementsByTagName('identity').item(0).setAttribute('name', iq.getFrom());
+
 		// set loghost
 		if (iq.getNode().getElementsByTagName('identity').item(0)) {
 			if (iq.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'store') {
@@ -1227,7 +1233,7 @@ function getBookmarks(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 
-	Debug.log(iq.getDoc().xml,3);
+	Debug.log(iq.getDoc().xml,2);
 
 	bookmarks = new Array();
 
@@ -1259,7 +1265,7 @@ function getAnnotations(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 	
-	Debug.log(iq.getDoc().xml,3);
+	Debug.log(iq.getDoc().xml,2);
 	
 	annotations = new Array();
 
