@@ -60,6 +60,9 @@ function init() {
     document.forms[0].to.value = jid;
 
 	/* detect services */
+	if (!srcW.disco.items)
+		return;
+	
 	var services = document.forms[0].elements["services"];
 	var optidx=1;
 	for (var i=0; i<srcW.disco.items.length; i++) {

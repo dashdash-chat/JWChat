@@ -137,6 +137,8 @@ function init() {
     srcW = opener.opener.top;
 
 	// detect services
+	if (!srcW.disco.items)
+		return;
 	var service = document.forms['service_select'].elements['service'];
 	var optidx = 1;
 	for (var  i=0; i<srcW.disco.items.length; i++) {
