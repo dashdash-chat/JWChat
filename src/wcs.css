@@ -37,18 +37,25 @@ fieldset {
 	display: none;
 }
 
-.rosterUser { }
+.rosterUser { 
+  padding: 2px; 
+}
+
 .rosterUserSelected {
-	color: white;
-	background-color: #00009c;
+	color: highlighttext;
+	background-color: highlight;
+  padding: 2px;
+  width: 100%;
 }
 
 .rosterGroupHeader {
-	background-color: #d6d6d6;
+/*	background-color: #d6d6d6; */
+  font-weight: bold;
 }
 
 .rosterGroupHeaderHidden {
-	background-color: #d6d6d6;
+/* 	background-color: #d6d6d6; */
+  font-weight: bold;
 	display: none;
 }
 
@@ -100,7 +107,7 @@ fieldset {
 	height: 100px;
 }
 
-.rosterInnerElement { padding:5px; padding-left: 10px; padding-right: 12px;}
+.rosterInnerElement { padding: 4px; padding-left:10px; padding-right:12px; }
 
 button.menubar { 
   padding: 0px;
@@ -121,3 +128,36 @@ td.menubar {
 }
 
 #iChat { background-color: white; }
+
+#nickname { font-weight: bold; }
+.nickName { 
+  padding-left: 2px;
+}
+
+.statusMsg { 
+  font-size: smaller;
+  padding-left: 2px;
+}
+
+#statusMsg { 
+  font-size: smaller;
+  padding-left: 2px;
+  width: 100%;
+ }
+
+.myStatusMsg {  
+  cursor: pointer;
+  border: 0;
+  background-color: #b8dbff;
+}
+
+.myStatusMsgSelected { 
+  cursor: text;
+  border: 1px;
+  background-color: white;
+}
+
+
+#statusLed { 
+  cursor: pointer;
+}

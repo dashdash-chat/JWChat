@@ -13,6 +13,7 @@
 	/* status */
 	var jid;
 	var pass;	
+  var nick;
 	var status = '';
 	var sid = 0;
 	var onlstat = 'available';
@@ -29,15 +30,17 @@
 	var fmd; // shortcut to main frame
 	var fhd; // shortcut to hidden frame
 	var statusbox;  // shortcut to status select box
+  var statusLed;
+  var statusMsg;
 
 	var onlstatus = new Object();
-	onlstatus["available"] = 0;
-	onlstatus["chat"] = 1;
-	onlstatus["away"] = 2;
-	onlstatus["xa"] = 3;
-	onlstatus["dnd"] = 4;
-	onlstatus["invisible"] = 5;
-	onlstatus["unavailable"] = 6;
+	onlstatus["available"] = loc("online");
+	onlstatus["chat"] = loc("free for chat");
+	onlstatus["away"] = loc("away");
+	onlstatus["xa"] = loc("not available");
+	onlstatus["dnd"] = loc("do not disturb");
+	onlstatus["invisible"] = loc("invisible");
+	onlstatus["unavailable"] = loc("invisible");
 
   // the debugger
 	var debugW;
@@ -95,10 +98,10 @@
     user.chatW = open("groupchat.html?group="+group+"&nick="+nick,"gchatW"+makeWindowName(group),"width=480,height=640,resizable=yes");
   }
 
-
+  var subw;
 	function openSubscription(jid) {
 		var param = (jid) ? "?jid="+jid : "";
-		open("subscription.html"+param,"sub","width=320,height=200,resizable=yes");
+		subw = open("subscription.html"+param,"sub","width=320,height=200,resizable=yes");
 		return false;
 	}
 
@@ -509,9 +512,9 @@
 			frameLoad(frames["jwc_in"],"cache","?sid="+sid);
 	}
 
-	function changeStatus(val,prompt_away) {
+	function changeStatus(val,away) {
 
-    fdebug("changeStatus: "+val+","+prompt_away, 2);
+    fdebug("changeStatus: "+val+","+away, 2);
 
 		onlstat = val;
 		if (sid == 0) { // login first
@@ -523,10 +526,6 @@
 		var param = "?sid=" + sid;
 
 		switch(val) {
-		case "available":
-			param += "&status="+val;
-			val = 'available'; // needed for led in status bar
-			break;
 		case "unavailable":
 			param += "&type="+val;
 			val = "invisible";
@@ -535,17 +534,20 @@
 			val = "unavailable";
 			fhdLoad("logout-sid","?sid=" + sid);
 			var img = eval(val+"Led");
-			statusbox.setAttribute("style","background-image: url('"+img.src+"')");
-			statusbox.selectedIndex = onlstatus['unavailable'];
+      statusLed.src = img.src;
+      if (away)
+        statusMsg.value = away;
+      else
+        statusMsg.value = onlstatus[val];
       cleanUp();
 			return;
 			break;
+		case "available":
+			val = 'available'; // needed for led in status bar
 		default:
-			if (prompt_away) {
-				var away = prompt(loc("Status Message"));
-				if (away)
-					param += "&status=" + away;
-			}
+			if (away) {
+        param += "&status=" + away;
+      }
 			param += "&show="+val;
 		}
 
@@ -560,10 +562,14 @@
       }
     }
 
-		statusbox.blur(); // remove focus from selectbox
 		var img = eval(val+"Led");
-		if (sid != 0)
-			statusbox.setAttribute("style","background-image: url('"+img.src+"')");
+		if (sid != 0) {
+      statusLed.src = img.src;
+      if (away)
+        statusMsg.value = away;
+      else
+        statusMsg.value = onlstatus[val];
+    }
 	}
 
 
@@ -573,7 +579,8 @@
 
 		/* get frames */
 		fhd = frames["jwc_out"].document;
-		statusbox = frames["jwc_main"].document.getElementById('status');
+		statusLed = frames["jwc_main"].document.getElementById('statusLed');
+		statusMsg = frames["jwc_main"].document.getElementById('statusMsg');
     fmd = frames["jwc_main"].iRoster.document;
 
 		// get saved cookie data
@@ -602,7 +609,10 @@
 			frames["jwc_out"].document.body.attachEvent("onload",run);
 
     /* set title */
-    document.title = "JWChat - " + jid.substring(0,jid.indexOf('@'));
+    document.title = "JWChat - " + nick;
+
+    /* set nick */
+    frames["jwc_main"].document.getElementById('nickName').innerHTML = nick;  
 
     if (sid) {
       status = 'sendPresence';
@@ -655,8 +665,6 @@
         roster = new Roster(frames["jwc_out"].jabber.items,fmd);
 		  	roster.print();
 			
-				statusbox.selectedIndex = onlstatus[onlstat];
-
 				playSound('connected');
 
 				poll();	// initial poll (not nice here)
@@ -678,6 +686,9 @@
 		/* close dependent windows */
     if (roster)
       roster.close();
+
+    if (subw && !subw.closed)
+      subw.close();
 
     fmd.getElementById('roster').innerHTML = '';
 
@@ -731,6 +742,7 @@
     // return false;
   }
   jid = passedArgs['jid'];
+  nick = jid.substring(0,jid.indexOf('@'));
 
   /* get style */
   if (passedArgs['style']) 

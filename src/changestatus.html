@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title><l>JWChat - Change Online Status</l></title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script src="shared.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
+		<script language="JavaScript1.2">
+		<!--
+		var jid;
+		var srcW; // the source window with necessary data
+
+		function doSubmit() {
+			var newstat, away;
+
+      for (var el=0;el<document.statF.status.length;el++) {
+      if (document.statF.status[el].checked) {
+      newstat = document.statF.status[el].value;
+      break;
+      }
+      }
+
+			if (document.statF.msg.value && document.statF.msg.value != '')
+      away = document.statF.msg.value;
+      else
+      away = opener.top.onlstatus[newstat];
+      
+      opener.top.changeStatus(newstat,away);
+		
+			window.close();
+			return false;
+		}
+
+		function init() {
+      for (var el=0;el<document.statF.status.length;el++) {
+      if (document.statF.status[el].value == opener.top.onlstat) {
+      document.statF.status[el].checked = true;
+      break;
+      }
+      }
+		}
+		
+		function keyPressed(e) {
+			if (e.ctrlKey && e.keyCode == 13)
+				doSubmit();
+			else if (e.keyCode == 27)
+				window.close();
+		}
+		onkeydown = keyPressed;
+		onload = init;
+		//-->
+		</script>
+		<script for="document" event="onkeydown()" language="JScript">
+		<!--
+			if (window.event.ctrlKey && window.event.keyCode == 13)
+				sendSub();
+			if (window.event.keyCode == 27)
+				window.close();
+		//-->
+		</script>
+	</head>
+	<body style="margin:8px">
+		<form name="statF">
+      <table width="100%">
+          <tr>
+            <td><input type=radio name="status" value="available"><img src="images/available.gif"> <l>online</l></td>
+            <td><input type=radio name="status" value="xa"><img src="images/xa.gif"> <l>not available</l></td>
+          </tr>
+          <tr>
+            <td><input type=radio name="status" value="chat"><img src="images/chat.gif"> <l>free for chat</l></td>
+            <td><input type=radio name="status" value="dnd"><img src="images/dnd.gif"> <l>do not disturb</l></td>
+          </tr>
+          <tr>
+            <td><input type=radio name="status" value="away"><img src="images/away.gif"> <l>away</l></td>
+            <td><input type=radio name="status" value="unavailable"><img src="images/invisible.gif"> <l>Invisible</l></td>
+          </tr>
+      </table>
+        <script language="JavaScript1.2">
+<!--
+//        if (typeof(opener.top.pass)!='undefined')
+//        document.write('<input type=radio name="status" value="offline"><l>offline</l>');
+-->
+        </script>
+      <b><l>Status Message</l>:</b>
+      <textarea id="msg" rows="6" cols="40" wrap="physical" class="msgBox"></textarea>
+		<hr noshade size="1" size="100%">
+		<div align="right" id="buttonbox">
+			<button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return doSubmit();"><l>Set</l></button>
+		</div>
+		</form>
+	</body>
+</html>

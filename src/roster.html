@@ -30,8 +30,51 @@
       function openGroupchat() {
       if (!groupw || groupw.closed)
         groupw = open("joingroupchat.html","joingroupw","width=330,height=170,resizable=yes");
+      groupw.focus();
       return false;
       }
+
+      var onlStatW;
+      function openChangeStatus() {
+      if (!onlStatW || onlStatW.closed)
+      onlStatW = open("changestatus.html","onlStatW","width=330,height=240,resizable=yes");
+      onlStatW.focus();
+      return false;
+      }
+
+      function selStatusMessage(el) {
+      if (!el.selected)
+      el.className = 'myStatusMsgSelected';
+      else
+      el.className = 'myStatusMsg';
+      el.selected = !el.selected;
+      }
+
+      function setStatusMessage() {
+      var el = document.getElementById('statusMsg');
+      if (!el.selected)
+      return true;
+      selStatusMessage(el);
+      top.changeStatus(top.onlstat,el.value);
+      return true;
+      }
+
+      function keyPressed(e) {
+      if (e.keyCode != 13)
+      return;
+      var firingObj = (top.is.ie)?event.srcElement:e.target;
+      if (firingObj.id != 'statusMsg')
+      return;
+      return setStatusMessage();
+      }      
+      
+      function handleClick(e) {
+      var firingObj = (top.is.ie)?event.srcElement:e.target;
+      if (firingObj.id == 'statusMsg' && !firingObj.selected)
+      selStatusMessage(firingObj);
+      else
+      setStatusMessage();
+      }      
 
       var adduser = new Image();
       adduser.src = "images/adduser.png";
@@ -41,14 +84,35 @@
       groupchat.src = "images/groupchat.png";
       var groupchatOver = new Image();
       groupchatOver.src = "images/groupchat_over.png";
+
       function changePic(oldEl,newEl) {
       if (oldEl.tagName == "SPAN") // from pngfix.js
       oldEl.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src="+newEl.src+", sizingMethod='scale')";
       else
       oldEl.src = newEl.src;
       }
+
+      function cleanUp() { //close dependant windows
+      if (ow && !ow.closed)
+      ow.close();
+      if(groupw && !groupw.closed)
+      groupw.close();
+      if (onlStatW && !onlStatW.closed)
+      onlStatW.close();
+      }
+
+      onclick = handleClick;
+      onunload = cleanUp;
+      onkeydown = keyPressed;
       //-->
     </script>
+		<script for="document" event="onclick()" language="JScript">
+      handleClick();
+		</script>
+
+		<script for="document" event="onkeydown()" language="JScript">
+      keyPressed(window.event);
+		</script>
   </head>
 
   <body>
@@ -58,21 +122,10 @@
 <tr style=""><td class="menubar"><button class="menubar" onClick="return openOptions(this);"><l>Preferences</l></button></td><td align="right" class="menubar"><button class="menubar" onClick="return openHelp(this);"><l>Help</l></button></td></tr>
 
 <!-- me myself and my microphone -->
-<tr><td colspan=2 class="rosterInnerElement">
-		<select id="status" name="status" onChange="return parent.changeStatus(this.value,true);">
-			<option style="background-image:url('images/available.gif');" class="statusbarOpt" value="available"> <l>online</l></option>
-			<option style="background-image:url('images/chat.gif');" class="statusbarOpt" value="chat"> <l>free for chat</l></option>
-			<option style="background-image:url('images/away.gif');" class="statusbarOpt" value="away"> <l>away</l></option>
-			<option style="background-image:url('images/xa.gif');" class="statusbarOpt" value="xa"> <l>not available</l></option>
-			<option style="background-image:url('images/dnd.gif');" class="statusbarOpt" value="dnd"> <l>do not disturb</l></option>
-			<option style="background-image:url('images/invisible.gif');" class="statusbarOpt" value="unavailable"> <l>Invisible</l></option>
-        <script language="JavaScript1.2">
-<!--
-        if (typeof(parent.top.pass)!='undefined')
-        document.write('<option style="background-image:url(\'images/unavailable.gif\');" class="statusbarOpt" selected value="offline"> <l>offline</l></option>');
--->
-        </script>
-		</select><td></tr>
+<tr><td colspan=2 class="rosterInnerElement" style="padding-bottom:0px;">
+            <img id="statusLed" name="statusLed" src="images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="nickName" class="nickName"></span><br>
+            <input type="text" id="statusMsg" title="<l>Change Status Message</l>" class="myStatusMsg""></div>
+          </td></tr>
 
 <!-- the roster himself -->
 <tr><td height="100%" colspan=2 class="rosterInnerElement"><iframe src="iRoster.html" name="iRoster" id="iRoster" scrolling="auto" style="width:100%;height:100%;border:2px groove;" frameborder=0></iframe></td></tr>
