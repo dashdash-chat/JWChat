@@ -9,19 +9,24 @@
 			<!--
 
 			function submitClicked() {
-				var url = "?sid=" + parent.srcW.sid + "&to=" + parent.group + "&type=groupchat";
+        var url = "?sid=" + parent.srcW.sid + "&to=" + parent.group;
 				var body = document.forms[0].elements["msgbox"].value;
 
+
 				if (body == '') // don't send empty message
-				return false;
+          return false;
+          
+        /* handle commands - only nick change for now */
+        if (body.match(/^\/nick (.+)/)) {
+          var nick = body.replace(/^\/nick (.+)/,"$1");
+          url += "/"+msgEscape(nick);
+          parent.srcW.fhdLoad("presence",url);
+        } else {
+          
+          url += "&body=" + msgEscape(body) + "&type=groupchat";
 
-				url += "&body=" + msgEscape(body);
-
-				parent.srcW.fhdLoad("message",url); // send to client
-			
-				// insert into chat window
-      // don't!
-//				parent.putMsgHTML(body,parent.srcW.jid.substring(0,parent.srcW.jid.indexOf("@")),"blue");
+          parent.srcW.fhdLoad("message",url); // send to client
+        }			
 
 				// add message to our message history
 				parent.srcW.addtoHistory(body);
