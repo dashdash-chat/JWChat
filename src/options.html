@@ -6,55 +6,29 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script language="JavaScript1.2">
       <!--
-function setOptions() {
-  // set cookie
-  var save = 'jwc=';
-  if (form.usersHidden.checked)
-    save += "usersHidden&";
-  if (form.autoPopup.checked) {
-    save += "autoPopup&";
-    if (form.autoPopupAway.checked) {
-      save += "autoPopupAway&";
-    }
-    opener.top.autoPopupAway = form.autoPopupAway.checked;
-  }
-  
-  if (form.playSounds.checked)
-    save += "playSounds&";
-  
-  if (form.timestamps.checked) {
-    save += "timestamps&";
-    opener.top.timestamps = true;
-  } else {
-    opener.top.timestamps = false;
-  }
-  displayTimestamps();
-  
-  if (form.focusWindows.checked) {
-    save += "focusWindows&";
-    opener.top.focusWindows = true;
-  } else {
-    opener.top.focusWindows = false;
-  }
-  save += "timerval%"+form.timerval.value+";";
-  
-  var now = new Date();
-  var expireT = new Date(now.getTime() + 1000*60*60*24*365*5);
-  save += "expires=" + expireT.toGMTString() + ";";
-  document.cookie = save;
-  
-  // update roster
-  if ((form.usersHidden.checked && !opener.top.roster.usersHidden) ||
-      (!form.usersHidden.checked && opener.top.roster.usersHidden)) // usersHidden changed
-    opener.top.roster.toggleHide();
-  
-  opener.top.autoPopup = form.autoPopup.checked;
-  opener.top.playSounds = form.playSounds.checked;
-  opener.top.setPollInterval(form.timerval.value);
-  
-  window.close();
-  return false;
+
+function handleIQSet(jabber) {
+	if (jabber && jabber.type == 'error')
+		opener.top.fdebug(jabber,1);
 }
+
+var ow = window;
+function savePrefs() {
+	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval');
+
+	var xml = "<jwchat xmlns='jwchat:prefs'>";
+
+	for (var i in prefs)
+		if (prefs[i] == 'usersHidden')
+			xml += "<"+prefs[i]+">"+eval("srcW.roster."+prefs[i])+"</"+prefs[i]+">";
+		else
+			xml += "<"+prefs[i]+">"+eval("srcW."+prefs[i])+"</"+prefs[i]+">";
+
+	xml += "</jwchat>";
+
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml),ow.handleIQSet);
+}
+
 	
 function displayTimestamps() {
   opener.top.timestamps = form.timestamps.checked;
@@ -226,6 +200,7 @@ function init() {
 }
 
 onload = init;
+onunload = savePrefs;
       //-->
     </script>
 		<style type="text/css">
@@ -276,23 +251,23 @@ onload = init;
 						<legend><l>Options</l></legend>
 						<table border="0">
 								<tr>
-									<td><input id="usersHidden" type="checkbox"></td>
+									<td><input id="usersHidden" type="checkbox" onChange="srcW.roster.toggleHide();"></td>
 									<td><label for="usersHidden"><l>Hide offline users</l></label></td>
 								</tr>
 								<tr>
-									<td><input id="autoPopup" type="checkbox" onChange="toggleAutoPopupAway(this);"></td>
+									<td><input id="autoPopup" type="checkbox" onChange="srcW.autoPopup=this.checked;toggleAutoPopupAway(this);"></td>
 									<td><label for="autoPopup"><l>Automatically open messages and chats</l></label></td>
 								</tr>
 								<tr>
-									<td><input id="autoPopupAway" type="checkbox"></td>
+									<td><input id="autoPopupAway" type="checkbox" onChange="srcW.autoPopupAway=this.checked"></td>
 									<td><label for="autoPopupAway"><l>Auto-Pop-Up if away</l></label></td>
 								</tr>
 								<tr>
-									<td><input id="playSounds" type="checkbox"></td>
+									<td><input id="playSounds" type="checkbox" onChange="srcW.playSounds=this.checked;"></td>
 									<td><label for="playSounds"><l>Play sounds</l></label></td>
 								</tr>
 								<tr>
-									<td><input id="focusWindows" type="checkbox"></td>
+									<td><input id="focusWindows" type="checkbox" onChange="srcW.focusWindows=this.checked;"></td>
 									<td><label for="focusWindows"><l>Raise window if a new message is received</l></label></td>
 								</tr>
 								<tr>
@@ -302,7 +277,7 @@ onload = init;
 								<tr>
 									<td colspan="2">
 										<l>Update interval</l>:
-										<select name="timerval">
+										<select name="timerval" onChange="srcW.setPollInterval(this.value);">
 											<option value="2000"><l>2 sec.</l></option>
 											<option value="5000"><l>5 sec.</l></option>
 											<option value="10000"><l>10 sec.</l></option>
@@ -314,12 +289,6 @@ onload = init;
 					</fieldset>
 				</form>
 			</div><div class="tabinactive" id="transports_tab"><l>Register at</l> <select id="transports_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Gateway</l> - </option></select><div id="transport_pane"></div></div><div class="tabinactive" id="directory_tab"><l>Register at</l>  <select id="directory_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Directory</l> - </option></select><div id="directory_pane"></div></div></div>
-			</td></tr>
-		<tr><td>
-		<hr noshade size="1">
-		<div align="right">
-			<button onClick="window.close();"><l>Close</l></button>&nbsp;<button onClick="return setOptions();"><l>OK</l></button>
-		</div></div>
 			</td></tr>
 	</table>
   </body>

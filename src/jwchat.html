@@ -42,7 +42,7 @@ var sid = 0;
 var onlstat = 'available';
 var autoPopup = true;
 var autoPopupAway = false;
-var playSounds = true;
+var playSounds = false;
 var focusWindows = true;
 var timestamps = true;
 var usersHidden = false;
@@ -893,6 +893,35 @@ function handleBookmarks(jabber) {
  
 }
 
+function handlePrefs(jabber) {
+	if (jabber && jabber.type == 'error')
+		fdebug(jabber,1);
+
+	if (!jabber || jabber.type == 'error') {
+		alert(loc('Error loading preferences'));
+		return;
+	}
+
+
+	for (var i in jabber.browse.o) {
+		var item = jabber.browse.o[i];
+		if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:prefs') {
+			if (eval(item.usersHidden))
+				roster.toggleHide();
+			setPollInterval(item.timerval);
+			autoPopup = eval(item.autoPopup);
+			autPopupAway = eval(item.autoPopupAway);
+			playSounds = eval(item.playSounds);
+			focusWindows = eval(item.focusWindows);
+			timestamps = eval(item.timestamps);
+		}
+	}
+
+	// get bookmarks
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
+
+}
+
 var disco = new Object();
 var disco_info_count;
 function handleDiscoItemResult(jabber) {
@@ -1025,27 +1054,6 @@ function init() {
   statusMsg = frames["jwc_main"].document.getElementById('statusMsg');
   fmd = frames["jwc_main"].iRoster.document;
 
-  // get saved cookie data
-  if (document.cookie) {
-    var save = document.cookie.substring(document.cookie.indexOf("jwc=")+4);
-    if (save.indexOf("usersHidden") != -1) 
-			usersHidden = true;
-    if (save.indexOf("autoPopup") == -1)
-      autoPopup = false;
-    if (save.indexOf("autoPopupAway") != -1)
-      autoPopupAway = true;
-    if (save.indexOf("playSounds") == -1)
-      playSounds = false;
-    if (save.indexOf("focusWindows") == -1)
-      focusWindows = false;
-    if (save.indexOf("timestamps") == -1)
-      timestamps = false;
-    
-    save = save.substring(save.indexOf("timerval%")+9);
-    if (!isNaN(save))
-      timerval = save;
-  }
-  
   /* login */
   if (is.ie5 && !is.mac) // still needed? check this again!
     frames["jwc_out"].document.body.attachEvent("onload",run);
@@ -1085,7 +1093,7 @@ function run() {
         
     fmd.getElementById('roster').innerHTML = "<div style=\"padding: 4px;\"><l>Loading Roster...<br>Please wait!</l></div>";
         
-    if (!sid && !jabber.sid) {
+    if (!sid && (!jabber || !jabber.sid)) {
       changeStatus("available");
       return;
     }
@@ -1112,8 +1120,8 @@ function run() {
     
     playSound('connected');
 
-		// get bookmarks
-		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
+		// get prefs
+		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
 
     poll();	// initial poll (not nice here)
     break;
@@ -1159,8 +1167,7 @@ function cleanUp() {
   frames["jwc_cb"].document.close();
   frames["jwc_out"].document.open();
   frames["jwc_out"].document.write();
-  frames["jwc_out"].document.close();
-  
+  frames["jwc_out"].document.close();  
 }
 
 function logout() {
