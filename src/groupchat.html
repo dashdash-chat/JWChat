@@ -13,6 +13,7 @@
     <script>
 var colors = new Array('maroon','green','olive','navy','purple','teal','red','blue');
 
+var scrollHeight = 0;
 function putMsgHTML(msg,mtime,user,usercolor,err) {
   var msgHTML = '';
   
@@ -21,7 +22,7 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
   msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">* "+user+"</span> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">*&nbsp;"+user+"</span> ");
   } else if (user != group) {
     msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
   }
@@ -31,12 +32,19 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 			msgHTML += "<span style=\"font-weight:bold;color:red;\">"+msg+"</span>";
 		else
 			msgHTML += "<span style=\"font-weight:bold;\">"+msg+"</span>";
-  } else
-    msgHTML += "&nbsp" + msg;
+  } else {
+		if (user != nick && meRegExp.test(msg) && !notHREFMeRegExp.test(msg))
+			msgHTML += "&nbsp;" + msg.replace(meRegExp,"<span class='highlighted'>$1</span>");
+		else 
+			msgHTML += "&nbsp;" + msg;
+	}
+
 	msgHTML += "</div>";
   
   cFrame.body.innerHTML += msgHTML;
-  frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
+	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= scrollHeight)
+		frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
+	scrollHeight = cFrame.body.scrollHeight;
 }
 
 function popMsgs() {
@@ -206,7 +214,7 @@ function part() {
 }
 
 /* global vars */
-var srcW,user,roster,cFrame,jid,nick,pass;
+var srcW,user,roster,cFrame,jid,nick,pass,meRegExp,notHREFMeRegExp;
 
 function init() {
   getArgs();
@@ -220,6 +228,9 @@ function init() {
 		nick = passedArgs['nick'];
 	if(typeof(nick) == 'undefined' || nick == '')
 		nick = srcW.roster.nick; // guess a nick
+
+	meRegExp = new RegExp("\\b("+nick+")\\b","i");
+	notHREFMeRegExp = new RegExp("href=\"\\S*\\b"+nick+"\\b\\S*\"","i");
 
 	if (passedArgs['pass'] != 'undefined')
 		pass = passedArgs['pass'];
