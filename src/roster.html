@@ -48,6 +48,7 @@
       else
       el.className = 'myStatusMsg';
       el.selected = !el.selected;
+      return true;
       }
 
       function setStatusMessage() {
@@ -56,6 +57,7 @@
       return true;
       selStatusMessage(el);
       top.changeStatus(top.onlstat,el.value);
+      el.blur()
       return true;
       }
 
@@ -71,9 +73,9 @@
       function handleClick(e) {
       var firingObj = (top.is.ie)?event.srcElement:e.target;
       if (firingObj.id == 'statusMsg' && !firingObj.selected)
-      selStatusMessage(firingObj);
+      return selStatusMessage(firingObj);
       else
-      setStatusMessage();
+      return setStatusMessage();
       }      
 
       var adduser = new Image();
@@ -124,7 +126,7 @@
 <!-- me myself and my microphone -->
 <tr><td colspan=2 class="rosterInnerElement" style="padding-bottom:0px;">
             <img id="statusLed" name="statusLed" src="images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="nickName" class="nickName"></span><br>
-            <input type="text" id="statusMsg" title="<l>Change Status Message</l>" class="myStatusMsg""></div>
+            <input type="text" id="statusMsg" title="<l>Change Status Message</l>" class="myStatusMsg"></div>
           </td></tr>
 
 <!-- the roster himself -->

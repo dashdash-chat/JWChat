@@ -25,152 +25,163 @@ colors[9] = 'blue';
 colors[10] = 'fuchsia';
 colors[11] = 'aqua';
 
-			function putMsgHTML(msg,user,usercolor) {
-				var msgHTML = '';
-				var now = new Date();
+function putMsgHTML(msg,user,usercolor) {
+  var msgHTML = '';
+  var now = new Date();
+  
+  msg = msgFormat(msg);
 			
-				msg = msgFormat(msg);
-			
-				var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-				mtime += ":";
-				mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-				mtime += ":";
-				mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+  var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+  mtime += ":";
+  mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+  mtime += ":";
+  mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
 
-				msgHTML += "<span class=time>["+mtime+"] </span>";    
+  msgHTML += "<span class=time>["+mtime+"] </span>";    
+  
+  if (msg.match(/^\/me /)) {
+    msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>*** "+user+"</b></font> ");
+  } else if (user != group) {
+    msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
+  }
 
-				if (msg.match(/^\/me /)) {
-					msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>*** "+user+"</b></font> ");
-				} else if (user != group) {
-					msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
-				}
+  if (user == group) /* channel status messages */
+    msgHTML += "<b>"+msg+"</b><br>";
+  else
+    msgHTML += " " + msg + "<br>";
+  
+  cFrame.body.innerHTML += msgHTML;
+  frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
+}
 
-        if (user == group) /* channel status messages */
-          msgHTML += "<b>"+msg+"</b><br>";
-        else
-          msgHTML += " " + msg + "<br>";
+function popMsgs() {
 
-				cFrame.body.innerHTML += msgHTML;
-				frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
-			}
+  if (!user) 
+    user = srcW.roster.getUserByJID(group);
 
-			function popMsgs() {
+  while (user.chatmsgs.length>0) {
+    var msg;
+    if (is.ie5||is.op) {
+      msg = user.chatmsgs[0];
+      user.chatmsgs = user.chatmsgs.slice(1,user.chatmsgs.length);
+    } else
+      msg = user.chatmsgs.shift();
+    
+    /* look for a subject */
+    if (msg.subject) { // set topic
+      user.roster.subject = msg.subject;
+      frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
+    }
 
-        if (!user) 
-          user = srcW.roster.getUserByJID(group);
+    if(!msg.body || msg.body == '')
+      return;
 
-			  while (user.chatmsgs.length>0) {
-					var msg;
-					if (is.ie5||is.op) {
-						msg = user.chatmsgs[0];
-						user.chatmsgs = user.chatmsgs.slice(1,user.chatmsgs.length);
-					} else
-						msg = user.chatmsgs.shift();
-      
-          /* look for a subject */
-          if (msg.subject) { // set topic
-            user.roster.subject = msg.subject;
-            frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
-          }
+    if (msg.from.indexOf('/') != -1)
+      msg.from = msg.from.substring(msg.from.indexOf('/')+1);
 
-          if(!msg.body || msg.body == '')
-            return;
+    /* calculate color */
+    var charSum = 0;
+    for (var i=0; i<msg.from.length; i++)
+      charSum += msg.from.charCodeAt(i);
+    
+    putMsgHTML(msg.body,msg.from,colors[charSum%(colors.length)]);
+  }
 
-          if (msg.from.indexOf('/') != -1)
-            msg.from = msg.from.substring(msg.from.indexOf('/')+1);
+  if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
+}
 
-          /* calculate color */
-          var charSum = 0;
-          for (var i=0; i<msg.from.length; i++)
-            charSum += msg.from.charCodeAt(i);
+function displayTimestamp() {
+  var tstyle;
+  if (is.ie) {
+    tstyle = cFrame.styleSheets('timestampstyle');
+    tstyle.disabled = opener.top.timestamps;
+  } else {
+    tstyle = cFrame.getElementById("timestampstyle");
+    tstyle.sheet.disabled = opener.top.timestamps;
+  }
+}
 
-					putMsgHTML(msg.body,msg.from,colors[charSum%(colors.length)]);
-				}
+function updateMe() {
+  if (roster.me.role == 'none') {
+    frames.groupchatTop.document.forms[0].subject.disabled = true;
+    frames.groupchatBottom.document.forms[0].submit.disabled = true;
+  }
+}
 
-				if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
-			}
+function kick(jid) {
+  var user = roster.getUserByJID(jid);
 
-			function displayTimestamp() {
-			  var tstyle;
-				if (is.ie) {
-					tstyle = cFrame.styleSheets('timestampstyle');
-					tstyle.disabled = opener.top.timestamps;
-				} else {
-					tstyle = cFrame.getElementById("timestampstyle");
-					tstyle.sheet.disabled = opener.top.timestamps;
-				}
-			}
+  srcW.fhdLoad("raw","?sid="+srcW.sid+"&xml=<iq type='set' to='"+group+"'><query xmlns='http://jabber.org/protocol/muc#admin'><item nick='"+user.name+"' role='none'><reason>hau ab!</reason></item></query></iq>");
+}
 
-      function updateMe() {
-      }
+/* global vars */
+var srcW,group,user,roster,cFrame,jid;
 
+function init() {
+  getArgs();
+  
+  srcW = opener;
+  
+  group = passedArgs['group'];
+  nick = passedArgs['nick']
+    jid=group;
+  
+  srcW.fdebug("groupchat group:"+group+", nick:"+nick,3);
+  
+  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
+  
+  cFrame = frames.groupchatChat.groupchatIChat.document;
 
-			/* global vars */
-      var srcW,group,user,roster,cFrame,jid;
+  user = srcW.roster.getUserByJID(group);
+  if(!user) {
+    user = srcW.roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
+    user.chatW = window.self;
+  }
+  user.status = 'available';
+  srcW.roster.print();
+  
+  user.roster = new GroupchatRoster(window.self);
+  user.roster.nick = nick; // remember my nickname
+  roster = user.roster;
+  //        user.roster.print();
+  
+  document.title += " - " + group;
 
-      function init() {
-        getArgs();
-
-        srcW = opener;
-
-        group = passedArgs['group'];
-        nick = passedArgs['nick']
-        jid=group;
-
-        srcW.fdebug("groupchat group:"+group+", nick:"+nick,3);
-
-        srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
-
-        cFrame = frames.groupchatChat.groupchatIChat.document;
-
-        user = srcW.roster.getUserByJID(group);
-        if(!user) {
-          user = srcW.roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
-          user.chatW = window.self;
-        }
-        user.status = 'available';
-        srcW.roster.print();
-
-        user.roster = new GroupchatRoster(window.self);
-        user.roster.nick = nick; // remember my nickname
-        roster = user.roster;
-        //        user.roster.print();
-
-        document.title += " - " + group;
-
-        popMsgs();
-        displayTimestamp();
-      }
+  popMsgs();
+  displayTimestamp();
+}
 
 
-      function part() {
-        srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
-        srcW.roster.removeUser(user);
-        srcW.roster.print();
-      }
+function part() {
+  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
+  if (!user.messages.length && !user.chatmsgs.length) {
+    srcW.roster.removeUser(user);
+    srcW.roster.print();
+  }
+}
 
-			function keyPressed(e) {
-				if (e.keyCode == 27)
-					window.close();
-			}
+function keyPressed(e) {
+  if (e.keyCode == 27)
+    window.close();
+}
 
-			function updateStyleIE() {
-        if (user)
-          user.roster.updateStyleIE();
-      }
+function updateStyleIE() {
+  if (user)
+    user.roster.updateStyleIE();
+}
 
-			onkeydown = keyPressed;
-			onload = init;
-      onunload = part;
-			onresize = updateStyleIE;
+onkeydown = keyPressed;
+onload = init;
+onunload = part;
+onresize = updateStyleIE;
 
     </script>
 
 		<script for="document" event="onkeydown()" language="JScript">
 		<!--
-			if (window.event.keyCode == 27)
-				window.close();
-			//-->
+    if (window.event.keyCode == 27)
+      window.close();
+		//-->
 		</script>
 
     <frameset rows="40,*,80" frameborder=2 framespacing=2 border=2 bordercolor=black>
