@@ -62,10 +62,10 @@ fieldset {
 /* context menu */
 .skin0{
   position:absolute;
-  //width:100px;
-  border:1px solid black;
+  /*width:100px;*/
+  border:2px outset threedlightshadow;
   background-color:menu;
-  font-family:Arial, sans-serif;
+  font-family: sans-serif;
   line-height:16px;
   cursor:default;
   font-size:12px;
@@ -78,22 +78,6 @@ fieldset {
   padding-right:4px;
 }
 
-/* status bar */
-#status { 
-	width: 100%; 
-	background-image: url('images/unavailable.gif');
-	background-repeat: no-repeat;
-	background-color: #b8dbff;
-	padding-left: 18px;
-	height: 20px;
-}
-
-.statusbarOpt {
-	padding-left: 18px;
-	height: 18px;
-	padding-top: 2px;
-	background-repeat: no-repeat;
-}
 
 /* message windows */
 #buttonbox { 
