@@ -56,7 +56,7 @@ function init() {
   
   getArgs();
   jid = passedArgs['jid'];
-  document.title = loc("Edit properties for ", jid);
+  document.title = loc("Edit properties for [_1]", jid);
   document.getElementById('nickjid').innerHTML = jid;
   document.getElementById('groupjid').innerHTML = jid;
   user = srcW.roster.getUserByJID(jid);
