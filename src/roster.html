@@ -28,6 +28,11 @@ function addUser() {
   return false;
 }
 
+// function searchUser() {
+//   top.openSearch();
+// 	return false;
+// }
+
 var groupw;
 function openGroupchat() {
   if (!groupw || groupw.closed)
@@ -84,6 +89,10 @@ var adduser = new Image();
 adduser.src = "images/adduser.png";
 var adduserOver = new Image();
 adduserOver.src = "images/adduser_over.png";
+// var searchuser = new Image();
+// searchuser.src = "images/searchuser.png";
+// var searchuserOver = new Image();
+// searchuserOver.src = "images/searchuser_over.png";
 var groupchat = new Image();
 groupchat.src = "images/groupchat.png";
 var groupchatOver = new Image();
@@ -136,7 +145,7 @@ onkeydown = keyPressed;
 <tr><td height="100%" colspan=2 class="rosterInnerElement"><iframe src="iRoster.html" name="iRoster" id="iRoster" scrolling="auto" style="width:100%;height:100%;border:2px groove;" frameborder=0></iframe></td></tr>
 
 <!-- buttonbar -->
-<tr><td colspan=2 class="rosterInnerElement"><img class="actionButton" src="images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><img class="actionButton" src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
+<tr><td colspan=2 class="rosterInnerElement"><img class="actionButton" src="images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><!--img class="actionButton" src="images/searchuser.png" onMouseOver="changePic(this,searchuserOver);" onMouseOut="changePic(this,searchuser);" align="left" onClick="searchUser();" title="<l>Search User</l>"--><img class="actionButton" src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
 
 </table>
   </body>
