@@ -35,6 +35,7 @@ function RosterUserAdd2Group(group) {
 
 function RosterUser(jid,subscription,groups,name) {
   this.jid = jid || 'unknown';
+  this.jid = this.jid.toLowerCase(); // jids are case insensitive
 
   this.subscription = subscription || 'none';
   this.groups = groups || [''];
@@ -76,7 +77,7 @@ function getRosterGroupByName(groupName) {
 }
 
 function getRosterUserByJID(jid) {
-  return getElFromArrByProp(this.users,"jid",jid);
+  return getElFromArrByProp(this.users,"jid",jid.toLowerCase());
 }
 
 function RosterUpdateStyleIE() {
@@ -129,7 +130,7 @@ function RosterOpenMessage(jid) {
   }
 
   if (user.messages.length > 0 && (!user.mW || user.mW.closed)) // display messages
-    user.mW = open('message.html?jid='+escape(jid),"mw"+wName,'width=320,height=230,dependent=yes,resizable=yes');
+    user.mW = open('message.html?jid='+escape(jid),"mw"+wName,'width=360,height=270,dependent=yes,resizable=yes');
   else if (!user.sW || user.sW.closed) // open send dialog
     user.sW = open("send.html?jid="+escape(jid),"sw"+wName,'width=320,height=200,dependent=yes,resizable=yes');
   return false;
@@ -272,10 +273,10 @@ function printRoster() {
       rosterHTML += "><nobr>";
       
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' align='left' style=\"padding-bottom: 4px;\">";
+      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' align='left'>";
       rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
       if (user.statusMsg)
-        rosterHTML += "<br><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
+        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
       rosterHTML += "</div></nobr></div>";
     }
     rosterHTML += "</div>";
