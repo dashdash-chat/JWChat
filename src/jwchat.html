@@ -434,7 +434,7 @@ function handleMessage(jabber) {
        */
 
     user.chatmsgs = user.chatmsgs.concat(jabber);
-    if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
+    if (user.chatW && !user.chatW.closed && user.chatW.srcW && typeof(user.chatW.srcW.roster) != 'undefined' && user.chatW.popMsgs) {
       user.chatW.popMsgs();
     } 
 
@@ -519,6 +519,7 @@ function handlePresence(jabber) {
 				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
 					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
 			}
+			return;
 		}
   }
 
@@ -532,33 +533,51 @@ function handlePresence(jabber) {
     
     var ofrom = jabber.from.substring(jabber.from.indexOf('/')+1);
 
-    fdebug("jabber.from:"+jabber.from+", ofrom:"+ofrom,2);
+    fdebug("jabber.from:"+jabber.from+", ofrom:"+ofrom,3);
 
     var ouser = user.roster.getUserByJID(jabber.from);
     if (!ouser) // no user? create one!
       ouser = new GroupchatRosterUser(jabber.from,ofrom);
 
     /* grep for extended attributes */
+		var nickChanged = false;
     for (var i in jabber.o) {
       if (jabber.o[i].tagname = 'x' && jabber.o[i].o) {
         for (var j in jabber.o[i].o) {
-          if (jabber.o[i].o[j].tagname == 'item' && jabber.o[i].o[j].role != '') {
-            ouser.affiliation = jabber.o[i].o[j].affiliation;
-            ouser.role = jabber.o[i].o[j].role;
-            ouser.add2Group(ouser.role+'s');
+          if (jabber.o[i].o[j].tagname == 'item') {
+						var item = jabber.o[i].o[j];
+						ouser.affiliation = item.affiliation;
+						ouser.role = item.role;
+						ouser.nick = item.nick;
+						ouser.realjid = item.jid;
+						ouser.reason = item.reason;
+						if (item.o) {
+							for (var k in item.o) {
+								if (item.o[k].tagname = 'actor')
+									ouser.actor = item.o[k].jid;
+							}
+						}
+
+            fdebug("ouser.jid: "+ ouser.jid + ", ouser.fulljid:" + ouser.fulljid + ", ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,3);
+
+
+						if (item.role != '') {
+							ouser.add2Group(ouser.role+'s');
             
-            /* check if it is our own presence
-             * must be done here cause we want to be sure that role != ''
-             */
-            fdebug("ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,2);
+							/* check if it is our own presence
+							 * must be done here cause we want to be sure that role != ''
+							 */
             
-            if (ouser.name == user.roster.nick) { // seems to be me
-              user.roster.me = ouser; // store this reference
-              if (user.chatW.updateMe)
-                user.chatW.updateMe();
-            }
+							if (ouser.name == user.roster.nick) { // seems to be me
+								user.roster.me = ouser; // store this reference
+								if (user.chatW.updateMe)
+									user.chatW.updateMe();
+							}
+						}
           }
-					else if (jabber.o[i].o[j].tagname == 'status' && typeof(jabber.o[i].o[j].code) != 'undefined') {
+				}
+        for (var j in jabber.o[i].o) {
+					if (jabber.o[i].o[j].tagname == 'status' && typeof(jabber.o[i].o[j].code) != 'undefined') {
 						switch (jabber.o[i].o[j].code) {
 						case '201': // room created
 							/* popup dialog to ask for whether to accept default
@@ -567,7 +586,55 @@ function handlePresence(jabber) {
 							if (confirm(loc("A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\nNote: Click on 'Cancel' to start with a default configuration!")))
 								user.chatW.openConfig();
 							else
-								
+								fhdLoad("iq","?sid="+sid+"&to="+user.jid+"&ns=http://jabber.org/protocol/muc%23owner&set="+escape("<x xmlns='jabber:x:data' type='submit'/>"));
+							break;
+						case '303': // nick change
+							// display message
+							if (!ouser.nick)
+								return;
+
+							var aMessage = new Object();
+							aMessage.from = user.jid;
+							aMessage.body = loc("[_1] is now known as [_2]",ouser.name, ouser.nick);
+							user.chatmsgs = user.chatmsgs.concat(aMessage);
+							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+								user.chatW.popMsgs();			
+							
+							playSound('chat_recv');
+
+
+							// update nick if it's me
+							if (ouser.name == user.roster.nick)
+								user.roster.nick = ouser.nick;
+
+							// remove old user
+							user.roster.removeUser(ouser);
+
+							// add new user
+							ouser = new GroupchatRosterUser(jabber.from.substring(0,jabber.from.lastIndexOf('/')+1).concat(ouser.nick),ouser.nick);
+							fdebug(ouser,0);
+							user.roster.addUser(ouser);
+							nickChanged = true;
+							break;
+						case '301': // user has been kicked
+							var aMessage = new Object();
+							aMessage.from = user.jid;
+							aMessage.body = loc("[_1] has been banned by [_2]: [_3]",ouser.name,ouser.actor,ouser.reason);
+							user.chatmsgs = user.chatmsgs.concat(aMessage);
+							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+								user.chatW.popMsgs();			
+							
+							playSound('chat_recv');
+							break;
+						case '307': // user has been kicked
+							var aMessage = new Object();
+							aMessage.from = user.jid;
+							aMessage.body = loc("[_1] has been kicked by [_2]: [_3]",ouser.name,ouser.actor,ouser.reason);
+							user.chatmsgs = user.chatmsgs.concat(aMessage);
+							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+								user.chatW.popMsgs();			
+							
+							playSound('chat_recv');
 							break;
 						}
 					}
@@ -575,11 +642,34 @@ function handlePresence(jabber) {
       }
     }
 
-    fdebug("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,2);
+    fdebug("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,3);
 
-    if (!user.roster.getUserByJID(jabber.from)) 
+    if (!user.roster.getUserByJID(jabber.from) && !nickChanged) {
+			// add user
       user.roster.addUser(ouser);
-    else
+
+			// show join message
+			var aMessage = new Object();
+			aMessage.from = user.jid;
+			aMessage.body = loc("[_1] has become available",ouser.name);
+			user.chatmsgs = user.chatmsgs.concat(aMessage);
+			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+				user.chatW.popMsgs();			
+
+			playSound('chat_recv');
+
+    } else if (jabber.type && jabber.type == 'unavailable' && !nickChanged) {
+			// show part message
+			var aMessage = new Object();
+			aMessage.from = user.jid;
+			aMessage.body = loc("[_1] has left",ouser.name);
+			user.chatmsgs = user.chatmsgs.concat(aMessage);
+			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+				user.chatW.popMsgs();			
+
+			playSound('chat_recv');
+
+		} else
       user.roster.updateGroups();
 
     // relink roster and user
@@ -599,8 +689,10 @@ function handlePresence(jabber) {
       user.status = 'stalker';
     } else if (user.status != 'stalker')
       user.status = 'unavailable';
-    if (aRoster.name == 'GroupchatRoster') // it's a groupchat roster
+    if (aRoster.name == 'GroupchatRoster' && !nickChanged) { // it's a groupchat roster
+			// remove user
       aRoster.removeUser(user); // we don't need offline users in there
+		}
     playSound('offline');
   } else {
     if (user.status == 'unavailable') // user was offline before
@@ -722,7 +814,7 @@ function handleCB(jabber) {
 	if (!jabber) // nothing to do
     return;
 
-  fdebug(jabber,2);
+  fdebug(jabber,3);
 
 	if (registeredCBs.length == 0) {
 		fdebug("no callbacks registered ... aborting!",1);
@@ -774,9 +866,6 @@ function handleVCardTemp(jabber) {
 var bookmarks = new Array();
 function handleBookmarks(jabber) {
 
-	// start service discovery
-	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
-    
 	if (jabber.type == 'error')
 		return;
 
@@ -801,6 +890,8 @@ function handleBookmarks(jabber) {
 		}
 	}
 
+	// start service discovery
+	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult);
  
 }
 
@@ -838,7 +929,7 @@ function handleDiscoInfoResult(jabber) {
 
 	fdebug(jabber,2);
 
-	if (jabber.type == 'error')
+	if (jabber.type == 'error' || typeof(jabber.browse) == 'undefined' || !jabber.browse.o)
 		disco.items[disco_info_count].error = true;
 	else {
 		disco.items[disco_info_count].info = new Array();
@@ -1018,6 +1109,7 @@ function run() {
 		fdebug("got roster: "+frames["jwc_out"].jabber.items,2);
     roster = new Roster(frames["jwc_out"].jabber.items,fmd);
 		roster.usersHidden = usersHidden;
+		roster.nick = jid.substring(0,jid.indexOf('@')); // remember nick for 1:1 Chats
     roster.print();
     
     playSound('connected');
