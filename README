@@ -60,7 +60,9 @@ Quick Install Guide
 ===================
 
 JWChat depends on two jabber server component which are available
-separately (see download instructions for details): wcs and http.
+separately. You can get them from 
+http://webclientservice.jabberstudio.org. Detailed installation and 
+configuration instructions can be found there too.
 
 * Compile these components by doing a "make" in both directories.
 
