@@ -52,7 +52,7 @@ onload = init;
     </script>
   </head>
   <body style="margin:8px;">
-    <form name="sub" onSubmit="return doSub();">
+    <form name="sub" onsubmit="return doSub();">
       <table border=0 width="100%">
           <tr><td nowrap><l>Nickname</l></td><td width="100%"><input type="text" name="nick" size=32 style="width:100%;"></td></tr>
           <tr><td nowrap><l>Channel/Group</l></td><td width="100%"><input type="text" name="group" size=32 style="width:100%;" value="talks"></td></tr>
@@ -61,7 +61,7 @@ onload = init;
       </table>
       <hr noshade size="1" size="100%">
       <div align="right" id="buttonbox">
-        <button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button type="submit" onClick="return doSub();"><l>Join</l></button>
+        <button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button type="submit"><l>Join</l></button>
       </div>
     </form>
   </body>
