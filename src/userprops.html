@@ -15,11 +15,11 @@ var curgrpbox;
 
 function submitClicked() {
   var param = "?sid="+srcW.sid+"&jid="+jid;
-  param += "&name=" + escape(document.userprops.nickname.value);
+  param += "&name=" + msgEscape(document.userprops.nickname.value);
   if (curgrpbox.length > 0) {
     param += "&group=";
     for (var i=0; i<curgrpbox.length; i++)
-      param += escape(curgrpbox.options[i].value) + ";";
+      param += msgEscape(curgrpbox.options[i].value) + ";";
   }
   srcW.fhdLoad("roster",param);
   window.close();
