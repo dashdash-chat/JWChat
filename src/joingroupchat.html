@@ -11,7 +11,7 @@ var jid;
 var srcW; // the source window with necessary data
 
 function doSub() {
-  var nick = (document.forms[0].nick.value!='')?document.forms[0].nick.value:srcW.jid.substring(0,srcW.jid.indexOf('@'));
+  var nick = (document.forms[0].nick.value!='')?document.forms[0].nick.value:srcW.roster.nick;
   
   if (document.forms[0].group.value == '') {
 		alert(loc("Please enter a channel/group to join"));
