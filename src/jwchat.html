@@ -623,8 +623,8 @@ function handleIQSet(jabber) {
 				
 				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups,item.name));
 				// permanently add to roster
-				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group="+item.groups);
-
+				//				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group="+item.groups);
+				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name); // don't set groups
 				//				openUserProps(item.jid);
 				if (item.subscription == "from")
 					openSubscription(item.jid); // subscribe to user
