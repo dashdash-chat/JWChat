@@ -110,9 +110,22 @@ function handleIQRegister(jabber) {
 		if (jabber.browse.instrucions !=  '')
 			html += "<div class='transport_pane'>"+jabber.browse.instructions+"</div>";
 		html += "<form name='transport'>";
-		for (var i in jabber.browse)
-			if (i != 'o' && i != 'instructions' && i != 'registered')
+		for (var i in jabber.browse) {
+			switch (i) {
+			case 'o':
+			case 'instructions':
+			case 'registered': 
+				break;
+			case 'key': // hide key
+				html += "<input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'>";
+				break;
+			case 'password':
+				html += "<div class='transport_pane'>"+i+": <input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></div>";
+				break;
+			default:
 				html += "<div class='transport_pane'>"+i+": <input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></div>";
+			}
+		}
 		html += "</form>";
 		html += "<div class='transport_pane' align='right'>";
 		if (typeof(jabber.browse.registered) != 'undefined') {
