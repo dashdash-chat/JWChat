@@ -264,7 +264,7 @@ function cleanUp() {
 		var aNode= aIQ.getNode().appendChild(aIQ.getDoc().createElement('done'));
 		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
 		aNode.setAttribute('cid',window.cid);
-		jwcMain.con.send(aIQ.clone());
+		jwcMain.con.syncSend(aIQ.clone());
 	}
 }
 
