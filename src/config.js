@@ -55,16 +55,6 @@ var timeout = 150; // timeout of wcs
 var stylesheet = "jwchat.css";
 var THEMESDIR = "themes";
 
-/* USERHISTORYURL
- * Can be used if you have some sort of message logging on
- * your server. you could write a simple cgi-based application to let
- * your users access this information.
- *
- * Have a look at openUserHistory() [jwchat.html] to understand what
- * I'm talking about
- */
-var USERHISTORYURL = "http://jabber.zeank.in-berlin.de/na.html";
-
 /* DEFAULTCONFERENCEGROUP + DEFAULTCONFERENCESERVER
  * default values for joingroupchat form
  */
