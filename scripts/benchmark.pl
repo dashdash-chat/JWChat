@@ -39,8 +39,7 @@
 use LWP;
 use HTML::Form;
 use HTTP::Cookies;
-use DBI;
-use Time::HiRes qw(time);
+use Time::HiRes qw(time sleep);
 use Thread;
 use Getopt::Std;
 
@@ -65,16 +64,17 @@ my $users = $opt_u;
 my $offset = $opt_n || 0;
 
 my $duration = 60;
-my $waitfor = 5;
-my $forks = 16;
-my $pollingtime = 5;		# 12 pro Minute, 720 pro Stunde
+my $waitfor = 2;
+my $forks = 1;
+my $pollingtime = 60;		# 12 pro Minute, 720 pro Stunde
 
-my $serverurl = "http://".$host.":".$wcs_port;
+my $serverurl = "http://$host:$wcs_port";
+#my $serverurl = "http://$host/wcs";
 my @actions = (
-			{name => 'Login', ratio => 360, urls => ['/logout-sid.js&sid=$sid',
-											 '/login-sid.js?jid=$jid&pass=$pass',
-											 '/presence.js&sid=$sid&status=online',
-											 '/roster.js&sid=$sid&'
+			{name => 'Login', ratio => 360, urls => ['/logout-sid.js?sid=$sid',
+											 '/login-sid.js?jid=$jid&pass=$pass&timeout=10',
+											 '/presence.js?sid=$sid&status=online',
+											 '/roster.js?sid=$sid&'
 											] },
 			 #{name => 'Logout', ratio => .1, urls =>  ['/logout-sid.js&sid=$sid'] },
 			 {name => 'Message', ratio => 72, urls => ['/message.js?sid=$sid&to=$jidto&type=message&body=$body'] },
@@ -108,34 +108,38 @@ for (my $i = $offset; $i < $users+$offset; $i++) {
 	# Pass request to the user agent and get a response back
 	my $res = $ua->request($req);
 	die "Couldn't login user $i ($serverurl.$url)\n" unless ($res->is_success);
-	if ($res->content =~ /jabber.sid='([^']+)'/) {
+	if ($res->content =~ /jabber.sid='([^\']+)'/) {
 		$users[$i-$offset] = $1;
 	} else {
 		die "Couldn't get a sid for user $i\n";
-	} 
+	}
 	print STDERR ".";
 }
 
 print STDERR "duration: ".(time - $starttime)."\n";
 
-print STDERR "forking $forks processes...\n";
+#print STDERR "forking $forks processes...\n";
 $starttime = time;
-my @threads;
+#my @threads;
 
-for (my $i = 0; $i < $forks; $i++) {
-	$threads[$i] = Thread->new(\&threaded, $i);
-}
+#for (my $i = 0; $i < $forks; $i++) {
+#	$threads[$i] = Thread->new(\&threaded, $i, $starttime);
+#}
 
-print STDERR "processes forked within ".(time - $starttime).".  Waiting $waitfor secs...\n";
-my $counter;
-for (my $i = 0; $i < $forks; $i++) {
-	$counter += $threads[$i]->join();
-}
+#print STDERR "processes forked within ".(time - $starttime)."\n";
+#my $counter = 0;
+#for (my $i = 0; $i < $forks; $i++) {
+#	$counter += $threads[$i]->join;
+#}
+
+my $counter = threaded(0,$starttime);
+
+$duration = time - ($starttime+$waitfor);
 
 my $reqps = $counter/($duration);
 my $userc = $reqps*$pollingtime;
 
-print "$counter requests in total ($reqps per second).\n";
+print "$counter requests in total $duration sec. ($reqps per second).\n";
 print "--> $userc users @ $pollingtime sec. polling time\n";
 
 print STDERR "logging off users ";
@@ -155,37 +159,38 @@ foreach $user (@users) {
 print STDERR " done.\n";
 
 sub threaded {
-	my ($i) = @_;
+	my ($i,$starttime) = @_;
 	print STDERR "process # $i\n";
 	my $umin = int(($users/$forks)*$i);
 	
-
-	# wait for 5 secs...
-	sleep $waitfor;
+  # wait and start all threads synchronously
+	sleep ($starttime + $waitfor - time);
 	print STDERR "$i started\n";
 	my %counter;
 	$counter{all} = 0;
+	$counter{err} = 0;
 
-	while ((time - $starttime) < $duration + $waitfor) {
+#	while ((time - ($starttime+$waitfor)) < $duration) {
+	while ($counter{all} < 1000) {
 		my @urls;
 		if (int(rand($actions[0]->{ratio})) == 1) {
 			print STDERR "L ";
-			@urls = ('/logout-sid.js&sid=$sid',
-							 '/login-sid.js?jid=$jid&pass=$pass',
-							 '/presence.js&sid=$sid&status=online',
-							 '/roster.js&sid=$sid&'
-							);
+			@urls = ('/logout-sid.js?sid=$sid',
+					 '/login-sid.js?jid=$jid&pass=$pass',
+					 '/presence.js?sid=$sid&status=online',
+					 '/roster.js?sid=$sid&');
 		} elsif (int(rand($actions[1]->{ratio})) == 1) {
 			print STDERR "M ";
 			@urls = '/message.js?sid=$sid&to=$jidto&type=message&body=$body';
 		} else {
+			#print STDERR "C ";
 			@urls = '/cache.js?sid=$sid';
 		}
 		
 		my $url;
 		foreach $url (@urls) {
-			# my $user = int(rand($users));
 			my $user = int(rand(int($users/$forks))+$umin);
+			# my $user = int(rand($users));
 			my $touser = int(rand($users));
 			
 			$url =~ s/\$pass/$pass/;
@@ -202,28 +207,25 @@ sub threaded {
 			# Pass request to the user agent and get a response back
 			my $res = $ua->request($req);
 			if ($res->is_success) {
-					if (($url =~ /login-sid/) && ($res->content =~ /jabber.sid='([^']+)'/)) {
-						if (length($1) > 1)
-							{
-								$users[$i] = $1;
-								$counter{all}--;		
-							} 
-						else
-							{
-								die "got invalid sid for $user:\n".$res->content;
-							}
+				if (($url =~ /login-sid/) && ($res->content =~ /jabber.sid='([^\']+)'/)) {
+					if (length($1) > 1)	{
+						$users[$i] = $1;
 					} else {
-						$counter{all}++;
-						#$counter{$actions[2]->{name}}++;		
+						die "got invalid sid for $user:\n".$res->content;
 					}
-				} 
-				else
-				{
-					print STDERR  "\nHTTP-Error ".$res->code." (# $counter{all}, user: user$user, url: $serverurl$url)\n";
+				} else {
+					#$counter{$actions[2]->{name}}++;		
 				}
+			} else {
+				print STDERR  "\nHTTP-Error ".$res->code." (# $counter{all}, user: test_$user, url: $serverurl$url)\n";
+		#          print STDERR $res->as_string."\n";
+				$counter{err}++;
+				return 0;
+			}
+			$counter{all}++;
 		}
-		yield;
 	}
-	print STDERR "$counter{all} requests.\n";
+
+	print STDERR "$counter{all} requests, $counter{err} errors\n";
 	return $counter{all};
 }
