@@ -118,7 +118,7 @@ function openGroupchat(group,nick) {
     user = roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
     roster.print();
   }
-  user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=480,height=640,resizable=yes");
+  user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=390,height=520,resizable=yes");
 }
 
 var subw;
