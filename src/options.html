@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-	<head>
+    <head>
     <title><l>JWChat - Options</l></title>
     <script src="switchStyle.js"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -72,6 +72,10 @@ function displayTimestamps() {
   }
 }
 
+function toggleAutoPopupAway(el) {
+  document.getElementById('autoPopupAway').disabled = !el.checked;
+}
+
 var form;
 function getOptions() {
   form = document.forms['options'];
@@ -94,60 +98,203 @@ function getOptions() {
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
-function toggleAutoPopupAway(el) {
-  document.getElementById('autoPopupAway').disabled = !el.checked;
+function handleIQRegister(jabber) {
+	
+	var transport_pane = document.getElementById('transport_pane');
+	if (jabber.error)
+		transport_pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";
+	else {
+		var html = '';
+		if (typeof(jabber.browse.registered) != 'undefined')
+			html += "<div class='transport_pane'><b style='color:red;'>"+loc("You are already registered with this Gateway!")+"</b></div>";
+		if (jabber.browse.instrucions !=  '')
+			html += "<div class='transport_pane'>"+jabber.browse.instructions+"</div>";
+		html += "<form name='transport'>";
+		for (var i in jabber.browse)
+			if (i != 'o' && i != 'instructions' && i != 'registered')
+				html += "<div class='transport_pane'>"+i+": <input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></div>";
+		html += "</form>";
+		html += "<div class='transport_pane' align='right'>";
+		if (typeof(jabber.browse.registered) != 'undefined') {
+			html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
+			html += "&nbsp;";
+			html += "<button onClick=\"registerGateway('"+jabber.from+"');\">"+loc("Update")+"</button>";
+		} else
+			html += "<button onClick=\"registerGateway('"+jabber.from+"');\">"+loc("Register")+"</button>";
+		html += "</div>";
+		transport_pane.innerHTML = html;
+	}
 }
 
-onload = getOptions;
+function transport_selected(el) {
+	var transport_pane = document.getElementById('transport_pane');
+	if (el.options[el.selectedIndex].value == '') {
+		transport_pane.innerHTML = '';
+		return;
+	}
+
+	transport_pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Transport ...<br>Please stand by!")+"</div>";
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+el.options[el.selectedIndex].value+"&ns=jabber:iq:register","ow.handleIQRegister");
+}
+
+var ie5=document.all&&document.getElementById;
+var oldactiveindex = 0;
+
+function tabclicked(e) {
+	// find index of clicked element
+	var firingobj=ie5? event.srcElement : e.target;
+	var tablabels = document.getElementById('tablabels');
+	for (var i in tablabels.childNodes)
+		if (tablabels.childNodes[i] == firingobj) {
+			if (oldactiveindex == i)
+			return;
+			var tabs = document.getElementById('tabs');
+			tabs.childNodes[oldactiveindex].className = 'tabinactive';
+			tabs.childNodes[i].className = 'tab';
+			tablabels.childNodes[i].className = 'tablabelactive';
+			tablabels.childNodes[oldactiveindex].className = 'tablabel';
+			oldactiveindex = i;
+			if (tabs.childNodes[i].id = 'transports_tab') {
+				var transports_selector = document.getElementById('transports_selector');
+				var optidx = 1;
+				for (var j in srcW.disco.items) {
+					if (typeof(srcW.disco.items[j].info) != 'undefined') {
+						for (var k in srcW.disco.items[j].info) {
+							if (srcW.disco.items[j].info[k].name == 'feature' && srcW.disco.items[j].info[k].far == 'jabber:iq:gateway')
+								transports_selector.options[optidx++] = new Option(srcW.disco.items[j].name,srcW.disco.items[j].jid);
+						}
+					}
+				}
+			}
+		}
+}
+
+function registerGateway(jid) {
+	var setxml = '';
+	for (var i=0; i<document.forms['transport'].elements.length; i++) {
+		var el = document.forms['transport'].elements[i];
+		setxml += "&"+el.name+"="+el.value;
+	}
+
+	var param = "?sid="+srcW.sid+"&to="+jid+"&ns=jabber:iq:register"+setxml;
+	srcW.fhdLoad("iq-set",param);
+	window.close();
+}
+
+function unregisterGateway(jid) {
+	var fulljid = srcW.roster.getUserByJID(jid).fulljid;
+
+	srcW.fhdLoad("roster","?sid="+srcW.sid+"&jid="+fulljid+"&subscription=remove");
+	window.close();
+}
+
+var srcW = opener.top;
+function init() {
+	getOptions();
+
+	// initialise handlers for tabs
+	var tablabels = document.getElementById('tablabels');
+	for (var i in tablabels.childNodes)
+		tablabels.childNodes[i].onclick = tabclicked;
+}
+
+onload = init;
       //-->
     </script>
+		<style type="text/css">
+			<!--
+			#transport_pane input { 
+			border: 1px solid black;
+			width: 100%;
+			}
+			.tablabels {
+			padding-top: 8px;
+			margin-bottom: 4px;
+			cursor: default;
+			}
+			.tablabel {
+			border: 1px solid black;
+			border-bottom: 0px solid white;
+			padding: 4px;
+			background-color: lightgrey;
+			}
+			.tablabelactive {
+			border: 1px solid black;
+			border-bottom: 1px solid white;
+			padding: 4px;
+			padding-top: 6px;
+			background-color: white;
+			}
+			td.tabs {
+			padding: 4px;
+			border: 1px solid black;
+			background-color: white;
+			}
+			.tab { display: ''; }
+			.tabinactive { display: none;	}
+			.transport_pane { margin: 4px; }
+			//-->
+		</style>
   </head>
-  <body>
-    <form name="options">
-      <fieldset>
-        <legend><l>Options</l></legend>
-        <table border="0">
-            <tr>
-              <td><input id="usersHidden" type="checkbox"></td>
-              <td><label for="usersHidden"><l>Hide offline users</l></label></td>
-            </tr>
-            <tr>
-              <td><input id="autoPopup" type="checkbox" onChange="toggleAutoPopupAway(this);"></td>
-              <td><label for="autoPopup"><l>Automatically open messages and chats</l></label></td>
-            </tr>
-            <tr>
-              <td><input id="autoPopupAway" type="checkbox"></td>
-              <td><label for="autoPopupAway"><l>Auto-Pop-Up if away</l></label></td>
-            </tr>
-            <tr>
-              <td><input id="playSounds" type="checkbox"></td>
-              <td><label for="playSounds"><l>Play sounds</l></label></td>
-            </tr>
-            <tr>
-              <td><input id="focusWindows" type="checkbox"></td>
-              <td><label for="focusWindows"><l>Raise window if a new message is received</l></label></td>
-            </tr>
-            <tr>
-              <td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
-              <td><label for="timestamps"><l>Display timestamps in chat windows</l></label></td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <l>Update interval</l>:
-                <select name="timerval">
-                  <option value="2000"><l>2 sec.</l></option>
-                  <option value="5000"><l>5 sec.</l></option>
-                  <option value="10000"><l>10 sec.</l></option>
-                  <option value="30000"><l>30 sec.</l></option>
-                </select>
-              </td>
-            </tr>
-        </table>
-      </fieldset>
-      <hr noshade size="1">
-      <div align="right" id="buttonbox">
-        <button onClick="window.close();"><l>Close</l></button>&nbsp;<button onClick="return setOptions();"><l>OK</l></button>
-      </div>
-    </form>  
+  <body style="margin: 8px;">
+
+	<table border=0 cellpadding=0 cellspacing=0 height="100%" width="100%">
+		<tr>
+			<td>
+			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span></div>
+			</td></tr>
+		<tr><td height="100%" class="tabs" valign="top">
+			<div id="tabs"><div id="tab1" class="tab">
+				<form name="options">
+					<fieldset>
+						<legend><l>Options</l></legend>
+						<table border="0">
+								<tr>
+									<td><input id="usersHidden" type="checkbox"></td>
+									<td><label for="usersHidden"><l>Hide offline users</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="autoPopup" type="checkbox" onChange="toggleAutoPopupAway(this);"></td>
+									<td><label for="autoPopup"><l>Automatically open messages and chats</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="autoPopupAway" type="checkbox"></td>
+									<td><label for="autoPopupAway"><l>Auto-Pop-Up if away</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="playSounds" type="checkbox"></td>
+									<td><label for="playSounds"><l>Play sounds</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="focusWindows" type="checkbox"></td>
+									<td><label for="focusWindows"><l>Raise window if a new message is received</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
+									<td><label for="timestamps"><l>Display timestamps in chat windows</l></label></td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<l>Update interval</l>:
+										<select name="timerval">
+											<option value="2000"><l>2 sec.</l></option>
+											<option value="5000"><l>5 sec.</l></option>
+											<option value="10000"><l>10 sec.</l></option>
+											<option value="30000"><l>30 sec.</l></option>
+										</select>
+									</td>
+								</tr>
+						</table>
+					</fieldset>
+				</form>
+			</div><div class="tabinactive" id="transports_tab"><l>Gateway</l>: <select id="transports_selector" onchange="transport_selected(this);"><option value=""> - <l>Select</l> - </option></select><div id="transport_pane"></div></div></div>
+			</td></tr>
+		<tr><td>
+		<hr noshade size="1">
+		<div align="right">
+			<button onClick="window.close();"><l>Close</l></button>&nbsp;<button onClick="return setOptions();"><l>OK</l></button>
+		</div></div>
+			</td></tr>
+	</table>
   </body>
 </html>
