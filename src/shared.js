@@ -14,6 +14,15 @@ function getArgs(){
   }
 }
 
+function cutResource(aJID) { // removes resource from a given jid
+	if (typeof(aJID) == 'undefined' || !aJID)
+		return;
+  var retval = aJID;
+  if (retval.indexOf("/") != -1)
+    retval = retval.substring(0,retval.indexOf("/"));
+  return retval;
+}
+
 function msgEscape(msg) {
   msg = msg.replace(/\n/g,"%0A");
   msg = msg.replace(/\r/g,"%0D");
