@@ -40,6 +40,9 @@ function handleCollGet(jabber) {
 	if (jabber.error)
 		return;
 
+	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'http://jabber.org/protocol/archive') // not for me
+		return;
+
 	selected_collection.document.body.innerHTML = '';
 
 	for (var i in jabber.browse.o) {
@@ -59,6 +62,9 @@ function handleCollsGet(jabber) {
 	srcW.fdebug(jabber,2);
 
 	if (jabber.error)
+		return;
+
+	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'http://jabber.org/protocol/archive') // not for me
 		return;
 
 	var items = jabber.browse.o;
