@@ -522,6 +522,7 @@
 
     fdebug("got iq type 'result':\n"+jabber,2);
 
+//     if (jabber.ns == 'vcard-temp')
     handleVCardTemp(jabber);
   }
 
@@ -543,7 +544,7 @@
 	registerHandler("message",handleMessage);
 	registerHandler("presence",handlePresence);
 	registerHandler("iq",handleIQSet);
-	registerHandler("iq",handleIQResult);
+// 	registerHandler("iq",handleIQResult);
 
 	/******************* HANDLER END *******************/
 
