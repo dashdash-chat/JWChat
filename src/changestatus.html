@@ -24,16 +24,23 @@ function doSubmit() {
     away = document.statF.msg.value;
   else
     away = opener.top.onlstatus[newstat];
-      
-  opener.top.changeStatus(newstat,away);
+
+	if (typeof(jid) != 'undefined' && jid != '')
+		opener.top.sendCustomPresence(jid,newstat,away);
+	else
+		opener.top.changeStatus(newstat,away);
   
   window.close();
   return false;
 }
 
+var jid;
 function init() {
+	getArgs();
+	jid = passedArgs['jid'];
   for (var el=0;el<document.statF.status.length;el++) {
-    if (document.statF.status[el].value == opener.top.onlstat) {
+		var presence = (typeof(jid)!='undefined')?opener.roster.getUserByJID(jid).status:opener.top.onlstat;
+    if (document.statF.status[el].value == presence) {
       document.statF.status[el].checked = true;
       break;
     }

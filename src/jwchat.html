@@ -128,6 +128,35 @@ function openSubscription(jid) {
   return false;
 }
 
+function openCustomPresence(jid) {
+	var user = roster.getUserByJID(jid);
+	if (!user)
+		return;
+  if (!user.onlStatW || user.onlStatW.closed)
+    user.onlStatW = open("changestatus.html?jid="+jid,"onlStatW","width=330,height=240,resizable=yes");
+  user.onlStatW.focus();
+  return false;
+}
+
+function sendCustomPresence(jid,presence,msg) {
+	var param = "?sid="+sid+"&to="+jid;
+
+	switch (presence) {
+	case 'offline':
+		param += "&type=unavailable";
+	case 'unavailable':
+		param += "&type=unavailable";
+		presence = "invisible";
+	default:
+		param += "&show="+presence;
+	}
+
+	if (typeof(msg) != 'undfined' && msg != '')
+		param += "&status="+msg;
+
+	fhdLoad("presence",param);
+}
+
 function openUserProps(jid) {
   open("userprops.html?jid="+escape(jid),"uProps"+makeWindowName(jid),"width=480,height=360,resizable=yes");
   return false;
