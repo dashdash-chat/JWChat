@@ -328,7 +328,7 @@ function sendPresence2Groupchats(gc,val,away) {
 			aPresence.setStatus(away);
 		if (val != 'available')
 			aPresence.setShow(val);
-		con.send(aPresence);
+		con.syncSend(aPresence);
 	}
 }
 
@@ -356,7 +356,7 @@ function changeStatus(val,away) {
   case "offline":
     val = "unavailable";
 		aPresence.setType('unavailable');
-		con.send(aPresence);
+		con.syncSend(aPresence);
 		con.disconnect();
     var img = eval(val+"Led");
     statusLed.src = img.src;
@@ -383,7 +383,7 @@ function changeStatus(val,away) {
 		aPresence.setShow(val);
   }
 
-	con.send(aPresence);
+	con.syncSend(aPresence);
 
   /* send presence to chatrooms
    */
