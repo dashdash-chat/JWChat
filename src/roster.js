@@ -253,11 +253,11 @@ function printRoster() {
 	
 	for (var i=0; i<this.groups.length; i++) {
 		var rosterGroupHeadClass = (this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
-		rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"' onDblClick='toggleGrp(\""+this.groups[i].name+"\");'>";
+		rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"' onDblClick='toggleGrp(\""+this.groups[i].name+"\");'><nobr>";
 		var toggleImg = (this.groups[i].toggled)?'images/group_close.gif':'images/group_open.gif';
 		rosterHTML += "<img src='"+toggleImg+"' name='"+this.groups[i].name+"Img' align='middle' onClick='toggleGrp(\""+this.groups[i].name+"\");'> ";
 		rosterHTML += this.groups[i].name+ " (<span id='"+this.groups[i].name+"On'>"+this.groups[i].onlUserCount+"</span>/" + this.groups[i].users.length + ")";
-		rosterHTML += "</div>";
+		rosterHTML += "</nobr></div>";
 		var rosterGroupClass = ((this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) || this.groups[i].toggled)?'hidden':'rosterGroup';
 		rosterHTML += "<div id='"+this.groups[i].name+"' class='"+rosterGroupClass+"'>";
 		
@@ -305,7 +305,6 @@ function GroupchatRosterUser(jid,name) {
   this.role = 'none';
 
   this.add2Group = GroupchatRosterUserAdd2Group;
-
 }
 
 GroupchatRosterUser.prototype = new RosterUser;
