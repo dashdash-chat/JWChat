@@ -46,8 +46,7 @@ function popMsgs() {
       msg = user.chatmsgs.shift();
     putMsgHTML(msg.body,user.name,"red");
   }
-  
-  if (opener.top.focusWindows) frames.bottom.document.forms.chatform.msgbox.focus();
+  if (jwcMain.focusWindows) frames.bottom.document.forms.chatform.msgbox.focus();
   if (user.lastsrc != null && user.messages.length == 0) {
     var images = srcW.roster.getUserIcons(jid);
     for (var i=0; i<images.length; i++)
