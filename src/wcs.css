@@ -3,7 +3,7 @@ body {
   font-size: 12px;
   margin: 0;
   padding: 0;
-  background-color: #b8dbff;
+	background-color: #b8dbff;
 }
 
 button {
@@ -131,7 +131,8 @@ td.menubar {
 .myStatusMsg {  
   cursor: hand;
   border: 0;
-  background-color: #b8dbff;
+/*  background-color: #b8dbff; */
+  background-color: #aecbe9;
 }
 
 .myStatusMsgSelected { 
@@ -176,3 +177,15 @@ a.menubar:hover {
 }
 
 img.actionButton { cursor: hand; }
+
+h1 { font-size: 1.4em; }
+
+h2 { 
+	font-size: 1.2em; 
+	margin-bottom: 0.8em; 
+}
+
+h3 { 
+	font-size: 1.0em; 
+	font-style: italic;
+}
