@@ -1,3 +1,9 @@
+2004-07-02  Stefan Strigler <steve@zeank.in-berlin.de>
+	* load/store roster preferences (hidden/collapsed groups)
+	
+2004-07-01  Stefan Strigler <steve@zeank.in-berlin.de>
+	* use Private XML Storage (JEP-0049) to store client preferences
+
 2004-06-28  Stefan Strigler <steve@zeank.in-berlin.de>
 	* support for configuring chatrooms
 	* modify user lists (ban, moderators, members and so on)
