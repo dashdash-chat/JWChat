@@ -5,7 +5,7 @@ po:
 	@./scripts/extract-message-catalog.pl
 
 install:
-	@if [ ! -e ./htdocs ]; then \
+	@if [ ! -d ./htdocs ]; then \
 		echo ""; \
 		mkdir ./htdocs; \
 		echo "Copying Stylesheets ..."; \
