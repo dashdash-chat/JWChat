@@ -64,7 +64,7 @@
 			var iq = new JSJaCIQ();
 			iq.setType('get');
       if (cutResource(jid) != srcW.cutResource(srcW.jid)) // not me
-				iq.setTo(cutResource(jid));
+				iq.setTo(jid);
 			var vCard = iq.getNode().appendChild(iq.getDoc().createElement('vCard'));
 			vCard.setAttribute('xmlns','vcard-temp');
 			me = this;
