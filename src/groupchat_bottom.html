@@ -14,7 +14,7 @@ function submitClicked() {
   
 
   if (body == '') // don't send empty message
-    return false;
+    return true;
           
   /* handle commands */
   if (body.match(/^\/nick (.+)/)) {
@@ -38,8 +38,10 @@ function submitClicked() {
   return false;
 }
 
-   function keyPressed(e) {
-     if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 77)) 
+   function keyPressed(el,e) {
+    if (window.event) e = window.event;
+   
+     if ((e.keyCode == 13 && !e.shiftKey) || (e.metaKey && e.keyCode == 77)) 
        return submitClicked();
      else {
        switch (e.keyCode) {
@@ -69,12 +71,6 @@ function submitClicked() {
      }
      return true;
    }
-onkeydown = keyPressed;
-      //-->
-    </script>
-    <script for="document" event="onkeydown()" language="JScript">
-      <!--
-      return keyPressed(window.event);
       //-->
     </script>
   </head>
@@ -82,7 +78,7 @@ onkeydown = keyPressed;
     <form name="chatform">
       <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
           <tr height="100%">
-            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;"></textarea></td></tr>
+            <td width="100%"><textarea id="msgbox" wrap="virtual" style="width:100%;height:100%;" onKeyPress="return keyPressed(this,event);"></textarea></td></tr>
           <tr><td height=5></td></tr>
           <tr>
             <td align="right"><button id="config_chan_button" onClick="return parent.openConfig();" disabled><l>Config</l></button>&nbsp;<button id='submit' name='submit' type='submit' onClick="return submitClicked();"><l>Send</l></button></td></tr>
