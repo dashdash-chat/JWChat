@@ -6,12 +6,16 @@
 		<script src="shared.js" language="JavaScript1.2"></script>
     <script>
       function setSubject() {
-
         var subject = msgEscape(document.forms[0].elements['subject'].value);
-        document.forms[0].elements['subject'].value = top.user.roster.subject; // restore topic
 
-//        if (top.user.roster.me && top.user.roster.me.role != 'moderator') 
+        /* try to set topic */
         top.srcW.fhdLoad("message","?sid="+top.srcW.sid+"&to="+top.jid+"&type=groupchat&subject="+subject);
+
+        /* restore topic */
+        if (top.user.roster.subject)
+          document.forms[0].elements['subject'].value = top.user.roster.subject;
+        else 
+          document.forms[0].elements['subject'].value = '';
 
         return false;
       }
