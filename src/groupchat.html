@@ -145,7 +145,7 @@ function init() {
 
   user = srcW.roster.getUserByJID(group);
   if(!user) {
-    user = srcW.roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
+    user = srcW.roster.addUser(new RosterUser(group,'',[loc('Chat Rooms')],group.substring(0,group.indexOf('@'))));
     user.chatW = window.self;
   }
   user.status = 'available';
