@@ -73,7 +73,7 @@ function getOptions() {
 	form.enableLog.checked = srcW.enableLog;
 
 	if (typeof(srcW.loghost) == 'undefined')
-		form.enableLog.disabled = true;
+		document.getElementById('tr_enableLog').style.display = 'none';
 
   for (var i=0; i<form.timerval.options.length; i++) {
     if (form.timerval.options[i].value == srcW.timerval)
@@ -274,6 +274,11 @@ function init() {
 			}
 		}
 	}
+
+	if (directory_optidx == 1)
+		document.getElementById('dir_label').style.display = 'none';
+	if (transport_optidx == 1)
+		document.getElementById('gw_label').style.display = 'none';
 }
 
 onload = init;
@@ -320,7 +325,7 @@ onunload = savePrefs;
 	<table border=0 cellpadding=0 cellspacing=0 height="100%" width="100%">
 		<tr>
 			<td>
-			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span><span class="tablabel"><l>User Directory</l></span><span class="tablabel"><l>About</l></span></div>
+			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel" id='gw_label'><l>Gateways</l></span><span class="tablabel" id='dir_label'><l>User Directory</l></span><span class="tablabel"><l>About</l></span></div>
 			</td></tr>
 		<tr><td height="100%" class="tabs" valign="top">
 			<div id="tabs"><div id="tab1" class="tab">
@@ -352,7 +357,7 @@ onunload = savePrefs;
 									<td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
 									<td><label for="timestamps"><l>Display timestamps in chat windows</l></label></td>
 								</tr>
-								<tr>
+								<tr id='tr_enableLog'>
 									<td><input id="enableLog" type="checkbox" onChange="srcW.enableLog=this.checked;"></td>
 									<td><label for="enableLog"><l>Enable logging of messages</l></label></td>
 								</tr>
@@ -376,7 +381,8 @@ onunload = savePrefs;
 								<h1 style="margin-bottom: 0px;">JWChat</h1>
 								Version <span id="jwchat_version"></span>
 								<p>
-								<nobr>&copy 2003-2004 by <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a></nobr><br>
+								<nobr>&copy 2003-2004 by <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a></nobr>
+								<p>
 									<img src="images/jumpto.gif" align="middle"><a href="http://jwchat.sourceforge.net" target="_new">http://jwchat.sourceforge.net</a>
 							</div></div>
 			</td></tr>
