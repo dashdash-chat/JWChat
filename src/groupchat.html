@@ -76,7 +76,7 @@ function popMsgs() {
     if (msg.subject) { // set topic
       user.roster.subject = msg.subject;
       frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
-      putMsgHTML("/me has changed the topic to: " + msg.subject, mtime, msg.from); 
+//      putMsgHTML(loc("/me has set the topic to: [_1]", msg.subject), mtime, msg.from);
     }
 
     if(!msg.body || msg.body == '')
