@@ -46,7 +46,12 @@ function handleIQSearch(jabber) {
 	srcW.fdebug(jabber,2);
 
 	// set title
-	document.getElementById('results_header').innerHTML = loc("Search results for [_1]", jabber.from);
+	if (jabber.error == true) {
+		document.getElementById('results_header').innerHTML = loc("An error has occured");
+		return;
+	}
+	else
+		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", jabber.from);
 
 	var html = "<table width='100%' border=0 cellspacing=0 cellpadding=0>";
 
