@@ -241,6 +241,7 @@ function handleEvent() {
 
   var jabber = frames["jwc_in"].jabber;
 
+  /* error handling */
   if (!jabber) { // connection lost
     if (typeof(pass) == 'undefined') { // no pw - we can't reconnect
       alert(loc("An error occured!\nAborting..."));
@@ -272,8 +273,11 @@ function handleEvent() {
       return;
     }
   }
-		
+  /* END error handling */		
+
+  fdebug("handleEvent: timeout_tag="+timeout_tag,0);
   if (!jabber.name) { // no event to handle
+    clearTimeout(timeout_tag);
     timeout_tag = setTimeout("poll()",timerval);
     return; // don't trigger again
   }
