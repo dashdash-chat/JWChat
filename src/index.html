@@ -94,6 +94,9 @@ function init() {
   var welcome = loc("Welcome to JWChat at [_1]", JABBERSERVER);
   document.title = welcome;
   document.getElementById("welcomeh1").innerHTML = welcome;
+
+	document.forms[0].jid.focus();
+
 }
 
 onload = init;
@@ -174,7 +177,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Sat Oct 23 22:16:29 CEST 2004
+Last modified: Fri Nov  5 10:42:08 CET 2004
 <!-- hhmts end -->
     </div>
   </body>
