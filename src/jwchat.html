@@ -668,7 +668,10 @@ function handlePresence(presence) {
 					var error = presence.getNode().getElementsByTagName('error').item(0);
 					if (error.getElementsByTagName('text').item(0))
 						user.chatW.putMsgHTML(error.getElementsByTagName('text').item(0).firstChild.nodeValue,new Date(),from,null,true);
+					else if (error.firstChild && error.firstChild.nodeValue)
+						user.chatW.putMsgHTML(error.firstChild.nodeValue,new Date(),from,null,true);								
 				}
+				
 			}
 // 			for (var i in jabber.o) {
 // 				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
@@ -707,9 +710,12 @@ function handlePresence(presence) {
 		ouser.realjid = item.getAttribute('jid');
 		if (item.getElementsByTagName('reason').item(0))
 			ouser.reason = item.getElementsByTagName('reason').item(0).firstChild.nodeValue;
-		if (item.getElementsByTagName('actor').item(0))
-			ouser.actor = item.getElementsByTagName('actor').item(0).firstChild.nodeValue;
-		
+		if (actor = item.getElementsByTagName('actor').item(0)) {
+			if (actor.getAttribute('jid') != null)
+				ouser.actor = actor.getAttribute('jid');
+			else if (item.getElementsByTagName('actor').item(0).firstChild != null)
+				ouser.actor = item.getElementsByTagName('actor').item(0).firstChild.nodeValue;
+		}
 		if (ouser.role != '') {
 			ouser.add2Group(ouser.role+'s');
 			
