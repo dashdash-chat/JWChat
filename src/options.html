@@ -98,18 +98,17 @@ function getOptions() {
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
-function handleIQRegister(jabber) {
-	
-	var transport_pane = document.getElementById('transport_pane');
+function handleIQRegister(jabber,pane) {
+	//	var transport_pane = document.getElementById('transport_pane');
 	if (jabber.error)
-		transport_pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";
+		pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";
 	else {
 		var html = '';
 		if (typeof(jabber.browse.registered) != 'undefined')
-			html += "<div class='transport_pane'><b style='color:red;'>"+loc("You are already registered with this Gateway!")+"</b></div>";
+			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
 		if (jabber.browse.instrucions !=  '')
-			html += "<div class='transport_pane'>"+jabber.browse.instructions+"</div>";
-		html += "<form name='transport'>";
+			html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
+		html += "<form name='transport'><table>";
 		for (var i in jabber.browse) {
 			switch (i) {
 			case 'o':
@@ -117,38 +116,39 @@ function handleIQRegister(jabber) {
 			case 'registered': 
 				break;
 			case 'key': // hide key
-				html += "<input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'>";
+				html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
 				break;
 			case 'password':
-				html += "<div class='transport_pane'>"+i+": <input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></div>";
+				html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
 				break;
 			default:
-				html += "<div class='transport_pane'>"+i+": <input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></div>";
+				html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
 			}
 		}
-		html += "</form>";
-		html += "<div class='transport_pane' align='right'>";
+		html += "</table></form>";
+		html += "<div class='pane_el' align='right'>";
 		if (typeof(jabber.browse.registered) != 'undefined') {
 			html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
 			html += "&nbsp;";
-			html += "<button onClick=\"registerGateway('"+jabber.from+"');\">"+loc("Update")+"</button>";
+			html += "<button onClick=\"registerService('"+jabber.from+"',pane);\">"+loc("Update")+"</button>";
 		} else
-			html += "<button onClick=\"registerGateway('"+jabber.from+"');\">"+loc("Register")+"</button>";
+			html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Register")+"</button>";
 		html += "</div>";
-		transport_pane.innerHTML = html;
+		pane.innerHTML = html;
 	}
 }
 
+
 var ow = window;
-function transport_selected(el) {
-	var transport_pane = document.getElementById('transport_pane');
+function service_selected(el) {
+	var pane = el.nextSibling;
 	if (el.options[el.selectedIndex].value == '') {
-		transport_pane.innerHTML = '';
+		pane.innerHTML = '';
 		return;
 	}
 
-	transport_pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Transport ...<br>Please stand by!")+"</div>";
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+el.options[el.selectedIndex].value+"&ns=jabber:iq:register",ow.handleIQRegister);
+	pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Service ...<br>Please stand by!")+"</div>";
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+el.options[el.selectedIndex].value+"&ns=jabber:iq:register",ow.handleIQRegister,pane);
 }
 
 var ie5=document.all&&document.getElementById;
@@ -168,26 +168,22 @@ function tabclicked(e) {
 			tablabels.childNodes[i].className = 'tablabelactive';
 			tablabels.childNodes[oldactiveindex].className = 'tablabel';
 			oldactiveindex = i;
-			if (tabs.childNodes[i].id = 'transports_tab') {
-				var transports_selector = document.getElementById('transports_selector');
-				var optidx = 1;
-				for (var j in srcW.disco.items) {
-					if (typeof(srcW.disco.items[j].info) != 'undefined') {
-						srcW.fdebug("info: "+srcW.disco.items[j].info,2);
-						for (var k in srcW.disco.items[j].info) {
-							if (srcW.disco.items[j].info[k].tagname == 'identity' && srcW.disco.items[j].info[k].category == 'gateway')
-								transports_selector.options[optidx++] = new Option(srcW.disco.items[j].name,srcW.disco.items[j].jid);
-						}
-					}
-				}
-			}
 		}
 }
 
-function registerGateway(jid) {
+function registerService(jid,paneid) {
+	var aForm;
+
+	var pane = document.getElementById(paneid);
+
+	for (var i in pane.childNodes) {
+		if (pane.childNodes[i].tagName == 'FORM')
+			aForm = pane.childNodes[i];
+	}
+
 	var setxml = '';
-	for (var i=0; i<document.forms['transport'].elements.length; i++) {
-		var el = document.forms['transport'].elements[i];
+	for (var i=0; i<aForm.elements.length; i++) {
+		var el = aForm.elements[i];
 		setxml += "&"+el.name+"="+el.value;
 	}
 
@@ -211,6 +207,22 @@ function init() {
 	var tablabels = document.getElementById('tablabels');
 	for (var i in tablabels.childNodes)
 		tablabels.childNodes[i].onclick = tabclicked;
+
+	var transports_selector = document.getElementById('transports_selector');
+ 	var transport_optidx = 1;
+	var directory_selector = document.getElementById('directory_selector');
+ 	var directory_optidx = 1;
+	for (var i in srcW.disco.items) {
+		if (typeof(srcW.disco.items[i].info) != 'undefined') {
+			for (var j in srcW.disco.items[i].info) {
+				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'gateway')
+					transports_selector.options[transport_optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
+				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'directory')
+					directory_selector.options[directory_optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
+			}
+		}
+	}
+
 }
 
 onload = init;
@@ -246,7 +258,7 @@ onload = init;
 			}
 			.tab { display: ''; }
 			.tabinactive { display: none;	}
-			.transport_pane { margin: 4px; }
+			.pane_el { margin: 4px; }
 			//-->
 		</style>
   </head>
@@ -255,7 +267,7 @@ onload = init;
 	<table border=0 cellpadding=0 cellspacing=0 height="100%" width="100%">
 		<tr>
 			<td>
-			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span></div>
+			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel"><l>Gateways</l></span><span class="tablabel"><l>User Directory</l></span></div>
 			</td></tr>
 		<tr><td height="100%" class="tabs" valign="top">
 			<div id="tabs"><div id="tab1" class="tab">
@@ -301,7 +313,7 @@ onload = init;
 						</table>
 					</fieldset>
 				</form>
-			</div><div class="tabinactive" id="transports_tab"><l>Gateway</l>: <select id="transports_selector" onchange="transport_selected(this);"><option value=""> - <l>Select</l> - </option></select><div id="transport_pane"></div></div></div>
+			</div><div class="tabinactive" id="transports_tab"><l>Register at</l> <select id="transports_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Gateway</l> - </option></select><div id="transport_pane"></div></div><div class="tabinactive" id="directory_tab"><l>Register at</l>  <select id="directory_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Directory</l> - </option></select><div id="directory_pane"></div></div></div>
 			</td></tr>
 		<tr><td>
 		<hr noshade size="1">

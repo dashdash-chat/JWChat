@@ -124,7 +124,8 @@ function openGroupchat(group,nick) {
 var subw;
 function openSubscription(jid) {
   var param = (jid) ? "?jid="+escape(jid) : "";
-  subw = open("subscription.html"+param,"sub","width=320,height=200,resizable=yes");
+  subw = open("subscription.html"+param,"sub","width=320,height=240,resizable=yes");
+	subw.focus();
   return false;
 }
 
@@ -189,6 +190,14 @@ function openUserInfo(jid) {
 
 function openUserHistory(jid) {
   open(USERHISTORYURL.replace(/\$user/,jid),"uHist"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+}
+
+var searchW;
+function openSearch() {
+	if (!searchW || searchW.closed)
+		searchW = open("search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
+	searchW.focus();
+	return false;
 }
 
 function playSound(action) {
@@ -311,7 +320,7 @@ function handleEvent(jabber) {
   }
   
   if (!is.ie)
-    fdebug(jabber.toSource(),4);
+    fdebug(jabber,4);
   
   if (jabber && jabber.error && sid != 0 && 0) {
     if (jabber.type && jabber.type == "error") {
@@ -352,7 +361,7 @@ function handleEvent(jabber) {
 function handleMessage(jabber) {
 
   if (!is.ie)
-    fdebug(jabber.toSource(),4);
+    fdebug(jabber,4);
   
   var from = cutResource(jabber.from);
   
@@ -453,7 +462,7 @@ function handlePresence(jabber) {
     return;
 
   if (!is.ie)
-    fdebug(jabber.toSource(),2);
+    fdebug(jabber,2);
 
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
@@ -650,7 +659,7 @@ function handleCB(jabber) {
 	if (!jabber) // nothing to do
     return;
 
-  fdebug(jabber,2);
+  fdebug(jabber,3);
 
 	if (registeredCBs.length == 0) {
 		fdebug("no callbacks registered ... aborting!",1);
@@ -662,7 +671,7 @@ function handleCB(jabber) {
 	for (var i=0; i<registeredCBs.length; i++) {
 		if (typeof(registeredCBs[i].func) != 'undefined' && registeredCBs[i].func) {
 			if (registeredCBs[i].args)
-			 	registeredCBs[i].func(registeredCBs[i]);
+			 	registeredCBs[i].func(jabber,registeredCBs[i].args);
 			else
 			 	registeredCBs[i].func(jabber);
 			 
@@ -696,6 +705,9 @@ function handleVCardTemp(jabber) {
 var disco = new Object();
 var disco_info_count;
 function handleDiscoItemResult(jabber) {
+
+	fdebug(jabber,2);
+
 	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined' || jabber.browse.o.length == 0) {
 		fdebug("missing jabber.browse.o: " + jabber,1);
 		return;
@@ -705,7 +717,7 @@ function handleDiscoItemResult(jabber) {
 	if (jabber.from == JABBERSERVER)
 		target = disco;
 	else {
-		fdebug("target not yet implemented",0)
+		fdebug("target not yet implemented",1)
 		return;
 	}
 		
@@ -721,6 +733,9 @@ function handleDiscoItemResult(jabber) {
 }
 
 function handleDiscoInfoResult(jabber) {
+
+	fdebug(jabber,2);
+
 	if (jabber.type == 'error')
 		disco.items[disco_info_count].error = true;
 	else {
@@ -930,6 +945,9 @@ function cleanUp() {
 
 	if (typeof(ow) != 'undefined' && ow && !ow.closed)
 		ow.close();
+
+	if (searchW && !searchW.closed)
+		searchW.close();
 
   fmd.getElementById('roster').innerHTML = '';
 

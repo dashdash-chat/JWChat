@@ -33,6 +33,17 @@ function sendSub() {
   return false;
 }
 
+function selectService(selbox) {
+	var el = selbox.options[selbox.selectedIndex];
+	var to = document.forms[0].elements['to'];
+	// cut off node
+	var i = to.value.indexOf('@');
+	if (i != -1)
+		to.value = to.value.substring(0,i);
+	if (el.value != '')
+		to.value += "@" + el.value;
+}
+
 function init() {
   // determine source window
   if (opener.roster)
@@ -47,6 +58,18 @@ function init() {
   document.title += (jid)?" <l>to</l> " + jid:"";
   if (jid)
     document.forms[0].to.value = jid;
+
+	/* detect services */
+	var services = document.forms[0].elements["services"];
+	var optidx=1;
+	for (var i=0; i<srcW.disco.items.length; i++) {
+		if (typeof(srcW.disco.items[i].info) != 'undefined') {
+			for (var j=0; j<srcW.disco.items[i].info.length; j++) {
+				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'gateway')
+					services.options[optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
+			}
+		}
+	}
 }
 		
 function keyPressed(e) {
@@ -69,13 +92,31 @@ onload = init;
     </script>
   </head>
   <body style="margin:8px">
-    <form name="sub" onSubmit="return sendSub();">
-      <table border=0 cellspacing=0 cellpadding=0 style="margin-bottom:8px;" width="100%" height="100%">
-          <tr>
-            <td nowrap><l>Send subscription to</l>&nbsp;</td><td width="100%"><input type="text" name="to" size=32 style="width:100%;"></td></tr>
-          <tr height="100%"><td colspan=2 style="padding-top: 4px;"><textarea id="msg" wrap="physical" class="msgBox"><l>I would like to add you to my roster.</l></textarea></td></tr>
+    <form name="sub" style="border:0;padding:0;margin:0;" onSubmit="return sendSub();">
+      <table border=0 width="100%" height="100%">
+					<tr><td nowrap><l>Search for a User</l>:</td><td><button onClick="return srcW.openSearch();"><l>Open Search</l></button></td></tr>
           <tr><td colspan=2><hr noshade size="1" size="100%"></td></tr>
-          <tr><td colspan=2 id="buttonbox" align="right"><button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button type="submit"><l>Send</l></button></td></tr>
+          <tr>
+            <td align='right' nowrap><label for="to"><l>Send subscription to</l></label></td>
+						<td width="100%"><input type="text" id="to" name="to" size="1" style="width:100%;" tabindex=1></td>
+					</tr>
+					<tr>
+						<td nowrap align="right"><label for="services"><l>Service (optional)</l></label></td>
+						<td width="100%">
+							<select name="services" id="services" onChange="selectService(this);" tabindex=2><option value=''><l>local jabber user</l></option></select>
+						</td>
+					</tr>
+          <tr height="100%">
+						<td colspan=2>
+							<textarea id="msg" wrap="physical" class="msgBox" tabindex=3><l>I would like to add you to my roster.</l></textarea>
+						</td>
+					</tr>
+          <tr><td colspan=2><hr noshade size="1" size="100%"></td></tr>
+          <tr>
+						<td colspan=2 align="right">
+							<button onClick="window.close();" tabindex=5><l>Cancel</l></button>&nbsp;<button type="submit" tabindex=4><l>Send</l></button>
+						</td>
+					</tr>
       </table>
     </form>
   </body>
