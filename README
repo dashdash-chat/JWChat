@@ -1,0 +1,61 @@
+JWChat - Jabber Web Chat
+========================
+
+JWChat aims to be a full featured, web based jabber client. It uses
+only JavaScript and HTML on the client-side. Currently it supports
+basic jabber instant messaging, roster management and muc-based
+groupchats.
+
+If you want to learn more about Jabber please refer to
+http://www.jabber.org.
+
+JWChat is a web based instant messenger (IM) just like AIM, MSN
+Messenger, Yahoo! Messenger or ICQ. This means you can manage your
+contacts and chat with other users directly. Unlike other IMs you can
+use this with your web browser without having to install any
+additional software at all. For a list of supported browsers see
+below. Your contact list is stored on the server. This means that you
+have access to your contact list from almost any computer as long as
+you've got access to the internet.
+
+Supported browsers and plattforms
+---------------------------------
+
+Windows XP/2000/ME/98/95:
+* MS Internet Explorer since version 5.0
+* Netscape version 6 & 7
+* Mozilla (stable) since version 1.0.2
+  
+Mac OS X:
+* Mozilla (stable) since version 1.0.2
+* Camino 0.7
+* Support for safari coming soon...
+
+Linux:
+* Mozilla (stable) since version 1.0.2
+
+
+-> requirements
+
+-> installation
+
+-> further reading
+
+
+Disclaimer
+=======
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA

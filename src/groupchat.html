@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>JWChat - Groupchat</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script src="shared.js" language="JavaScript1.2"></script>
+		<script src="browsercheck.js" language="JavaScript1.2"></script>
+		<script src="emoticons.js" language="JavaScript1.2"></script>
+		<script src="config.js" language="JavaScript1.2"></script>
+		<script src="roster.js" language="JavaScript1.2"></script>
+
+    <script>
+
+var colors = new Array();
+colors[0] = 'maroon';
+colors[1] = 'green';
+colors[2] = 'olive';
+colors[3] = 'navy';
+colors[4] = 'purple';
+colors[5] = 'teal';
+colors[6] = 'red';
+colors[7] = 'lime';
+colors[8] = 'yellow';
+colors[9] = 'blue';
+colors[10] = 'fuchsia';
+colors[11] = 'aqua';
+
+			function putMsgHTML(msg,user,usercolor) {
+				var msgHTML = '';
+				var now = new Date();
+			
+				msg = msgFormat(msg);
+			
+				var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+				mtime += ":";
+				mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+				mtime += ":";
+				mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+
+				msgHTML += "<span class=time>["+mtime+"] </span>";    
+
+				if (msg.match(/^\/me /)) {
+					msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>*** "+user+"</b></font> ");
+				} else if (user != group) {
+					msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
+				}
+
+        if (user == group) /* channel status messages */
+          msgHTML += "<b>"+msg+"</b><br>";
+        else
+          msgHTML += " " + msg + "<br>";
+
+				cFrame.body.innerHTML += msgHTML;
+				frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
+			}
+
+			function popMsgs() {
+
+        if (!user) 
+          user = srcW.roster.getUserByJID(group);
+
+			  while (user.chatmsgs.length>0) {
+					var msg;
+					if (is.ie5||is.op) {
+						msg = user.chatmsgs[0];
+						user.chatmsgs = user.chatmsgs.slice(1,user.chatmsgs.length);
+					} else
+						msg = user.chatmsgs.shift();
+      
+          /* look for a subject */
+          if (msg.subject) { // set topic
+            user.roster.subject = msg.subject;
+            frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
+          }
+
+          if(!msg.body || msg.body == '')
+            return;
+
+          if (msg.from.indexOf('/') != -1)
+            msg.from = msg.from.substring(msg.from.indexOf('/')+1);
+
+          /* calculate color */
+          var charSum = 0;
+          for (var i=0; i<msg.from.length; i++)
+            charSum += msg.from.charCodeAt(i);
+
+					putMsgHTML(msg.body,msg.from,colors[charSum%(colors.length)]);
+				}
+
+				if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
+			}
+
+			function displayTimestamp() {
+			  var tstyle;
+				if (is.ie) {
+					tstyle = cFrame.styleSheets('timestampstyle');
+					tstyle.disabled = opener.top.timestamps;
+				} else {
+					tstyle = cFrame.getElementById("timestampstyle");
+					tstyle.sheet.disabled = opener.top.timestamps;
+				}
+			}
+
+      function updateMe() {
+      }
+
+
+			/* global vars */
+      var srcW,group,user,roster,cFrame,jid;
+
+      function init() {
+        getArgs();
+
+        srcW = opener;
+
+        group = passedArgs['group'];
+        nick = passedArgs['nick']
+        jid=group;
+
+        srcW.fdebug("groupchat group:"+group+", nick:"+nick,3);
+
+        srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
+
+        cFrame = frames.groupchatChat.groupchatIChat.document;
+
+        user = srcW.roster.getUserByJID(group);
+        if(!user) {
+          user = srcW.roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
+          user.chatW = window.self;
+        }
+        user.status = 'available';
+        srcW.roster.print();
+
+        user.roster = new GroupchatRoster(window.self);
+        user.roster.nick = nick; // remember my nickname
+        roster = user.roster;
+        //        user.roster.print();
+
+        document.title += " - " + group;
+
+        popMsgs();
+        displayTimestamp();
+      }
+
+
+      function part() {
+        srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
+        srcW.roster.removeUser(user);
+        srcW.roster.print();
+      }
+
+			function keyPressed(e) {
+				if (e.keyCode == 27)
+					window.close();
+			}
+
+			function updateStyleIE() {
+        if (user)
+          user.roster.updateStyleIE();
+      }
+
+			onkeydown = keyPressed;
+			onload = init;
+      onunload = part;
+			onresize = updateStyleIE;
+
+    </script>
+
+		<script for="document" event="onkeydown()" language="JScript">
+		<!--
+			if (window.event.keyCode == 27)
+				window.close();
+			//-->
+		</script>
+
+    <frameset rows="40,*,80" frameborder=2 framespacing=2 border=2 bordercolor=black>
+      <frame src="groupchat_top.html" name="groupchatTop" scrolling="no">
+      <frameset cols="70%,*">
+        <frame src="groupchat_chat.html" name="groupchatChat" scrolling="no">
+        <frame src="groupchat_roster.html" name="groupchatRoster" scrolling="no">
+      </frameset>
+      <frame src="groupchat_bottom.html" name="groupchatBottom" scrolling="no">
+    </frameset>
+
+  </head>
+
+  <body>
+  </body>
+</html>

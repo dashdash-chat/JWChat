@@ -1,0 +1,761 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>JWChat</l></title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<script src="config.js" language="JavaScript1.2"></script>
+	<script src="shared.js" language="JavaScript1.2"></script>
+	<script src="browsercheck.js" language="JavaScript1.2"></script>
+	<script src="sounds.js" language="JavaScript1.2"></script>
+	<script src="roster.js" language="JavaScript1.2"></script>
+	<script language="JavaScript1.2">
+	<!--
+	/* status */
+	var jid;
+	var pass;	
+	var status = '';
+	var sid = 0;
+	var onlstat = 'available';
+	var autoPopup = true;
+	var autoPopupAway = false;
+	var playSounds = true;
+	var focusWindows = true;
+	var timestamps = true;
+
+	/* some globals */
+	var roster;
+	var timeout_tag;
+
+	var mw = new Array(); // message windows
+	var sw = new Array(); // send message windows
+
+	var fmd; // shortcut to main frame
+	var fhd; // shortcut to hidden frame
+	var statusbox;  // shortcut to status select box
+
+	var onlstatus = new Object();
+	onlstatus["available"] = 0;
+	onlstatus["chat"] = 1;
+	onlstatus["away"] = 2;
+	onlstatus["xa"] = 3;
+	onlstatus["dnd"] = 4;
+	onlstatus["invisible"] = 5;
+	onlstatus["unavailable"] = 6;
+
+  // the debugger
+	var debugW;
+  var debugMsgs = new Array(); 
+
+	function fdebug(str,lv) {
+    if (!DEBUG || (USE_DEBUGJID && cutResource(jid) != DEBUGJID)) // what the hell are we doing here
+      return;
+
+    var msg = new Object();
+    msg.str = str;
+    msg.lv = lv;
+    if (fdebug.caller)
+      msg.caller = fdebug.caller.name;
+    else
+      msg.caller = 'undefined';
+
+    debugMsgs.push(msg);
+
+    if (!debugW || debugW.closed) // open the debugger
+      debugW = window.open("debug.html","debugW","width=480,height=320,scrollbars=yes,resizable=yes");
+
+    if (!debugW || !debugW.popMsgs)
+      return;
+    debugW.popMsgs();
+  }
+
+	var messageHistory = new Array();
+	var historyIndex = 0;
+	function getHistory(key, message) {
+		if ((key == "up") && (historyIndex > 0)) historyIndex--;
+		if ((key == "down") && (historyIndex < messageHistory.length)) historyIndex++;
+		if (historyIndex >= messageHistory.length) {
+			if (historyIndex == messageHistory.length) return '';
+			return message;
+		} else {
+			return messageHistory[historyIndex];
+		}
+	}
+
+	function addtoHistory(message) {
+		if (is.ie5)
+			messageHistory = messageHistory.concat(message);
+		else
+			messageHistory.push(message);
+		historyIndex = messageHistory.length;
+	}
+
+	function openGroupchat(group,nick) {
+    var user = roster.getUserByJID(group);
+    if(!user) {
+      user = roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
+      roster.print();
+    }
+    user.chatW = open("groupchat.html?group="+group+"&nick="+nick,"gchatW"+makeWindowName(group),"width=480,height=640,resizable=yes");
+  }
+
+
+	function openSubscription(jid) {
+		var param = (jid) ? "?jid="+jid : "";
+		open("subscription.html"+param,"sub","width=320,height=200,resizable=yes");
+		return false;
+	}
+
+	function openUserProps(jid) {
+		open("userprops.html?jid="+jid,"uProps"+makeWindowName(jid),"width=480,height=400,resizable=yes");
+		return false;
+	}
+
+	function removeUser(jid) {
+		fhdLoad("roster","?sid="+sid+"&jid="+jid+"&subscription=remove");
+	}
+
+	function openUserInfo(jid) {
+			var userurl;
+			var username = jid.substring(0,jid.indexOf("@"));
+
+			if (jid.indexOf("@"+JABBERSERVER) != -1) {
+				userurl = USERURL.replace(/\$user/,username);
+			} else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
+				userurl = ICQUSERURL.replace(/\$user/,username);
+			} else {
+				alert(loc("Can't display User Info:\nUser not local!"));
+				return false;
+			}
+
+			open(userurl,"uInfo"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+      return false;
+	}
+
+	function openUserHistory(jid) {
+		open(USERHISTORYURL.replace(/\$user/,jid),"uHist"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+	}
+
+	function playSound(action) {
+		if (!playSounds)
+			return;
+		if(!SOUNDS[action]) {
+      fdebug("no sound for '" + action + "'",2);
+			return;
+		}
+
+		var frameD = frames["jwc_sound"].document;
+		var html = "<embed src=\""+SOUNDS[action]+"\" width=\"1\" height=\"1\" quality=\"high\" pluginspage=\"http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash\" type=\"application/x-shockwave-flash\">";
+		frameD.open();
+		frameD.write(html);
+		frameD.close();
+	}
+
+	function frameLoad(frame,func,param,onload) {
+		var ext = ".jsx"; // protocol extension for wcs
+		var ext2 = ".js" 
+		var url = sWCS + func + ext + param;
+		var url2 = sWCS2 + func + ext2 + param;
+			fdebug("frameLoad:\n" + url,4);
+		/* doesn't work with mozilla */
+		if (is.ie || is.op) {
+			frame.document.open();
+			if (onload)
+				frame.document.write("<script src=\""+url2+"\"></script><script>function checkData() { if (typeof(jabber)=='undefined') setTimeout(\"checkData()\",100); else " + onload + " } onload = checkData;</script>");
+			else 
+				frame.document.write("<script src=\""+url2+"\"></script>");
+  		frame.document.close();
+		} else {
+			frame.location.href = url;
+		}
+	}
+
+	function fhdLoad(func,param) {
+		if (is.ie5 || is.op)
+			frameLoad(frames["jwc_out"],func,param,"parent.run();");
+		else
+			frameLoad(frames["jwc_out"],func,param);
+	}
+
+	function cutResource(aJID) { // removes resource from a given jid
+		var retval = aJID;
+		if (retval.indexOf("/") != -1)
+			retval = retval.substring(0,retval.indexOf("/"));
+		return retval;
+	}
+
+	function setPollInterval(val) {
+		if (timeout_tag)
+			clearTimeout(timeout_tag);
+		timerval = val;
+		poll();
+	}
+
+/************************************************************************
+ *                   ***** EVENT - HANDLER *****
+ ************************************************************************
+ */
+
+	var rh = new Object(); // registered handlers
+	function registerHandler(type,func) {
+		if (!rh[type])
+			rh[type] = new Array(func);
+		else 
+			rh[type] = rh[type].concat(func);
+	}
+	
+	function handleEvent() {
+
+		if (status != 'polling')
+			return;
+
+		var jabber = frames["jwc_in"].jabber;
+
+		if (!jabber) { // connection lost
+      if (typeof(pass) == 'undefined') { // no pw - we can't reconnect
+        alert(loc("An error occured!\nAborting..."));
+        window.close();
+        return;
+      }
+
+			if (confirm(loc("Connection lost!\nReconnect?"))) {
+				sid=0;
+				changeStatus(onlstat);
+			} else {
+				logout();
+			}
+			return;
+		}
+
+    if (!is.ie)
+      fdebug("jabber: " + jabber.toSource(),4);
+
+		if (jabber && jabber.error && sid != 0) {
+			if (jabber.type && jabber.type == "error") {
+        fdebug("From: " + jabber.from + "\n" + jabber.error,0);
+			} else {
+        alert(loc("An error occured!\nAborting..."));
+        if (typeof(pass) == 'undefined')
+          window.close();
+        else
+          logout();
+				return;
+			}
+		}
+		
+		if (!jabber.name) { // no event to handle
+			timeout_tag = setTimeout("poll()",timerval);
+			return; // don't trigger again
+		}
+
+
+		if (rh[jabber.name]) {
+			for (var i in rh[jabber.name])
+				rh[jabber.name][i](jabber);
+		} else {
+      fdebug("handleEvent: unregistered type: " + jabber.name,1);
+		}
+		
+		poll(); // trigger new poll
+	}
+
+/************************************************************************
+ * handleMessage
+ ************************************************************************
+ */
+
+	function handleMessage(jabber) {
+		var from = cutResource(jabber.from);
+		var user = roster.getUserByJID(from);
+		if (user == null) {// users not in roster (yet)
+			user = roster.addUser(new RosterUser(from));
+			user.lastsrc = eval(user.status + "Led").src;
+			roster.print();
+		}
+
+    fdebug(jabber,4);
+
+    var aRoster = roster;
+    if (jabber.type != 'groupchat' && user.roster) { // privat groupchat message
+      aRoster = user.roster;
+      from = jabber.from; // we cut the resource - now 
+      user = user.roster.getUserByJID(from);
+    }
+
+    /* change icon in roster - but not if it's a groupchat item */
+    if (jabber.type != 'groupchat') {
+      if (!user.lastsrc)
+        user.lastsrc = eval(user.status + "Led").src;
+      
+      var images = aRoster.getUserIcons(from);
+      for (var i=0; i<images.length; i++)
+        images[i].src = messageImg.src;
+
+      /* user is not visible right now - make him pop up (lastsrc changed!) */
+      if (aRoster.usersHidden && user.status == 'unavailable')
+        aRoster.print();
+    }
+
+
+    if (jabber.type == 'chat' && !(jabber.x && jabber.x.stamp)) {
+
+      /* we got a real chat message (and not an offline message) - TODO: jabber.x no more available!
+       */
+
+			user.chatmsgs = user.chatmsgs.concat(jabber);
+
+			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
+				user.chatW.popMsgs();
+				playSound('chat_recv');
+			} else if (autoPopup && (autoPopupAway || onlstat == "available" || onlstat == "chat")) {
+				aRoster.openChat(from);
+				playSound('chat_recv');
+			} else {
+				if (focusWindows) window.focus();
+				playSound('chat_queue');
+			}
+    } else if (jabber.type == 'groupchat') {
+
+      /* handle groupchat message 
+       */
+
+      if (!is.ie)
+        fdebug("got groupchat message: " + jabber.toSource(),3);
+
+			user.chatmsgs = user.chatmsgs.concat(jabber);
+			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
+				user.chatW.popMsgs();
+      } 
+
+      playSound('chat_recv');
+
+		} else {
+
+      /* must have been an offline message handle as normal message as
+       * opening a chat window doesn't make sense most probably 
+       */
+
+			user.messages = user.messages.concat(jabber);
+			if (autoPopup && (autoPopupAway || onlstat == "available" || onlstat == "chat") && (!user.mW || user.mW.closed)) {
+				aRoster.openMessage(from);
+				playSound('message_recv');
+			} else if (user.mW && !user.mW.closed && user.messages.length > 0 && user.mW.document.forms[0]) {
+				user.mW.document.forms[0].nextButton.disabled = false;
+				if (focusWindows) user.mW.focus();
+				playSound('message_recv');
+			}	else {
+				if (focusWindows) window.focus();
+				playSound('message_queue');
+			}
+		}
+	}
+
+/************************************************************************
+ * handlePresence
+ ************************************************************************
+ */
+
+	function handlePresence(jabber) {
+		var from = cutResource(jabber.from);
+    var aRoster = roster;
+
+		if (from == cutResource(jid)) // skip my own presence msgs
+			return;
+
+    fdebug("presence: " + jabber,4);
+
+		if (jabber.type) {
+			if (jabber.type == 'subscribe') {
+
+        window.open("subscriptionRequest.html?jid="+from+"&msg="+jabber.status,"sr"+makeWindowName(from),"width=320,height=210");
+
+				return;
+			}
+      if (jabber.type == 'unsubscribe')
+        alert(loc("You have been unsubscribed from [_1]", jabber.from));
+		}
+
+		var user = roster.getUserByJID(from);
+		if (!user) // presence from unsubscribed user
+			return;
+
+    if (jabber.o && user.roster) { // seems to be a special presence (assumed to be for MUC)
+      fdebug("opresence: " + jabber.o,3);
+      
+      var ofrom = jabber.from.substring(jabber.from.indexOf('/')+1);
+
+      fdebug("jabber.from:"+jabber.from+", ofrom:"+ofrom,2);
+
+      var ouser = user.roster.getUserByJID(jabber.from);
+      if (!ouser) // no user? create one!
+        ouser = new GroupchatRosterUser(jabber.from,ofrom);
+
+      /* grep for affiliation and role */
+      for (var i in jabber.o) {
+        if (jabber.o[i].name = 'x' && jabber.o[i].o) {
+          for (var j in jabber.o[i].o) {
+            if (jabber.o[i].o[j].name == 'item' && jabber.o[i].o[j].role != '') {
+              ouser.affiliation = jabber.o[i].o[j].affiliation;
+              ouser.role = jabber.o[i].o[j].role;
+              ouser.add2Group(ouser.role+'s');
+
+              /* check if it is our own presence
+               * must be done here cause we want to be sure that role != ''
+               */
+              fdebug("ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,2);
+
+              if (ouser.name == user.roster.nick) { // seems to be me
+                user.roster.me = ouser; // store this reference
+                if (user.chatW.updateMe)
+                  user.chatW.updateMe();
+              }
+            }
+          }
+        }
+      }
+
+      fdebug("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,2);
+
+      if (!user.roster.getUserByJID(jabber.from)) 
+        user.roster.addUser(ouser);
+      else
+        user.roster.updateGroups();
+
+      // relink roster and user
+      aRoster = user.roster;
+      user = ouser;
+    } 
+
+		if (jabber.show) {
+			if (user.status == 'unavailable')
+				playSound('online');
+			user.status = jabber.show;
+		} else if (jabber.type) {
+      if (jabber.type == 'unsubscribe') {
+        user.subscription = 'from';
+        user.status = 'stalker';
+      } else if (user.status != 'stalker')
+        user.status = 'unavailable';
+      if (aRoster.name == 'GroupchatRoster') // it's a groupchat roster
+        aRoster.removeUser(user); // we don't need offline users in there
+			playSound('offline');
+		} else {
+			if (user.status == 'unavailable') // user was offline before
+				playSound('online');
+			user.status = 'available';
+		}
+
+		var img = eval(user.status+"Led");
+
+		if (user.lastsrc) // message is pending
+			user.lastsrc = img.src;
+
+		// show away message
+		if (jabber.status)
+			user.statusMsg = jabber.status;
+		else
+			user.statusMsg = null;
+
+		aRoster.print(); // update roster
+	}
+
+/************************************************************************
+ * handleIQSet
+ ************************************************************************
+ */
+
+	function handleIQSet(jabber) {
+		if (jabber.type != "set")
+			return;
+
+    fdebug("got iq type 'set':\n"+jabber,2);
+
+		for (var i in jabber.items) {
+			var item = jabber.items[i];
+			var user = roster.getUserByJID(item.jid);
+			if (user) {
+				user.subscription = item.subscription;
+				if (item.subscription == 'remove') {
+					roster.removeUser(user);
+				} else { // update user
+          item.name = item.name? item.name : item.jid;
+          user.name = item.name;
+          user.groups = item.groups;
+          roster.updateGroups();
+				}
+			} else {// got a new user
+        roster.addUser(new RosterUser(item.jid,item.subscription,item.groups));
+        openUserProps(item.jid);
+        if (item.subscription == "from")
+          openSubscription(item.jid); // subscribe to user
+			}
+		}
+		roster.print();
+	}
+	
+	registerHandler("message",handleMessage);
+	registerHandler("presence",handlePresence);
+	registerHandler("iq",handleIQSet);
+
+	/******************* HANDLER END *******************/
+
+
+	/******************* PROTO *******************/
+	
+	function poll() {
+		if (sid == 0 || status != 'polling')
+			return;
+		if (is.ie5 || is.op)
+			frameLoad(frames["jwc_in"],"cache","?sid="+sid,"parent.handleEvent();");
+		else
+			frameLoad(frames["jwc_in"],"cache","?sid="+sid);
+	}
+
+	function changeStatus(val,prompt_away) {
+
+    fdebug("changeStatus: "+val+","+prompt_away, 2);
+
+		onlstat = val;
+		if (sid == 0) { // login first
+			status = 'sendPresence';
+			fhdLoad("login-sid","?jid=" + jid + "&pass=" + pass + "&timeout=" + timeout);
+			return;
+		}
+
+		var param = "?sid=" + sid;
+
+		switch(val) {
+		case "available":
+			param += "&status="+val;
+			val = 'available'; // needed for led in status bar
+			break;
+		case "unavailable":
+			param += "&type="+val;
+			val = "invisible";
+			break;
+		case "offline":
+			val = "unavailable";
+			fhdLoad("logout-sid","?sid=" + sid);
+			var img = eval(val+"Led");
+			statusbox.setAttribute("style","background-image: url('"+img.src+"')");
+			statusbox.selectedIndex = onlstatus['unavailable'];
+      cleanUp();
+			return;
+			break;
+		default:
+			if (prompt_away) {
+				var away = prompt(loc("Status Message"));
+				if (away)
+					param += "&status=" + away;
+			}
+			param += "&show="+val;
+		}
+
+		fhdLoad("presence",param);
+
+    /* send presence to chatrooms
+     */
+    if (typeof(roster) != 'undefined') {
+      for (var i in roster.users) {
+        if (roster.users[i].roster) // it's a chatroom
+          fhdLoad("presence",param+"&to="+roster.users[i].jid);
+      }
+    }
+
+		statusbox.blur(); // remove focus from selectbox
+		var img = eval(val+"Led");
+		if (sid != 0)
+			statusbox.setAttribute("style","background-image: url('"+img.src+"')");
+	}
+
+
+	function init() {
+
+    fdebug("init: jid="+jid+", pass="+pass,2);
+
+		/* get frames */
+		fhd = frames["jwc_out"].document;
+		statusbox = frames["jwc_main"].document.getElementById('status');
+    fmd = frames["jwc_main"].iRoster.document;
+
+		// get saved cookie data
+		if (document.cookie) {
+			var save = document.cookie.substring(document.cookie.indexOf("jwc=")+4);
+			if (save.indexOf("usersHidden") != -1)
+				usersHidden = true;
+			if (save.indexOf("autoPopup") == -1)
+				autoPopup = false;
+			if (save.indexOf("autoPopupAway") != -1)
+				autoPopupAway = true;
+			if (save.indexOf("playSounds") == -1)
+				playSounds = false;
+			if (save.indexOf("focusWindows") == -1)
+				focusWindows = false;
+			if (save.indexOf("timestamps") == -1)
+				timestamps = false;
+			
+			save = save.substring(save.indexOf("timerval%")+9);
+			if (!isNaN(save))
+				timerval = save;
+		}
+		
+		/* login */
+		if (is.ie5 && !is.mac) // still needed? check this again!
+			frames["jwc_out"].document.body.attachEvent("onload",run);
+
+    /* set title */
+    document.title = "JWC - " + jid.substring(0,jid.indexOf('@'));
+
+    if (sid) {
+      status = 'sendPresence';
+      run();
+    } else {
+      changeStatus("available");
+    }
+	}
+
+	function run() {
+
+    fdebug("status:" + status,3);
+	
+		switch (status) {
+		  case 'sendPresence':
+
+        var jabber = frames["jwc_out"].jabber;
+        if (jabber && jabber.error) { // seems to be a not registered user
+          fdebug("jabber: " + jabber.toSource(),1);
+          if (confirm(loc("Couldn't log in!\nCreate new account?"))) {
+            fhdLoad("pub/register","?jid="+jid+"&pass="+pass);
+          } else {
+            window.close();
+          }
+          break;
+        }
+
+        status = 'getRoster';
+
+				fmd.getElementById('roster').innerHTML = "<div style=\"padding: 4px;\"><l>Loading Roster...<br>Please wait!</l></div>";
+        
+        if (!sid && !jabber.sid) {
+          changeStatus("available");
+          return;
+        }
+
+        if (!sid)
+          sid = jabber.sid;
+
+        fdebug("got sid:\n" + sid,2);
+
+		  	changeStatus(onlstat);
+		  	break;
+		  case 'getRoster':
+		  	status = 'printRoster';
+        fhdLoad("roster","?sid="+sid);
+		  	break;
+		  case 'printRoster':
+		  	status = 'polling';
+        roster = new Roster(frames["jwc_out"].jabber.items,fmd);
+		  	roster.print();
+			
+				statusbox.selectedIndex = onlstatus[onlstat];
+
+				playSound('connected');
+
+				poll();	// initial poll (not nice here)
+		  	break;
+		  case 'polling':
+		  	// done by onload of extra frame
+		  	// handleEvents(frames.poll.jabber); 
+			break;
+		  default:
+		  	fdebug('unknown status: ' + status,2);
+			break;
+		}
+	}
+	
+	function cleanUp() {
+    sid = 0;
+    status = '';
+
+		/* close dependent windows */
+    if (roster)
+      roster.close();
+
+    fmd.getElementById('roster').innerHTML = '';
+
+		// clear frames
+		frames["jwc_sound"].document.open();
+		frames["jwc_sound"].document.write();
+		frames["jwc_sound"].document.close();
+		frames["jwc_in"].document.open();
+		frames["jwc_in"].document.write();
+		frames["jwc_in"].document.close();
+		frames["jwc_out"].document.open();
+		frames["jwc_out"].document.write();
+		frames["jwc_out"].document.close();
+
+	}
+
+	function logout() {
+    changeStatus("offline");
+  }
+
+	/* check for unsupported browsers */
+	if (is.b == 'op' || 
+      is.b == 'Konqueror' || 
+      navigator.userAgent.indexOf('Safari') != -1 ||
+      (is.b == 'ns' && is.v < '5') ||
+      (is.ie && is.mac) ||
+      is.ie4
+      ) {
+    window.open("unsupported.html","unsupported","width=280,height=180");
+    window.close();
+	}
+
+
+  /* quick hack - need this info before onload */
+	/* get args */
+	getArgs();
+  if (passedArgs['sid']) {
+    sid = passedArgs['sid'];
+  } else {
+    if (!passedArgs['pass']) {
+      alert(loc("Password is missing.\nAborting..."));
+      window.close();
+      //    return false;
+    }
+    pass = passedArgs['pass'];
+  }
+        
+  if (!passedArgs['jid']) {
+    alert(loc("JID is missing.\nAborting..."));
+    window.close();
+    // return false;
+  }
+  jid = passedArgs['jid'];
+
+  /* get style */
+  if (passedArgs['style']) 
+    stylesheet = THEMESDIR + "/" + passedArgs['style'] + "/" + stylesheet;
+
+	function updateStyleIE() {
+    if (roster)
+      roster.updateStyleIE();
+  }
+
+  onload = init;
+  onunload = logout;
+  onresize = updateStyleIE;
+
+	//-->
+	</script>
+  </head>
+	<frameset rows="100%,0,0,0" border="0">
+		<frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
+		<frame name="jwc_out" onload="run()" marginwidth="0" marginheight="0">
+		<frame name="jwc_in" onload="handleEvent()" marginwidth="0" marginheight="0">
+		<frame name="jwc_sound" marginwidth="0" marginheight="0">
+	</frameset>
+  <body>
+  <l>Your browser must support frames and javascript to use this application. Please refer to our <a href="help.html">online manual</a> for a list of supported browser.</l>
+  </body>
+</html>

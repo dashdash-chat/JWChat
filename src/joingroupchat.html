@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title><l>JWChat - Join group chat</l></title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script src="shared.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
+		<script language="JavaScript1.2">
+		<!--
+		var jid;
+		var srcW; // the source window with necessary data
+
+		function doSub() {
+      var nick = (document.forms[0].nick.value!='')?document.forms[0].nick.value:srcW.jid.substring(0,srcW.jid.indexOf('@'));
+
+      if (document.forms[0].group.value == '')
+      return false;
+
+      var group = document.forms[0].group.value+"@"+document.forms[0].server.value;
+
+      srcW.openGroupchat(group,nick);
+		
+			window.close();
+			return false;
+		}
+
+		function init() {
+			// determine source window
+			if (opener.top.roster)
+				srcW = opener.top;
+			
+      if (typeof(srcW.DEFAULTCONFERENCESERVER) != 'undefined')
+        document.forms[0].server.value = srcW.DEFAULTCONFERENCESERVER;
+		}
+		
+		function keyPressed(e) {
+			if (e.ctrlKey && e.keyCode == 13)
+				return doSub();
+			else if (e.keyCode == 27)
+        window.close();
+		}
+
+		onkeydown = keyPressed;
+		onload = init;
+		//-->
+		</script>
+		<script for="document" event="onkeydown()" language="JScript">
+		<!--
+			if (window.event.ctrlKey && window.event.keyCode == 13)
+				return doSub();
+			if (window.event.keyCode == 27)
+				window.close();
+		//-->
+		</script>
+	</head>
+	<body style="margin:8px;">
+		<form name="sub">
+      <table border=0 width="100%">
+          <tr><td><l>Nickname</l></td><td width="100%"><input type="text" name="nick" size=32 style="width:100%;"></td></tr>
+          <tr><td><l>Channel/Group</l></td><td width="100%"><input type="text" name="group" size=32 style="width:100%;"></td></tr>
+          <tr><td><l>Server</l></td><td width="100%"><input type="text" name="server" size=32 style="width:100%;"></td></tr>
+          <tr><td><l>Password</l></td><td width="100%"><input type="text" name="pass" size=32 style="width:100%;"></td></tr>
+      </table>
+		<hr noshade size="1" size="100%">
+		<div align="right" id="buttonbox">
+			<button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return doSub();"><l>Join</l></button>
+		</div>
+		</form>
+	</body>
+</html>

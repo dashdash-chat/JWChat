@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>Welcome to jabber.glubs.org</l></title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<script src="config.js" language="JavaScript1.2"></script>
+		<script src="browsercheck.js" language="JavaScript1.2"></script>
+		<script src="shared.js" language="JavaScript1.2"></script>
+		<script language="JavaScript">
+			<!--
+			function openRoster(form) {
+				var jid = form.jid.value + "@" + JABBERSERVER + "/" +DEFAULTRESOURCE;
+				var pass = form.pass.value;
+				window.open('jwc.html?jid='+jid+'&pass='+pass,makeWindowName(jid),'width=160,height=320,resizable=yes');
+				return false;
+			}
+
+			function init() {
+				document.title = "<l>Welcome to</l> " + JABBERSERVER;
+				document.getElementById("h1").innerHTML = document.title;
+			}
+
+			onload = init;
+			//-->
+		</script>
+  </head>
+
+  <body>
+    <h1 id="h1"><l>Welcome to jabber.glubs.org</l></h1>
+
+    <table border="1">
+      <tr><td colspan="2"><b><l>Login</l></b></td></tr>
+      <tr>
+        <form name="login" onSubmit="return openRoster(this);">
+          <td><b><l>Username</l>:</b></td>
+          <td><input type="text" name="jid"></td>
+        </tr>
+        <tr>
+          <td><b><l>Pass</l>:</b></td>
+          <td><input type="password" name="pass"></td>
+        </tr>
+        <tr><td></td><td><input type="submit"></td></tr>
+    </table>
+
+    <hr noshade>
+		<small>&copy; 2003 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
+<!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
+<!-- hhmts start -->
+Last modified: Fri Oct  3 14:23:38 CEST 2003
+<!-- hhmts end -->
+</small>
+  </body>
+</html>
