@@ -150,6 +150,14 @@ td.menubar {
   background-color: white;
 }
 
+.msgnick {
+	white-space:nowrap;
+}
+
+.highlighted { 
+	color: darkorange;
+}
+
 .vcardBox { 
   border: 0;
   background-color: #b8dbff;
