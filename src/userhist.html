@@ -26,7 +26,7 @@ function putMsgHTML(msg,nick,color) {
   msg = msgFormat(msg);
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<font color=\"green\"><b>*** "+user+"</b></font> ");
+    msg = msg.replace(/^\/me /,"<font color=\"green\"><b>*** "+user.name+"</b></font> ");
   } else {
     msgHTML += "<font color=\""+color+"\">&lt;" + nick + "&gt;</font>";
   }
@@ -133,7 +133,7 @@ function init() {
 
 	// get collections
 	this.roster = srcW.roster;
-	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost,roster.getUserByJID(jid).histW.handleCollsGet);
+	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost+"&jid="+msgEscape(jid),roster.getUserByJID(jid).histW.handleCollsGet);
 }
 
 function keyPressed(e) {
