@@ -52,12 +52,12 @@ function loginCheck(form) { /* check if user want's to register new
 	}
 
 	if (document.getElementById('tr_server').style.display != 'none') {
-		if (form.server.value == '') {
+		if (document.getElementById('server').value == '') {
 			alert(loc("You need to supply a jabber server"));
 			return false;
 		}
 
-		JABBERSERVER = form.server.value;
+		JABBERSERVER = document.getElementById('server').value;
 	}
 
   jid = form.jid.value + "@" + JABBERSERVER + "/";
@@ -128,9 +128,9 @@ function backendSelected() {
 			var tr_server = document.getElementById('tr_server');
 			
 			var input = document.createElement('input');
-			input.setAttribute('type','text');
-			input.setAttribute('name','server');
-			input.setAttribute('tabindex',"2");
+			input.setAttribute("type","text");
+			input.setAttribute("id","server");
+			input.setAttribute("tabindex","2");
 
 			if (default_server)
 				input.setAttribute("value",default_server);
@@ -298,7 +298,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Wed Feb 23 15:19:45 CET 2005
+Last modified: Wed Feb 23 20:20:27 CET 2005
 <!-- hhmts end -->
     </div>
   </body>
