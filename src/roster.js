@@ -138,12 +138,11 @@ function RosterOpenMessage(jid) {
 }
 
 function RosterOpenChat(jid) {
+
   var user = this.getUserByJID(jid);
 
-	if (!user && fdebug) {
-		fdebug("user '"+jid+"' not found",1);
+	if (!user)
 		return;
-	}
   
   if (!user.chatW || user.chatW.closed)
     user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=360,resizable=yes");
@@ -272,10 +271,17 @@ function printRoster() {
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
       var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
-      rosterHTML += "<div id='"+user.jid+"/"+this.groups[i].name+"Entry' class='"+rosterUserClass+"' onClick=\"return userClicked(this,'"+user.jid+"');\"";
+      rosterHTML += "<div id='"+user.jid+"/"+this.groups[i].name+"Entry' class='"+rosterUserClass+"' onClick=\"return userClicked(this,'"+user.jid+"');\" title=\""+user.name;
+			if (user.realjid)
+				rosterHTML += "&#10;JID: "+ user.realjid;
+			else
+				rosterHTML += "&#10;JID: "+ user.jid;
+			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
       if (user.statusMsg)
-        rosterHTML += " title=\"" + user.statusMsg + "\"";
-      rosterHTML += "><nobr>";
+        rosterHTML += "&#10;"+loc("Message")+": " + user.statusMsg;
+			if ((user.messages.length + user.chatmsgs.length) > 0)
+				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
+      rosterHTML += "\"><nobr>";
       
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
       rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' width=16 height=16 border=0 align='left'>";
