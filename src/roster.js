@@ -48,6 +48,8 @@ function RosterUser(jid,subscription,groups,name) {
   else
     this.name = this.jid;
 
+  this.name = htmlEnc(this.name);
+
   // initialise defaults
 	this.status = (this.subscription == 'from' || this.subscription == 'none') ? 'stalker' : 'unavailable';
 	this.statusMsg = null;
