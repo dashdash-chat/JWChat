@@ -134,21 +134,19 @@ function openUserProps(jid) {
 }
 
 function removeUser(jid) {
-  fhdLoad("roster","?sid="+sid+"&jid="+jid+"&subscription=remove");
+	// get fulljid
+	var fulljid = roster.getUserByJID(jid).fulljid;
+  fhdLoad("roster","?sid="+sid+"&jid="+fulljid+"&subscription=remove");
 }
 
 function openUserInfo(jid) {
   var userurl;
   var username = jid.substring(0,jid.indexOf("@"));
   
-  if (jid.indexOf("@"+JABBERSERVER) != -1) {
-    if (typeof(USERURL) != 'undefined') 
-      userurl = USERURL.replace(/\$user/,username);
-    else {
-      // query vcard-temp
-      fhdLoad("pub/vcard","?to="+jid);
-      return false;
-    }
+  if (jid.indexOf("@"+JABBERSERVER) != -1 || isGateway(jid)) {
+		// query vcard-temp
+		fCBLoad("pub/vcard","?sid="+sid+"&to="+jid,"handleVCardTemp");
+		return false;
   } else if (jid.indexOf("@"+ICQTRANSPORT) != -1) {
     userurl = ICQUSERURL.replace(/\$user/,username);
   } else {
@@ -179,6 +177,32 @@ function playSound(action) {
   frameD.close();
 }
 
+
+/* load frame and store callback */
+var registeredCBs = new Array();
+function fCBLoad(func,param,callback,args) {
+
+	// register callback with handler (this is a oneshot handler!)
+	var cbObj = new Object();
+	cbObj.func = callback;
+	cbObj.args = args || null;
+	registeredCBs[registeredCBs.length] = cbObj;
+
+	fdebug("registeredCBs: " + registeredCBs,4);
+
+  if (is.ie5 || is.op)
+    frameLoad(frames["jwc_cb"],func,param,"parent.handleCBEvent();");
+  else
+    frameLoad(frames["jwc_cb"],func,param);
+}
+
+function fhdLoad(func,param) {
+  if (is.ie5 || is.op)
+    frameLoad(frames["jwc_out"],func,param,"parent.run();");
+  else
+    frameLoad(frames["jwc_out"],func,param);
+}
+
 function frameLoad(frame,func,param,onload) {
   var ext = ".jsx"; // protocol extension for wcs
   var ext2 = ".js";
@@ -200,18 +224,17 @@ function frameLoad(frame,func,param,onload) {
   }
 }
 
-function fhdLoad(func,param) {
-  if (is.ie5 || is.op)
-    frameLoad(frames["jwc_out"],func,param,"parent.run();");
-  else
-    frameLoad(frames["jwc_out"],func,param);
-}
-
-function cutResource(aJID) { // removes resource from a given jid
-  var retval = aJID;
-  if (retval.indexOf("/") != -1)
-    retval = retval.substring(0,retval.indexOf("/"));
-  return retval;
+function isGateway(aJid) {
+	aJid = cutResource(aJid);
+	for (var i in disco.items)
+		if (aJid == disco.items[i].jid)
+			if (typeof(disco.items[i].info) != 'undefined') {
+				for (var j in disco.items[i].info)
+					if (disco.items[i].info[j].name == 'feature' && disco.items[i].info[j].far == 'jabber:iq:gateway') {
+						return true;
+					}
+			}
+	return false;
 }
 
 function setPollInterval(val) {
@@ -234,12 +257,12 @@ function registerHandler(type,func) {
     rh[type] = rh[type].concat(func);
 }
 	
-function handleEvent() {
+function handleEvent(jabber) {
   
   if (status != 'polling')
     return;
 
-  var jabber = frames["jwc_in"].jabber;
+  jabber = jabber||frames["jwc_in"].jabber;
 
   /* error handling */
   if (!jabber) { // connection lost
@@ -401,17 +424,27 @@ function handlePresence(jabber) {
     return;
 
   if (!is.ie)
-    fdebug(jabber.toSource(),4);
+    fdebug(jabber.toSource(),2);
 
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
-
-      window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=240");
+			if (isGateway(from)) { // automatically subscribe to gateways
+				fhdLoad("presence","?sid="+sid+"&to="+jabber.from+"&type=subscribed");
+			}
+			else
+				window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=240");
 
       return;
     }
     if (jabber.type == 'unsubscribe')
       alert(loc("You have been unsubscribed from [_1]", jabber.from));
+
+		if (jabber.type == 'error' && typeof(jabber.o) != 'undefined') {
+			for (var i in jabber.o) {
+				if (jabber.o[i].name == 'error' && jabber.o[i].data != '')
+					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
+			}
+		}
   }
 
   var user = roster.getUserByJID(from);
@@ -511,10 +544,11 @@ function handleIQSet(jabber) {
   
   for (var i in jabber.items) {
     var item = jabber.items[i];
-    var user = roster.getUserByJID(item.jid);
+    var user = roster.getUserByJID(cutResource(item.jid));
     if (user) {
       user.subscription = item.subscription;
       if (item.subscription == 'remove') {
+				fdebug("removing user " + user.jid,2);
         roster.removeUser(user);
       } else { // update user
         item.name = item.name? item.name : item.jid;
@@ -523,10 +557,30 @@ function handleIQSet(jabber) {
         roster.updateGroups();
       }
     } else {// got a new user
-      roster.addUser(new RosterUser(item.jid,item.subscription,item.groups));
-      openUserProps(item.jid);
-      if (item.subscription == "from")
-        openSubscription(item.jid); // subscribe to user
+			if (isGateway(item.jid)) { // auto add
+				// get name
+				item.name = item.jid;
+				for (var i in disco.items)
+					if (disco.items[i].jid == cutResource(item.jid))
+						item.name = disco.items[i].name;
+
+				// add to roster
+				var aUser = new RosterUser(cutResource(item.jid),item.subscription,["Transports"],item.name);
+				aUser.fulljid = item.jid;
+				roster.addUser(aUser);
+
+				// tell server about it
+				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group=Transports");
+
+				// send subscription
+				/*				if (item.subscription == "from")
+				 * fhdLoad("presence","?sid="+sid+"&to="+item.jid+"&type=subscribe");*/
+			} else {
+				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups));
+				openUserProps(item.jid);
+				if (item.subscription == "from")
+					openSubscription(item.jid); // subscribe to user
+			}
     }
   }
   roster.print();
@@ -541,16 +595,62 @@ function handleIQResult(jabber) {
   if (!jabber) // nothing to do
     return;
 
-  if(jabber.type != 'result')
+  if (jabber.type != 'result' && jabber.type != 'error') // error handling should be done
+                                                         // inside specific iq handler
     return;
 
   fdebug("got iq type 'result':\n"+jabber,2);
+}
 
-//     if (jabber.ns == 'vcard-temp')
-  handleVCardTemp(jabber);
+registerHandler("message",handleMessage);
+registerHandler("presence",handlePresence);
+registerHandler("iq",handleIQSet);
+registerHandler("iq",handleIQResult);
+
+/************************************************************************
+ * handleCB
+ * handles the registered Callback from fCBLoad
+ ************************************************************************
+ */
+function handleCB(jabber) {
+  if (!jabber) // nothing to do
+    return;
+
+  fdebug(jabber,2);
+
+	if (registeredCBs.length == 0) {
+		fdebug("no callbacks registered ... aborting!",1);
+		return;
+	}
+
+	/* loop registered callbacks */
+
+	for (var i in registeredCBs) {
+
+		/* if query is empty namespace is empty too (at least for
+		 * vcard-temp). So we have to call registered queries for unknown
+		 * namespaces too 
+		 */
+
+		if (typeof(registeredCBs[i].func) != 'undefined') {
+			if (registeredCBs[i].args)
+				eval(registeredCBs[i].func+"("+registeredCBs[i].args+")");
+			else
+				eval(registeredCBs[i].func+"("+jabber+")");
+
+			/* remove callback from list */
+
+			registeredCBs = registeredCBs.slice(0,i).concat(registeredCBs.slice(i+1,registeredCBs.length));
+			}
+			else
+				fdebug("No callback assigned for this query",1);
+	}
 }
 
 function handleVCardTemp(jabber) {
+	if (jabber.type == 'error')
+		return;
+
   if (jabber.from == cutResource(jid))
     vcard = jabber.vcard; // save my own vcard
   else {
@@ -565,16 +665,51 @@ function handleVCardTemp(jabber) {
   open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
 }
 
-registerHandler("message",handleMessage);
-registerHandler("presence",handlePresence);
-registerHandler("iq",handleIQSet);
-// 	registerHandler("iq",handleIQResult);
+var disco = new Object();
+var disco_info_count;
+function handleDiscoItemResult(jabber) {
+	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined') {
+		fdebug("missing jabber.browse.o: " + jabber,1);
+		return;
+	}
+
+	var target;
+	if (jabber.from == JABBERSERVER)
+		target = disco;
+	else {
+		fdebug("target not yet implemented",0)
+		return;
+	}
+	target.items = new Array();
+	for (var i in jabber.browse.o) {
+		var item = new Object();
+		item = jabber.browse.o[i];
+		target.items = target.items.concat(item);
+	}
+	// now start querying items
+	disco_info_count = 0;
+	fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info","handleDiscoInfoResult");
+}
+
+function handleDiscoInfoResult(jabber) {
+	if (jabber.type == 'error')
+		disco.items[disco_info_count].error = true;
+	else {
+		disco.items[disco_info_count].info = new Array();
+		disco.items[disco_info_count].info = jabber.browse.o;
+	}
+	// query next item
+	disco_info_count++;
+	if (disco_info_count < disco.items.length)
+		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info","handleDiscoInfoResult");
+
+}
 
 /******************* HANDLER END *******************/
 
 
 /******************* PROTO *******************/
-	
+
 function poll() {
   if (sid == 0 || status != 'polling')
     return;
@@ -734,34 +869,25 @@ function run() {
     break;
   case 'printRoster':
     status = 'polling';
+		fdebug("got roster: "+frames["jwc_out"].jabber.items,2);
     roster = new Roster(frames["jwc_out"].jabber.items,fmd);
     roster.print();
     
     playSound('connected');
+
+    // start service discovery
+    fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items","handleDiscoItemResult");
     
     poll();	// initial poll (not nice here)
     break;
   case 'polling':
-    // done by onload of extra frame
-        
-    /*
-     * if polling events come in asynchronously at frames["jwc_in"]
-     * this is handled by the onload handler of this frames (for most
-     * browsers)
-     *
-     * one special case are iq result packets - they come in as direct
-     * response to user actions so we have to call the handler here
-     * ourself
-     */
-
-    handleIQResult(frames["jwc_out"].jabber); 
     break;
   default:
     fdebug('unknown status: ' + status,2);
     break;
   }
 }
-	
+
 function cleanUp() {
   sid = 0;
   status = '';
@@ -773,6 +899,9 @@ function cleanUp() {
   if (subw && !subw.closed)
     subw.close();
 
+	if (typeof(ow) != 'undefined' && ow && !ow.closed)
+		ow.close();
+
   fmd.getElementById('roster').innerHTML = '';
 
   // clear frames
@@ -782,6 +911,9 @@ function cleanUp() {
   frames["jwc_in"].document.open();
   frames["jwc_in"].document.write();
   frames["jwc_in"].document.close();
+  frames["jwc_cb"].document.open();
+  frames["jwc_cb"].document.write();
+  frames["jwc_cb"].document.close();
   frames["jwc_out"].document.open();
   frames["jwc_out"].document.write();
   frames["jwc_out"].document.close();
@@ -848,10 +980,11 @@ onresize = updateStyleIE;
 //-->
     </script>
   </head>
-  <frameset rows="100%,0,0,0" border="0">
+  <frameset rows="100%,0,0,0,0" border="0">
     <frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
     <frame name="jwc_out" onload="run()" marginwidth="0" marginheight="0">
     <frame name="jwc_in" onload="handleEvent()" marginwidth="0" marginheight="0">
+    <frame name="jwc_cb" onload="handleCB(frames['jwc_cb'].jabber)" marginwidth="0" marginheight="0">
     <frame name="jwc_sound" marginwidth="0" marginheight="0">
   </frameset>
   <body>
