@@ -9,7 +9,7 @@
       <!--
 
 function submitClicked() {
-  var url = "?sid=" + parent.srcW.sid + "&to=" + parent.group;
+  var url = "?sid=" + parent.srcW.sid + "&to=" + msgEscape(parent.group);
   var body = document.forms[0].elements["msgbox"].value;
   
 

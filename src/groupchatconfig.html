@@ -25,7 +25,7 @@ function doSub() {
 	}
 
 	xml += "</x>";
-	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns="+escape("http://jabber.org/protocol/muc#owner")+"&set="+msgEscape(xml));
+	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns="+escape("http://jabber.org/protocol/muc#owner")+"&set="+msgEscape(xml));
 	window.close();
 	return false;
 }
@@ -35,7 +35,7 @@ function destroy() {
 	if (!reason)
 		return false;
 
-	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns=http://jabber.org/protocol/muc%23owner&set="+msgEscape("<destroy><reason>"+reason+"</reason></destroy>"));
+	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns=http://jabber.org/protocol/muc%23owner&set="+msgEscape("<destroy><reason>"+reason+"</reason></destroy>"));
 	window.close();
 	return false;
 }
@@ -44,6 +44,9 @@ function handleConfig(jabber) {
 	srcW.fdebug(jabber,2);
 
 	if (jabber.type == 'error')
+		return;
+
+	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined')
 		return;
 
 	// get x
@@ -148,7 +151,7 @@ function init() {
 	document.title += " " + opener.jid;
 
 	var roster = srcW.roster;
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+opener.jid+"&ns="+escape("http://jabber.org/protocol/muc#owner"),roster.getUserByJID(opener.jid).chatW.configW.handleConfig);
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns="+escape("http://jabber.org/protocol/muc#owner"),roster.getUserByJID(opener.jid).chatW.configW.handleConfig);
 }
 
 function keyPressed(e) {

@@ -117,7 +117,7 @@ function updateMe() {
 
 function changeUserStat(jid,stat,val,confirm) {
   var user = roster.getUserByJID(jid);
-  var url = "?sid="+srcW.sid+"&to="+group+"&nick="+user.name+"&"+stat+"="+val;
+  var url = "?sid="+srcW.sid+"&to="+msgEscape(group)+"&nick="+user.name+"&"+stat+"="+val;
   var reason;
   if (confirm && (reason = prompt("Reason","")) != '')
     srcW.fhdLoad("muc-set",url+"&reason="+reason);
@@ -151,8 +151,8 @@ function part() {
 
   if (!srcW.fhdLoad)
       return;
-	if (roster.me.role != 'none') // we are off anyway
-		srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+group+"&type=unavailable");
+	if (typeof(roster.me) != 'undefined' && roster.me.role != 'none') // we are off anyway
+		srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"&type=unavailable");
   if (!user.messages.length && !user.chatmsgs.length) {
     srcW.roster.removeUser(user);
     srcW.roster.print();
@@ -160,15 +160,15 @@ function part() {
 }
 
 /* global vars */
-var srcW,group,user,roster,cFrame,jid,nick,pass;
+var srcW,user,roster,cFrame,jid,nick,pass;
 
 function init() {
   getArgs();
   
   srcW = opener;
  
-  group = passedArgs['group'];
-	jid=group;
+  jid = passedArgs['jid'];
+	group = jid;
 
 	if (typeof(passedArgs['nick']) != 'undefined')
 		nick = passedArgs['nick'];
@@ -178,12 +178,12 @@ function init() {
 	if (passedArgs['pass'] != 'undefined')
 		pass = passedArgs['pass'];
   
-  srcW.fdebug("groupchat group: "+group+", nick: "+nick + ", pass: "+pass ,2);
+  srcW.fdebug("groupchat room: "+jid+", nick: "+nick + ", pass: "+pass ,2);
   
 	if (typeof(pass) != 'undefined' && pass != '')
-		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+group+"/"+nick+"&pass="+pass);
+		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick)+"&pass="+msgEscape(pass));
 	else
-		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+group+"/"+nick);
+		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick));
   
   cFrame = frames.groupchatChat.groupchatIChat.document;
 

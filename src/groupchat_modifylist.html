@@ -84,7 +84,7 @@
 				}
 				xml += '</doc>';
 
-				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+escape(opener.parent.top.jid)+"&ns="+args[1]+"&set="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQSetList);
+				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.parent.top.jid)+"&ns="+args[1]+"&set="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQSetList);
 
 				return false;
 			}
@@ -247,7 +247,7 @@
 				roster = srcW.roster;
 				
 				xml = "<item " + args[0] + "/>";
-				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+escape(opener.parent.top.jid)+"&ns="+args[1]+"&get="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQGetList);
+				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.parent.top.jid)+"&ns="+args[1]+"&get="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQGetList);
 
 				document.getElementById('title').innerHTML = loc("Modify [_1]",args[2]);
 				document.title += " " + args[2];

@@ -9,7 +9,7 @@
         var subject = msgEscape(document.forms[0].elements['subject'].value);
 
         /* try to set topic */
-        top.srcW.fhdLoad("message","?sid="+top.srcW.sid+"&to="+top.jid+"&type=groupchat&subject="+subject);
+        top.srcW.fhdLoad("message","?sid="+top.srcW.sid+"&to="+msgEscape(top.jid)+"&type=groupchat&subject="+subject);
 
         /* restore topic */
         if (top.user.roster.subject)

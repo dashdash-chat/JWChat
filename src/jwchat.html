@@ -618,7 +618,7 @@ function handlePresence(jabber) {
 							if (confirm(loc("A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\nNote: Click on 'Cancel' to start with a default configuration!")))
 								user.chatW.openConfig();
 							else
-								fhdLoad("iq","?sid="+sid+"&to="+user.jid+"&ns=http://jabber.org/protocol/muc%23owner&set="+escape("<x xmlns='jabber:x:data' type='submit'/>"));
+								fhdLoad("iq","?sid="+sid+"&to="+msgEscape(user.jid)+"&ns=http://jabber.org/protocol/muc%23owner&set="+escape("<x xmlns='jabber:x:data' type='submit'/>"));
 							break;
 						case '303': // nick change
 							// display message
