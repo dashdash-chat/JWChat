@@ -313,10 +313,9 @@
     }
 
 
-    if (jabber.type == 'chat' && !(jabber.x && jabber.x.stamp)) {
+    if (jabber.type == 'chat' && !(jabber.o && jabber.o[0].stamp)) {
 
-      /* we got a real chat message (and not an offline message) -
-       * TODO: jabber.x no more available!
+      /* we got a real chat message (and not an offline message)
        */
 
 			user.chatmsgs = user.chatmsgs.concat(jabber);
