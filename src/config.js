@@ -65,18 +65,15 @@ var THEMESDIR = "themes";
  */
 var USERHISTORYURL = "http://jabber.zeank.in-berlin.de/na.html";
 
-var ICQTRANSPORT = "icq.jabber.zeank.in-berlin.de";
-var ICQUSERURL = "http://wwp.icq.com/$user";
-
 /* DEFAULTCONFERENCEGROUP + DEFAULTCONFERENCESERVER
  * default values for joingroupchat form
  */
-var DEFAULTCONFERENCEGROUP = "talks";
+var DEFAULTCONFERENCEROOM = "talks";
 var DEFAULTCONFERENCESERVER = "conference.zeank.in-berlin.de";
 
 /* debugging options */
-var DEBUG = false; // turn debugging on
-var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
+var DEBUG = true; // turn debugging on
+var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger
 var DEBUGJID = "zeank@jabber.zeank.in-berlin.de"; // which user get's debug messages
