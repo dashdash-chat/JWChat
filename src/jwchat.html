@@ -975,55 +975,6 @@ function handleBookmarks(jabber) {
 	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult); 
 }
 
-function handleRosterPrefs(jabber) {
-	if (jabber)
-		fdebug(jabber,2);
-
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
-
-	if (jabber && !(jabber.error || jabber.type == 'error')) {
-		for (var i in jabber.browse.o) {
-			if (jabber.browse.o[i].tagname == 'jwchat' && jabber.browse.o[i].xmlns == 'jwchat:rosterprefs') {
-				if (typeof(jabber.browse.o[i].hiddenGroups) != 'undefined'  && jabber.browse.o[i].hiddenGroups != '') {
-					var hiddenGroups = jabber.browse.o[i].hiddenGroups.split(",");
-					for (var i in hiddenGroups)
-						if (hiddenGroups[i] != '')
-							roster.hiddenGroups[hiddenGroups[i]] = true;
-					roster.print();
-				}
-			}
-		}
-	}
-
-	// get bookmarks
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
-}
-
-function handleSavedPresence(jabber) {
-	if (jabber)
-		fdebug(jabber,2);
-
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		fdebug(jabber,1);
-
-	for (var i in jabber.browse.o) {
-		var item = jabber.browse.o[i];
-		if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:presence') {
-			if (typeof(item.presence) != 'undefined' && item.presence != 'undefined' && onlstat == 'login')
-				onlstat = item.presence;
-		}
-	}
-
-	if (onlstat == 'login')
-		onlstat = 'available';
-	// send presence
-	changeStatus(onlstat);
-
-	// get prefs
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
-}
-
 function handlePrefs(jabber) {
 	if (jabber)
 		fdebug(jabber,2);
@@ -1054,8 +1005,43 @@ function handlePrefs(jabber) {
 			}
 		}
 	}
-	// get rosterprefs
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:rosterprefs' />"),handleRosterPrefs);
+
+	// get bookmarks
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
+}
+
+function handleSavedState(jabber) {
+	if (jabber)
+		fdebug(jabber,2);
+
+	if (jabber && (jabber.error || jabber.type == 'error'))
+		fdebug(jabber,1);
+
+	if (jabber && !(jabber.error || jabber.type == 'error')) {
+		for (var i in jabber.browse.o) {
+			var item = jabber.browse.o[i];
+			if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:state') {
+				if (typeof(item.presence) != 'undefined' && item.presence != 'undefined' && onlstat == 'login')
+					onlstat = item.presence;
+				
+				if (typeof(jabber.browse.o[i].hiddenGroups) != 'undefined'  && jabber.browse.o[i].hiddenGroups != '') {
+					var hiddenGroups = jabber.browse.o[i].hiddenGroups.split(",");
+					for (var i in hiddenGroups)
+						if (hiddenGroups[i] != '')
+							roster.hiddenGroups[hiddenGroups[i]] = true;
+					roster.print();
+				}
+			}
+		}
+	}
+
+	if (onlstat == 'login')
+		onlstat = 'available';
+	// send presence
+	changeStatus(onlstat);
+
+	// get prefs
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
 }
 
 var disco = new Object();
@@ -1295,7 +1281,7 @@ function run() {
     playSound('connected');
 
 		// get presence
-		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:presence' />"),handleSavedPresence);
+		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:state' />"),handleSavedState);
 
     //poll();	// initial poll (not nice here)
     break;
@@ -1344,14 +1330,11 @@ function cleanUp() {
   frames["jwc_out"].document.close();  
 }
 
-function handleSavePresence(jabber) {
-	if (jabber && jabber.type == 'error') {
-		fdebug(jabber,1);
-		alert(loc("Error saving presence"));
-	}
-
+function logout() {
+	// save presence
+	var xml = "<jwchat xmlns='jwchat:state'><presence>"+onlstat+"</presence>";
 	// save roster.hiddenGroups
-	var xml = "<jwchat xmlns='jwchat:rosterprefs'><hiddenGroups>";
+	xml += "<hiddenGroups>";
 
 	for (var i in roster.hiddenGroups)
 		if (roster.hiddenGroups[i])
@@ -1359,23 +1342,8 @@ function handleSavePresence(jabber) {
 	
 	xml += "</hiddenGroups></jwchat>";
 
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml),handleSaveHiddenGroups);
-}
-
-function handleSaveHiddenGroups(jabber) {
-	if (jabber && jabber.type == 'error') {
-		fdebug(jabber,1);
-		alert(loc("Error saving roster preferences"));
-	}
-
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml));
 	changeStatus("offline");
-}
-
-function logout() {
-	// save presence
-	var xml = "<jwchat xmlns='jwchat:presence'><presence>"+onlstat+"</presence></jwchat>";
-
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml),handleSavePresence);
 }
 
 /* check for unsupported browsers */
