@@ -14,21 +14,37 @@
 		var srcW;
 		
 		function showMSG() {
+      /*set subject */
 			if (messages[curMSG].subject)
 				document.getElementById('subject').innerHTML = messages[curMSG].subject;
 
-			msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
-
+      /* set date */
 			var date;
-			if (messages[curMSG].x && messages[curMSG].x.stamp) {
+			if (messages[curMSG].o && messages[curMSG].o[0].stamp) {
 				var now = new Date();
-				var stamp = messages[curMSG].x.stamp; // TODO: x no more available!!!
+				var stamp = messages[curMSG].o[0].stamp;
 				date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
 			} else {
 				date = new Date();
 			}
 			document.getElementById('date').innerHTML = date.toLocaleString();
 
+
+      /* set body */
+
+      /* look for error message */
+      if (messages[curMSG].type == 'error' && messages[curMSG].o) {
+        for (var i in messages[curMSG].o) {
+          if (messages[curMSG].o[i].name && messages[curMSG].o[i].name == 'error') {
+            msgbox.document.body.innerHTML = "<h2 style=\"color:red\">"+loc("Error")+ " " + messages[curMSG].o[i].code + "</h2>" + messages[curMSG].o[i].data;
+          }
+        }
+      
+      } else {
+        msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
+      }
+
+      /* set buttons */
 			if (curMSG == 0)
 				document.forms[0].elements["prevButton"].disabled = true;
 			else 
