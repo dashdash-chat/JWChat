@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2004-03-18 17:33+0100\n"
+"PO-Revision-Date: 2004-03-19 14:29+0100\n"
 "Last-Translator: Stefan Strigler <steve@zeank.in-berlin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -467,7 +467,7 @@ msgstr "Netscape Version 6 & 7"
 #: src/userprops.html:106
 #: src/vcard.html:102
 msgid "Nickname"
-msgstr "Chat-Name"
+msgstr "Chatname"
 
 #: src/options.html:150
 #: src/userprops.html:139
@@ -708,7 +708,7 @@ msgstr "Aktualisierungsintervall"
 
 #: src/index.html:70
 msgid "Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program."
-msgstr "Benutze das Formular auf dieser Seite, um Dich am Jabber-Server anzumelden und den Client zu starten. Dazu mußt Du  keine Extra-Software auf DeinemRechner  installieren."
+msgstr "Benutze das Formular auf dieser Seite, um Dich am Jabber-Server anzumelden und den Client zu starten. Dazu mußt Du  keine Extra-Software auf Deinem Rechner  installieren."
 
 #: src/help.html:89
 msgid "User don't wants to be disturbed"
