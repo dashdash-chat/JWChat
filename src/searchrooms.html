@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>JWChat - Search for Rooms</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
+    <script language="JavaScript1.2">
+      <!--
+var srcW; // the source window with necessary data
+
+function handleItemVCard(jabber) {
+	srcW.fdebug(jabber,2);
+
+	if (jabber.vcard)
+		disco_items[disco_items_at-1].vcard = jabber.vcard;
+
+	if (disco_items_at < disco_items.length) {
+		// query next
+		frames['jwc_main'] = srcW.frames['jwc_main'];
+		srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
+
+	} else { // got them all
+
+		// create result table
+		var myTable = search_result_iframe.document.createElement("TABLE");
+
+		var myTableHead = search_result_iframe.document.createElement("THEAD");
+		var myTableBody = search_result_iframe.document.createElement("TBODY");
+
+		var row = search_result_iframe.document.createElement("TR");
+		var header = new Array(loc('Room'),loc('Description'));
+		var cell; 
+		for (var i in header) {
+			cell = search_result_iframe.document.createElement("TH");
+			cell.appendChild(search_result_iframe.document.createTextNode(header[i]));
+			row.appendChild(cell);
+		}
+		myTableHead.appendChild(row);
+		myTable.appendChild(myTableHead);
+
+		for (var i in disco_items) {
+			var item = disco_items[i];
+			if (item.tagname == 'item') {
+				row = search_result_iframe.document.createElement("TR");
+				
+				cell = search_result_iframe.document.createElement("TD");
+				textN = search_result_iframe.document.createTextNode(item.name);
+				cell.appendChild(textN);
+				row.appendChild(cell);
+				
+				cell = search_result_iframe.document.createElement("TD");
+				textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
+				cell.appendChild(textN);
+				row.appendChild(cell);
+
+				row.setAttribute("jid",item.jid);
+				myTableBody.appendChild(row);
+			}
+		}
+
+
+		myTable.appendChild(myTableBody);
+				
+		myTable.setAttribute("id","modTable");
+		myTable.setAttribute("WIDTH","100%");
+		myTable.setAttribute("BORDER","0");
+		myTable.setAttribute("CELLSPACING","0");
+		myTable.setAttribute("CELLPADDING","0");
+		myTable.setAttribute("RULES","rows");
+		
+		// add table
+		search_result_iframe.document.body.appendChild(myTable);
+		
+		// tell frame about it
+		search_result_iframe.init();
+
+		// update form
+		document.getElementById("search_result_info").innerHTML = '';
+		document.getElementById("search_result_iframe").style.display = '';
+		document.getElementById("addbookmark_button").style.display = '';
+		//document.getElementById("show_users_button").style.display = '';
+		document.getElementById("join_room_button").style.display = '';
+		document.getElementById("addbookmark_button").disabled = true;
+		document.getElementById("show_users_button").disabled = true;
+		document.getElementById("join_room_button").disabled = true;
+	}
+
+}
+var disco_items;
+var disco_items_at;
+function handleDiscoItemsResult(jabber) {
+	srcW.fdebug(jabber,2);
+
+	if (jabber.browse && jabber.browse.o) {
+		disco_items = new Array();
+		for (var i in jabber.browse.o) {
+			if (jabber.browse.o[i].tagname == 'item') // it's really an item
+				disco_items[disco_items.length] = jabber.browse.o[i];
+		}
+	} else
+		return;
+
+	if (disco_items.length == 0) {
+		document.getElementById("search_result_info").innerHTML = loc("No items found");
+		return;
+	}
+
+	// start querying each item
+	disco_items_at = 0;
+	frames['jwc_main'] = srcW.frames['jwc_main'];
+	//srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid+"&ns=http://jabber.org/protocol/disco%23info",frames['jwc_main'].groupw.srw.handleDiscoItemInfoResult); 
+	srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
+
+}
+
+var conference_server;
+function doSub() {
+	conference_server = document.forms[0].conference_server.value;
+
+	/* check for errors */
+	if (conference_server.indexOf('@') != -1 || conference_server.indexOf('/') != -1) {
+		alert(loc("this doesn't look like a valid domain name"));
+		return false;
+	}
+	
+
+	frames['jwc_main'] = srcW.frames['jwc_main'];
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+conference_server+"&ns=http://jabber.org/protocol/disco%23items",frames['jwc_main'].groupw.srw.handleDiscoItemsResult); 
+
+	document.getElementById("search_tab").style.display = 'none';
+	document.getElementById("search_result_tab").style.display = '';
+	document.getElementById("search_result_iframe").style.display = 'none';
+	document.getElementById("addbookmark_button").style.display = 'none';
+	document.getElementById("show_users_button").style.display = 'none';
+	document.getElementById("join_room_button").style.display = 'none';
+	document.getElementById("search_result_header").innerHTML = loc("Search results for [_1]",conference_server);
+	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by!",conference_server);
+	search_result_iframe.document.body.innerHTML = '';
+	search_result_iframe.selectedRow = null;
+
+	return false;
+}
+
+function handleDiscoItemItemsResult(jabber) {
+	srcW.fdebug(jabber,2);
+
+	var myTable = show_users_iframe.document.createElement("TABLE");
+	
+	var myTableHead = show_users_iframe.document.createElement("THEAD");
+	var myTableBody = show_users_iframe.document.createElement("TBODY");
+	
+	var row = show_users_iframe.document.createElement("TR");
+	var cell; 
+	cell = show_users_iframe.document.createElement("TH");
+	cell.appendChild(show_users_iframe.document.createTextNode('JID'));
+	row.appendChild(cell);
+	myTableHead.appendChild(row);
+	myTable.appendChild(myTableHead);
+	
+	for (var i in jabber.browse.o) {
+		var item = jabber.browse.o[i];
+		if (item.tagname == 'item') {
+			row = show_users_iframe.document.createElement("TR");
+			
+			cell = show_users_iframe.document.createElement("TD");
+			textN = show_users_iframe.document.createTextNode(item.jid);
+			cell.appendChild(textN);
+			row.appendChild(cell);
+							
+			row.setAttribute("jid",item.jid);
+			myTableBody.appendChild(row);
+		}
+	}
+
+
+	myTable.appendChild(myTableBody);
+	
+	myTable.setAttribute("id","modTable");
+	myTable.setAttribute("WIDTH","100%");
+	myTable.setAttribute("BORDER","0");
+	myTable.setAttribute("CELLSPACING","0");
+	myTable.setAttribute("CELLPADDING","0");
+	myTable.setAttribute("RULES","rows");
+		
+	// add table
+	show_users_iframe.document.body.appendChild(myTable);
+		
+	// tell frame about it
+	show_users_iframe.init();
+	
+	document.getElementById('show_users_iframe').style.display = '';
+	document.getElementById('show_users_info').style.display = 'none';
+}
+
+function showUsers() {
+	frames['jwc_main'] = srcW.frames['jwc_main'];
+	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+search_result_iframe.selectedRow.getAttribute('jid')+"&ns=http://jabber.org/protocol/disco%23items",frames['jwc_main'].groupw.srw.handleDiscoItemItemsResult); 
+
+	document.getElementById('show_users_header').innerHTML = loc('Show Users for [_1]',search_result_iframe.selectedRow.getAttribute('jid'));
+	document.getElementById('show_users_info').innerHTML = loc('Querying [_1]. Please stand by!',search_result_iframe.selectedRow.getAttribute('jid'));
+
+	document.getElementById('show_users_iframe').style.display = 'none';
+
+	document.getElementById('start_chat_button').disabled = true;
+	document.getElementById('user_info_button').disabled = true;
+	
+	show_users_iframe.document.body.innerHTML = '';
+	show_users_iframe.selectedRow = null;
+
+	document.getElementById('search_result_tab').style.display = 'none';
+	document.getElementById('show_users_tab').style.display = '';
+
+	return false;
+}
+
+function joinRoom() {
+	srcW.openGroupchat(search_result_iframe.selectedRow.getAttribute('jid'),srcW.nick);
+	return false;
+}
+
+function backtoresult() {
+	document.getElementById("show_users_tab").style.display = 'none';
+	document.getElementById("search_result_tab").style.display = '';
+	return false;
+}
+
+function backtosearch() {
+	document.getElementById("search_result_tab").style.display = 'none';
+	document.getElementById("search_tab").style.display = '';
+	return false;
+}
+
+function init() {
+	srcW = opener.srcW;
+	if (srcW.DEFAULTCONFERENCESERVER)
+		document.forms[0].conference_server.value = srcW.DEFAULTCONFERENCESERVER;
+	document.getElementById("search_result_tab").style.display = 'none';
+	document.getElementById("show_users_tab").style.display = 'none';
+}
+
+function cleanUp() {
+}
+
+function keyPressed(e) {
+  if (e.keyCode == 13)
+    return doSub();
+  if (e.keyCode == 27)
+    window.close();
+  return true;
+}
+
+onkeydown = keyPressed;
+onload = init;
+onunload = cleanUp;
+      //-->
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      return keyPressed(window.event);
+      //-->
+    </script>
+		<style type="text/css">
+			<!--
+			//-->
+		</style>
+  </head>
+  <body style="margin:8px;">
+		<div id="search_tab">
+			<h2><l>Search for Rooms</l></h2>
+			<form name="sub" onsubmit="return doSub();">
+				<table width="100%">
+						<tr>
+							<td nowrap>
+								<label for="conference_server"><l>Search Server</l>:
+							</td>
+							<td width="100%">
+								<input type="text" name="conference_server" style="width:100%;">
+							</td>
+							<td>
+								<button type="submit"><l>Search</l></button>
+							</td>
+						</tr>
+				</table>
+			</form>
+		</div>
+		<table id="search_result_tab" width="100%" height="100%">
+				<tr><td><h2 id="search_result_header"></h2></td></tr>
+				<tr><td id="search_result_info"></td></tr>
+				<tr><td width="100%" height="100%"><iframe id="search_result_iframe" name="search_result_iframe" src="searchrooms_results_iframe.html" style="width:100%;height:100%;"></iframe></tr></td>
+				<tr><td><hr noshade size=1></td></tr>
+				<tr>
+					<td align=right>
+						<button id="show_users_button" onClick="return showUsers();"><l>Show Users</l></button>&nbsp;<button id="addbookmark_button" onClick="return addBookmark();" disabled><l>Bookmark</l></button>&nbsp;<button id="join_room_button" onClick="return joinRoom();"><l>Join</l></button>&nbsp;<button onClick="return backtosearch();"><l>Back</l></button>
+					</td>
+				</tr>
+		</table>
+		<table id="show_users_tab" width="100%" height="100%">
+				<tr><td><h2 id="show_users_header"></h2></td></tr>
+				<tr><td id="show_users_info"></td></tr>
+				<tr><td width="100%" height="100%"><iframe id="show_users_iframe" name="show_users_iframe" src="searchrooms_show_users_iframe.html" style="width:100%;height:100%;"></iframe></tr></td>
+				<tr><td><hr noshade size=1></td></tr>
+				<tr>
+					<td align=right>
+						<button id="user_info_button" onClick="return openUserInfo();"><l>User Info</l></button>&nbsp;<button id="start_chat_button" onClick="return openChat();"><l>Start Chat</l></button>&nbsp;<button onClick="return backtoresult();"><l>Back</l></button>
+					</td>
+				</tr>
+		</table>
+  </body>
+</html>

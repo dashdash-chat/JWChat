@@ -60,6 +60,13 @@ function updateBookmarks() {
 		bookmark_selector.options[optidx++] = new Option(srcW.bookmarks[i].name,i);
 }
 
+var srw;
+function openSearchRooms() {
+	if (!srw || srw.closed)
+		srw = open("searchrooms.html","srw"+makeWindowName(srcW.jid),"width=400,height=300,resizable=yes");
+	srw.focus();
+	return false;
+}
 
 function init() {
   // determine source window
@@ -76,6 +83,11 @@ function init() {
 	updateBookmarks();
 }
 
+function cleanUp() {
+	if (srw && !srw.closed)
+		srw.close();
+}
+
 function keyPressed(e) {
   if (e.keyCode == 13)
     return doSub();
@@ -86,6 +98,7 @@ function keyPressed(e) {
 
 onkeydown = keyPressed;
 onload = init;
+onunload = cleanUp;
       //-->
     </script>
     <script for="document" event="onkeydown()" language="JScript">
@@ -97,6 +110,8 @@ onload = init;
   <body style="margin:8px;">
     <form name="sub" onsubmit="return doSub();">
       <table border=0 width="100%">
+					<tr><td colspan=2><l>Search for Rooms</l> <button onClick="return openSearchRooms();"><l>Open Search</l></button></td></tr>
+					<tr><td colspan=2><hr noshade size=1></td></tr>
 					<tr><td><l>Bookmark</l></td><td><select id="bookmark_selector" onChange="return bookmark_selected(this);"><option value=''> - <l>Choose Bookmark</l> - </option></select> <button onClick="return srcW.openEditBookmarks();"><l>Edit</l></button></td></tr>
 					<tr><td colspan=2><hr noshade size=1></td></tr>
           <tr><td nowrap><l>Nickname</l></td><td width="100%"><input type="text" name="nick" size=32 style="width:100%;"></td></tr>
