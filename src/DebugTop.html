@@ -3,18 +3,19 @@
   <head>
 		<script language="JavaScript1.2">
 			function toggleLog(el) {
-			if (parent.debugger.debug) {
-			parent.debugger.stop();
+			if (parent.oDbg.debug) {
+			parent.oDbg.stop();
 			el.innerHTML = 'Start';
 			} else {
-			parent.debugger.start();
+			parent.oDbg.start();
 			el.innerHTML = 'Stop';
 			}
+			el.blur();
 			}
 			function levelChanged(el) {
 			if (el.selectedIndex == 0)
 			return;
-			parent.debugger.setLevel(el.options[el.selectedIndex].value);
+			parent.oDbg.setLevel(el.options[el.selectedIndex].value);
 			}
 			
 		</script>

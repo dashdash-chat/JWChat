@@ -1,7 +1,7 @@
 var DEBUGGER_MAX_LEVEL = 4;
 
 // fucking IE is too stupid for window names
-function makeWindowName(wName) {
+function encWN(wName) {
   wName = wName.replace(/@/,"at");
   wName = wName.replace(/\./g,"dot");
   wName = wName.replace(/\//g,"slash");
@@ -19,19 +19,19 @@ function makeWindowName(wName) {
 function DebugMsg(str,lvl,caller) {
 	this.str = str || '';
 	this.lvl = lvl || 0;
-	this.caller = caller || '';
+	this.caller = (caller&&caller.name)? caller.name : 'unknown';
 }
 
 function DebugLog(str,lvl) {
   if (!this.debug) // nothing to do
 		return;
 
-  this.debugMsgs = this.debugMsgs.concat(new DebugMsg(str,lvl,DebugLog.caller.name));
+  this.debugMsgs = this.debugMsgs.concat(new DebugMsg(str,lvl,DebugLog.caller));
 
-  if (!this.debugW || !this.debugW.popMsgs)
+  if (!this.debugW || (this.debugW.document.readyState && this.debugW.document.readyState!='complete') || !this.debugW.popMsgs)
     return; // debugW not ready yet ... only queue message
-  this.debugW.popMsgs();
 
+  this.debugW.popMsgs();
 }
 
 function DebugSetLevel(lvl) {
@@ -44,10 +44,13 @@ function DebugSetLevel(lvl) {
 
 function DebugStart() {
   if (!this.debugW || this.debugW.closed) { // open the debugger window
-    this.debugW = window.open("Debugger.html","debugW"+makeWindowName(this.id),"width=480,height=320,scrollbars=yes,resizable=yes");
-		this.debugW.debugger = this;
+    this.debugW = window.open("Debugger.html","debugW"+encWN(this.id),"width=480,height=320,scrollbars=yes,resizable=yes");
+		this.debugW.oDbg = this;
+		if (this.debugW.document.readyState) {
+			while (this.debugW.document.readyState != 'complete') {}
+			this.debugW.init();
+		}
 	}
-
 	this.debug = true;
 }
 

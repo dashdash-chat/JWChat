@@ -16,14 +16,14 @@
       debugC[5] = 'navi';
 
       function popMsgs() {
-				if (!this.debugger)
+				if (!this.oDbg)
 					return;
-        while (this.debugger.debugMsgs.length > 0) {
-          var msg = this.debugger.debugMsgs[0];
-          this.debugger.debugMsgs = this.debugger.debugMsgs.slice(1,this.debugger.debugMsgs.length);
+        while (this.oDbg.debugMsgs.length > 0) {
+          var msg = this.oDbg.debugMsgs[0];
+          this.oDbg.debugMsgs = this.oDbg.debugMsgs.slice(1,this.oDbg.debugMsgs.length);
           var now = new Date();
 
-          if (this.debugger.lvl >= msg.lvl) {
+          if (this.oDbg.lvl >= msg.lvl) {
             frames['DebugBottom'].document.body.innerHTML += "<div class='debugmsgheader'>[" + now.toLocaleString() + "] (level " +msg.lvl+") func: "+msg.caller+"</div><div class='debugmsgbody' style='color:"+debugC[msg.lvl%debugC.length]+";'>" + msg.str + "</div>";
             frames['DebugBottom'].scrollTo(0,frames['DebugBottom'].document.body.scrollHeight);
             
@@ -32,16 +32,16 @@
 			}
 
 			function init() {
-				if (this.debugger) {
-					frames['DebugTop'].document.getElementById('lvlSelector').selectedIndex = this.debugger.lvl;
-					if (this.debugger.id != '')
-						document.title = this.debugger.id + " Debugger";
+				if (this.oDbg) {
+					frames['DebugTop'].document.getElementById('lvlSelector').selectedIndex = this.oDbg.lvl;
+					if (this.oDbg.id != '')
+						document.title = this.oDbg.id + " Debugger";
 				}
 				popMsgs();
 			}
 
       onload = init;
-			onunload = function() { if (this.debugger) this.debugger.stop(); };
+			onunload = function() { if (this.oDbg && this.oDbg.stop) this.oDbg.stop(); };
       //-->
       </script>
   </head>
