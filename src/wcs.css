@@ -121,12 +121,12 @@ td.menubar {
 #myNickname:hover { text-decoration: underline; }
 
 .nickName {
-  padding-left: 2px;
+  padding: 2px;
 }
 
 .statusMsg { 
   font-size: smaller;
-  padding-left: 2px;
+  padding-left: 22px;
 }
 
 #statusMsg { 
