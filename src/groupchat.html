@@ -80,9 +80,12 @@ function popMsgs() {
 			return;
     }
 
-    if(!msg.body || msg.body == '')
-      return;
-
+    if(!msg.body || msg.body == '') {
+			if (msg.o && msg.o[0].tagname == 'body')
+				msg.body = msg.o[0].data;
+			else
+				return;
+		}
     /* calculate color */
     var charSum = 0;
     for (var i=0; i<msg.from.length; i++)

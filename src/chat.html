@@ -52,6 +52,9 @@ function popMsgs() {
 		mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
 		mtime += ":";
 		mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+
+		if (!msg.body && msg.o && msg.o[0].tagname == 'body')
+			msg.body = msg.o[0].data;
   
     putMsgHTML(msg.body,mtime,user.name,"red");
   }
