@@ -315,6 +315,11 @@ function GroupchatRosterPrint() {
   this.targetW.document.getElementById('chan_count').innerHTML = this.users.length;
 }
 
+function getGroupchatRosterUserByJID(jid) {
+	// need to search fulljid here
+  return getElFromArrByProp(this.users,"fulljid",jid.toLowerCase());
+}
+
 function GroupchatRoster(targetW) {
 
   this.base = Roster;
@@ -328,6 +333,7 @@ function GroupchatRoster(targetW) {
   this.name = 'GroupchatRoster';
 
   //  this.eprint = GroupchatRosterPrint;
+	this.getUserByJID = getGroupchatRosterUserByJID;
 }
 
 GroupchatRoster.prototype = new Roster();
