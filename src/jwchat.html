@@ -275,7 +275,6 @@ function handleEvent() {
   }
   /* END error handling */		
 
-  fdebug("handleEvent: timeout_tag="+timeout_tag,0);
   if (!jabber.name) { // no event to handle
     clearTimeout(timeout_tag);
     timeout_tag = setTimeout("poll()",timerval);
