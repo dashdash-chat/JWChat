@@ -1271,9 +1271,11 @@ function run() {
     
     var jabber = frames["jwc_out"].jabber;
     if (jabber && jabber.error) { // seems to be a not registered user
-      if (confirm(loc("Couldn't log in!\nCreate new account?"))) {
+      if (typeof(pass) != 'undefined' && confirm(loc("Couldn't log in!\nCreate new account?"))) {
         fhdLoad("pub/register","?jid="+msgEscape(jid)+"&pass="+msgEscape(pass));
       } else {
+				if (typeof(pass) == 'undefined')
+					alert(loc("An error occured.\n\nYou need to restart this application from the login screen."));
         window.close();
       }
       break;
