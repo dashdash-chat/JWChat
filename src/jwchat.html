@@ -480,6 +480,7 @@ function handlePresence(jabber) {
   if (!user) // presence from unsubscribed user
     return;
 
+	/* handle presence for groupchat roster */
   if (jabber.o && user.roster) { // seems to be a special presence (assumed to be for MUC)
     fdebug("opresence: " + jabber.o,3);
     
@@ -530,6 +531,8 @@ function handlePresence(jabber) {
   if (jabber.show) {
     if (user.status == 'unavailable')
       playSound('online');
+		if (jabber.show == 'online') // quick fix for JIT which sends this presence ...
+			jaber.show = 'available';
     user.status = jabber.show;
   } else if (jabber.type) {
     if (jabber.type == 'unsubscribe') {
