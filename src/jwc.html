@@ -26,9 +26,6 @@
 	var roster;
 	var timeout_tag;
 
-	var mw = new Array(); // message windows
-	var sw = new Array(); // send message windows
-
 	var fmd; // shortcut to main frame
 	var fhd; // shortcut to hidden frame
 	var statusbox;  // shortcut to status select box
@@ -58,7 +55,7 @@
     else
       msg.caller = 'undefined';
 
-    debugMsgs.push(msg);
+    debugMsgs = debugMsgs.concat(msg);
 
     if (!debugW || debugW.closed) // open the debugger
       debugW = window.open("debug.html","debugW","width=480,height=320,scrollbars=yes,resizable=yes");
@@ -155,9 +152,9 @@
 		var ext2 = ".js" 
 		var url = sWCS + func + ext + param;
 		var url2 = sWCS2 + func + ext2 + param;
-			fdebug("frameLoad:\n" + url,4);
 		/* doesn't work with mozilla */
 		if (is.ie || is.op) {
+      fdebug("frameLoad:\n" + url2,4);
 			frame.document.open();
 			if (onload)
 				frame.document.write("<script src=\""+url2+"\"></script><script>function checkData() { if (typeof(jabber)=='undefined') setTimeout(\"checkData()\",100); else " + onload + " } onload = checkData;</script>");
@@ -165,6 +162,8 @@
 				frame.document.write("<script src=\""+url2+"\"></script>");
   		frame.document.close();
 		} else {
+      fdebug("frameLoad:\n" + url,4);
+
 			frame.location.href = url;
 		}
 	}
@@ -603,7 +602,7 @@
 			frames["jwc_out"].document.body.attachEvent("onload",run);
 
     /* set title */
-    document.title = "JWC - " + jid.substring(0,jid.indexOf('@'));
+    document.title = "JWChat - " + jid.substring(0,jid.indexOf('@'));
 
     if (sid) {
       status = 'sendPresence';
@@ -619,10 +618,9 @@
 	
 		switch (status) {
 		  case 'sendPresence':
-
+        
         var jabber = frames["jwc_out"].jabber;
         if (jabber && jabber.error) { // seems to be a not registered user
-          fdebug("jabber: " + jabber.toSource(),1);
           if (confirm(loc("Couldn't log in!\nCreate new account?"))) {
             fhdLoad("pub/register","?jid="+jid+"&pass="+pass);
           } else {
@@ -632,13 +630,14 @@
         }
 
         status = 'getRoster';
-
-				fmd.getElementById('roster').innerHTML = "<div style=\"padding: 4px;\"><l>Loading Roster...<br>Please wait!</l></div>";
+        
+        fmd.getElementById('roster').innerHTML = "<div style=\"padding: 4px;\"><l>Loading Roster...<br>Please wait!</l></div>";
         
         if (!sid && !jabber.sid) {
           changeStatus("available");
           return;
         }
+
 
         if (!sid)
           sid = jabber.sid;
