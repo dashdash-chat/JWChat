@@ -1362,8 +1362,8 @@ function cleanUp() {
   status = '';
 
   /* close dependent windows */
-  if (roster)
-    roster.close();
+	if (roster)
+		roster.cleanUp();
 
   if (subw && !subw.closed)
     subw.close();

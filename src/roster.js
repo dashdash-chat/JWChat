@@ -136,10 +136,10 @@ function RosterOpenChat(jid) {
     user.chatW.popMsgs();
 }
 
-function RosterClose() {
+function RosterCleanUp() {
   for (var i in this.users) {
     if (this.users[i].roster)
-      this.users[i].roster.close();
+      this.users[i].roster.cleanUp();
     if (this.users[i].sW)
       this.users[i].sW.close();
     if (this.users[i].mW)
@@ -220,7 +220,7 @@ function Roster(items,targetW) {
   this.getUserIcons = RosterGetUserIcons;
   this.openMessage = RosterOpenMessage;
   this.openChat = RosterOpenChat;
-  this.close = RosterClose;
+  this.cleanUp = RosterCleanUp;
 	this.getGroupchats = RosterGetGroupchats;
  
   /* setup groups */

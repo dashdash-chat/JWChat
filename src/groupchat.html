@@ -161,7 +161,7 @@ function part() {
 
   if (!srcW.fhdLoad)
       return;
-	if (typeof(roster.me) != 'undefined' && roster.me.role != 'none') // we are off anyway
+	if (typeof(roster.me) != 'undefined' && roster.me.role != 'none' && srcW.sid) // we are off anyway
 		srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"&type=unavailable");
   if (!user.messages.length && !user.chatmsgs.length) {
     srcW.roster.removeUser(user);
