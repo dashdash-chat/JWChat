@@ -90,6 +90,8 @@ function handleIQRegister(jabber,pane) {
 	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'jabber:iq:register')
 		return; // not for me
 
+	srcW.fdebug(jabber,2);
+
 	var html = '';
 	if (typeof(jabber.browse.registered) != 'undefined')
 		html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
