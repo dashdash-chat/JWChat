@@ -1,145 +1,145 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-	<head>
-		<title><l>JWChat - Show Message</l></title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<script src="emoticons.js" language="JavaScript1.2"></script>
-		<script src="shared.js" language="JavaScript1.2"></script>
+  <head>
+    <title><l>JWChat - Show Message</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="shared.js" language="JavaScript1.2"></script>
     <script src="switchStyle.js"></script>
-		<script language="JavaScript1.2">
-		<!--
-		var messages = new Array();
-		var curMSG = lastMSG = 0;
-		var jid;
-		var srcW;
+    <script language="JavaScript1.2">
+      <!--
+var messages = new Array();
+var curMSG = lastMSG = 0;
+var jid;
+var srcW;
 		
-		function showMSG() {
-      /*set subject */
-			if (messages[curMSG].subject)
-				document.getElementById('subject').innerHTML = messages[curMSG].subject;
+function showMSG() {
+  /*set subject */
+  if (messages[curMSG].subject)
+    document.getElementById('subject').innerHTML = messages[curMSG].subject;
 
-      /* set date */
-			var date;
-			if (messages[curMSG].o && messages[curMSG].o[0] && typeof(messages[curMSG].o[0].stamp) != 'undefined') {
-				var now = new Date();
-				var stamp = messages[curMSG].o[0].stamp;
-				date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
-			} else {
-				date = new Date();
-			}
-			document.getElementById('date').innerHTML = date.toLocaleString();
+  /* set date */
+  var date;
+  if (messages[curMSG].o && messages[curMSG].o[0] && typeof(messages[curMSG].o[0].stamp) != 'undefined') {
+    var now = new Date();
+    var stamp = messages[curMSG].o[0].stamp;
+    date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
+  } else {
+    date = new Date();
+  }
+  document.getElementById('date').innerHTML = date.toLocaleString();
 
 
-      /* set body */
+  /* set body */
 
-      /* look for error message */
-      if (messages[curMSG].type == 'error' && messages[curMSG].o) {
-        for (var i in messages[curMSG].o) {
-          if (messages[curMSG].o[i].name && messages[curMSG].o[i].name == 'error') {
-            msgbox.document.body.innerHTML = "<h2 style=\"color:red\">"+loc("Error")+ " " + messages[curMSG].o[i].code + "</h2>" + messages[curMSG].o[i].data;
-          }
-        }
-      
-      } else {
-        msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
+  /* look for error message */
+  if (messages[curMSG].type == 'error' && messages[curMSG].o) {
+    for (var i in messages[curMSG].o) {
+      if (messages[curMSG].o[i].name && messages[curMSG].o[i].name == 'error') {
+        msgbox.document.body.innerHTML = "<h2 style=\"color:red\">"+loc("Error")+ " " + messages[curMSG].o[i].code + "</h2>" + messages[curMSG].o[i].data;
       }
+    }
+      
+  } else {
+    msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
+  }
 
-      /* set buttons */
-			if (curMSG == 0)
-				document.forms[0].elements["prevButton"].disabled = true;
-			else 
-				document.forms[0].elements["prevButton"].disabled = false;
-			if (curMSG+1==lastMSG && opener.roster.getUserByJID(jid).messages.length == 0)
-				document.forms[0].elements["nextButton"].disabled = true;
-			else
-				document.forms[0].elements["nextButton"].disabled = false;
-		}
+  /* set buttons */
+  if (curMSG == 0)
+    document.forms[0].elements["prevButton"].disabled = true;
+  else 
+    document.forms[0].elements["prevButton"].disabled = false;
+  if (curMSG+1==lastMSG && opener.roster.getUserByJID(jid).messages.length == 0)
+    document.forms[0].elements["nextButton"].disabled = true;
+  else
+    document.forms[0].elements["nextButton"].disabled = false;
+}
 		
-		function getNextMSG() { // gets message from roster
-			var user = srcW.roster.getUserByJID(jid);
-			if (srcW.is.ie5||srcW.is.op) {
-				messages[lastMSG++] = user.messages[0];
-				user.messages = user.messages.slice(1,user.messages.length);
-			} else
-				messages[lastMSG++] = user.messages.shift();
-			// remove blinking message icon if this was last messages
-			if (user.messages.length == 0 && user.chatmsgs.length == 0) {
-				var images = srcW.roster.getUserIcons(jid);
-				for (var i=0; i<images.length; i++)
-					images[i].src = user.lastsrc;
-				user.lastsrc = null;
-				if (srcW.usersHidden && user.status == 'unavailable') // remove user from roster if not available any more
-					srcW.roster.print();
-			}
-		}
+function getNextMSG() { // gets message from roster
+  var user = srcW.roster.getUserByJID(jid);
+  if (srcW.is.ie5||srcW.is.op) {
+    messages[lastMSG++] = user.messages[0];
+    user.messages = user.messages.slice(1,user.messages.length);
+  } else
+    messages[lastMSG++] = user.messages.shift();
+  // remove blinking message icon if this was last messages
+  if (user.messages.length == 0 && user.chatmsgs.length == 0) {
+    var images = srcW.roster.getUserIcons(jid);
+    for (var i=0; i<images.length; i++)
+      images[i].src = user.lastsrc;
+    user.lastsrc = null;
+    if (srcW.usersHidden && user.status == 'unavailable') // remove user from roster if not available any more
+      srcW.roster.print();
+  }
+}
 		
-		function next() {
-			curMSG++;
-			if (curMSG == lastMSG) {
-				if (srcW.roster.getUserByJID(jid).messages.length > 0)
-					getNextMSG();
-				else
-					curMSG--;
-			}
-			
-			showMSG();
-			return false;
-		}
+function next() {
+  curMSG++;
+  if (curMSG == lastMSG) {
+    if (srcW.roster.getUserByJID(jid).messages.length > 0)
+      getNextMSG();
+    else
+      curMSG--;
+  }
+  
+  showMSG();
+  return false;
+}
+
+function prev() {
+  curMSG--;
+  if (curMSG < 0)
+    curMSG = 0;
+  showMSG();
+  return false;
+}
 		
-		function prev() {
-			curMSG--;
-			if (curMSG < 0)
-				curMSG = 0;
-			showMSG();
-			return false;
-		}
+function reply(quote) {
+  var url = 'send.html?jid='+jid;
+  if(quote)
+    url += '&body=' + msgEscape(messages[curMSG].body);
+  open(url,'sw','width=320,height=200');
+  return false;
+}
 		
-		function reply(quote) {
-			var url = 'send.html?jid='+jid;
-			if(quote)
-				url += '&body=' + msgEscape(messages[curMSG].body);
-			open(url,'sw','width=320,height=200');
-			return false;
-		}
+function openChat() {
+  srcW.roster.openChat(jid);
+  return false;
+}
 		
-		function openChat() {
-			srcW.roster.openChat(jid);
-			return false;
-		}
-		
-		function init() {
-			srcW = opener.top;
-			getArgs();
-			jid = passedArgs['jid'];
-			var user = srcW.roster.getUserByJID(jid);
-			if (user.messages.length > 0) {
-				// show messages
-				document.title = loc('Message from [_1]',user.name); // set title
-				getNextMSG();
-				showMSG();
-			}
-		}
-		
-		onload = init;
-		//-->
-		</script>
-	</head>
-	<body style="margin:8px;">
-		<form name="msg">
-			<div style="margin-bottom: 8px;">
-				<b><l>Subject</l>:</b> <span id="subject"></span><br>
-				<b><l>Date</l>:</b> <span id="date"></span>
-			</div>
-			<iframe src="chat_iframe.html" id="msgbox" name="msgbox" scrolling="auto" class="msgbox"></iframe>
-		<hr noshade size="1">
-		<div align="right" id="buttonbox">
-      <div style="margin-bottom: 5px;">
-        <button onClick="return reply(true);"><l>Quote</l></button>&nbsp;<button onClick="return reply();"><l>Reply</l></button>&nbsp;<button onClick="return openChat();"><l>Start Chat</l></button>
+function init() {
+  srcW = opener.top;
+  getArgs();
+  jid = passedArgs['jid'];
+  var user = srcW.roster.getUserByJID(jid);
+  if (user.messages.length > 0) {
+    // show messages
+    document.title = loc('Message from [_1]',user.name); // set title
+    getNextMSG();
+    showMSG();
+  }
+}
+
+onload = init;
+      //-->
+    </script>
+  </head>
+  <body style="margin:8px;">
+    <form name="msg">
+      <div style="margin-bottom: 8px;">
+        <b><l>Subject</l>:</b> <span id="subject"></span><br>
+        <b><l>Date</l>:</b> <span id="date"></span>
       </div>
-      <div>
-        <button onClick="return prev();" id="prevButton"><l>prev</l></button>&nbsp;<button onClick="return next();" id="nextButton"><l>next</l></button>&nbsp;<button onClick="window.close();"><l>Close</l></button>
+      <iframe src="chat_iframe.html" id="msgbox" name="msgbox" scrolling="auto" class="msgbox"></iframe>
+      <hr noshade size="1">
+      <div align="right" id="buttonbox">
+        <div style="margin-bottom: 5px;">
+          <button onClick="return reply(true);"><l>Quote</l></button>&nbsp;<button onClick="return reply();"><l>Reply</l></button>&nbsp;<button onClick="return openChat();"><l>Start Chat</l></button>
+        </div>
+        <div>
+          <button onClick="return prev();" id="prevButton"><l>prev</l></button>&nbsp;<button onClick="return next();" id="nextButton"><l>next</l></button>&nbsp;<button onClick="window.close();"><l>Close</l></button>
         </div>
       </div>
-		</form>
-	</body>
+    </form>
+  </body>
 </html>

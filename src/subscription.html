@@ -1,84 +1,84 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-	<head>
-		<title><l>JWChat - Subscribe to user</l></title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<script src="shared.js" language="JavaScript1.2"></script>
+  <head>
+    <title><l>JWChat - Subscribe to user</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="shared.js" language="JavaScript1.2"></script>
     <script src="switchStyle.js"></script>
-		<script language="JavaScript1.2">
-		<!--
-		var jid;
-		var srcW; // the source window with necessary data
+    <script language="JavaScript1.2">
+      <!--
+var jid;
+var srcW; // the source window with necessary data
 
-		function sendSub() {
-			var param = "?sid=" + srcW.sid + "&type=subscribe";
-			
-			if (!document.forms[0].to.value || document.forms[0].to.value == '') {
-				alert("<l>JID missing</l>");
-				document.forms[0].to.focus();
-				return false;
-			}
+function sendSub() {
+  var param = "?sid=" + srcW.sid + "&type=subscribe";
+  
+  if (!document.forms[0].to.value || document.forms[0].to.value == '') {
+    alert("<l>JID missing</l>");
+    document.forms[0].to.focus();
+    return false;
+  }
 
-      var to = document.forms[0].to.value;
-      if (to.indexOf('@') == -1)
-        to += '@' + srcW.JABBERSERVER;
+  var to = document.forms[0].to.value;
+  if (to.indexOf('@') == -1)
+    to += '@' + srcW.JABBERSERVER;
+  
+  param += "&to=" + to;
+  if (document.forms[0].msg.value && document.forms[0].msg.value != '')
+    param += "&status="+document.forms[0].msg.value;
+  
+  srcW.fhdLoad("presence",param)
+    
+    window.close();
+  return false;
+}
 
-			param += "&to=" + to;
-			if (document.forms[0].msg.value && document.forms[0].msg.value != '')
-				param += "&status="+document.forms[0].msg.value;
-				
-			srcW.fhdLoad("presence",param)
+function init() {
+  // determine source window
+  if (opener.roster)
+    srcW = opener.top;
+  else
+    srcW = opener.opener.top;
+  
+  getArgs();
+  jid = (passedArgs['jid'])?passedArgs['jid']:'';
+  
+  document.title = "<l>Send subscription</l>";
+  document.title += (jid)?" <l>to</l> " + jid:"";
+  if (jid)
+    document.forms[0].to.value = jid;
+}
 		
-			window.close();
-			return false;
-		}
-
-		function init() {
-			// determine source window
-			if (opener.roster)
-				srcW = opener.top;
-			else
-				srcW = opener.opener.top;
-			
-			getArgs();
-			jid = (passedArgs['jid'])?passedArgs['jid']:'';
-
-			document.title = "<l>Send subscription</l>";
-			document.title += (jid)?" <l>to</l> " + jid:"";
-			if (jid)
-				document.forms[0].to.value = jid;
-		}
-		
-		function keyPressed(e) {
-			if (e.ctrlKey && e.keyCode == 13)
-				sendSub();
-			else if (e.keyCode == 27)
-				window.close();
-		}
-		onkeydown = keyPressed;
-		onload = init;
-		//-->
-		</script>
-		<script for="document" event="onkeydown()" language="JScript">
-		<!--
-			if (window.event.ctrlKey && window.event.keyCode == 13)
-				sendSub();
-			if (window.event.keyCode == 27)
-				window.close();
-		//-->
-		</script>
-	</head>
-	<body style="margin:8px">
-		<form name="sub">
+function keyPressed(e) {
+  if (e.ctrlKey && e.keyCode == 13)
+    sendSub();
+  else if (e.keyCode == 27)
+    window.close();
+}
+onkeydown = keyPressed;
+onload = init;
+      //-->
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      if (window.event.ctrlKey && window.event.keyCode == 13)
+      sendSub();
+      if (window.event.keyCode == 27)
+      window.close();
+      //-->
+    </script>
+  </head>
+  <body style="margin:8px">
+    <form name="sub">
       <table border=0 cellspacing=0 cellpadding=0 style="margin-bottom:8px;" width="100%">
           <tr>
             <td nowrap><l>Send subscription to</l>&nbsp;</td><td width="100%"><input type="text" name="to" size=32 style="width:100%;"></td></tr>
       </table>
       <textarea id="msg" rows="6" cols="40" wrap="physical" class="msgBox"><l>I would like to add you to my roster.</l></textarea>
-		<hr noshade size="1" size="100%">
-		<div align="right" id="buttonbox">
-			<button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return sendSub();"><l>Send</l></button>
-		</div>
-		</form>
-	</body>
+      <hr noshade size="1" size="100%">
+      <div align="right" id="buttonbox">
+        <button onClick="window.close();"><l>Cancel</l></button>&nbsp;<button onClick="return sendSub();"><l>Send</l></button>
+      </div>
+    </form>
+  </body>
 </html>
