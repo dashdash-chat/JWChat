@@ -56,6 +56,12 @@ function makeWindowName(wName) {
   wName = wName.replace(/@/,"at");
   wName = wName.replace(/\./g,"dot");
   wName = wName.replace(/\//g,"slash");
+  wName = wName.replace(/&/g,"amp");
+  wName = wName.replace(/\'/g,"tick");
+  wName = wName.replace(/=/g,"equals");
+  wName = wName.replace(/#/g,"pound");
+  wName = wName.replace(/:/g,"colon");	
+  wName = wName.replace(/%/g,"percent");
   wName = wName.replace(/-/g,"dash");
   return wName;
 }
