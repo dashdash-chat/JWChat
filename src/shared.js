@@ -41,10 +41,15 @@ function makeWindowName(wName) {
 	return wName;
 }
 
+function htmlEnc(str) {
+	str = str.replace(/</g,"&lt;");
+	str = str.replace(/>/g,"&gt;");
+  return str;
+}
+
 function msgFormat(msg) { // replaces emoticons and urls in a message
 
-	msg = msg.replace(/</g,"&lt;");
-	msg = msg.replace(/>/g,"&gt;");
+  msg = htmlEnc(msg);
 
  	for (var i in emoticons) {
 		var iq = i.replace(/\\/g, '');
