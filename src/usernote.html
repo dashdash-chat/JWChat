@@ -43,7 +43,7 @@ function saveNotes() {
 		xml += "<item jid='"+i+"'>"+srcW.annotations[i]+"</item>";
 
 	xml += '</jwchat>';
-	srcW.fdebug(msgFormat(xml),0);
+
 	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
 }
 
