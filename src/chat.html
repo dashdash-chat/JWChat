@@ -36,7 +36,7 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 	msgHTML += "</div>";
 
 	var auto_scroll = false;
-	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= scrollHeight) // scrollbar at bottom
+	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= cFrame.body.scrollHeight) // scrollbar at bottom
 		auto_scroll = true;
 
   cFrame.body.innerHTML += msgHTML;
