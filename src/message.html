@@ -95,7 +95,7 @@ function prev() {
 }
 		
 function reply(quote) {
-  var url = 'send.html?jid='+jid;
+  var url = 'send.html?jid='+escape(jid);
   if(quote)
     url += '&body=' + msgEscape(messages[curMSG].body);
   open(url,'sw','width=320,height=200');

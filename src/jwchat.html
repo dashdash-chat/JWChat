@@ -118,18 +118,18 @@ function openGroupchat(group,nick) {
     user = roster.addUser(new RosterUser(group,'',['Chat Rooms'],group.substring(0,group.indexOf('@'))));
     roster.print();
   }
-  user.chatW = open("groupchat.html?group="+group+"&nick="+nick,"gchatW"+makeWindowName(group),"width=480,height=640,resizable=yes");
+  user.chatW = open("groupchat.html?group="+escape(group)+"&nick="+escape(nick),"gchatW"+makeWindowName(group+"/"+nick),"width=480,height=640,resizable=yes");
 }
 
 var subw;
 function openSubscription(jid) {
-  var param = (jid) ? "?jid="+jid : "";
+  var param = (jid) ? "?jid="+escape(jid) : "";
   subw = open("subscription.html"+param,"sub","width=320,height=200,resizable=yes");
   return false;
 }
 
 function openUserProps(jid) {
-  open("userprops.html?jid="+jid,"uProps"+makeWindowName(jid),"width=480,height=420,resizable=yes");
+  open("userprops.html?jid="+escape(jid),"uProps"+makeWindowName(jid),"width=480,height=420,resizable=yes");
   return false;
 }
 
@@ -403,7 +403,7 @@ function handlePresence(jabber) {
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
 
-      window.open("subscriptionRequest.html?jid="+from+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=190");
+      window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=190");
 
       return;
     }
@@ -559,7 +559,7 @@ function handleVCardTemp(jabber) {
     user.vcard = jabber.vcard;
   }
 
-  open("vcard.html?jid="+jabber.from,"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
+  open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
 }
 
 registerHandler("message",handleMessage);
