@@ -107,15 +107,17 @@ function toggleMoreOpts(show) {
 function backendSelected() {
 
 	var bs = document.getElementById('backend_selector');
-	var servers_allowed;
+	var servers_allowed, default_server;
 	if (bs) {
 		servers_allowed = BACKENDS[bs.selectedIndex].servers_allowed;
+		default_server = BACKENDS[bs.selectedIndex].default_server;
 		if (BACKENDS[bs.selectedIndex].description)
 			document.getElementById('backend_description').innerHTML = BACKENDS[bs.selectedIndex].description;
 		HTTPBASE = BACKENDS[bs.selectedIndex].httpbase;
 		BACKEND_TYPE = BACKENDS[bs.selectedIndex].type;
 	}	else {
 		servers_allowed = BACKENDS[0].servers_allowed;
+		default_server = BACKENDS[0].default_server;
 		HTTPBASE = BACKENDS[0].httpbase;
 		BACKEND_TYPE = BACKENDS[0].type;
 	}
@@ -130,8 +132,8 @@ function backendSelected() {
 			input.setAttribute('name','server');
 			input.setAttribute('tabindex',"2");
 
-			if (BACKENDS[bs.selectedIndex].default_server)
-				input.setAttribute("value",BACKENDS[bs.selectedIndex].default_server);
+			if (default_server)
+				input.setAttribute("value",default_server);
 
 			var td = tr_server.getElementsByTagName('td').item(1);
 			for (var i=0; i<td.childNodes.length; i++)
@@ -296,7 +298,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Wed Feb 23 15:12:22 CET 2005
+Last modified: Wed Feb 23 15:19:45 CET 2005
 <!-- hhmts end -->
     </div>
   </body>
