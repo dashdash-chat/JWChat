@@ -137,7 +137,7 @@ function getRegisterForm(iq) {
 				break;
 			default:
 				if (aItem.firstChild)
-					html += "<tr><td>"+i+"</td><td><input type='text' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
 				else
 					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"'></td></tr>";
 			}
@@ -221,13 +221,14 @@ function registerService(jid,paneid) {
 }
 
 function unregisterGateway(jid) {
-	var fulljid = srcW.roster.getUserByJID(jid).fulljid;
+	if (srcW.roster.getUserByJID(jid) != null)
+		jid = srcW.roster.getUserByJID(jid).fulljid;
 
 	var iq = new JSJaCIQ();
 	iq.setType('set');
 	var query = iq.setQuery('jabber:iq:roster');
 	var item = query.appendChild(iq.getDoc().createElement('item'));
-	item.setAttribute('jid',fulljid);
+	item.setAttribute('jid',jid);
 	item.setAttribute('subscription','remove');
 
 	srcW.con.send(iq);
