@@ -20,22 +20,9 @@ function reloadHistory() {
 	return false;
 }
 
-function putMsgHTML(msg,nick,color) {
-  var msgHTML = '';
-  
-  msg = msgFormat(msg);
-  
-  if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<font color=\"green\"><b>*** "+user.name+"</b></font> ");
-  } else {
-    msgHTML += "<font color=\""+color+"\">&lt;" + nick + "&gt;</font>";
-  }
-  msgHTML += " " + msg + "<br>";
-  selected_collection.document.body.innerHTML += msgHTML;
-}
-
 function handleCollGet(jabber) {
-	srcW.fdebug(jabber,2);
+	if (srcW.fdebug)
+		srcW.fdebug(jabber,2);
 
 	if (jabber.error)
 		return;
@@ -43,23 +30,28 @@ function handleCollGet(jabber) {
 	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'http://jabber.org/protocol/archive') // not for me
 		return;
 
-	selected_collection.document.body.innerHTML = '';
+	//selected_collection.document.body.innerHTML = '';
+	var histHTML = '';
 
-	for (var i in jabber.browse.o) {
+	for (var i=0; i<jabber.browse.o.length; i++) {
 		if (jabber.browse.o[i].tagname =! 'message') // skip
 			continue;
 
 		var msg = jabber.browse.o[i];
-
 		if (typeof(msg.to) != 'undefined') // message from me
-			putMsgHTML(msg.body,srcW.nick,"blue");
+			histHTML += "<font color=\"blue\">&lt;" + srcW.nick + "&gt;</font> ";
 		else
-			putMsgHTML(msg.body,user.name,"red");
+			histHTML += "<font color=\"red\">&lt;" + user.name + "&gt;</font> ";
+
+		histHTML += msg.body + '<br>';
+		continue;
 	}
+  	selected_collection.document.body.innerHTML = histHTML;
 }
 
 function handleCollsGet(jabber) {
-	srcW.fdebug(jabber,2);
+	if (srcW.fdebug)
+		srcW.fdebug(jabber,2);
 
 	if (jabber.error)
 		return;
@@ -113,9 +105,11 @@ function handleCollsGet(jabber) {
 
 var srcW;
 function init() {
-  // determine source window
-  if (opener.top.roster)
-    srcW = opener.top;
+	// determine source window
+	if (opener.top.roster)
+		srcW = opener.top;
+	if (typeof(srcW) == 'undefined' || !srcW)
+		return;
 
 	getArgs();
 	jid = passedArgs['jid'];
