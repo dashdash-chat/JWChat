@@ -32,7 +32,7 @@ my $TEMPDIR = "htdocs";
 my $TEMPLATEDIR = "src";
 my $DEFAULTLANG = "en";
 
-require "scripts/JWC::I18N.pm";
+require "scripts/JWCI18N.pm";
 use File::Find;
 use File::Path;
 use File::Basename;
@@ -40,7 +40,7 @@ use Encode::compat; # a no-op for Perl v5.7.1+
 use Encode 'encode_utf8';
 use Regexp::Common;
 
-JWC::I18N::Init();
+JWCI18N::Init();
 
 # Tell me more about warnings
 use Carp ();
@@ -80,7 +80,7 @@ foreach my $filename (keys %templates) {
 
 	# update all language dictionaries
 	foreach my $lang (@languages) {
-		my $lh = JWC::I18N->get_handle($lang) || die "What language?";
+		my $lh = JWCI18N->get_handle($lang) || die "What language?";
 
     unless (open _, $file) {
         print STDERR "Cannot open $file for reading ($!), skipping.\n" if ($DEBUG);
