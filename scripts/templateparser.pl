@@ -36,8 +36,8 @@ require "scripts/JWC::I18N.pm";
 use File::Find;
 use File::Path;
 use File::Basename;
-use Encode 'encode_utf8';
 use Encode::compat; # a no-op for Perl v5.7.1+
+use Encode 'encode_utf8';
 use Regexp::Common;
 
 JWC::I18N::Init();
