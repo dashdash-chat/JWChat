@@ -128,8 +128,6 @@ function msgboxKeyPressed(el,e) {
 	else if (e) keycode = e.keyCode;
 	else return true;
 	
-	parent.srcW.fdebug("keycode: " + keycode,0);
-
 	switch (keycode) {
 	case 9: // tab
          var txt = document.forms["chatform"].msgbox;
