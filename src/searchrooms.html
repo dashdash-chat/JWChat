@@ -13,12 +13,12 @@ function handleItemVCard(jabber) {
 	srcW.fdebug(jabber,2);
 
 	if (jabber.vcard)
-		disco_items[disco_items_at-1].vcard = jabber.vcard;
+		disco_items[disco_items_at].vcard = jabber.vcard;
 
-	if (disco_items_at < disco_items.length) {
+	if (disco_items_at < disco_items.length-1) {
 		// query next
 		frames['jwc_main'] = srcW.frames['jwc_main'];
-		srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
+		srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[++disco_items_at].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
 
 	} else { // got them all
 
@@ -50,7 +50,10 @@ function handleItemVCard(jabber) {
 				row.appendChild(cell);
 				
 				cell = search_result_iframe.document.createElement("TD");
-				textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
+				if (item.vcard && item.vcard.DESC)
+					textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
+				else
+					textN = search_result_iframe.document.createTextNode('\ ');
 				cell.appendChild(textN);
 				row.appendChild(cell);
 
@@ -109,8 +112,7 @@ function handleDiscoItemsResult(jabber) {
 	// start querying each item
 	disco_items_at = 0;
 	frames['jwc_main'] = srcW.frames['jwc_main'];
-	//srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid+"&ns=http://jabber.org/protocol/disco%23info",frames['jwc_main'].groupw.srw.handleDiscoItemInfoResult); 
-	srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at++].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
+	srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
 
 }
 
