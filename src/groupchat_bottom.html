@@ -134,7 +134,6 @@ function msgboxKeyPressed(el,e) {
          var pos1, pos2;
          var part;
          var possibilities = new Array();
-
          if(is.ie)
            return false;
          else {
@@ -152,14 +151,21 @@ function msgboxKeyPressed(el,e) {
              if(top.roster.users[i].name.indexOf(part) == 0)
                possibilities.push(top.roster.users[i].name);
            }
-           if(possibilities.length == 1) // complete, if only one possibility has been found or enumerate possibilities
-             txt.value = txt.value.substring(0, pos2) + top.roster.users[i].name + " " + txt.value.substring(pos1, txt.value.length)
+           if(possibilities.length == 1) { // complete, if only one possibility has been found or enumerate possibilities
+             if(pos2 == 0) //special case: beginning of line, add additional ":"
+               txt.value = txt.value.substring(0, pos2) + possibilities.pop() + ": " + txt.value.substring(pos1, txt.value.length)
+             else
+               txt.value = txt.value.substring(0, pos2) + possibilities.pop() + " " + txt.value.substring(pos1, txt.value.length)
+             return false;
+           }
            else if(possibilities.length > 1) {
              var string = possibilities.join(" ");
              parent.putMsgHTML(string, new Date().toLocaleTimeString(), parent.jid);
+             return false;
            }
+           
          }
-         return false;
+         return true;
 
 	case 13:
 		if (!e.shiftKey && !e.ctrlKey)
