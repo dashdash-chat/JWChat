@@ -1074,20 +1074,21 @@ function handleDiscoInfoResult(jabber) {
 	else {
 		disco.items[disco_info_count].info = new Array();
 		disco.items[disco_info_count].info = jabber.browse.o;
-	}
 
-	// check if we've got a loghost
-	var store_found = false;
-	var xmlns_found = false;
-	for (var i in disco.items[disco_info_count].info) {
-		var item = disco.items[disco_info_count].info[i];
-		if (item.tagname == 'identity' && item.category == 'store')
-			store_found = true;
-		if (item.tagname == 'feature' && item.far == 'http://jabber.org/protocol/archive')
-			xmlns_found = true;
+		// check if we've got a loghost
+		var store_found = false;
+		var xmlns_found = false;
+		for (var i in disco.items[disco_info_count].info) {
+			var item = disco.items[disco_info_count].info[i];
+			if (item.tagname == 'identity' && item.category == 'store')
+				store_found = true;
+			if (item.tagname == 'feature' && item.far == 'http://jabber.org/protocol/archive')
+				xmlns_found = true;
+		}
+		if (store_found && xmlns_found)
+			loghost = jabber.from;
+
 	}
-	if (store_found && xmlns_found)
-		loghost = jabber.from;
 
 	// query next item
 	disco_info_count++;
