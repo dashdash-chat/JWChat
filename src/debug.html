@@ -17,7 +17,8 @@
 
       function popMsgs() {
         while (opener.debugMsgs.length > 0) {
-          var msg = opener.debugMsgs.shift();
+          var msg = opener.debugMsgs[0];
+          opener.debugMsgs = opener.debugMsgs.slice(1,opener.debugMsgs.length);
           var now = new Date();
 
           if (opener.DEBUG_LVL >= msg.lv) {
