@@ -201,6 +201,17 @@ function openUserHistory(jid) {
 	user.histW.focus();
 }
 
+function openUserNote(jid) { /* store annotations to a user */
+	var user = roster.getUserByJID(jid);
+
+	if (user == null)
+		return; // unbelievable
+
+	if (!user.noteW || user.noteW.closed)
+		user.noteW = open("usernote.html?jid="+escape(jid),"noteW"+makeWindowName(jid),"width=300,height=200,resizable=yes,scrollbars=no");
+	user.noteW.focus();
+}
+
 var searchW;
 function openSearch() {
 	if (!searchW || searchW.closed)
@@ -969,6 +980,28 @@ function handleVCardTemp(jabber) {
   open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=580,scrollbars=yes");
 }
 
+var annotations = new Array();
+function handleAnnotations(jabber) {
+	if (jabber)
+		fdebug(jabber,2);
+
+	if (jabber && (jabber.error || jabber.type == 'error'))
+		fdebug(jabber,1);
+
+	if (jabber && !(jabber.error || jabber.type == 'error')) {
+		if (jabber.browse.o[0] && jabber.browse.o[0].tagname == 'jwchat' && jabber.browse.o[0].o) {
+			for (var i in jabber.browse.o[0].o) {
+				if (jabber.browse.o[0].o[i].tagname == 'item') {
+					var item = jabber.browse.o[0].o[i];
+					annotations[item.jid] = item.data;
+				}
+			}
+		}	
+	}
+
+	// start service discovery
+	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult); 
+}
 
 var bookmarks = new Array();
 function handleBookmarks(jabber) {
@@ -999,8 +1032,8 @@ function handleBookmarks(jabber) {
 		}
 	}
 
-	// start service discovery
-	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult); 
+	// get annotations
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:notes' />"),handleAnnotations);
 }
 
 function handlePrefs(jabber) {
