@@ -32,7 +32,11 @@
   */
 
 function openRoster(form) {
-  var jid = form.jid.value + "@" + JABBERSERVER + "/" + DEFAULTRESOURCE;
+  var jid = form.jid.value + "@" + JABBERSERVER + "/";
+	if (form.res.value != '')
+		jid += form.res.value;
+	else
+		jid += DEFAULTRESOURCE;
 
   if(!isValidJID(jid))
     return false;
@@ -71,7 +75,7 @@ onload = init;
         <p>
       <l>If don't have an account yet a new one will be created automatically for you on login (Note: If it fails to register this username might be taken already. Try to choose something else).</l></p>
 
-    <fieldset style="width: 10px; margin: 20px; padding: 10px;" align=center><legend><l>Login</l></legend>
+    <fieldset style="margin: 20px; padding: 10px;" align=center><legend><l>Login</l></legend>
     <table border=0 cellspacing=0 cellpadding=2">
       <form name="login" onSubmit="return openRoster(this);">
       <tr>
@@ -79,6 +83,11 @@ onload = init;
         <td><input type="text" name="jid" tabindex=1></td>
       </tr>
 <tr><td colspan=2 nowrap><l>Username must not contain</l>: <script>document.write(prohibited)</script></td></tr>
+      <tr>
+        <td align=right><b><l>Resource</l></b> (<l>optional</l>)</td>
+        <td><input type="text" name="res" tabindex=3></td>
+      </tr>
+			<tr><td colspan=2 height="10">&nbsp;</td></tr>
       <tr>
         <td align=right><b><l>Password</l></b></td>
         <td><input type="password" name="pass" tabindex=2></td>
@@ -96,7 +105,7 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Thu Mar 18 17:06:17 CET 2004
+Last modified: Mon Jun 28 20:42:30 CEST 2004
 <!-- hhmts end -->
     </div>
   </body>
