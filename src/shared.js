@@ -24,6 +24,9 @@ function cutResource(aJID) { // removes resource from a given jid
 }
 
 function msgEscape(msg) {
+	if (typeof(msg) == 'undefined' || !msg || msg == '')
+		return;
+
   msg = msg.replace(/\n/g,"%0A");
   msg = msg.replace(/\r/g,"%0D");
   msg = msg.replace(/ /g,"%20");
