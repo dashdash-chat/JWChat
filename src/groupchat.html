@@ -197,7 +197,7 @@ function part() {
 		var presence = new JSJaCPresence();
 		presence.setType('unavailable');
 		presence.setTo(group);
-		srcW.con.send(presence);
+		srcW.con.syncSend(presence);
 	}
 
   if (!user.messages.length && !user.chatmsgs.length) {

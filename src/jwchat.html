@@ -1377,11 +1377,11 @@ function logout() {
 	if (hiddengroups != '')
 		aNode.appendChild(iq.getDoc().createElement('hiddenGroups')).appendChild(iq.getDoc().createTextNode(hiddengroups));
 
-	con.send(iq,false);
+	con.syncSend(iq);
 
 	var aPresence = new JSJaCPresence();
 	aPresence.setType('unavailable');
-	con.send(aPresence,false);
+	con.syncSend(aPresence);
 
 	con.disconnect();
 }
