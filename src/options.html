@@ -27,7 +27,8 @@ function savePrefs() {
 
 	xml += "</jwchat>";
 
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
+	if (srcW.sid)
+		srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
 }
 
 	
@@ -81,44 +82,47 @@ function getOptions() {
 
 function handleIQRegister(jabber,pane) {
 	//	var transport_pane = document.getElementById('transport_pane');
-	if (jabber.error)
+	if (jabber.error) {
 		pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";
-	else {
-		var html = '';
-		if (typeof(jabber.browse.registered) != 'undefined')
-			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
-		if (jabber.browse.instrucions !=  '')
-			html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
-		html += "<form name='transport'><table>";
-		for (var i in jabber.browse) {
-			switch (i) {
-			case 'o':
-			case 'instructions':
-			case 'registered': 
-				break;
-			case 'key': // hide key
-				html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-				break;
-			case 'password':
-				html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-				break;
-			default:
-				html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-			}
-		}
-		html += "</table></form>";
-		html += "<div class='pane_el' align='right'>";
-		if (typeof(jabber.browse.registered) != 'undefined') {
-			html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
-			html += "&nbsp;";
-			html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Update")+"</button>";
-		} else
-			html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Register")+"</button>";
-		html += "</div>";
-		pane.innerHTML = html;
+		return;
 	}
-}
 
+	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'jabber:iq:register')
+		return; // not for me
+
+	var html = '';
+	if (typeof(jabber.browse.registered) != 'undefined')
+		html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
+	if (typeof(jabber.browse.instructions) != 'undefined')
+		html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
+	html += "<form name='transport'><table>";
+	for (var i in jabber.browse) {
+		switch (i) {
+			case 'o':
+		case 'instructions':
+		case 'registered': 
+			break;
+		case 'key': // hide key
+			html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+			break;
+		case 'password':
+			html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+			break;
+		default:
+			html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+		}
+	}
+	html += "</table></form>";
+	html += "<div class='pane_el' align='right'>";
+	if (typeof(jabber.browse.registered) != 'undefined') {
+		html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
+		html += "&nbsp;";
+		html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Update")+"</button>";
+	} else
+		html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Register")+"</button>";
+	html += "</div>";
+	pane.innerHTML = html;
+}
 
 var ow = window;
 function service_selected(el) {
