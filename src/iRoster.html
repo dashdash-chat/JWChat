@@ -85,7 +85,7 @@
 				if (firingobj.className=="menuitems"||ns6&&firingobj.parentNode.className=="menuitems"){
 					if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode; //up one node
 					firingobj.style.backgroundColor="highlight";
-					firingobj.style.color="white";
+					firingobj.style.color="highlighttext";
 					if (display_url==1)
 						window.status=event.srcElement.url;
 				}
@@ -95,8 +95,8 @@
 				var firingobj=ie5? event.srcElement : e.target;
 				if (firingobj.className=="menuitems"||ns6&&firingobj.parentNode.className=="menuitems"){
 					if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode; //up one node
-					firingobj.style.backgroundColor="";
-					firingobj.style.color="black";
+					firingobj.style.backgroundColor="menu";
+					firingobj.style.color="menutext";
 					window.status='';
 				}
 			}

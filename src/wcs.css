@@ -63,7 +63,7 @@ fieldset {
 .skin0{
   position:absolute;
   /*width:100px;*/
-  border:2px outset threedlightshadow;
+  border:2px outset threedhighlight;
   background-color:menu;
   font-family: sans-serif;
   line-height:16px;
