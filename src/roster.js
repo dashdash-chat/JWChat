@@ -34,7 +34,9 @@ function RosterUserAdd2Group(group) {
 }
 
 function RosterUser(jid,subscription,groups,name) {
-  this.jid = jid || 'unknown';
+
+	this.fulljid = jid;
+  this.jid = cutResource(jid) || 'unknown';
   this.jid = this.jid.toLowerCase(); // jids are case insensitive
 
   this.subscription = subscription || 'none';
@@ -98,7 +100,6 @@ function RosterGetUserIcons(from) {
   }
   return images;
 }
-
 
 function RosterToggleHide() {
   this.usersHidden = !this.usersHidden;
@@ -225,8 +226,7 @@ function Roster(items,targetW) {
     /* if (items[i].jid.indexOf("@") == -1) */ // no user - must be a transport
     if (typeof(items[i].jid) == 'undefined')
       continue;
-    items[i].jid = cutResource(items[i].jid);
-    items[i].name = (items[i].name) ? items[i].name : items[i].jid;
+    items[i].name = items[i].name || cutResource(items[i].jid);
     this.addUser(new RosterUser(items[i].jid,items[i].subscription,items[i].groups,items[i].name));
   }
 }
