@@ -136,53 +136,56 @@ function displayTimestamp() {
   		}
 
       function msgboxKeyPressed(el,e) {
-        if (window.event) e = window.event;
-        
-        switch (e.keyCode) {
-          case 13:
-            if ((msgbox_toggled && !e.ctrlKey) || e.shiftKey)
-              return true;
-            else
-              return submitClicked();
-            break;
-			    case 38:				// shift+up
-						if (e.ctrlKey) {
-							el.value = jwcMain.getHistory('up', el.value);
-							el.focus(); el.select();
-						}
-						break;
-				  case 40:				// shift+down 
-						if (e.ctrlKey) {
-							el.value = jwcMain.getHistory('down', el.value);
-							el.focus(); el.select();
-						}
-						break;
+				var keycode;
+				if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+				else if (e) keycode = e.which;
+				else return true;
+
+        switch (keycode) {
+				case 13:
+					if (e.shiftKey) {
+						if (!msgbox_toggled)
+							toggle_msgbox(document.getElementById('toggle_icon'));
+					} else
+						return submitClicked();
+					break;
 				}
-      }
-
-
-      function keyPressed(e) {
-	      switch (e.keyCode) {
-			    case 27:
-		        window.close();
-			      break;
-			    case 76:
-   			    if (e.ctrlKey) {   // ctrl+l
-			        chat.document.body.innerHTML = '';
-							return false;
-			      }
-			  }
 				return true;
       }
 
-onkeydown = keyPressed;
+      function msgboxKeyDown(el,e) {
+				var keycode;
+				if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+				else if (e) keycode = e.which;
+				else return true;
+
+        switch (keycode) {
+				case 38:				// shift+up
+					if (e.ctrlKey) {
+						el.value = jwcMain.getHistory('up', el.value);
+						el.focus(); el.select();
+					}
+					break;
+				case 40:				// shift+down 
+					if (e.ctrlKey) {
+						el.value = jwcMain.getHistory('down', el.value);
+						el.focus(); el.select();
+					}
+					break;
+				case 76:
+					if (e.ctrlKey) {   // ctrl+l
+						chat.document.body.innerHTML = '';
+						return false;
+					}
+					break;
+				case 27:
+					window.close();
+					break;
+				}
+				return true;
+			}
+
 onload = init;
-      //-->
-    </script>
-    <script for="document" event="onkeydown()" language="JScript">
-      <!--
-      if (window.event.keyCode == 27)
-      window.close();
       //-->
     </script>
   </head>
@@ -191,9 +194,9 @@ onload = init;
     <tr><td width="100%" height="100%" colspan=2><iframe src="chat_iframe.html" id="chat" name="chat" scrolling="yes" style="width:100%;height:100%;"></iframe></td></tr>
  		<form name="chatform" style="border:0px;margin:0px;padding:0px;">
     <tr>
-      <td valign=top><img src="images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
+      <td valign=top><img id="toggle_icon" src="images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
       <td width="100%">
-          <textarea id="msgbox" wrap="virtual" style="width:100%;height:1.4em;" onKeyPress="return msgboxKeyPressed(this,event);"></textarea>
+          <textarea id="msgbox" wrap="virtual" style="width:100%;height:1.4em;" onKeyPress="return msgboxKeyPressed(this,event);" onKeyDown="return msgboxKeyDown(this,event);"></textarea>
       </td>
     </tr>
     <tr id="submitbutton" style="display:none;"><td colspan=2 align=right><button onClick="submitClicked(); return false;"><l>Send</l></button></td></tr>
