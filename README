@@ -38,13 +38,13 @@ Linux:
 Requirements
 ============
 
-JWChat needs a jabberd-1.4.2 and an web-server of your choice capable
+JWChat needs jabberd-1.4.3 and an web-server of your choice capable
 of doing address rewriting. Both must be installed on the same host.
 
 For the Makefile to work you need perl-5.8 or newer plus some perl modules.
 You can get them from CPAN (http://www.cpan.org).
 
-* Encode::compat (to support perl <v5.8.0
+* Encode::compat (to support perl < v5.8.0)
 * Regexp::Common
 * Locale::Maketext (>=1.01)
 * Locale::Maketext::Lexicon (>=0.10)
