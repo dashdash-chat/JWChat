@@ -403,7 +403,7 @@ function handlePresence(jabber) {
   if (jabber.type) {
     if (jabber.type == 'subscribe') {
 
-      window.open("subscriptionRequest.html?jid="+from+"&msg="+jabber.status,"sr"+makeWindowName(from),"width=320,height=190");
+      window.open("subscriptionRequest.html?jid="+from+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=190");
 
       return;
     }

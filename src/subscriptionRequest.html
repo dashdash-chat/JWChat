@@ -39,7 +39,7 @@ function init() {
     from = "<b><span class=\"link\" onClick=\"return srcW.openUserInfo('"+jid+"');\" title=\""+loc("show user info for [_1]", from)+"\">"+jid.substring(0,jid.indexOf('@'))+"</a></b> ";
   
   document.getElementById("requestingUser").innerHTML = from;
-  msgbox.document.body.innerHTML = msgFormat(msg);
+  msgbox.document.body.innerHTML = msgFormat(unescape(msg));
 }
 		
 function keyPressed(e) {
