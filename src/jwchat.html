@@ -305,12 +305,12 @@ function registerHandler(type,func) {
     rh[type] = rh[type].concat(func);
 }
 	
-function handleEvent(jabber) {
+function handleEvent() {
   
   if (status != 'polling')
     return;
 
-  jabber = jabber||frames["jwc_in"].jabber;
+  jabber = frames["jwc_in"].jabber;
 
   /* error handling */
   if (!jabber) { // connection lost
@@ -329,13 +329,11 @@ function handleEvent(jabber) {
     return;
   }
   
-  if (!is.ie)
-    fdebug(jabber,4);
+	fdebug(jabber,4);
   
-  if (jabber && jabber.error && sid != 0 && 0) {
-    if (jabber.type && jabber.type == "error") {
-      fdebug("From: " + jabber.from + "\n" + jabber.error,0);
-    } else {
+  if (jabber && jabber.error && sid != 0) {
+		fdebug("From: " + jabber.from + "\n" + jabber.error,1);
+    if (!jabber.type || jabber.type != "error") {
       alert(loc("An error occured!\nAborting..."));
       if (typeof(pass) == 'undefined')
         window.close();
@@ -1122,7 +1120,7 @@ function run() {
   case 'polling':
     break;
   default:
-    fdebug('unknown status: ' + status,2);
+    fdebug('unknown status: ' + status,1);
     break;
   }
 }
