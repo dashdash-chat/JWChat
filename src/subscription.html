@@ -14,7 +14,7 @@ function sendSub() {
   var param = "?sid=" + srcW.sid + "&type=subscribe";
   
   if (!document.forms[0].to.value || document.forms[0].to.value == '') {
-    alert("<l>JID missing</l>");
+    alert(loc("JID missing"));
     document.forms[0].to.focus();
     return false;
   }
@@ -25,11 +25,11 @@ function sendSub() {
   
   param += "&to=" + to;
   if (document.forms[0].msg.value && document.forms[0].msg.value != '')
-    param += "&status="+document.forms[0].msg.value;
+    param += "&status="+msgEscape(document.forms[0].msg.value);
   
-  srcW.fhdLoad("presence",param)
+  srcW.fhdLoad("presence",param);
     
-    window.close();
+  window.close();
   return false;
 }
 
