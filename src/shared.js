@@ -78,10 +78,12 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 
   msg = htmlEnc(msg);
 
-  for (var i in emoticons) {
-    var iq = i.replace(/\\/g, '');
-    msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emoticonpath+emoticons[i]+"\" alt=\""+iq+"\">");
-  }
+	if (typeof(emoticons) != 'undefined') {
+		for (var i in emoticons) {
+			var iq = i.replace(/\\/g, '');
+			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\\B/g"),"$1<img src=\""+emoticonpath+emoticons[i]+"\" alt=\""+iq+"\">");
+		}
+	}
 	
   // replace http://<url>
   msg = msg.replace(/(\s|^)(https{0,1}:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
