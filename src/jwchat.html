@@ -377,17 +377,30 @@ function handleMessage(jabber) {
 	if (jabber.o) {
 		for (var i in jabber.o) {
 			if (jabber.o[i].tagname == 'x' && jabber.o[i].xmlns == 'http://jabber.org/protocol/muc#user' && jabber.o[i].o) {
-				var from, jid, reason;
+				var from, to, reason, pass;
 				for (var j in jabber.o[i].o) { // collect data
-					if (jabber.o[i].o[j].tagname == 'invite')
+					if (jabber.o[i].o[j].tagname == 'invite') {
 						from = jabber.o[i].o[j].from;
-					if (jabber.o[i].o[j].tagname == 'x' && jabber.o[i].o[j].xmlns == 'jabber:x:conference') {
-						jid = jabber.o[i].o[j].jid;
-						if (jabber.o[i].o[j].data)
-							reason = jabber.o[i].o[j].data;
-					}
+						to = jabber.from;
+						if (jabber.o[i].o[j].password)
+							pass = jabber.o[i].o[j].password;
+						if (jabber.o[i].o[j].reason)
+							reason = jabber.o[i].o[j].reason;
 				}
-				fdebug("You have been invited to " + jid + " by " + from + "\nreason:" + reason,2);
+				fdebug("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
+				var user = roster.getUserByJID(from);
+				if (user == null) {// users not in roster (yet)
+					fdebug("creating new user "+from,3);
+					user = roster.addUser(new RosterUser(from));
+					user.lastsrc = eval(user.status + "Led").src;
+					roster.print();
+				}
+
+				if (typeof(user.iwArr) == 'undefined')
+					user.iwArr = new Array();
+
+				user.iwArr[to] = open("groupchat_invite.html?to="+to+"&from="+from+"&pass="+pass+"&reason="+reason,"iw"+makeWindowName(to),"width=320,height=320,resizable=yes");
+
 				return;
 			}
 		}
