@@ -40,7 +40,7 @@ var nick;
 var vcard;
 var status = '';
 var sid = 0;
-var onlstat = 'available';
+var onlstat = '';
 var onlmsg = '';
 var autoPopup = true;
 var autoPopupAway = false;
@@ -286,7 +286,7 @@ function isGateway(aJid) {
 					if (disco.items[i].info[j].tagname == 'identity' && disco.items[i].info[j].category == 'gateway') {
 						return true;
 					}
-			}
+available			}
 	return false;
 }
 
@@ -326,7 +326,7 @@ function handleEvent() {
     }
 
     if (confirm(loc("Connection lost!\nReconnect?"))) {
-      sid=0;
+      cleanUp();
       changeStatus(onlstat);
     } else {
       logout();
@@ -1000,6 +1000,30 @@ function handleRosterPrefs(jabber) {
 	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
 }
 
+function handleSavedPresence(jabber) {
+	if (jabber)
+		fdebug(jabber,2);
+
+	if (jabber && (jabber.error || jabber.type == 'error'))
+		fdebug(jabber,1);
+
+	for (var i in jabber.browse.o) {
+		var item = jabber.browse.o[i];
+		if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:presence') {
+			if (typeof(item.presence) != 'undefined' && item.presence != 'undefined' && onlstat == 'login')
+				onlstat = item.presence;
+		}
+	}
+
+	if (onlstat == 'login')
+		onlstat = 'available';
+	// send presence
+	changeStatus(onlstat);
+
+	// get prefs
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
+}
+
 function handlePrefs(jabber) {
 	if (jabber)
 		fdebug(jabber,2);
@@ -1139,7 +1163,7 @@ function changeStatus(val,away) {
 	if (away)
 		onlmsg = away;
   if (sid == 0) { // login first
-    status = 'sendPresence';
+		status = 'sendPresence';
     fhdLoad("login-sid","?jid=" + msgEscape(jid) + "&pass=" + msgEscape(pass) + "&timeout=" + timeout);
     return;
   }
@@ -1148,8 +1172,8 @@ function changeStatus(val,away) {
   
   switch(val) {
   case "unavailable":
-    param += "&type="+val;
     val = "invisible";
+    param += "&type="+val;
     break;
   case "offline":
     val = "unavailable";
@@ -1165,6 +1189,10 @@ function changeStatus(val,away) {
     break;
   case "available":
     val = 'available'; // needed for led in status bar
+    if (away) {
+      param += "&status=" + msgEscape(away);
+    }
+		break;
   default:
     if (away) {
       param += "&status=" + msgEscape(away);
@@ -1215,7 +1243,7 @@ function init() {
     status = 'sendPresence';
     run();
   } else {
-    changeStatus("available");
+    changeStatus("login");
   }
 }
 
@@ -1245,14 +1273,13 @@ function run() {
       return;
     }
 
-
     if (!sid)
       sid = jabber.sid;
     
     fdebug("got sid:\n" + sid,2);
 
-    changeStatus(onlstat);
-    break;
+    //changeStatus(onlstat);
+		//break;
   case 'getRoster':
     status = 'printRoster';
     fhdLoad("roster","?sid="+sid);
@@ -1267,8 +1294,8 @@ function run() {
     
     playSound('connected');
 
-		// get prefs
-		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
+		// get presence
+		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:presence' />"),handleSavedPresence);
 
     //poll();	// initial poll (not nice here)
     break;
@@ -1317,14 +1344,12 @@ function cleanUp() {
   frames["jwc_out"].document.close();  
 }
 
-function handleSaveHiddenGroups(jabber) {
+function handleSavePresence(jabber) {
 	if (jabber && jabber.type == 'error') {
 		fdebug(jabber,1);
-		alert(loc("Error saving roster preferences"));
+		alert(loc("Error saving presence"));
 	}
-}
 
-function logout() {
 	// save roster.hiddenGroups
 	var xml = "<jwchat xmlns='jwchat:rosterprefs'><hiddenGroups>";
 
@@ -1335,7 +1360,22 @@ function logout() {
 	xml += "</hiddenGroups></jwchat>";
 
 	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml),handleSaveHiddenGroups);
+}
+
+function handleSaveHiddenGroups(jabber) {
+	if (jabber && jabber.type == 'error') {
+		fdebug(jabber,1);
+		alert(loc("Error saving roster preferences"));
+	}
+
 	changeStatus("offline");
+}
+
+function logout() {
+	// save presence
+	var xml = "<jwchat xmlns='jwchat:presence'><presence>"+onlstat+"</presence></jwchat>";
+
+	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+escape(xml),handleSavePresence);
 }
 
 /* check for unsupported browsers */
