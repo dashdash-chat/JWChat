@@ -85,7 +85,7 @@ function init() {
 
   cFrame = chat.document;
   user = srcW.roster.getUserByJID(jid);
-  document.title = "Chat with " + user.name;
+  document.title = loc("Chat with [_1]",  user.name);
   popMsgs();
   displayTimestamp();
 }
@@ -102,7 +102,7 @@ function displayTimestamp() {
 }
 
 			function submitClicked() {
-				var url = "?to=" + parent.jid + "&type=chat&sid=" + parent.jwcMain.sid;
+				var url = "?to=" + jid + "&type=chat&sid=" + parent.jwcMain.sid;
 				var body = document.forms[0].elements["msgbox"].value;
 
 				if (body == '') // don't send empty message
@@ -110,7 +110,17 @@ function displayTimestamp() {
 
 				url += "&body=" + msgEscape(body);
 				jwcMain.fhdLoad("message",url); // send to client
-			
+
+				// store message
+				if (typeof(window.cid) != 'undefined') {
+					if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined')
+						jwcMain.fCBLoad("archive-set","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&msg_to="+msgEscape(jid)+"&msg_body="+msgEscape(body)+"&cid="+msgEscape(window.cid));
+				} else {
+					storeCID = jwcMain.storeCID;
+					if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined')
+						jwcMain.fCBLoad("archive-set","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&msg_to="+msgEscape(jid)+"&msg_body="+msgEscape(body),storeCID,jid);
+				}
+
 				// insert into chat window
 				var now = new Date();
 
@@ -199,7 +209,13 @@ function displayTimestamp() {
 				return true;
 			}
 
+function cleanUp() {
+	if (typeof(cid) != 'undefined')
+		jwcMain.fhdLoad("archive-done","?sid="+jwcMain.sid+"&to="+jwcMain.datasink+"&cid="+cid);
+}
+
 onload = init;
+onunload = cleanUp;
       //-->
     </script>
   </head>

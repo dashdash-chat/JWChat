@@ -115,3 +115,12 @@ function isValidJID(jid) {
   }
   return true;
 }
+
+/* hrTime - human readable Time
+ * takes a timestamp in the form of 20040813T12:07:04 as argument
+ * and converts it to some sort of humane readable format
+ */
+function hrTime(ts) {
+	var date = new Date(Date.UTC(ts.substring(0,4),ts.substring(4,6)-1,ts.substring(6,8),ts.substring(9,11),ts.substring(12,14),ts.substring(15,17)));
+	return date.toLocaleString();
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><l>JWChat - Chat History</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="switchStyle.js"></script>
+    <script language="JavaScript1.2">
+      <!--
+function reloadHistory() {
+	// clear iframes
+	selected_collection.document.body.innerHTML = '';
+	collections.document.body.innerHTML = '';
+
+	// get collections
+	this.roster = srcW.roster;
+	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost,roster.getUserByJID(jid).histW.handleCollsGet);
+
+	return false;
+}
+
+function putMsgHTML(msg,nick,color) {
+  var msgHTML = '';
+  
+  msg = msgFormat(msg);
+  
+  if (msg.match(/^\/me /)) {
+    msg = msg.replace(/^\/me /,"<font color=\"green\"><b>*** "+user+"</b></font> ");
+  } else {
+    msgHTML += "<font color=\""+color+"\">&lt;" + nick + "&gt;</font>";
+  }
+  msgHTML += " " + msg + "<br>";
+  selected_collection.document.body.innerHTML += msgHTML;
+}
+
+function handleCollGet(jabber) {
+	srcW.fdebug(jabber,0);
+
+	if (jabber.error)
+		return;
+
+	selected_collection.document.body.innerHTML = '';
+
+	for (var i in jabber.browse.o) {
+		if (jabber.browse.o[i].tagname =! 'message') // skip
+			continue;
+
+		var msg = jabber.browse.o[i];
+
+		if (typeof(msg.to) != 'undefined') // message from me
+			putMsgHTML(msg.body,srcW.nick,"blue");
+		else
+			putMsgHTML(msg.body,user.name,"red");
+	}
+}
+
+function handleCollsGet(jabber) {
+	srcW.fdebug(jabber,0);
+
+	if (jabber.error)
+		return;
+
+	var items = jabber.browse.o;
+
+	var myTable = collections.document.createElement("TABLE");
+	var myTableBody = collections.document.createElement("TBODY");
+
+	myTable.appendChild(myTableBody);
+
+	var row, cell, textN;
+	for (var i in items) {
+
+		if (items[i].tagname != 'item') // skip
+			continue;
+
+		var item = items[i];
+
+		if (cutResource(item.jid) != cutResource(jid)) // skip
+			continue;
+		
+		row = collections.document.createElement("TR");
+		row.setAttribute("cid",item.cid);
+		myTableBody.appendChild(row);
+
+		cell = collections.document.createElement("TD");
+		row.appendChild(cell);
+
+		textN = collections.document.createTextNode(hrTime(item.start));
+		cell.appendChild(textN);
+
+	}
+
+	myTable.setAttribute("id","myTable");
+	myTable.setAttribute("WIDTH","100%");
+	myTable.setAttribute("BORDER","0");
+	myTable.setAttribute("CELLSPACING","0");
+	myTable.setAttribute("CELLPADDING","0");
+	myTable.setAttribute("RULES","rows");
+
+	// add table
+	collections.document.body.appendChild(myTable);
+
+	// tell frame about it
+	collections.init();
+}
+
+var srcW;
+function init() {
+  // determine source window
+  if (opener.top.roster)
+    srcW = opener.top;
+
+	getArgs();
+	jid = passedArgs['jid'];
+
+	if (typeof(jid) == 'undefined' || jid == '') {
+		alert(loc("JID is missing.\nAborting..."));
+		window.close();
+	}
+
+	user = srcW.roster.getUserByJID(jid);
+
+	var dtitle = loc("Chat history for [_1]", user.name);
+	document.getElementById('title').innerHTML = dtitle;
+	document.title = dtitle;
+
+	// get collections
+	this.roster = srcW.roster;
+	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost,roster.getUserByJID(jid).histW.handleCollsGet);
+}
+
+function keyPressed(e) {
+  if (e.keyCode == 27)
+    window.close();
+  return true;
+}
+
+onkeydown = keyPressed;
+onload = init;
+      //-->
+    </script>
+    <script for="document" event="onkeydown()" language="JScript">
+      <!--
+      return keyPressed(window.event);
+      //-->
+    </script>
+  </head>
+  <body style="margin:8px;">
+		<table width="100%" height="100%" border=0>
+				<tr>
+					<td><h2 id="title"></h2></td><td align="right"><button onClick="return reloadHistory();"><l>Refresh</l></td>
+				</tr>
+				<tr height="100%">
+					<td>
+						<iframe id="collections" name="collections" src="userhist_collections_iframe.html" style="width:240px;height:100%;" scrolling="auto"></iframe>
+					</td>
+					<td width="100%">
+						<iframe id="selected_collection" name="selected_collection" src="chat_iframe.html" style="width:100%;height:100%;"></iframe>
+					</td>
+				</tr>
+		</table>
+  </body>
+</html>

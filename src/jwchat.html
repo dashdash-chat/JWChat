@@ -47,6 +47,8 @@ var playSounds = false;
 var focusWindows = true;
 var timestamps = true;
 var usersHidden = false;
+var enableLog = false;
+var loghost;
 
 /* some globals */
 var roster;
@@ -183,7 +185,18 @@ function openUserInfo(jid) {
 }
 
 function openUserHistory(jid) {
-  open(USERHISTORYURL.replace(/\$user/,jid),"uHist"+makeWindowName(jid),"width=480,height=400,resizable=yes,scrollbars=yes");
+
+	if (typeof(loghost) == 'undefined')
+		return;
+
+	var user = roster.getUserByJID(jid);
+
+	if (user == null)
+		return;
+
+	if (!user.histW || user.histW.closed)
+		user.histW = open("userhist.html?jid="+escape(jid),"histW"+makeWindowName(jid),"width=600,height=400,resizable=yes,scrollbars=no");
+	user.histW.focus();
 }
 
 var searchW;
@@ -357,6 +370,18 @@ function handleEvent() {
  ************************************************************************
  */
 
+function storeCID(jabber,jid) {
+	fdebug(jabber,0);
+	var user = roster.getUserByJID(jid);
+	if (user == null) {
+		fdebug("user with jid " + jid + " not found",1);
+		return;
+	}
+
+	if (user.chatW && !user.chatW.closed) // store cid
+		user.chatW.cid = jabber.cid;
+}
+
 function handleMessage(jabber) {
 
 	fdebug(jabber,2);
@@ -453,6 +478,16 @@ function handleMessage(jabber) {
       if (focusWindows) window.focus();
       playSound('chat_queue');
     }
+
+		// send back to server
+    if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
+			if (enableLog && typeof(loghost) != 'undefined')
+				fhdLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body)+"&cid="+msgEscape(user.chatW.cid));
+		} else {
+			if (enableLog && typeof(loghost) != 'undefined')
+				fCBLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body),storeCID,user.jid);
+		}
+
   } else if (jabber.type == 'groupchat') {
 
       /* handle groupchat message 
@@ -483,7 +518,12 @@ function handleMessage(jabber) {
       if (focusWindows) window.focus();
       playSound('message_queue');
     }
+
+		// store message
+		if (enableLog && typeof(loghost) != 'undefined')
+			fhdLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body));
   }
+
 }
 
 /************************************************************************
@@ -540,10 +580,10 @@ function handlePresence(jabber) {
       alert(loc("You have been unsubscribed from [_1]", jabber.from));
 
 		if (jabber.type == 'error' && typeof(jabber.o) != 'undefined') {
-			for (var i in jabber.o) {
-				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
-					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
-			}
+// 			for (var i in jabber.o) {
+// 				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
+// 					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
+// 			}
 			return;
 		}
   }
@@ -865,6 +905,11 @@ function handleCB(jabber) {
 	}
 }
 
+/************************************************************************
+ *                  ***** CALLBACKS from fCBLoad *****
+ ************************************************************************
+ */
+
 function handleVCardTemp(jabber) {
 
 	if (jabber.error || jabber.type == 'error') {
@@ -972,6 +1017,8 @@ function handlePrefs(jabber) {
 					focusWindows = eval(item.focusWindows);
 				if (typeof(item.timestamps) != 'undefined' && item.timestamps != 'undefined')
 					timestamps = eval(item.timestamps);
+				if (typeof(item.enableLog) != 'undefined' && item.enableLog != 'undefined')
+					enableLog = eval(item.enableLog);
 			}
 		}
 	}
@@ -1020,6 +1067,20 @@ function handleDiscoInfoResult(jabber) {
 		disco.items[disco_info_count].info = new Array();
 		disco.items[disco_info_count].info = jabber.browse.o;
 	}
+
+	// check if we've got a loghost
+	var store_found = false;
+	var xmlns_found = false;
+	for (var i in disco.items[disco_info_count].info) {
+		var item = disco.items[disco_info_count].info[i];
+		if (item.tagname == 'identity' && item.category == 'store')
+			store_found = true;
+		if (item.tagname == 'feature' && item.far == 'http://jabber.org/protocol/archive')
+			xmlns_found = true;
+	}
+	if (store_found && xmlns_found)
+		loghost = jabber.from;
+
 	// query next item
 	disco_info_count++;
 	if (disco_info_count < disco.items.length)

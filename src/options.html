@@ -14,7 +14,7 @@ function handleIQSet(jabber) {
 
 var ow = window;
 function savePrefs() {
-	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval');
+	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval','enableLog');
 
 	var xml = "<jwchat xmlns='jwchat:prefs'>";
 
@@ -53,20 +53,26 @@ function toggleAutoPopupAway(el) {
 var form;
 function getOptions() {
   form = document.forms['options'];
-  if (opener.top.roster.usersHidden)
+  if (srcW.roster.usersHidden)
     form.usersHidden.checked = true;
-  if (opener.top.autoPopup)
+  if (srcW.autoPopup)
     form.autoPopup.checked = true;
-  if (opener.top.autoPopupAway)
+  if (srcW.autoPopupAway)
     form.autoPopupAway.checked = true;
-  if (opener.top.playSounds == true)
+  if (srcW.playSounds == true)
     form.playSounds.checked = true;
-  if (opener.top.timestamps == true)
+  if (srcW.timestamps == true)
     form.timestamps.checked = true;
-  if (opener.top.focusWindows == true)
+  if (srcW.focusWindows == true)
     form.focusWindows.checked = true;
+
+	form.enableLog.checked = srcW.enableLog;
+
+	if (typeof(srcW.loghost) == 'undefined')
+		form.enableLog.disabled = true;
+
   for (var i=0; i<form.timerval.options.length; i++) {
-    if (form.timerval.options[i].value == opener.top.timerval)
+    if (form.timerval.options[i].value == srcW.timerval)
       form.timerval.selectedIndex = i;
   }
   toggleAutoPopupAway(document.getElementById('autoPopup'));
@@ -275,6 +281,10 @@ onunload = savePrefs;
 								<tr>
 									<td><input id="timestamps" type="checkbox" onClick="displayTimestamps();"></td>
 									<td><label for="timestamps"><l>Display timestamps in chat windows</l></label></td>
+								</tr>
+								<tr>
+									<td><input id="enableLog" type="checkbox" onChange="srcW.enableLog=this.checked;"></td>
+									<td><label for="enableLog"><l>Enable logging of messages</l></label></td>
 								</tr>
 								<tr>
 									<td colspan="2">

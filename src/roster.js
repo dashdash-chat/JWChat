@@ -160,6 +160,8 @@ function RosterClose() {
       this.users[i].mW.close();
     if (this.users[i].chatW)
       this.users[i].chatW.close();
+    if (this.users[i].histW)
+      this.users[i].histW.close();
   }
 }
 
