@@ -94,7 +94,6 @@ function handleIQSearchfields(jabber) {
 		return;
 	}
 
-	var searchfields = document.getElementById('searchfields');
 	var html = "<table>";
 	if (typeof(jabber.browse['instructions']) != 'undefined')
 			html += "<tr><th colspan=2>"+jabber.browse['instructions']+"</th></tr>";
@@ -110,6 +109,7 @@ function handleIQSearchfields(jabber) {
 	html += "</table>";
 	html += "<hr noshade size=1><div align=right><button onClick='return search();'>"+loc("Search")+"</button></div>";
 
+	var searchfields = document.getElementById('searchfields');
 	searchfields.innerHTML = html;
 }
 
