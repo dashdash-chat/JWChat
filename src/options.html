@@ -130,7 +130,7 @@ function handleIQRegister(jabber,pane) {
 		if (typeof(jabber.browse.registered) != 'undefined') {
 			html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
 			html += "&nbsp;";
-			html += "<button onClick=\"registerService('"+jabber.from+"',pane);\">"+loc("Update")+"</button>";
+			html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Update")+"</button>";
 		} else
 			html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Register")+"</button>";
 		html += "</div>";
