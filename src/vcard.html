@@ -83,7 +83,7 @@
 				for (var i=0; i<iq.getNode().getElementsByTagName('vCard').item(0).childNodes.length; i++) {
 					var token = iq.getNode().getElementsByTagName('vCard').item(0).childNodes.item(i);
 					tokenname = token.nodeName;
-					if (token.firstChild.nodeType != 3) { // found a container
+					if (token.firstChild && token.firstChild.nodeType != 3) { // found a container
 						for (var j=0; j<token.childNodes.length; j++) {
 							if (typeof(document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName]) != 'undefined' && token.childNodes.item(j).firstChild)
 								document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName].value = token.childNodes.item(j).firstChild.nodeValue;
