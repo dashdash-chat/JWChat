@@ -35,11 +35,12 @@ function init() {
   document.title = loc("Subscribe request from [_1]",jid);
 
   var from = jid;
-  if (jid.indexOf('@'+srcW.JABBERSERVER) != -1 || jid.indexOf('@'+ICQTRANSPORT) != -1)
+  if (jid.indexOf('@'+srcW.JABBERSERVER) != -1 || jid.indexOf('@'+srcW.ICQTRANSPORT) != -1)
     from = "<b><span class=\"link\" onClick=\"return srcW.openUserInfo('"+jid+"');\" title=\""+loc("show user info for [_1]", from)+"\">"+jid.substring(0,jid.indexOf('@'))+"</a></b> ";
   
   document.getElementById("requestingUser").innerHTML = from;
-  msgbox.document.body.innerHTML = msgFormat(unescape(msg));
+	if (typeof(msg) != 'undefined')
+		msgbox.document.body.innerHTML = msgFormat(unescape(msg));
 }
 		
 function keyPressed(e) {
