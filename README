@@ -19,31 +19,107 @@ have access to your contact list from almost any computer as long as
 you've got access to the internet.
 
 Supported browsers and plattforms
----------------------------------
+=================================
 
 Windows XP/2000/ME/98/95:
-* MS Internet Explorer since version 5.0
+* MS Internet Explorer version >= 5.0
 * Netscape version 6 & 7
-* Mozilla (stable) since version 1.0.2
+* Mozilla (stable) version >= 1.0.2
   
 Mac OS X:
-* Mozilla (stable) since version 1.0.2
+* Mozilla (stable) version >= 1.0.2
 * Camino 0.7
 * Support for safari coming soon...
 
 Linux:
-* Mozilla (stable) since version 1.0.2
+* Mozilla (stable) version >= 1.0.2
 
 
--> requirements
+Requirements
+============
 
--> installation
+JWChat needs a jabberd-1.4.2 and an web-server of your choice capable
+of doing address rewriting. Both must be installed on the same host.
 
--> further reading
+For the Makefile to work you need some perl modules. You can get them
+from CPAN (http://www.cpan.org).
 
+* Regexp::Common
+* Locale::Maketext (>=1.01)
+* Locale::Maketext::Lexicon (>=0.10)
+( depends Locale::Maketext::Fuzzy )
+
+Download
+========
+
+Please refer to http://jwchat.sourceforge.net/download.shtml for
+download instructions.
+
+Quick Install Guide
+===================
+
+JWChat depends on two jabber server component which are available
+separately (see download instructions for details): wcs and http.
+
+* Compile these components by doing a "make" in both directories.
+
+* Configure your jabber server according to the README's of both
+  components.
+
+* Restart jabber
+
+* Edit .../jwchat/src/config.js to suit your needs.
+
+* Do "make install" in the jwchat directory. This generates a htdocs
+  directory. If you get an error please check the path to your local
+  perl interpreter in scripts/templateparser.pl and make sure that the
+  perl modules mentioned above are available on your system.
+
+* Now configure your web server. Set up a VirtualHost entry that
+  matches the FQDN of your jabber server. Set the DocumentRoot to the
+  newly generated htdocs directory above. Set up a rewrite rule which
+  redirects request from sWCS (see config.js) to sWCS2. Here is an
+  example from my local apache's httpd.conf:
+
+%<-----<schnipp>-----
+<VirtualHost 192.168.99.1>
+  ServerName jabber.zeank.in-berlin.de
+  DocumentRoot /home/zeank/src/jwchat/htdocs
+  <Directory /home/zeank/src/jwchat>
+    Options  +Indexes +Multiviews
+  </Directory>
+  RewriteEngine on
+#  RewriteLog /tmp/rw.log
+#  RewriteLogLevel 1
+  RewriteRule ^/wcs/(.*) http://127.0.0.1:5280/$1 [P]
+</VirtualHost>
+%<-----<schnapp>-----
+
+* Restart your web server
+
+Troubleshooting
+===============
+
+To check if your jabber server is configured correctly please open a
+browser window and enter the following URL:
+
+http://<your-hostname>:<port where the http component listens on>/login-sid.js?jid=<a registerd jid>&pass=<corresponding password>
+
+So as an example:
+
+http://jabber.zeank.in-berlin.de:5280/login-sid.js?jid=zeank@jabber.zeank.in-berlin.de&pass=secret
+
+You should get an answer like this:
+
+var jabber=new Object();jabber.sid='825d92ff0d668e7ab6aeb764c36ef5b5906ebfde@81100A8';
+
+If not your jabber.xml is misconfigured.
+
+Next open "http://<your hostname" in your browser and try to log in
+and look for Javascript errors.
 
 Disclaimer
-=======
+==========
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
