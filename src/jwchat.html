@@ -40,6 +40,7 @@ var vcard;
 var status = '';
 var sid = 0;
 var onlstat = 'available';
+var onlmsg = '';
 var autoPopup = true;
 var autoPopupAway = false;
 var playSounds = false;
@@ -1044,11 +1045,32 @@ function poll() {
     frameLoad(frames["jwc_in"],"cache","?sid="+sid);
 }
 
+var groupchatsAt = 0;
+var groupchats = new Array();
+function handleSetGroupchatPresence(jabber,param) {
+	if (groupchats.length > groupchatsAt) {
+		fCBLoad("presence",param+"&to="+msgEscape(groupchats[groupchatsAt++]),handleSetGroupchatPresence,param);
+	}
+}
+
+function sendPresence2Groupchats(gc,val,away) {
+	groupchatsAt = 0;
+	groupchats = gc;
+	if (groupchats.length > 0) {
+		var param = "?sid="+sid+"&show="+val;
+		if (away && away != '')
+			param += "&status="+msgEscape(away);
+		fCBLoad("presence",param+"&to="+msgEscape(groupchats[groupchatsAt++]),handleSetGroupchatPresence,param);
+	}
+}
+
 function changeStatus(val,away) {
   
   fdebug("changeStatus: "+val+","+away, 2);
   
   onlstat = val;
+	if (away)
+		onlmsg = away;
   if (sid == 0) { // login first
     status = 'sendPresence';
     fhdLoad("login-sid","?jid=" + msgEscape(jid) + "&pass=" + msgEscape(pass) + "&timeout=" + timeout);
@@ -1078,7 +1100,7 @@ function changeStatus(val,away) {
     val = 'available'; // needed for led in status bar
   default:
     if (away) {
-      param += "&status=" + away;
+      param += "&status=" + msgEscape(away);
     }
     param += "&show="+val;
   }
@@ -1088,10 +1110,7 @@ function changeStatus(val,away) {
   /* send presence to chatrooms
    */
   if (typeof(roster) != 'undefined') {
-    for (var i in roster.users) {
-      if (roster.users[i].roster) // it's a chatroom
-        fhdLoad("presence",param+"&to="+roster.users[i].jid);
-    }
+		sendPresence2Groupchats(roster.getGroupchats(),val,away);
   }
 
   var img = eval(val+"Led");

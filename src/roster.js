@@ -201,6 +201,14 @@ function RosterRemoveUser(user) {
   }
   this.updateGroups();
 }
+
+function RosterGetGroupchats() {
+	var groupchats = new Array();
+	for (var i in this.users)
+		if (this.users[i].roster)
+			groupchats[groupchats.length] = this.users[i].jid;
+	return groupchats;
+}
 	
 function Roster(items,targetW) {
   this.users = new Array();
@@ -225,6 +233,7 @@ function Roster(items,targetW) {
   this.openMessage = RosterOpenMessage;
   this.openChat = RosterOpenChat;
   this.close = RosterClose;
+	this.getGroupchats = RosterGetGroupchats;
  
   /* setup groups */
   for (var i in items) {

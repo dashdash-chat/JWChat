@@ -89,7 +89,8 @@ function popMsgs() {
     putMsgHTML(msg.body,mtime,msg.from,colors[charSum%(colors.length)]);
   }
 
-  if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
+	/* disabled: it's annoying */
+	//  if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
 }
 
 function displayTimestamp() {
@@ -187,10 +188,7 @@ function init() {
   
   srcW.fdebug("groupchat room: "+jid+", nick: "+nick + ", pass: "+pass ,2);
   
-	if (typeof(pass) != 'undefined' && pass != '')
-		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick)+"&pass="+msgEscape(pass));
-	else
-		srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick));
+	srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick)+"&pass="+msgEscape(pass)+"&show="+srcW.onlstat+"&status="+srcW.onlmsg);
   
   cFrame = frames.groupchatChat.groupchatIChat.document;
 
