@@ -24,6 +24,10 @@ function sendMSG() {
     url += "&subject=" + msgEscape(document.forms[0].subject.value);
   
   srcW.fhdLoad("message",url);
+
+	// save message
+	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined')
+		srcW.fCBLoad("archive-set","?sid="+srcW.sid+"&to="+srcW.loghost+"&msg_to="+msgEscape(jid)+"&msg_body="+msgEscape(body));
   
   if (!opener.roster && srcW.roster.getUserByJID(jid).messages.length == 0)
     opener.close();
