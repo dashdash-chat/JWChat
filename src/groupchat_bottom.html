@@ -22,9 +22,7 @@
           url += "/"+msgEscape(nick);
           parent.srcW.fhdLoad("presence",url);
         } else {
-          
           url += "&body=" + msgEscape(body) + "&type=groupchat";
-
           parent.srcW.fhdLoad("message",url); // send to client
         }			
 
@@ -60,7 +58,7 @@
 						break;
 			    case 76:
    			    if (e.ctrlKey) {   // ctrl+l
-			        parent.frames["cframe"].chat.document.body.innerHTML = '';
+			        parent.cFrame.body.innerHTML = '';
 							return false;
 			      }
 			    }
