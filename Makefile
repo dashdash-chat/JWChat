@@ -9,7 +9,7 @@ install:
 		echo ""; \
 		mkdir ./htdocs; \
 		echo "Copying Stylesheets ..."; \
-		cp ./src/wcs.css ./htdocs; \
+		cp ./src/*.css ./htdocs; \
 		echo "Copying Images ...";\
 		cp -r ./src/images ./htdocs;\
 		echo "Copying Sounds ...";\
@@ -22,3 +22,4 @@ clean:
 	@rm -r ./htdocs
 
 .PHONY: clean po
+
