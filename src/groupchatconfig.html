@@ -28,7 +28,7 @@ function doSub() {
 	
 	srcW.Debug.log(iq.getDoc().xml,2);
 	
-	srcW.con.send(iq);
+	srcW.con.syncSend(iq);
 	window.close();
 	return false;
 }

@@ -29,7 +29,7 @@ function submitClicked() {
 			aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode(curgrpbox.options[i].value));
   }
 
-	srcW.con.send(iq);
+	srcW.con.syncSend(iq);
   window.close();
 }
 
