@@ -4,6 +4,7 @@
     <title><l>JWChat - Options</l></title>
     <script src="switchStyle.js"></script>
     <script src="version.js"></script>
+    <script src="jabber_x_data.js" language="JavaScript1.2"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script language="JavaScript1.2">
       <!--
@@ -92,29 +93,42 @@ function handleIQRegister(jabber,pane) {
 
 	srcW.fdebug(jabber,2);
 
-	var html = '';
-	if (typeof(jabber.browse.registered) != 'undefined')
-		html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
-	if (typeof(jabber.browse.instructions) != 'undefined')
-		html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
-	html += "<form name='transport'><table>";
-	for (var i in jabber.browse) {
-		switch (i) {
-			case 'o':
-		case 'instructions':
-		case 'registered': 
+	// check if it's jabber:x:data
+	var x;
+	for (var i in jabber.browse.o)
+		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].type == 'form') {
+			x = jabber.browse.o[i];
 			break;
-		case 'key': // hide key
-			html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-			break;
-		case 'password':
-			html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-			break;
-		default:
-			html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
 		}
+
+	var html = '';
+	if (x) {
+		html += "<form>"+genJabberXDataTable(x)+"</form>";
+	} else {
+		if (typeof(jabber.browse.registered) != 'undefined')
+			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
+		if (typeof(jabber.browse.instructions) != 'undefined')
+			html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
+		html += "<form name='transport'><table>";
+		for (var i in jabber.browse) {
+			switch (i) {
+			case 'o':
+			case 'oX':
+			case 'instructions':
+			case 'registered': 
+				break;
+			case 'key': // hide key
+				html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+				break;
+			case 'password':
+				html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+				break;
+			default:
+				html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
+			}
+		}
+		html += "</table></form>";
 	}
-	html += "</table></form>";
 	html += "<div class='pane_el' align='right'>";
 	if (typeof(jabber.browse.registered) != 'undefined') {
 		html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
