@@ -16,7 +16,7 @@
       for (var i=0; i<document.forms[0].elements.length; i++) {
         if (document.forms[0].elements[i].id == '') continue;
         if (document.forms[0].elements[i].value == '' ) continue;
-        params += "&"+document.forms[0].elements[i].id+"="+document.forms[0].elements[i].value;
+        params += "&"+msgEscape(document.forms[0].elements[i].id)+"="+msgEscape(document.forms[0].elements[i].value);
       }
 
       srcW.fhdLoad("vcard-set",params);
@@ -36,6 +36,22 @@
 
     }
 
+    function handleVCardTemp(jabber) {
+
+			if (jabber.error || jabber.type == 'error') {
+				srcW.fdebug(jabber,1);
+				return;
+			}
+
+			srcW.fdebug(jabber,2);
+			
+			if (typeof(jabber.ns) == 'undefined' || jabber.ns != 'vcard-temp') // not form me
+				return;
+			
+      fillVCard(jabber.vcard,'');
+		}
+
+
     function init() {
       srcW = opener.top;
 
@@ -43,16 +59,7 @@
 
       jid = passedArgs['jid'];
       document.title += jid;
-
-      if (cutResource(jid) == srcW.cutResource(srcW.jid)) // it's me
-        vcard = srcW.vcard;
-      else {
-        var user = srcW.roster.getUserByJID(cutResource(jid));
-        vcard = user.vcard;
-      }
-
-      fillVCard(vcard,'');
-   
+  
       for (var i=0; i<document.forms[0].elements.length;i++) {
         if (document.forms[0].elements[i].id == '') continue;
         if (cutResource(jid) != srcW.cutResource(srcW.jid)) {
@@ -63,8 +70,19 @@
 
       if (cutResource(jid) != srcW.cutResource(srcW.jid))
         document.getElementById("savebox").style.display = 'none';
+
+			// request vcard
+			if (cutResource(jid) == cutResource(srcW.jid)) { // it's me
+				var vcardW = window;
+				srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),vcardW.handleVCardTemp);
+			} else {
+				var roster = srcW.roster;
+				if (roster.getUserByJID(cutResource(jid)).roster) // groupchat(!)
+					srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),roster.getUserByJID(cutResource(jid)).roster.getUserByJID(jid).vcardW.handleVCardTemp);
+				else
+					srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),roster.getUserByJID(jid).vcardW.handleVCardTemp);
+			}
       
-      window.focus();
     }
 
 		function keyPressed(e) {
