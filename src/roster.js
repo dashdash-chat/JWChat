@@ -272,7 +272,7 @@ function printRoster() {
       rosterHTML += "><nobr>";
       
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' align='left'>";
+      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' align='left' style=\"padding-bottom: 4px;\">";
       rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
       if (user.statusMsg)
         rosterHTML += "<br><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
