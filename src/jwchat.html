@@ -46,7 +46,7 @@ var autoPopup = true;
 var autoPopupAway = false;
 var playSounds = false;
 var focusWindows = true;
-var timestamps = true;
+var timestamps = false;
 var usersHidden = false;
 var enableLog = false;
 var loghost;
@@ -692,11 +692,16 @@ function handlePresence(jabber) {
 								user.roster.nick = ouser.nick;
 
 							// remove old user
+							var aChatW = ouser.chatW;
 							user.roster.removeUser(ouser);
 
 							// add new user
 							ouser = new GroupchatRosterUser(jabber.from.substring(0,jabber.from.lastIndexOf('/')+1).concat(ouser.nick),ouser.nick);
-							fdebug(ouser,0);
+
+							if (aChatW && !aChatW.closed) {
+								ouser.chatW = aChatW;
+								ouser.chatW.user = ouser;
+							}
 							user.roster.addUser(ouser);
 							nickChanged = true;
 							break;
@@ -777,7 +782,8 @@ function handlePresence(jabber) {
       user.status = 'unavailable';
     if (aRoster.name == 'GroupchatRoster' && !nickChanged) { // it's a groupchat roster
 			// remove user
-      aRoster.removeUser(user); // we don't need offline users in there
+			if (!user.chatW || user.chatW.closed)
+				aRoster.removeUser(user); // we don't need offline users in there
 		}
     playSound('offline');
   } else {
@@ -959,7 +965,7 @@ function handleVCardTemp(jabber) {
     user.vcard = jabber.vcard;
   }
 
-  open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=500,scrollbars=yes");
+  open("vcard.html?jid="+escape(jabber.from),"vcardW"+makeWindowName(jabber.from),"width=400,height=580,scrollbars=yes");
 }
 
 
