@@ -1,3 +1,9 @@
+2004-09-09  Stefan Strigler <steve@zeank.in-berlin.de>
+	* did a lot of bug fixing the last days
+
+2004-08-17  Stefan Strigler <steve@zeank.in-berlin.de>
+	* initial support for JEP-0136 Message Archiving
+
 2004-07-09  Stefan Strigler <steve@zeank.in-berlin.de>
 	* fixed user info - fetching vcard works now
 	* implemented irc-style commands for muc
