@@ -4,6 +4,7 @@
     <title><l>JWChat - Channel Config for</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="jabber_x_data.js" language="JavaScript1.2"></script>
     <script src="switchStyle.js"></script>
     <script language="JavaScript1.2">
       <!--
@@ -57,90 +58,7 @@ function handleConfig(jabber) {
 			break;
 		}
 
-	if (x.title)
-		document.getElementById('title').innerHTML = x.title;
-	if (x.instructions)
-		document.getElementById('instructions').innerHTML = x.instructions.replace(/\n/g,"<br>");
-
-	if (!x.o)
-		return;
-
-	var html = '<table width="100%">';
-	for (var i in x.o) {
-		if (x.o[i].tagname != 'field')
-			continue;
- 		html += "<tr>";
-		switch (x.o[i].type) {
-		case 'hidden':
-			html += "<td colspan=2><input type=hidden name='"+x.o[i].far+"' value='"+x.o[i].value+"'></td>";
-			break;
-		case 'fixed':
-			html += "<td colspan=2><b>"+x.o[i].value+"</b></td>";
-			break;
-		case 'text-single':
-			html += "<th>" + x.o[i].label + "</th>";
-			html += "<td>";
-			html += "<input type=text size='24' name='" + x.o[i].far + "'";
-			if (x.o[i].value)
-				html += " value='" + x.o[i].value + "'";
-			html += ">";
-			html += "</td>";
-			break;
-		case 'text-private':
-			html += "<th>" + x.o[i].label + "</th>";
-			html += "<td>";
-			html += "<input type=password size='24' name='" + x.o[i].far + "'";
-			if (x.o[i].value)
-				html += " value='" + x.o[i].value + "'";
-			html += ">";
-			html += "</td>";
-			break;
-		case 'text-multi':
-			html += "<th valign=top>" + x.o[i].label + "</th>";
-			html += "<td>";
-			html += "<textarea cols=24 rows=4 name='" + x.o[i].far + "'>";
-			if (x.o[i].value)
-				html += x.o[i].value;
-			html += "</textarea>";
-			html += "</td>";
-			break;
-		case 'list-single':
-			html += "<th>" + x.o[i].label + "</th>";
-			html += "<td>";
-			html += "<select name='" + x.o[i].far + "'>";
-			if (x.o[i].o) {
-				for (var j in x.o[i].o) {
-					if (x.o[i].o[j].tagname == 'option') {
-						html += "<option value='" + x.o[i].o[j].value + "'";
-						if (x.o[i].value == x.o[i].o[j].value)
-							html += " selected";
-						html += ">"+x.o[i].o[j].label+"</option>";
-					}
-				}
-			}
-			html += "</select>";
-			html += "</td>";
-			break;
-		case 'boolean':
-			html += "<th>" + x.o[i].label + "</th>";
-			html += "<td>";
-			html += "<input type=checkbox name='" + x.o[i].far + "'";
-			if (x.o[i].value == '1')
-				html += " checked";
-			html += ">";
-			html += "</td>";
-			break;
-		default:
-			srcW.fdebug("unknown type: " + x.o[i].type,1);
-			break;
-		}
- 		html += "</tr>";
-	}
-	html += "</table>";
-
-	var ciTable = document.getElementById("configitems");
-
-	ciTable.innerHTML = html;
+	document.getElementById("jabberXDataForm").innerHTML = genJabberXDataTable(x);
 }
 
 var srcW;
@@ -172,15 +90,12 @@ onload = init;
       //-->
     </script>
 		<style type="text/css">
-			h1 { font-size: 1.5em; padding-bottom: 12px;}
 			th { font-size: 80%; text-align: right; font-weight: normal; }
 		</style>
   </head>
   <body style="margin:8px;">
-		<h1 id="title"></h1>
-		<div id="instructions"></div>
     <form name="sub" onsubmit="return doSub();">
-		<div id="configitems">
+		<div id="jabberXDataForm">
 		</div>
       <hr noshade size="1" size="100%">
       <div align="right" id="buttonbox">
