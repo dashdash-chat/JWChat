@@ -23,17 +23,10 @@ colors[9] = 'blue';
 colors[10] = 'fuchsia';
 colors[11] = 'aqua';
 
-function putMsgHTML(msg,user,usercolor) {
+function putMsgHTML(msg,mtime,user,usercolor) {
   var msgHTML = '';
-  var now = new Date();
   
   msg = msgFormat(msg);
-			
-  var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-  mtime += ":";
-  mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-  mtime += ":";
-  mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
 
   msgHTML += "<span class=time>["+mtime+"] </span>";    
   
@@ -67,12 +60,30 @@ function popMsgs() {
 
     if (msg.from.indexOf('/') != -1)
       msg.from = msg.from.substring(msg.from.indexOf('/')+1);
+
+		/* get date */
+		var date = new Date();
+
+		if (typeof(msg.o) != 'undefined' && msg.o.length > 0) { // chan-history
+			for (var i in msg.o)
+				if (msg.o[i].tagname == 'x' && typeof(msg.o[i].stamp) != 'undefined' && msg.o[i].xmlns == 'jabber:x:delay') { // found timestamp
+					var stamp = msg.o[i].stamp;
+					date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
+					break; // done
+				}
+		}
+
+		var mtime = '';
+		if (new Date() - date > 24*3600*1000)
+			mtime += date.toLocaleDateString() + " ";
+		
+		mtime += date.toLocaleTimeString();
     
     /* look for a subject */
     if (msg.subject) { // set topic
       user.roster.subject = msg.subject;
       frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
-      putMsgHTML("/me has changed the topic to: " + msg.subject, msg.from); 
+      putMsgHTML("/me has changed the topic to: " + msg.subject, mtime, msg.from); 
     }
 
     if(!msg.body || msg.body == '')
@@ -83,7 +94,7 @@ function popMsgs() {
     for (var i=0; i<msg.from.length; i++)
       charSum += msg.from.charCodeAt(i);
     
-    putMsgHTML(msg.body,msg.from,colors[charSum%(colors.length)]);
+    putMsgHTML(msg.body,mtime,msg.from,colors[charSum%(colors.length)]);
   }
 
   if (srcW.focusWindows) frames.groupchatBottom.document.forms[0].msgbox.focus();
@@ -134,8 +145,12 @@ function init() {
   srcW = opener;
   
   group = passedArgs['group'];
-  nick = passedArgs['nick']
-    jid=group;
+	nick = passedArgs['nick'];
+
+	if(typeof(nick) == 'undefined' || nick == '')
+		nick = srcW.jid.substring(0,srcW.jid.indexOf('@')); // guess a nick
+
+	jid=group;
   
   srcW.fdebug("groupchat group:"+group+", nick:"+nick,3);
   
