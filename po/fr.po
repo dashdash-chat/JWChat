@@ -21,27 +21,27 @@ msgstr ""pass is missing.\\n"
 "Code absent.\\n"
 "Annulation..."
 
-#: src/jwchat.html:744
+#: src/jwchat.html:755
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr ""
 
-#: src/jwchat.html:712
+#: src/jwchat.html:723
 #. (ouser.name,ouser.actor,ouser.reason)
 msgid "%1 has been banned by %2: %3"
 msgstr ""
 
-#: src/jwchat.html:722
+#: src/jwchat.html:733
 #. (ouser.name,ouser.actor,ouser.reason)
 msgid "%1 has been kicked by %2: %3"
 msgstr ""
 
-#: src/jwchat.html:755
+#: src/jwchat.html:766
 #. (ouser.name)
 msgid "%1 has left"
 msgstr ""
 
-#: src/jwchat.html:686
+#: src/jwchat.html:697
 #. (ouser.name, ouser.nick)
 msgid "%1 is now known as %2"
 msgstr ""
@@ -84,7 +84,7 @@ msgstr "5 Sek."
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr ""
 
-#: src/jwchat.html:674
+#: src/jwchat.html:685
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Add Contact"
 msgstr "Ajouter le contact"
 
@@ -153,12 +153,17 @@ msgstr ""
 msgid "An error has occured"
 msgstr ""
 
-#: src/jwchat.html:327 src/jwchat.html:346
+#: src/jwchat.html:338 src/jwchat.html:357
 msgid "An error occured!\\nAborting..."
 msgstr ""
 
-#: src/jwchat.html:1278
+#: src/jwchat.html:1311
 msgid "An error occured.\\n\\nYou need to restart this application from the login screen."
+msgstr ""
+
+#: src/usernote.html:27
+#. (user.name)
+msgid "Annotations for %1"
 msgstr ""
 
 #: src/help.html:117 src/options.html:277
@@ -213,15 +218,15 @@ msgstr ""
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/roster.html:144
+#: src/roster.html:141
 msgid "Change Online Status"
 msgstr ""
 
-#: src/roster.html:145
+#: src/roster.html:142
 msgid "Change Status Message"
 msgstr ""
 
-#: src/roster.html:144
+#: src/roster.html:141
 msgid "Change User Info"
 msgstr ""
 
@@ -275,11 +280,11 @@ msgstr "Fermer"
 msgid "Config"
 msgstr ""
 
-#: src/jwchat.html:332
+#: src/jwchat.html:343
 msgid "Connection lost!\\nReconnect?"
 msgstr ""
 
-#: src/jwchat.html:1274
+#: src/jwchat.html:1307
 msgid "Couldn't log in!\\nCreate new account?"
 msgstr ""
 
@@ -335,8 +340,12 @@ msgstr "Montre des signes de temps dans les chats individuels."
 msgid "E-mail"
 msgstr ""
 
-#: src/iRoster.html:26 src/joingroupchat.html:115
+#: src/iRoster.html:27 src/joingroupchat.html:115
 msgid "Edit"
+msgstr ""
+
+#: src/iRoster.html:21
+msgid "Edit Note"
 msgstr ""
 
 #: src/iRoster.html:18
@@ -428,7 +437,7 @@ msgstr "Groupe"
 msgid "Groupchat Invitation"
 msgstr ""
 
-#: src/roster.html:140
+#: src/roster.html:137
 msgid "Help"
 msgstr "Aide"
 
@@ -507,7 +516,7 @@ msgstr ""
 msgid "JID"
 msgstr ""
 
-#: src/jwchat.html:1410 src/userhist.html:118
+#: src/jwchat.html:1443 src/userhist.html:118
 msgid "JID is missing.\\nAborting..."
 msgstr ""
 
@@ -517,6 +526,10 @@ msgstr "JID absent"
 
 #: src/jwchat.html:4
 msgid "JWChat"
+msgstr ""
+
+#: src/usernote.html:4
+msgid "JWChat - Annotation"
 msgstr ""
 
 #: src/changestatus.html:4
@@ -631,7 +644,7 @@ msgstr ""
 msgid "Join"
 msgstr "Entre"
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Join Groupchat"
 msgstr "Entrer au groupe de chat"
 
@@ -643,7 +656,7 @@ msgstr ""
 msgid "Left clicking an user pops up a message dialog."
 msgstr "Cliquer à gauche sur un enregistrement ouvre le dialogue - diffuser le message-."
 
-#: src/jwchat.html:1286
+#: src/jwchat.html:1319
 msgid "Loading Roster...<br>Please wait!"
 msgstr "Messenger est chargé...<br>S'il te plaît, attends!"
 
@@ -765,7 +778,7 @@ msgstr "Pass"
 msgid "Password"
 msgstr "Code"
 
-#: src/jwchat.html:1402
+#: src/jwchat.html:1435
 msgid "Password is missing.\\nAborting..."
 msgstr ""
 
@@ -793,11 +806,11 @@ msgstr ""
 msgid "Postal Code"
 msgstr ""
 
-#: src/roster.html:140
+#: src/roster.html:137
 msgid "Preferences"
 msgstr "Paramètres"
 
-#: src/iRoster.html:17 src/iRoster.html:25 src/iRoster.html:31
+#: src/iRoster.html:17 src/iRoster.html:26 src/iRoster.html:32
 msgid "Presence"
 msgstr ""
 
@@ -861,7 +874,7 @@ msgstr ""
 #~ #: NOT FOUND IN SOURCE
 #~ msgid "Raise windows when a new message is received"
 #~ msgstr ""
-#: src/iRoster.html:22
+#: src/iRoster.html:23
 msgid "Remove"
 msgstr "Effacer"
 
@@ -877,7 +890,7 @@ msgstr "Répondre"
 msgid "Resource"
 msgstr ""
 
-#: src/iRoster.html:21
+#: src/iRoster.html:22
 msgid "Resubscribe"
 msgstr "Re-autoriser"
 
@@ -921,7 +934,7 @@ msgstr ""
 msgid "Search Server"
 msgstr ""
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Search User"
 msgstr ""
 
@@ -984,11 +997,11 @@ msgstr ""
 msgid "Set"
 msgstr ""
 
-#: src/iRoster.html:30
+#: src/iRoster.html:31
 msgid "Show"
 msgstr ""
 
-#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:27 src/iRoster.html:32
+#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
 msgid "Show Info"
 msgstr "Montre les Informations"
 
@@ -1190,7 +1203,7 @@ msgstr ""
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr "Tu peux entrer un nouveau groupe d'utilisateurs, en donnant un nouveau nom dans la boîte \"Groupes disponibles \" et en cliquant\"&gt;\" . Pour effacer un utilisateur d'un groupe, clique sur \"&lt;\"! Un groupe est effacé, dès qu'un utilisateur sur ta liste des contacts n'appartient plus à ce groups."
 
-#: src/jwchat.html:603
+#: src/jwchat.html:614
 #. (jabber.from)
 msgid "You have been unsubscribed from %1"
 msgstr "On t'a enlevé l'autorisation de %1 ."
@@ -1207,7 +1220,7 @@ msgstr ""
 msgid "Your Contact List"
 msgstr "Ta liste des contacts"
 
-#: src/jwchat.html:1446
+#: src/jwchat.html:1479
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr ""
 

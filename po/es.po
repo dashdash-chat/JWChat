@@ -34,27 +34,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: src/jwchat.html:744
+#: src/jwchat.html:755
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr ""
 
-#: src/jwchat.html:712
+#: src/jwchat.html:723
 #. (ouser.name,ouser.actor,ouser.reason)
 msgid "%1 has been banned by %2: %3"
 msgstr ""
 
-#: src/jwchat.html:722
+#: src/jwchat.html:733
 #. (ouser.name,ouser.actor,ouser.reason)
 msgid "%1 has been kicked by %2: %3"
 msgstr ""
 
-#: src/jwchat.html:755
+#: src/jwchat.html:766
 #. (ouser.name)
 msgid "%1 has left"
 msgstr ""
 
-#: src/jwchat.html:686
+#: src/jwchat.html:697
 #. (ouser.name, ouser.nick)
 msgid "%1 is now known as %2"
 msgstr ""
@@ -93,7 +93,7 @@ msgstr "30 seg."
 msgid "5 sec."
 msgstr "5 seg."
 
-#: src/jwchat.html:674
+#: src/jwchat.html:685
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr ""
 
@@ -105,7 +105,7 @@ msgstr "Acerca de"
 msgid "Add"
 msgstr ""
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Add Contact"
 msgstr "A&ntilde;adir Contacto"
 
@@ -161,14 +161,19 @@ msgstr "Ha ocurrido un error ..."
 msgid "An error has occured"
 msgstr ""
 
-#: src/jwchat.html:327 src/jwchat.html:346
+#: src/jwchat.html:338 src/jwchat.html:357
 msgid "An error occured!\\nAborting..."
 msgstr ""
 "ÂíHa ocurrido un error!\\n"
 "Abortando..."
 
-#: src/jwchat.html:1278
+#: src/jwchat.html:1311
 msgid "An error occured.\\n\\nYou need to restart this application from the login screen."
+msgstr ""
+
+#: src/usernote.html:27
+#. (user.name)
+msgid "Annotations for %1"
 msgstr ""
 
 #: src/help.html:117 src/options.html:277
@@ -221,15 +226,15 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/roster.html:144
+#: src/roster.html:141
 msgid "Change Online Status"
 msgstr "Cambiar estado de conexi&oacute;n"
 
-#: src/roster.html:145
+#: src/roster.html:142
 msgid "Change Status Message"
 msgstr "Cambiar mensaje de estado"
 
-#: src/roster.html:144
+#: src/roster.html:141
 msgid "Change User Info"
 msgstr "Cambiar informaci&oacute;n de usuario"
 
@@ -283,13 +288,13 @@ msgstr "Cerrar"
 msgid "Config"
 msgstr ""
 
-#: src/jwchat.html:332
+#: src/jwchat.html:343
 msgid "Connection lost!\\nReconnect?"
 msgstr ""
 "ÂíConexiÃ³n perdida!\\n"
 "Â¨Reconectar?"
 
-#: src/jwchat.html:1274
+#: src/jwchat.html:1307
 msgid "Couldn't log in!\\nCreate new account?"
 msgstr ""
 "ÂíNo pudo logearse!\\n"
@@ -347,9 +352,13 @@ msgstr "Mostrar hora en chats uno-a-uno"
 msgid "E-mail"
 msgstr "E-mail"
 
-#: src/iRoster.html:26 src/joingroupchat.html:115
+#: src/iRoster.html:27 src/joingroupchat.html:115
 msgid "Edit"
 msgstr "Editar"
+
+#: src/iRoster.html:21
+msgid "Edit Note"
+msgstr ""
 
 #: src/iRoster.html:18
 msgid "Edit User"
@@ -440,7 +449,7 @@ msgstr "Grupo"
 msgid "Groupchat Invitation"
 msgstr ""
 
-#: src/roster.html:140
+#: src/roster.html:137
 msgid "Help"
 msgstr "Ayuda"
 
@@ -522,7 +531,7 @@ msgstr ""
 msgid "JID"
 msgstr ""
 
-#: src/jwchat.html:1410 src/userhist.html:118
+#: src/jwchat.html:1443 src/userhist.html:118
 msgid "JID is missing.\\nAborting..."
 msgstr ""
 "Falta el JID.\\n"
@@ -535,6 +544,10 @@ msgstr "Falta el JID"
 #: src/jwchat.html:4
 msgid "JWChat"
 msgstr "JWChat"
+
+#: src/usernote.html:4
+msgid "JWChat - Annotation"
+msgstr ""
 
 #: src/changestatus.html:4
 msgid "JWChat - Change Online Status"
@@ -648,7 +661,7 @@ msgstr "JWChat es un completo cliente jabber basado en web. <a href=\"http://www
 msgid "Join"
 msgstr "Unirse"
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Join Groupchat"
 msgstr "Unirse a conferencia"
 
@@ -660,7 +673,7 @@ msgstr "Patear"
 msgid "Left clicking an user pops up a message dialog."
 msgstr "Haciendo click izquierdo en un usuario aparecer&aacute; una caja de mensaje."
 
-#: src/jwchat.html:1286
+#: src/jwchat.html:1319
 msgid "Loading Roster...<br>Please wait!"
 msgstr ""
 "Cargando lista de contactos...<br> "
@@ -780,7 +793,7 @@ msgstr ""
 msgid "Password"
 msgstr "Contrase&ntilde;a"
 
-#: src/jwchat.html:1402
+#: src/jwchat.html:1435
 msgid "Password is missing.\\nAborting..."
 msgstr ""
 "Falta la contraseÃ¤a\\n"
@@ -810,11 +823,11 @@ msgstr ""
 msgid "Postal Code"
 msgstr "C&oacute;digo Postal"
 
-#: src/roster.html:140
+#: src/roster.html:137
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: src/iRoster.html:17 src/iRoster.html:25 src/iRoster.html:31
+#: src/iRoster.html:17 src/iRoster.html:26 src/iRoster.html:32
 msgid "Presence"
 msgstr "Presencia"
 
@@ -877,7 +890,7 @@ msgstr "Registrarse a"
 msgid "Registration failed. You might want to choose another username."
 msgstr ""
 
-#: src/iRoster.html:22
+#: src/iRoster.html:23
 msgid "Remove"
 msgstr "Remover"
 
@@ -893,7 +906,7 @@ msgstr "Responder"
 msgid "Resource"
 msgstr ""
 
-#: src/iRoster.html:21
+#: src/iRoster.html:22
 msgid "Resubscribe"
 msgstr "Resubscribirse"
 
@@ -937,7 +950,7 @@ msgstr "B&uacute;squeda"
 msgid "Search Server"
 msgstr ""
 
-#: src/roster.html:152
+#: src/roster.html:149
 msgid "Search User"
 msgstr "Buscar usuario"
 
@@ -1000,11 +1013,11 @@ msgstr "Servicio (opcional)"
 msgid "Set"
 msgstr "Aplicar"
 
-#: src/iRoster.html:30
+#: src/iRoster.html:31
 msgid "Show"
 msgstr "Mostrar"
 
-#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:27 src/iRoster.html:32
+#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
 msgid "Show Info"
 msgstr "Mostrar informaci&oacute;n"
 
@@ -1202,7 +1215,7 @@ msgstr "ÂíUsted ya est&aacute; registrado con esta puerta de enlace!"
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr "Usted puede crear un nuevo grupo de usuarios entrando un nombre nuevo para \"Grupo\" en la caja \"Grupos disponibles\" seguido de un click en \"&gt;\". Remover un usuario desde un grupo haciendo click en \"&lt;\". Un grupo es borrrado de su lista de contactos si no contiene usuarios."
 
-#: src/jwchat.html:603
+#: src/jwchat.html:614
 #. (jabber.from)
 msgid "You have been unsubscribed from %1"
 msgstr "Usted a sido eliminado de %1"
@@ -1219,7 +1232,7 @@ msgstr ""
 msgid "Your Contact List"
 msgstr "Su lista de contactos"
 
-#: src/jwchat.html:1446
+#: src/jwchat.html:1479
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "Su navegador debe soportar frames y javascript para usar esta aplicaci&oacute;n. Por favor revise nuestro <a href=\"help.html\">manual en l&iacute;nea</a> para una lista de navegadores soportados."
 
