@@ -29,6 +29,11 @@
     <nobr><div class="menuitems" func="openUserProps"><l>Edit</l></div></nobr>
     <nobr><div class="menuitems" func="openUserInfo"><l>Show Info</l></div></nobr>
   </div>
+    <div id="gChatMenu" class="skin0" onMouseover="highlightie5(event)" onMouseout="lowlightie5(event)" onClick="jumptoie5(event)" display:none>
+    <nobr><div class="menuitems" func="openGroupchat"><l>Show</l></div></nobr>
+    <nobr><div class="menuitems" func="openCustomPresence"><l>Presence</l></div></nobr>
+    <nobr><div class="menuitems" func="openUserInfo"><l>Show Info</l></div></nobr>
+  </div>
 
     <div id="roster" class="roster">
     </div>
@@ -46,9 +51,12 @@ if (ie5||ns6)
   var menuobj=document.getElementById("ie5menu");
 if (ie5||ns6)
   var gwMenu=document.getElementById("gwMenu");
-			
+if (ie5||ns6)
+	var gChatMenu=document.getElementById("gChatMenu");
+
 var selobj;
 function showmenuie5(e){
+
   var firingobj=ie5? event.srcElement : e.target;
   while (firingobj && (!firingobj.className || (firingobj.className != "rosterUser" && firingobj.className != "rosterUserSelected")))
     firingobj = firingobj.parentNode;
@@ -58,8 +66,12 @@ function showmenuie5(e){
   selobj = firingobj;
   selectUser(selobj);
 
-	if(parent.top.isGateway(firingobj.id))
+	var user = parent.top.roster.getUserByJID(parent.top.cutResource(firingobj.id));
+
+	if (parent.top.isGateway(firingobj.id))
 		menuobj = gwMenu;
+	else if (user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
+		menuobj = gChatMenu;
 	else
 		menuobj = document.getElementById("ie5menu");
 
@@ -137,6 +149,12 @@ function selectUser(el) {
 
 function userClicked(el,jid) {
   selectUser(el);
+
+	var user = parent.top.roster.getUserByJID(parent.top.cutResource(jid));
+
+	if(user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
+		return parent.top.openGroupchat(jid);
+
 	if (!parent.top.isGateway(jid))
 		return parent.top.roster.openMessage(jid);
 }
