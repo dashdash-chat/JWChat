@@ -115,8 +115,11 @@ var jabber=new Object();jabber.sid='825d92ff0d668e7ab6aeb764c36ef5b5906ebfde@811
 
 If not your jabber.xml is misconfigured.
 
-Next open "http://<your hostname" in your browser and try to log in
+Next open "http://<your hostname>" in your browser and try to log in
 and look for Javascript errors.
+
+To test your installation you can also use scripts/benchmark.pl. Have
+a look at its source to understand what it does.
 
 Disclaimer
 ==========
