@@ -20,7 +20,7 @@
 
       /* set date */
 			var date;
-			if (messages[curMSG].o && messages[curMSG].o[0].stamp) {
+			if (messages[curMSG].o && messages[curMSG].o[0] && typeof(messages[curMSG].o[0].stamp) != 'undefined') {
 				var now = new Date();
 				var stamp = messages[curMSG].o[0].stamp;
 				date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
