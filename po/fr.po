@@ -1,0 +1,667 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2004-03-06 10:36+0100\n"
+"Last-Translator: Dr. Hans Lehmann <Hans@DL8MRG.de>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/options.html:139
+msgid "10 sec."
+msgstr "10 Sek."
+
+#: src/options.html:140
+msgid "30 sec."
+msgstr "30 Sek."
+
+#: src/options.html:138
+msgid "5 sec."
+msgstr "5 Sek."
+
+#: NOT
+#: FOUND
+#: IN
+#: SOURCE
+msgid "<span id=\"chan_count\">X</span> participants"
+msgstr ""
+
+#: src/roster.html:81
+msgid "Add Contact"
+msgstr "Ajouter le contact"
+
+#: src/help.html:98
+msgid "Add an user by clicking on <img src=\"images/screenshots/add-button.gif\" width=\"24\" height=\"22\" alt=\"Add User Button\">. Enter the user's nickname in the subscription field and click \"Send\". Additionally you can enter a custom message in the textarea below. A subscription request with this message is sent to the user. If he or she accepts you can see his/her <a href=\"#status\">online status</a> from now on."
+msgstr "Clique sur <img src=\"images/screenshots/add-button.gif\" width=\"24\" height=\"22\" alt=\"Add User Button\"> pour ajouter un nouveau contact. Il apparaît un cadre de dialogue, dans lequel tu dois entrer ton nom d'utilisateur/ d'utilisatrice. D'ailleurs, tu peux entrer dans le grand cadre un message supplémentaire pour lui/ pour elle. (Remarque: Entre\"help\" dans la ligne d'entrée et, automatiquement,un utilisateur/une utilisatrice est ajouté/e , que tu peux toujours contacter, lorsque tu as des questions à poser au système.). Clique sur \"diffuser\" et l'utilisateur concernant recoit une demande d'autorisation avec ton message inscrit. Si elle/ S'il l'accepte tu peux voir tout de suite son statut en ligne."
+msgstr "Ajouter quelqu'un à ta liste de contacts."
+
+#: src/help.html:101
+msgid "After having sent this subscription request the user is added to your contact list and an edit user dialog pops up where you can set your custom nickname for this user and add him/her to one or more groups in your contact list."
+msgstr "Après avoir diffusé cette demande d'autorisation, le contact est ajouté automatiquement à ta liste de contacts et il apparaît un cadre pour cet utilisateur/ cette utilisatrice, où tu peux lui donner un surnom et l'ajouter à un où plusieurs goupes de contacts."
+
+#: src/subscriptionRequest.html:73
+msgid "Allow"
+msgstr "Autoriser"
+
+#: src/jwc.html:215
+#: src/jwc.html:236
+msgid ""
+"An error occured!\\n"
+"Aborting..."
+msgstr ""
+"Il y a une erreur!\\n"
+"Annuler..."
+
+#: src/help.html:116
+#: src/options.html:120
+msgid "Auto-Pop-Up if away"
+msgstr "Auto-Popup si disparu"
+
+#~ #: NOT FOUND IN SOURCE
+#~ #, fuzzy
+#~ msgid "Auto-Pop-up if away"
+#~ msgstr "Auto-Popup si disparu"
+#: src/help.html:114
+#: src/options.html:116
+msgid "Automatically open messages and chats"
+msgstr "Ouvre les chats et messages automatiquement"
+
+#: src/userprops.html:112
+msgid "Available groups"
+msgstr "Des groupes à disposition"
+
+#: src/help.html:54
+msgid "Camino 0.7"
+msgstr "Camino 0.7"
+
+#: src/jwc.html:126
+msgid ""
+"Can't display User Info:\\n"
+"User not local!"
+msgstr ""
+"Impossible de montrer l'information de l'utilisateur/utilistrice:\\n"
+"Utilisateur /utilisatrice pas local/e!"
+
+#: src/joingroupchat.html:66
+#: src/send.html:89
+#: src/subscription.html:80
+#: src/userprops.html:135
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/help.html:94
+msgid "Change your own online setting by choosing a state from the select box at the bottom of your contact list. For some states you can set a custom status message which is displayed to other users. If you choose \"invisible\" you appear to be offline to other users."
+msgstr "Change ton statut en ligne en choisissant une note de la liste de choix en bas de ta liste de contacts. Pour quelquesuns des statuts tu peux entrer une information de statut personnelle qui est aussi montrée à d'autres personnes."
+
+#: src/joingroupchat.html:60
+msgid "Channel/Group"
+msgstr "Canal de groupe"
+
+#: src/message.html:124
+#: src/options.html:148
+msgid "Close"
+msgstr "Fermer"
+
+#: src/jwc.html:220
+msgid ""
+"Connection lost!\\n"
+"Reconnect?"
+msgstr ""
+"Contact interrompu!\\n"
+"Recontacter?"
+
+#: src/jwc.html:626
+msgid ""
+"Couldn't log in!\\n"
+"Create new account?"
+msgstr ""
+"Enregistrement échoué.\\n"
+"Créer un nouvel enregistrement?"
+
+#: src/userprops.html:125
+msgid "Current groups"
+msgstr "Des groupes courants"
+
+#: src/help.html:107
+#: src/help.html:27
+msgid "Customizing (Your Preferences)"
+msgstr "Adapter (tes paramètres)"
+
+#: src/message.html:115
+msgid "Date"
+msgstr "Date"
+
+#: src/subscriptionRequest.html:73
+msgid "Deny"
+msgstr "Refuser"
+
+#: src/help.html:122
+#: src/options.html:132
+msgid "Display timestamps in one-to-one chats"
+msgstr "Montre des signes de temps dans les chats individuels."
+
+#: src/iRoster.html:20
+msgid "Edit User"
+msgstr "Traiter le contact."
+
+#: src/help.html:73
+msgid "Edit User: Opens the edit dialog for this user where you can set his nickname and change the groups he/she belongs to"
+msgstr "Traiter le contact: Ouvre le cadre de traitement pour cet utilisateur/ cette utilisatrice. Tu peux y modifier son surnom et son appartenance aux groupes."
+
+#: src/userprops.html:107
+msgid "Edit groups for <span id=\"groupjid\"></span>"
+msgstr "Traiter des groupes pour <span id=\"groupjid\"></span> "
+
+#: src/userprops.html:99
+msgid "Edit nickname for <span id=\"nickjid\"></span>"
+msgstr "Modifie le surnom pour <span id=\"nickjid\"></span>"
+
+#. (jid)
+#: src/userprops.html:55
+msgid "Edit properties for "
+msgstr "Traiter le contact: %1"
+
+#: src/userprops.html:115
+msgid "Group"
+msgstr "Groupe"
+
+#: src/roster.html:58
+msgid "Help"
+msgstr "Aide"
+
+#: src/help.html:112
+#: src/options.html:112
+msgid "Hide offline users"
+msgstr "Cache les contacts hors ligne"
+
+#: src/help.html:113
+msgid "Hides users who are not online from your contact list."
+msgstr "Ne montre pas les utilisateurs /utilisatrices qui sont hors ligne sur ta liste des contacts."
+
+#: src/iRoster.html:22
+msgid "History"
+msgstr "Rapport"
+
+#: src/help.html:75
+msgid "History: Opens the message history for this user"
+msgstr "Rapport: Ouvre le rapport messages pour ce contact."
+
+#: src/subscription.html:77
+msgid "I would like to add you to my roster."
+msgstr "Je voudrais t'ajouter à ma liste des contacts."
+
+#: src/help.html:115
+msgid "If selected each time you get a message from an other user the corresponding dialog pops up automatically."
+msgstr "Si on a choisi cette option, les messages seront ouverts automatiquement dès qu'un message d'un autre utilisateur arrivera chez toi."
+
+#: src/help.html:119
+msgid "If selected short jingles will play for certain actions like incoming messages or users going on- or offline."
+msgstr "Si on a choisi cette option, on entendra des sons dès que certaines actions comme  \"Message recu\" ou \"Un utilisateur va en/hors ligne\" - se passent."
+
+#: src/help.html:20
+#: src/help.html:30
+msgid "Introduction"
+msgstr "Introduction"
+
+#: src/roster.html:68
+#: src/status.html:15
+msgid "Invisible"
+msgstr "Invisible"
+
+#: src/jwc.html:730
+msgid ""
+"JID is missing.\\n"
+"Aborting..."
+msgstr ""
+"JID absent.\\n"
+"Annulation..."
+
+#: src/subscription.html:17
+msgid "JID missing"
+msgstr "JID absent"
+
+#: src/jwc.html:4
+msgid "JWChat"
+msgstr ""
+
+#: src/chat.html:4
+#: src/chat_bottom.html:4
+#: src/chat_iframe.html:4
+msgid "JWChat - Chat"
+msgstr ""
+
+#: src/chat_top.html:4
+msgid "JWChat - Chat-Top"
+msgstr ""
+
+#: src/help.html:15
+msgid "JWChat - Help"
+msgstr "JWChat - aide"
+
+#: src/joingroupchat.html:4
+msgid "JWChat - Join group chat"
+msgstr "JWChat - joindre le groupe de chat"
+
+#: src/menubar.html:4
+msgid "JWChat - Menubar"
+msgstr ""
+
+#: src/options.html:4
+msgid "JWChat - Options"
+msgstr "JWChat - paramètres"
+
+#: src/groupchat_iroster.html:4
+#: src/iRoster.html:4
+msgid "JWChat - Roster"
+msgstr "JWChat - liste des contacts"
+
+#: src/send.html:4
+msgid "JWChat - Send Message"
+msgstr "JWChat - Diffuser le message"
+
+#: src/message.html:4
+#: src/status.html:4
+msgid "JWChat - Show Message"
+msgstr "JWChat - Montrer le message"
+
+#: src/subscription.html:4
+msgid "JWChat - Subscribe to user"
+msgstr "JWChat - Autoriser l'utilisateur/l'utilisatrice"
+
+#: src/subscriptionRequest.html:4
+msgid "JWChat - Subscription-Request"
+msgstr "JWChat - Demande d'autorisation"
+
+#: src/userprops.html:4
+msgid "JWChat - User Properties"
+msgstr "JWChat - Caractères des contacts"
+
+#: src/help.html:34
+msgid "JWChat is a web based instant messenger (IM) just like AIM, MSN Messenger, Yahoo! Messenger or ICQ. This means you can manage your contacts and chat with other users directly. Unlike other IMs you can use this with your web browser without having to install any additional software at all. For a list of <a href=\"#supported\">supported browsers</a> see below. Your contact list is stored on the server. This means that you have access to your contact list from almost any computer as long as you've got access to the internet."
+msgstr "JWChat est un <i>Instant Messenger</i> (IM) basé  comme AOL Instant Messenger(AIM), MSN Messenger, Yahoo! Messenger ou ICQ. C'est à dire: tu peux l'employer pour gérer tes contacts et pour le chat direct avec d'autres utilisateurs/utilisatrices. Contrairement à d'autres IMs tu peux employer celui-ci sans être obligé d'installer un logiciel supplémentaire sur ton ordinateur.Un browser de web plus ou moins moderne est suffisant. S'il te plaît, fais attention <a href=\"#supported\"> à la liste des browsers supportés </a> plus bas!<br>ta liste des contacts sera enregistrer sur un serveur de web. C'est à dire, tu as l'accès de chaque ordinateur connecté à l'internet."
+
+#: src/joingroupchat.html:66
+msgid "Join"
+msgstr "Entre"
+
+#: src/roster.html:81
+msgid "Join Groupchat"
+msgstr "Entrer au groupe de chat"
+
+#: src/help.html:80
+msgid "Left clicking an user pops up a message dialog."
+msgstr "Cliquer à gauche sur un enregistrement ouvre le dialogue - diffuser le message-."
+
+#: src/jwc.html:636
+msgid "Loading Roster...<br>Please wait!"
+msgstr "Messenger est chargé...<br>S'il te plaît, attends!"
+
+#: src/index.html:32
+msgid "Login"
+msgstr "Enregistrer"
+
+#: src/help.html:44
+msgid "MS Internet Explorer since version 5.0"
+msgstr "MS Internet Explorer à partir de la version 5.0"
+
+#. (user.name)
+#: src/message.html:101
+msgid "Message from %1"
+msgstr "Message de %1"
+
+#: src/help.html:46
+#: src/help.html:53
+#: src/help.html:61
+msgid "Mozilla (stable) since version 1.0.2"
+msgstr "Mozilla (stable) depuis version 1.0.2"
+
+#: src/help.html:45
+msgid "Netscape version 6 & 7"
+msgstr "Netscape version 6 & 7"
+
+#: src/joingroupchat.html:59
+#: src/userprops.html:102
+msgid "Nickname"
+msgstr "Surnom"
+
+#: src/options.html:148
+#: src/userprops.html:135
+msgid "OK"
+msgstr "Ok"
+
+#: src/help.html:24
+#: src/help.html:83
+msgid "Online Status Indicators"
+msgstr "Statut en ligne indicateur"
+
+#: src/help.html:109
+msgid "Open the preferences dialog by clicking on <img src=\"images/screenshots/pref-button.gif\" width=\"24\" height=\"22\" alt=\"Preferences Button\">. Here's a short explanation for each option you can select:"
+msgstr "Ouvre le dialogue paramètres en cliquant sur <img src=\"images/screenshots/pref-button.gif\" width=\"24\" height=\"22\" alt=\"Preferences Button\"> . Folgendes l&auml;&szlig;t sich dort konfigurieren:"
+
+#: src/options.html:108
+msgid "Options"
+msgstr "Options"
+
+#: src/index.html:39
+msgid "Pass"
+msgstr "Pass"
+
+#: src/joingroupchat.html:62
+msgid "Password"
+msgstr "Code"
+
+#: src/jwc.html:722
+msgid ""
+"Password is missing.\\n"
+"Aborting..."
+msgstr ""
+"Ne pas donner de code.\\n"
+"Annulation..."
+
+#: src/help.html:118
+#: src/options.html:124
+msgid "Play sounds"
+msgstr "Joue des effets des sons"
+
+#: src/roster.html:58
+msgid "Preferences"
+msgstr "Paramètres"
+
+#: src/message.html:121
+msgid "Quote"
+msgstr "Citer"
+
+#: src/help.html:120
+#: src/options.html:128
+msgid "Raise window if a new message is received"
+msgstr "Monte la fenêtre, si un nouveau message est recu"
+
+#~ #: NOT FOUND IN SOURCE
+#~ msgid "Raise windows when a new message is received"
+#~ msgstr ""
+#: src/iRoster.html:24
+msgid "Remove"
+msgstr "Effacer"
+
+#: src/help.html:77
+msgid "Remove: Removes this user from your contact list (completely) and revokes your authentication for him/her (if any)"
+msgstr "Effacer:Efface cet utilisateur complètement de ta liste des contacts et revoque ton autorisation, de sorte qu'il ne puisse plus voir ton statut en ligne."
+
+#: src/message.html:121
+msgid "Reply"
+msgstr "Répondre"
+
+#: src/iRoster.html:23
+msgid "Resubscribe"
+msgstr "Re-autoriser"
+
+#: src/help.html:76
+msgid "Resubscribe: Opens a subscription request for this user"
+msgstr "Re-autoriser: Ouvre un dialogue d'autorisation pour ce contact"
+
+#: src/chat_bottom.html:79
+#: src/groupchat_bottom.html:81
+#: src/send.html:89
+#: src/subscription.html:80
+msgid "Send"
+msgstr "Diffuser"
+
+#: src/iRoster.html:18
+msgid "Send Message"
+msgstr "Diffuser le message"
+
+#: src/help.html:71
+msgid "Send Message: Opens the message dialog for this user"
+msgstr "Diffuser le message: Ouvre le dialoge de la diffusion d'un message"
+
+#. (srcW.roster.getUserByJID(jid).name)
+#: src/send.html:56
+msgid "Send message to %1"
+msgstr "Diffuse message à %1"
+
+#: src/subscription.html:46
+msgid "Send subscription"
+msgstr "Diffuse demande d'autorisation"
+
+#: src/subscription.html:75
+msgid "Send subscription to"
+msgstr "Enregistrement de l'utilisateur"
+
+#: src/joingroupchat.html:61
+msgid "Server"
+msgstr ""
+
+#: src/groupchat_iroster.html:26
+#: src/iRoster.html:21
+msgid "Show Info"
+msgstr "Montre les Informations"
+
+#: src/help.html:74
+msgid "Show Info: Show the user's profile"
+msgstr "Montre les Informations: Ouvre le profil du contact."
+
+#: src/groupchat_iroster.html:24
+#: src/iRoster.html:19
+#: src/message.html:121
+msgid "Start Chat"
+msgstr "Démarrer chat"
+
+#: src/help.html:72
+msgid "Start Chat: Opens a chat window for this user"
+msgstr "Démarrer chat: Ouvre une fenêtre de chat pour ce contact."
+
+#: src/jwc.html:546
+msgid "Status Message"
+msgstr "Statut de message"
+
+#: src/groupchat_header.html:9
+#: src/message.html:114
+#: src/send.html:83
+msgid "Subject"
+msgstr "objet"
+
+#. (jid)
+#: src/subscriptionRequest.html:35
+msgid "Subscribe request from %1"
+msgstr "Demande d'autorisation de %1"
+
+#: NOT
+#: FOUND
+#: IN
+#: SOURCE
+msgid ""
+"Subscribe request from %1:\\n"
+"%2"
+msgstr ""
+"Demande d'autorisation de %1:\\n"
+"%2"
+
+#: src/help.html:55
+msgid "Support for safari coming soon..."
+msgstr "Support pour safari à venir..."
+
+#: src/help.html:21
+#: src/help.html:38
+msgid "Supported Browsers"
+msgstr "Browser supportés"
+
+#: src/help.html:40
+msgid "Supported browsers and plattforms"
+msgstr "Browser et systèmes d'exploitation supportés "
+
+#: src/help.html:17
+msgid "Table of Contents"
+msgstr "Table des matières"
+
+#: src/help.html:68
+msgid "The contact list holds entries for each user you have added. By right clicking on such an item you get a context menu as shown in the screenshot to the left:"
+msgstr "La liste des contacts contient des entrées pour tous utilisateurs, que tu as ajoutés. En cliquant à droite sur une entrée, tu recois un menu de context, comme on peut le voir sur l'illustration à gauche:"
+
+#: src/help.html:121
+msgid "This will cause your contact list or your chat dialog to be raised over all other open windows if a new message arrives"
+msgstr "Si un message arrive,la fenêtre principal - si l'option est mise - ou la fenêtre du chat qui est ouverte arrive automatiquement au premier plan."
+
+#: src/groupchat_top.html:25
+msgid "Topic"
+msgstr "Sujet"
+
+#: src/options.html:136
+msgid "Update interval"
+msgstr "Interval d'actualisation"
+
+#: src/help.html:89
+msgid "User don't wants to be disturbed"
+msgstr "Ne pas déranger, s'il vous plaît!"
+
+#: src/help.html:92
+msgid "User hasn't authenticated you"
+msgstr "Tu n'es pas autorisé"
+
+#: src/help.html:87
+msgid "User is away"
+msgstr "Absent"
+
+#: src/help.html:91
+msgid "User is invisible"
+msgstr "Invisible"
+
+#: src/help.html:88
+msgid "User is not available"
+msgstr "Pas disponible"
+
+#: src/help.html:90
+msgid "User is offline"
+msgstr "Hors ligne"
+
+#: src/help.html:85
+msgid "User is online"
+msgstr "En ligne"
+
+#: src/help.html:86
+msgid "User is willing to chat"
+msgstr "Envie de chat"
+
+#: src/index.html:35
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: src/index.html:19
+msgid "Welcome to"
+msgstr "Bienvenu à"
+
+#: src/index.html:29
+#: src/index.html:4
+msgid "Welcome to jabber.glubs.org"
+msgstr "Bienvenu à jabber.glubs.org"
+
+#: src/help.html:117
+msgid "Whether to pop up messages although your status is not \"available\" or \"chat\""
+msgstr "Si les messages doivent être ouverts automatiquement, lorsque ton statut n'est pas \"disponible\" "
+
+#: src/help.html:123
+msgid "Will display the time when a message arrived right to the users name in the chat dialog"
+msgstr "Montre dans les fenêtres du chat un signe de temps à gauche à côté des messages individuels"
+
+#: src/help.html:104
+msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
+msgstr "Tu peux entrer un nouveau groupe d'utilisateurs, en donnant un nouveau nom dans la boîte \"Groupes disponibles \" et en cliquant\"&gt;\" . Pour effacer un utilisateur d'un groupe, clique sur \"&lt;\"! Un groupe est effacé, dès qu'un utilisateur sur ta liste des contacts n'appartient plus à ce groups."
+
+#. (jabber.from)
+#: src/jwc.html:374
+msgid "You have been unsubscribed from %1"
+msgstr "On t'a enlevé l'autorisation de %1 ."
+
+#: src/help.html:22
+#: src/help.html:65
+msgid "Your Contact List"
+msgstr "Ta liste des contacts"
+
+#: src/jwc.html:759
+msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
+msgstr ""
+
+#: src/roster.html:65
+#: src/status.html:12
+msgid "away"
+msgstr "absent"
+
+#: NOT
+#: FOUND
+#: IN
+#: SOURCE
+msgid "coming soon... ;-)"
+msgstr "Bientôt disponible... ;-)"
+
+#: src/roster.html:67
+#: src/status.html:14
+msgid "do not disturb"
+msgstr "Pas déranger "
+
+#: src/chat.html:75
+msgid "error starting chat"
+msgstr ""
+
+#: src/roster.html:64
+#: src/status.html:11
+msgid "free for chat"
+msgstr "prêt pour le chat "
+
+#: NOT
+#: FOUND
+#: IN
+#: SOURCE
+msgid ""
+"jid is missing.\\n"
+"Annulation..."
+msgstr ""
+"jid fehlt.\\n"
+"Annulation..."
+
+#: src/message.html:124
+msgid "next"
+msgstr "prochain"
+
+#: src/roster.html:66
+#: src/status.html:13
+msgid "not available"
+msgstr "pas disponible"
+
+#: src/roster.html:72
+#: src/status.html:18
+msgid "offline"
+msgstr "hors ligne"
+
+#: src/roster.html:63
+#: src/status.html:10
+msgid "online"
+msgstr "en ligne"
+
+#: NOT
+#: FOUND
+#: IN
+#: SOURCE
+msgid ""
+"pass is missing.\\n"
+"Aborting..."
+msgstr ""
+"Code absent.\\n"
+"Annulation..."
+
+#: src/message.html:124
+msgid "prev"
+msgstr "précédent"
+
+#: src/subscription.html:47
+msgid "to"
+msgstr "à"
+
+#: src/subscriptionRequest.html:67
+msgid "wants to add you to his roster"
+msgstr "aimerait t'ajouter à ta liste des contacts"
+
