@@ -229,7 +229,7 @@
 		}
 
     if (!is.ie)
-      fdebug("jabber: " + jabber.toSource(),4);
+      fdebug(jabber.toSource(),4);
 
 		if (jabber && jabber.error && sid != 0) {
 			if (jabber.type && jabber.type == "error") {
@@ -266,18 +266,26 @@
  */
 
 	function handleMessage(jabber) {
+
+    if (!is.ie)
+      fdebug(jabber.toSource(),4);
+
 		var from = cutResource(jabber.from);
+
+    fdebug("from: "+from+", jabber.from: "+jabber.from,3);
+
 		var user = roster.getUserByJID(from);
 		if (user == null) {// users not in roster (yet)
+      fdebug("creating new user "+from,3);
 			user = roster.addUser(new RosterUser(from));
 			user.lastsrc = eval(user.status + "Led").src;
 			roster.print();
 		}
 
-    fdebug(jabber,4);
+    fdebug("got user jid: "+user.jid,3);
 
     var aRoster = roster;
-    if (jabber.type != 'groupchat' && user.roster) { // privat groupchat message
+    if (jabber.type != 'groupchat' && user.roster && from != jabber.from) { // private groupchat message
       aRoster = user.roster;
       from = jabber.from; // we cut the resource - now 
       user = user.roster.getUserByJID(from);
@@ -300,7 +308,8 @@
 
     if (jabber.type == 'chat' && !(jabber.x && jabber.x.stamp)) {
 
-      /* we got a real chat message (and not an offline message) - TODO: jabber.x no more available!
+      /* we got a real chat message (and not an offline message) -
+       * TODO: jabber.x no more available!
        */
 
 			user.chatmsgs = user.chatmsgs.concat(jabber);
@@ -320,9 +329,6 @@
       /* handle groupchat message 
        */
 
-      if (!is.ie)
-        fdebug("got groupchat message: " + jabber.toSource(),3);
-
 			user.chatmsgs = user.chatmsgs.concat(jabber);
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
 				user.chatW.popMsgs();
@@ -332,7 +338,7 @@
 
 		} else {
 
-      /* must have been an offline message handle as normal message as
+      /* must have been an offline message - handle as normal message as
        * opening a chat window doesn't make sense most probably 
        */
 
@@ -363,7 +369,8 @@
 		if (from == cutResource(jid)) // skip my own presence msgs
 			return;
 
-    fdebug("presence: " + jabber,4);
+    if (!is.ie)
+      fdebug(jabber.toSource(),4);
 
 		if (jabber.type) {
 			if (jabber.type == 'subscribe') {
