@@ -4,6 +4,7 @@
     <title></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="switchStyle.js"></script>
+    <script src="shared.js"></script>
     <script type="text/javascript" src="pngfix.js"></script>
     <script language="JavaScript1.2">
       <!--
@@ -17,7 +18,7 @@ function openHelp(button) {
 var ow;
 function openOptions(el) {
   if (!top.ow || top.ow.closed)
-    top.ow = open("options.html","ow","width=330,height=330,resizable=yes");
+    top.ow = open("options.html","ow"+makeWindowName(parent.jid),"width=330,height=330,resizable=yes");
   el.blur();
   top.ow.focus();
   return false;
@@ -36,7 +37,7 @@ function addUser() {
 var groupw;
 function openGroupchat() {
   if (!groupw || groupw.closed)
-    groupw = open("joingroupchat.html","joingroupw","width=330,height=170,resizable=yes");
+    groupw = open("joingroupchat.html","joingroupw"+makeWindowName(parent.jid),"width=330,height=200,resizable=yes");
   groupw.focus();
   return false;
 }
@@ -44,7 +45,7 @@ function openGroupchat() {
 var onlStatW;
 function openChangeStatus() {
   if (!onlStatW || onlStatW.closed)
-    onlStatW = open("changestatus.html","onlStatW","width=330,height=240,resizable=yes");
+    onlStatW = open("changestatus.html","onlStatW"+makeWindowName(parent.jid),"width=330,height=240,resizable=yes");
   onlStatW.focus();
   return false;
 }
