@@ -17,7 +17,7 @@
     <nobr><div class="menuitems" func="openCustomPresence"><l>Presence</l></div></nobr>
     <nobr><div class="menuitems" func="openUserProps"><l>Edit User</l></div></nobr>
     <nobr><div class="menuitems" func="openUserInfo"><l>Show Info</l></div></nobr>
-    <nobr><div class="menuitems" func="openUserHistory"><l>History</l></div></nobr>
+    <nobr><div class="menuitems" func="openUserHistory" id='hist_menuitem'><l>History</l></div></nobr>
     <nobr><div class="menuitems" func="openUserNote"><l>Edit Note</l></div></nobr>
     <div class="menuitems" func="openSubscription"><l>Resubscribe</l></div>
     <div class="menuitems" func="removeUser"><l>Remove</l></div>
@@ -96,7 +96,10 @@ function showmenuie5(e){
   }
   else
     menuobj.style.top=ie5? document.body.scrollTop+event.clientY : window.pageYOffset+e.clientY;
-          
+
+	if (typeof(top.loghost) == 'undefined')
+			document.getElementById('hist_menuitem').style.display = 'none';
+
   menuobj.style.visibility="visible";
   return false;
 }
