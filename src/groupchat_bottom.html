@@ -3,6 +3,7 @@
   <head>
     <title></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="browsercheck.js" language="JavaScript1.2"></script>
     <script src="shared.js" language="JavaScript1.2"></script>
     <script src="switchStyle.js"></script>
     <script language="JavaScript1.2">
@@ -124,10 +125,44 @@ function cleanUp() {
 function msgboxKeyPressed(el,e) {
 	var keycode;
 	if (window.event) { e  = window.event; keycode = window.event.keyCode; }
-	else if (e) keycode = e.which;
+	else if (e) keycode = e.keyCode;
 	else return true;
 	
+	parent.srcW.fdebug("keycode: " + keycode,0);
+
 	switch (keycode) {
+	case 9: // tab
+         var txt = document.forms["chatform"].msgbox;
+         var pos1, pos2;
+         var part;
+         var possibilities = new Array();
+
+         if(is.ie)
+           return false;
+         else {
+           pos1 = txt.selectionStart; // current cursor position
+           // no selection, not at the beginning of the line and at the end of a word or at the end of the line
+           if(pos1 == txt.selectionEnd && pos1 > 0 && (txt.value.substring(pos1, pos1+1) == ' ' || pos1 == txt.value.length)) { 
+             part = txt.value.substring(0, pos1);
+             pos2 = part.lastIndexOf(" ") + 1;
+             if(pos2 != -1)
+               part = part.substring(pos2, pos1);
+           }
+         }
+         if(part) {
+           for (i in top.roster.users) {
+             if(top.roster.users[i].name.indexOf(part) == 0)
+               possibilities.push(top.roster.users[i].name);
+           }
+           if(possibilities.length == 1) // complete, if only one possibility has been found or enumerate possibilities
+             txt.value = txt.value.substring(0, pos2) + top.roster.users[i].name + " " + txt.value.substring(pos1, txt.value.length)
+           else if(possibilities.length > 1) {
+             var string = possibilities.join(" ");
+             parent.putMsgHTML(string, new Date().toLocaleTimeString(), parent.jid);
+           }
+         }
+         return false;
+
 	case 13:
 		if (!e.shiftKey && !e.ctrlKey)
 			return submitClicked();
@@ -143,6 +178,7 @@ function msgboxKeyDown(el,e) {
 	else return true;
 
 	switch (keycode) {
+
 	case 38:				// shift+up
 		if (e.ctrlKey) {
 			el.value = parent.srcW.getHistory('up', el.value);
