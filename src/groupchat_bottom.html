@@ -35,6 +35,9 @@ function submitClicked() {
   document.forms["chatform"].msgbox.value=''; // empty box
   document.forms["chatform"].msgbox.focus(); // set focus back on input field
   
+  /* poll (almost) immediatly to get my own response */
+  setTimeout("parent.srcW.poll()",200);
+
   return false;
 }
 
