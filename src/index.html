@@ -32,10 +32,10 @@
   * Please visit http://jwchat.sourceforge.net for more information!
   */
 
-var jid, pass, state;
+var jid, pass, register;
+var jwchats = new Array();
 function loginCheck(form) { /* check if user want's to register new
 																 account and things */
-
 	if (form.jid.value == '') {
 		alert(loc("You need to supply a username"));
 		return false;
@@ -55,89 +55,17 @@ function loginCheck(form) { /* check if user want's to register new
   if(!isValidJID(jid))
     return false;
 
+	if (jwchats[jid] && !jwchats[jid].closed) {
+		jwchats[jid].focus();
+		return false;
+	}
+
   pass = form.pass.value;
+	register = form.register.checked;
 
-	/* return openRoster(form); */ // don't use plaintext passwords!
-
-	if (form.register.checked) {
-		state = 'handleregister';
-		frameLoad("pub/register","?jid="+msgEscape(jid)+"&pass="+msgEscape(pass));
-	} else {
-		state = 'getstreamid';
-		frameLoad("login-sid","?jid="+msgEscape(jid));
-	}
+	jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=360,resizable=yes');
 
 	return false;
-}
-
-function openRoster(form) {
-  window.open('jwchat.html?jid='+escape(jid)+'&pass='+escape(pass),makeWindowName(jid),'width=180,height=360,resizable=yes');
-  return false;
-}
-
-function handleEvent() {
-	var jabber = frames['hiddenframe'].jabber;
-	if (!jabber)
-		return;
-
-	if (typeof(state) == 'undefined' || state == '')
-		return;
-
-
-	switch (state) {
-	case 'handleregister':
-		if (jabber.error) {
-			alert(loc("Registration failed. You might want to choose another username."));
-			return false;
-		}
-		/* seems like a successul registration*/
-		document.forms[0].register.checked = false; // uncheck this for the user
-
-		state = 'getstreamid';
-		frameLoad("login-sid","?jid="+msgEscape(jid));
-		break;
-	case 'getstreamid':
-		if (jabber.error) {
-			alert("An error occured!\\nAborting...");
-			return false;
-		}
-		if (typeof(jabber.streamid) == 'undefined') {
-			alert("streamid missing. aborting");
-			return false;
-		}
-		state = 'getsid';
-		var digest = hex_sha1(jabber.streamid + pass);
-		frameLoad("login-sid","?jid="+msgEscape(jid)+"&digest="+digest);
-		break;
-	case 'getsid':
-		if (jabber.error) {
-			alert(loc("Login failed. Wrong password?"));
-			return false;
-		}
-		window.open('jwchat.html?sid='+escape(jabber.sid)+"&jid="+escape(jid),makeWindowName(jid),'width=180,height=360,resizable=yes');
-		break;
-	}
-
-	return false;
-}
-
-function frameLoad(func,param) {
-	var frame = frames['hiddenframe'];
-  var ext = ".jsx"; // protocol extension for wcs
-  var ext2 = ".js";
-  var url = sWCS + func + ext + param;
-  var url2 = sWCS2 + func + ext2 + param;
-
-  /* doesn't work with mozilla */
-  if (is.ie || is.op) {
-    frame.document.open();
-    if (is.i5 || is.op)
-      frame.document.write("<script src=\""+url2+"\"></script><script>function checkData() { if (typeof(jabber)=='undefined') setTimeout(\"checkData()\",100); else parent.handleEvent(); } onload = checkData;</script>");
-    else 
-      frame.document.write("<script src=\""+url2+"\"></script>");
-    frame.document.close();
-  } else    
-    frame.location.href = url;
 }
 
 function toggleMoreOpts(show) {
@@ -246,9 +174,8 @@ onload = init;
       &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Mon Sep 27 16:30:37 CEST 2004
+Last modified: Sat Oct 23 22:16:29 CEST 2004
 <!-- hhmts end -->
     </div>
-		<iframe src="empty.html" name="hiddenframe" id="hiddenframe" onload="handleEvent();" style="border:0;width:0;height:0;"></iframe>
   </body>
 </html>

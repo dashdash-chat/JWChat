@@ -1,15 +1,3 @@
-/* images */
-
-var messageImg = new Image();
-messageImg.src = "images/message.gif";
-var grp_open_img = new Image();
-grp_open_img.src = 'images/group_open.gif';
-var grp_close_img = new Image();
-grp_close_img.src = 'images/group_close.gif';
-var arrow_right_blinking = new Image();
-arrow_right_blinking.src = 'images/arrow_right_blinking.gif';
-
-
 function RosterGroup(name) {
   this.name = name;
   this.users = new Array();
@@ -224,12 +212,18 @@ function Roster(items,targetW) {
 	this.getGroupchats = RosterGetGroupchats;
  
   /* setup groups */
-  for (var i in items) {
+	if (!items)
+		return;
+  for (var i=0;i<items.length;i++) {
     /* if (items[i].jid.indexOf("@") == -1) */ // no user - must be a transport
-    if (typeof(items[i].jid) == 'undefined')
+    if (typeof(items.item(i).getAttribute('jid')) == 'undefined')
       continue;
-    items[i].name = items[i].name || cutResource(items[i].jid);
-    this.addUser(new RosterUser(items[i].jid,items[i].subscription,items[i].groups,items[i].name));
+    var name = items.item(i).getAttribute('name') || cutResource(items.item(i).getAttribute('jid'));
+		var groups = new Array('');
+		for (var j=0;j<items.item(i).childNodes.length;j++)
+			if (items.item(i).childNodes.item(j).nodeName == 'group')
+				groups = groups.concat(items.item(i).childNodes.item(j).firstChild.nodeValue);
+    this.addUser(new RosterUser(items.item(i).getAttribute('jid'),items.item(i).getAttribute('subscription'),groups,name));
   }
 }
 
@@ -370,4 +364,14 @@ function GroupchatRoster(targetW) {
 
 GroupchatRoster.prototype = new Roster();
 
+// some images - no idea why they are defined here
+
+var messageImg = new Image();
+messageImg.src = "images/message.gif";
+var grp_open_img = new Image();
+grp_open_img.src = 'images/group_open.gif';
+var grp_close_img = new Image();
+grp_close_img.src = 'images/group_close.gif';
+var arrow_right_blinking = new Image();
+arrow_right_blinking.src = 'images/arrow_right_blinking.gif';
 

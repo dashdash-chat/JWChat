@@ -3,19 +3,26 @@
   <head>
     <title><l>JWChat - Invite</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 
 function doSub() {
 	if (document.forms[0].invite[0].checked) {
 		srcW.openGroupchat(to,srcW.jid.substring(0,srcW.jid.indexOf('@')),pass);
 	} else { // decline
-		var param = "?sid="+srcW.sid+"&to="+escape(to)+"&declinee="+escape(from);
+		var aMessage = new JSJaCMessage();
+		aMessage.setTo(to);
+		var x = aMessage.getNode().appendChild(aMessage.getDoc().createElement('x'));
+		x.setAttribute('xmlns','http://jabber.org/protocol/muc#user');
+		var decline = x.appendChild(aMessage.getDoc().createElement('decline'));
+		decline.setAttribute('to',from);
 		if (document.forms[0].reason.value != '')
-			param += "&reason="+msgEscape(document.forms[0].reason.value);
-		srcW.fhdLoad("muc-decline",param);
+			decline.appendChild(aMessage.getDoc().createElement('reason')).appendChild(aMessage.getDoc().createTextNode(document.forms[0].reason.value));
+		srcW.con.send(aMessage);
 	}
 	window.close();
 }

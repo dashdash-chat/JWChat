@@ -3,10 +3,10 @@
   <head>
     <title><l>JWChat - Show Message</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="emoticons.js" language="JavaScript1.2"></script>
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="emoticons.js"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script>
       <!--
 var messages = new Array();
 var curMSG = lastMSG = 0;
@@ -15,28 +15,22 @@ var srcW;
 		
 function showMSG() {
   /*set subject */
-  if (messages[curMSG].subject)
-    document.getElementById('subject').innerHTML = messages[curMSG].subject;
+  if (messages[curMSG].getSubject())
+    document.getElementById('subject').innerHTML = messages[curMSG].getSubject();
 
   /* set date */
   var date;
-  if (messages[curMSG].o && messages[curMSG].o[0] && typeof(messages[curMSG].o[0].stamp) != 'undefined') {
-    var now = new Date();
-    var stamp = messages[curMSG].o[0].stamp;
-    date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
-  } else {
-		if (messages[curMSG].timestamp)
-			date = messages[curMSG].timestamp;
-		else
-			date = new Date();
-  }
-  document.getElementById('date').innerHTML = date.toLocaleString();
+	if (messages[curMSG].jwcTimestamp)
+		date = messages[curMSG].jwcTimestamp;
+	else
+		date = new Date();
 
+  document.getElementById('date').innerHTML = date.toLocaleString();
 
   /* set body */
 
   /* look for error message */
-  if (messages[curMSG].type == 'error' && messages[curMSG].o) {
+  if (messages[curMSG].getType() == 'error' && 0) { // [TODO] handle error
     for (var i in messages[curMSG].o) {
       if (messages[curMSG].o[i].name && messages[curMSG].o[i].name == 'error') {
         msgbox.document.body.innerHTML = "<h2 style=\"color:red\">"+loc("Error")+ " " + messages[curMSG].o[i].code + "</h2>" + messages[curMSG].o[i].data;
@@ -44,7 +38,7 @@ function showMSG() {
     }
       
   } else {
-    msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
+    msgbox.document.body.innerHTML = msgFormat(messages[curMSG].getBody());
   }
 
   /* set buttons */
@@ -52,10 +46,19 @@ function showMSG() {
     document.forms[0].elements["prevButton"].disabled = true;
   else 
     document.forms[0].elements["prevButton"].disabled = false;
+
   if (curMSG+1==lastMSG && opener.roster.getUserByJID(jid).messages.length == 0)
     document.forms[0].elements["nextButton"].disabled = true;
   else
     document.forms[0].elements["nextButton"].disabled = false;
+
+	// disabled by now - sent message to cmeerw@jabber.at to clarify
+	// format of this messages
+
+// 	if (messages[curMSG].getType() == 'headline')
+// 		document.getElementById('reply_buttons').style.display = 'none';
+// 	else
+// 		document.getElementById('reply_buttons').style.display = '';
 }
 		
 function getNextMSG() { // gets message from roster
@@ -100,7 +103,7 @@ function prev() {
 function reply(quote) {
   var url = 'send.html?jid='+escape(jid);
   if(quote)
-    url += '&body=' + escape(messages[curMSG].body);
+    url += '&body=' + escape(messages[curMSG].getBody());
   open(url,'sw','width=320,height=200');
   return false;
 }
@@ -135,7 +138,7 @@ onload = init;
         <tr height="100%"><td style="padding-top: 4px;"><iframe src="chat_iframe.html" id="msgbox" name="msgbox" scrolling="auto" style="width: 100%; height: 100%;"></iframe></td></tr>
         <tr><td><hr noshade size="1"></td></tr>
 
-        <tr><td align="right"><button onClick="return reply(true);"><l>Quote</l></button>&nbsp;<button onClick="return reply();"><l>Reply</l></button>&nbsp;<button onClick="return openChat();"><l>Start Chat</l></button></td></tr>
+        <tr id="reply_buttons"><td align="right"><button onClick="return reply(true);"><l>Quote</l></button>&nbsp;<button onClick="return reply();"><l>Reply</l></button>&nbsp;<button onClick="return openChat();"><l>Start Chat</l></button></td></tr>
 
         <tr><td align="right" style="padding-top: 4px;"><button onClick="return prev();" id="prevButton"><l>prev</l></button>&nbsp;<button onClick="return next();" id="nextButton"><l>next</l></button>&nbsp;<button onClick="window.close();"><l>Close</l></button></td></tr>
         

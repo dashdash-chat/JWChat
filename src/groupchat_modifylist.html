@@ -4,272 +4,285 @@
     <title><l>JWChat - Modify</l></title>
     <script src="switchStyle.js"></script>
     <script src="shared.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
 		<script>
-			var deltaItems = new Array(); // contains table rows
+var deltaItems = new Array(); // contains table rows
 
-			function add2deltaItems(row,state) {
-				var item = new Object();
-				if (row.childNodes.item(0).innerHTML == '' && row.childNodes.item(1).innerHTML == '') // neither nick nor jid supplied
-					return;
-				if (row.childNodes.item(0).innerHTML != '')
-					item.nick = row.childNodes.item(0).innerHTML;
-				if (row.childNodes.item(1).innerHTML != '')
-					item.jid = row.childNodes.item(1).innerHTML;
-				if (row.childNodes.item(2).innerHTML != '')
-					item.reason = row.childNodes.item(2).innerHTML;
-				
-				if (queryType == 'role_based')
-					item.state = "role='"+state+"'";
-				else
-					item.state = "affiliation='"+state+"'";
-				
-				deltaItems[deltaItems.length] = item;
-			}
+function add2deltaItems(row,state) {
+	var item = new Object();
+	if (row.childNodes.item(0).innerHTML == '' && row.childNodes.item(1).innerHTML == '') // neither nick nor jid supplied
+		return;
+	if (row.childNodes.item(0).innerHTML != '')
+		item.nick = row.childNodes.item(0).innerHTML;
+	if (row.childNodes.item(1).innerHTML != '')
+		item.jid = row.childNodes.item(1).innerHTML;
+	if (row.childNodes.item(2).innerHTML != '')
+		item.reason = row.childNodes.item(2).innerHTML;
+	
+	if (queryType == 'role_based')
+		item.state = "role="+state;
+	else
+		item.state = "affiliation="+state;
+	
+	deltaItems[deltaItems.length] = item;
+}
+
+function deltaAddItem(row,state) {
+	var statExp = /(.+)=(.+)/;
+	statExp.exec(state);
+	add2deltaItems(row,RegExp.$2);
+}
+
+function deltaDelItem(row) {
+	add2deltaItems(row,'none');
+}
+
+function handleIQSetList(iq) {
+	// check for errors
+
+	if (iq && iq.getType() == 'result') { // sucess
+		srcW.Debug.log(iq.getDoc().xml,2);
+		window.close();
+		return true;
+	}
+
+	var html = '';
+	if (iq && iq.getType() == 'error') {
+		srcW.Debug.log(iq.getDoc().xml,1);
+		for (var i=0; i<iq.getNode().getElementsByTagName('item').length; i++) {
+			var item = iq.getNode().getElementsByTagName('item').item(i);
+			if (item.getAttribute('jid'))
+				html += "Item: "+item.getAttribute('jid')+"<br>";
+			else if (item.getAttribute('nick'))
+				html += "Nick: "+item.getAttribute('nick')+"<br>";
+		}
+		for (var j=0; j<iq.getNode().getElementsByTagName('error').length; j++)
+			var error = iq.getNode().getElementsByTagName('error').item(j);
+		html += loc("Error") + " " + error.getAttribute('code');
+		if (error.getElementsByTagName('text').item(0))
+			html += ": " + error.getElementsByTagName('text').item(0).firstChild.nodeValue;
+	}	
+	
+	document.getElementById('hint').innerHTML = '';
+	document.getElementById('hint').innerHTML = html;
+	
+	deltaItems = new Array();
+	
+	updateListFrame(modItems);
+}
+
+function doSub() {
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(opener.parent.jid);
+	var query = iq.setQuery(args[1]);
+	
+	for (var i in deltaItems) {
+		var item = query.appendChild(iq.getDoc().createElement('item'));
+		item.setAttribute(deltaItems[i].state.split('=')[0],deltaItems[i].state.split('=')[1]);
+		if (deltaItems[i].nick)
+			item.setAttribute('nick',deltaItems[i].nick);
+		if (deltaItems[i].jid)
+			item.setAttribute('jid',deltaItems[i].jid);
+		if (deltaItems[i].reason)
+			item.appendChild(iq.getDoc().createElement('reason')).appendChild(iq.getDoc().createTextNode(deltaItems[i].reason));
+	}
+
+	srcW.Debug.log(iq.getDoc().xml,2);
+	srcW.con.send(iq,me.handleIQSetList);
+	
+	return false;
+}
+
+function deleteItem() {
+	if (!modifylistF.selectedRow) {
+		alert("Nothing selected");
+		return;
+	}
+	
+	deltaDelItem(modifylistF.selectedRow);
+	
+	var modTableBody = modifylistF.document.getElementById('modTable').getElementsByTagName("TBODY").item(0);
+	modTableBody.removeChild(modifylistF.selectedRow);
+	
+	// reset form
+	modifylistF.selectedRow = null;
+	document.getElementById('delete_button').disabled = true;
+	return false;
+}
+
+function addItem() {
+	var row = modifylistF.document.createElement("TR");
+	
+	var cell = modifylistF.document.createElement("TD");
+	var textN = modifylistF.document.createTextNode(document.forms['add_item'].nick.value);
+	cell.appendChild(textN);
+	row.appendChild(cell);
+	
+	cell = modifylistF.document.createElement("TD");
+	textN = modifylistF.document.createTextNode(document.forms['add_item'].jid.value);
+	cell.appendChild(textN);
+	row.appendChild(cell);
+	
+	cell = modifylistF.document.createElement("TD");
+	textN = modifylistF.document.createTextNode(document.forms['add_item'].reason.value);
+	cell.appendChild(textN);
+	row.appendChild(cell);
+	
+	deltaAddItem(row,args[0]);
+	
+	modifylistF.document.getElementById('modTable').getElementsByTagName('TBODY').item(0).appendChild(row);
+	
+	// tell frame about it
+	modifylistF.init();
+	
+	// clear form
+	document.forms['add_item'].reset();
+	document.getElementById('add_button').disabled = true;
+	return false;
+}
+
+function activateAddButton() {
+	document.getElementById('add_button').disabled = false;
+}
+
+function updateListFrame(modItems) {
+	// clear frame
+	modifylistF.document.body.innerHTML = '';
+	
+	var myTable = modifylistF.document.createElement("TABLE");
+	
+	var myTableHead = modifylistF.document.createElement("THEAD");
+	var myTableBody = modifylistF.document.createElement("TBODY");
+	
+	var row = modifylistF.document.createElement("TR");
+	var header = new Array(loc('Nick'),loc('JID'),loc('Reason'));
+	var cell; 
+	for (var i in header) {
+		cell = modifylistF.document.createElement("TH");
+		cell.appendChild(modifylistF.document.createTextNode(header[i]));
+		row.appendChild(cell);
+	}
+	myTableHead.appendChild(row);
+	myTable.appendChild(myTableHead);
+	
+	for (var i=0; i<modItems.length; i++) {
+		var item = modItems.item(i);
+		row = modifylistF.document.createElement("TR");
 			
-			function deltaAddItem(row,state) {
-				var statExp = /(.+)=\'(.+)\'/;
-				statExp.exec(state);
-				add2deltaItems(row,RegExp.$2);
-			}
+		cell = modifylistF.document.createElement("TD");
+		textN = modifylistF.document.createTextNode((typeof(item.getAttribute('nick')) != 'undefined')?item.getAttribute('nick'):'');
+		cell.appendChild(textN);
+		row.appendChild(cell);
+		
+		cell = modifylistF.document.createElement("TD");
+		textN = modifylistF.document.createTextNode((typeof(item.getAttribute('jid')) != 'undefined')?item.getAttribute('jid'):'');
+		cell.appendChild(textN);
+		row.appendChild(cell);
+			
+		cell = modifylistF.document.createElement("TD");
+		textN = modifylistF.document.createTextNode((item.firstChild && item.firstChild.nodeName == 'reason' && item.firstChild.firstChild)?item.firstChild.firstChild.nodeValue:'');
+		cell.appendChild(textN);
+		row.appendChild(cell);
+		
+		myTableBody.appendChild(row);
+	}
+	
+	myTable.appendChild(myTableBody);
+	
+	myTable.setAttribute("id","modTable");
+	myTable.setAttribute("WIDTH","100%");
+	myTable.setAttribute("BORDER","0");
+	myTable.setAttribute("CELLSPACING","0");
+	myTable.setAttribute("CELLPADDING","0");
+	myTable.setAttribute("RULES","rows");
+	
+	// add table
+	modifylistF.document.body.appendChild(myTable);
+	
+	// tell frame about it
+	modifylistF.init();
+}
 
-			function deltaDelItem(row) {
-				add2deltaItems(row,'none');
-			}
+var modItems;
+function handleIQGetList(iq) {
+	if (!iq || iq.getType() == 'error') {
+		document.getElementById('hint').innerHTML = loc("An Error has occured");
+		if (iq)
+			srcW.Debug.log(iq.getDoc().xml,1);
+		return;
+	}
 
-			function handleIQSetList(jabber) {
-				// check for errors
+	srcW.Debug.log(iq.getDoc().xml,2);
+	
+	if (!iq.getQuery().childNodes.length) {
+		document.getElementById('hint').innerHTML = loc("No items found");
+	}
+	
+	modItems = iq.getQuery().getElementsByTagName('item');
+	
+	updateListFrame(modItems);
+	
+}
 
-				if (jabber.type == 'result') { // sucess
-					window.close();
-					return;
-				}
+var srcW;
+var queryType;
+function init() {
+	srcW = opener.parent.top.srcW;
+	
+	// get args
+	search = self.location.href;
+	search = search.split('?');
+	
+	if(search.length>1){
+		args = search[1];
+		args = args.split('&');
+		args[2] = unescape(args[2]);
+	} else
+		return;
+	
+	if (args[0].indexOf("role") != 0 && args[0].indexOf("affiliation") != 0)
+		return; // it's your fault
+	
+	
+	if (args[0].indexOf("role") == 0)
+		queryType = 'role_based';
+	else
+		queryType = 'affiliation_based';
+	
+	roster = srcW.roster;
 
-				var html = '';
-				if (jabber.type == 'error') {
-					for (var i in jabber.browse.o) {
-						if (jabber.browse.o[i].tagname == 'item') {
-							var item = jabber.browse.o[i];
-							if (item.jid)
-								html += "Item: "+item.jid+"<br>";
-							else if (item.nick)
-								html += "Nick: "+item.nick+"<br>";
-							for (var j in item.o)
-								if (item.o[j].tagname == 'error')
-									html += loc("Error") + " " + item.o[j].code + ": " + item.o[j].data;
-						}
-					}
-				}
-				document.getElementById('hint').innerHTML = '';
-				document.getElementById('hint').innerHTML = html;
+	var iq = new JSJaCIQ();
+	iq.setType('get');
+	iq.setTo(opener.parent.jid);
+	var query = iq.setQuery(args[1]);
+	query.appendChild(iq.getDoc().createElement('item')).setAttribute(args[0].split('=')[0],args[0].split('=')[1]);
+	srcW.Debug.log(iq.getDoc().xml,2);
+	me = this;
+	srcW.con.send(iq,me.handleIQGetList);
+	
+	document.getElementById('title').innerHTML = loc("Modify [_1]",args[2]);
+	document.title += " " + args[2];
+	
+	// reset selector
+	opener.document.getElementById('list_selector').selectedIndex = 0;
+	
+	// disable buttons on start
+	document.getElementById('add_button').disabled = true;
+	document.getElementById('delete_button').disabled = true;
+}
+onload = init;
+function keyPressed(e) {
+	if (e.keyCode == 13)
+		return doSub();
+	if (e.keyCode == 27)
+		window.close();
+	return true;
+}
 
-				deltaItems = new Array();
-
-				updateListFrame(modItems);
-			}
-
-			function doSub() {
-
-				var xml = '<doc>';
-
-				for (var i in deltaItems) {
-					xml += "<item " + deltaItems[i].state;
-					if (deltaItems[i].nick)
-						xml += " nick='" + deltaItems[i].nick + "'";
-					if (deltaItems[i].jid)
-						xml += " jid='" + deltaItems[i].jid + "'";
-					if (deltaItems[i].reason)
-						xml += "><reason>"+deltaItems[i].reason+"</reason></item>";
-					else
-						xml += "/>";
-				}
-				xml += '</doc>';
-
-				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.parent.top.jid)+"&ns="+args[1]+"&set="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQSetList);
-
-				return false;
-			}
-
-			function deleteItem() {
-				if (!modifylistF.selectedRow) {
-					alert("Nothing selected");
-					return;
-				}
-
-				deltaDelItem(modifylistF.selectedRow);
-
-				var modTableBody = modifylistF.document.getElementById('modTable').getElementsByTagName("TBODY").item(0);
-				modTableBody.removeChild(modifylistF.selectedRow);
-
-				// reset form
-				modifylistF.selectedRow = null;
-				document.getElementById('delete_button').disabled = true;
-				return false;
-			}
-
-			function addItem() {
-				var row = modifylistF.document.createElement("TR");
-
-				var cell = modifylistF.document.createElement("TD");
-				var textN = modifylistF.document.createTextNode(document.forms['add_item'].nick.value);
-				cell.appendChild(textN);
-				row.appendChild(cell);
-
-				cell = modifylistF.document.createElement("TD");
-				textN = modifylistF.document.createTextNode(document.forms['add_item'].jid.value);
-				cell.appendChild(textN);
-				row.appendChild(cell);
-
-				cell = modifylistF.document.createElement("TD");
-				textN = modifylistF.document.createTextNode(document.forms['add_item'].reason.value);
-				cell.appendChild(textN);
-				row.appendChild(cell);
-
-				deltaAddItem(row,args[0]);
-
-				modifylistF.document.getElementById('modTable').getElementsByTagName('TBODY').item(0).appendChild(row);
-
-				// tell frame about it
-				modifylistF.init();
-
-				// clear form
-				document.forms['add_item'].reset();
-				document.getElementById('add_button').disabled = true;
-				return false;
-			}
-
-			function activateAddButton() {
-				document.getElementById('add_button').disabled = false;
-			}
-
-			function updateListFrame(modItems) {
-				// clear frame
-				modifylistF.document.body.innerHTML = '';
-
-				var myTable = modifylistF.document.createElement("TABLE");
-
-				var myTableHead = modifylistF.document.createElement("THEAD");
-				var myTableBody = modifylistF.document.createElement("TBODY");
-
-				var row = modifylistF.document.createElement("TR");
-				var header = new Array(loc('Nick'),loc('JID'),loc('Reason'));
-				var cell; 
-				for (var i in header) {
-					cell = modifylistF.document.createElement("TH");
-					cell.appendChild(modifylistF.document.createTextNode(header[i]));
-					row.appendChild(cell);
-				}
-				myTableHead.appendChild(row);
-				myTable.appendChild(myTableHead);
-					
-				for (var i in modItems) {
-					var item = modItems[i];
-					if (item.tagname == 'item') {
-						row = modifylistF.document.createElement("TR");
-
-						cell = modifylistF.document.createElement("TD");
-						textN = modifylistF.document.createTextNode((typeof(item.nick) != 'undefined')?item.nick:'');
-						cell.appendChild(textN);
-						row.appendChild(cell);
-
-						cell = modifylistF.document.createElement("TD");
-						textN = modifylistF.document.createTextNode((typeof(item.jid) != 'undefined')?item.jid:'');
-						cell.appendChild(textN);
-						row.appendChild(cell);
-
-						cell = modifylistF.document.createElement("TD");
-						textN = modifylistF.document.createTextNode((typeof(item.reason) != 'undefined')?item.reason:'');
-						cell.appendChild(textN);
-						row.appendChild(cell);
-
-						myTableBody.appendChild(row);
-					}
-				}
-
-				myTable.appendChild(myTableBody);
-				
-				myTable.setAttribute("id","modTable");
-				myTable.setAttribute("WIDTH","100%");
-				myTable.setAttribute("BORDER","0");
-				myTable.setAttribute("CELLSPACING","0");
-				myTable.setAttribute("CELLPADDING","0");
-				myTable.setAttribute("RULES","rows");
-
-				// add table
-				modifylistF.document.body.appendChild(myTable);
-
-				// tell frame about it
-				modifylistF.init();
-			}
-
-			var modItems;
-			function handleIQGetList(jabber) {
-				srcW.Debug.log(jabber,2);
-				if (jabber.type == 'error') {
-					document.getElementById('hint').innerHTML = loc("An Error has occured");
-					return;
-				}
-
-				if (!jabber.browse || !jabber.browse.o || jabber.browse.o.length == 0) {
-					document.getElementById('hint').innerHTML = loc("No items found");
-				}
-
-				modItems = jabber.browse.o;
-				
-				updateListFrame(modItems);
-				
-			}
-
-			var srcW;
-			var queryType;
-			function init() {
-				srcW = opener.parent.top.srcW;
-
-				// get args
-				search = self.location.href;
-				search = search.split('?');
-
-				if(search.length>1){
-					args = search[1];
-					args = args.split('&');
-					args[2] = unescape(args[2]);
-				} else
-					return;
-				
-				if (args[0].indexOf("role") != 0 && args[0].indexOf("affiliation") != 0)
-					return; // it's your fault
-
-
-				if (args[0].indexOf("role") == 0)
-					queryType = 'role_based';
-				else
-					queryType = 'affiliation_based';
-
-				roster = srcW.roster;
-				
-				xml = "<item " + args[0] + "/>";
-				srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.parent.top.jid)+"&ns="+args[1]+"&get="+msgEscape(xml),roster.getUserByJID(opener.parent.top.jid).chatW.frames.groupchatRoster.editListW[search[1]].handleIQGetList);
-
-				document.getElementById('title').innerHTML = loc("Modify [_1]",args[2]);
-				document.title += " " + args[2];
-
-				// reset selector
-				opener.document.getElementById('list_selector').selectedIndex = 0;
-
-				// disable buttons on start
-				document.getElementById('add_button').disabled = true;
-				document.getElementById('delete_button').disabled = true;
-			}
-			onload = init;
-			function keyPressed(e) {
-				if (e.keyCode == 13)
-					return doSub();
-				if (e.keyCode == 27)
-					window.close();
-				return true;
-			}
-
-			onload = init;
-			onkeydown = keyPressed;
+onload = init;
+onkeydown = keyPressed;
     </script>
     <script for="document" event="onkeydown()" language="JScript">
       <!--

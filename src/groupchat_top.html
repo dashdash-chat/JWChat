@@ -4,12 +4,16 @@
     <title></title>
     <script src="switchStyle.js"></script>
 		<script src="shared.js" language="JavaScript1.2"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
     <script>
       function setSubject() {
-        var subject = msgEscape(document.forms[0].elements['subject'].value);
 
-        /* try to set topic */
-        top.srcW.fhdLoad("message","?sid="+top.srcW.sid+"&to="+msgEscape(top.jid)+"&type=groupchat&subject="+subject);
+				var aMessage = new JSJaCMessage();
+				aMessage.setTo(parent.group);
+				aMessage.setType('groupchat');
+				aMessage.setSubject(document.forms[0].elements['subject'].value);
+				parent.srcW.con.send(aMessage);
 
         /* restore topic */
         if (top.user.roster.subject)

@@ -26,28 +26,11 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var JABBERSERVER = "jabber.zeank.in-berlin.de"
+var JABBERSERVER = "zeank.darktech.org"
 var DEFAULTRESOURCE = "jwchat";
 
-/* sWCS2
- * url of wcs service (the port where http component listens on
- * depends on how you configured your jabber server (due to firewall
- * restrictions using port 8080 instead of the standard port 5280 is
- * highly recommended
- */
-var sWCS2 = "http://jabber.zeank.in-berlin.de:5280/";
-
-/* sWCS
- * redirect address for wcs (depends on how you configured
- * mod_rewrite/mod_proxy on your web-server - this is used for
- * Gecko based browsers
- */
-var sWCS = "http://jabber.zeank.in-berlin.de/wcs/";
-
-/* comment out next line if you don't want any browser to connect
- * directly on wcs port (not recommended)
- */
-//var sWCS2 = sWCS;
+//var HTTPBASE = "/cgi-bin/httppoll.cgi?server="+JABBERSERVER+"&port=5222";
+var HTTPBASE = "http-poll/";
 
 var timerval = 2000; // poll frequency in msec
 var timeout = 150; // timeout of wcs
@@ -59,11 +42,11 @@ var THEMESDIR = "themes";
  * default values for joingroupchat form
  */
 var DEFAULTCONFERENCEROOM = "talks";
-var DEFAULTCONFERENCESERVER = "conference.zeank.in-berlin.de";
+var DEFAULTCONFERENCESERVER = "conference.zeank.darktech.org";
 
 /* debugging options */
-var DEBUG = true; // turn debugging on
-var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
+var DEBUG = false; // turn debugging on
+var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
-var DEBUGJID = "zeank@jabber.zeank.in-berlin.de"; // which user get's debug messages
+var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages

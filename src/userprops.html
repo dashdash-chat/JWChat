@@ -3,9 +3,11 @@
   <head>
     <title><l>JWChat - User Properties</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var jid; 
 var srcW;
@@ -14,14 +16,20 @@ var allgrpbox;
 var curgrpbox;
 
 function submitClicked() {
-  var param = "?sid="+srcW.sid+"&jid="+jid;
-  param += "&name=" + msgEscape(document.userprops.nickname.value);
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:roster');
+
+	var aItem = query.appendChild(iq.getDoc().createElement('item'));
+	aItem.setAttribute('jid',jid);
+	aItem.setAttribute('name',document.userprops.nickname.value);
+
   if (curgrpbox.length > 0) {
-    param += "&group=";
     for (var i=0; i<curgrpbox.length; i++)
-      param += msgEscape(curgrpbox.options[i].value) + ";";
+			aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode(curgrpbox.options[i].value));
   }
-  srcW.fhdLoad("roster",param);
+
+	srcW.con.send(iq);
   window.close();
 }
 

@@ -3,10 +3,12 @@
   <head>
     <title><l>JWChat - Chat History</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="emoticons.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 function reloadHistory() {
 	// clear iframes
@@ -14,52 +16,46 @@ function reloadHistory() {
 	collections.document.body.innerHTML = '';
 
 	// get collections
-	this.roster = srcW.roster;
-	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost,roster.getUserByJID(jid).histW.handleCollsGet);
+	var aIQ = new JSJaCIQ();
+	aIQ.setType('get');
+	aIQ.setTo(srcW.loghost);
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+	aNode.setAttribute('jid',jid);
+	srcW.con.send(aIQ,me.handleCollsGet);
 
 	return false;
 }
 
-function handleCollGet(jabber) {
-	if (srcW.Debug.log)
-		srcW.Debug.log(jabber,2);
-
-	if (jabber.error)
+function handleCollGet(iq) {
+	if (!iq || iq.getType() != 'result')
 		return;
 
-	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'http://jabber.org/protocol/archive') // not for me
-		return;
+	srcW.Debug.log(iq.getDoc().xml,2);
 
 	//selected_collection.document.body.innerHTML = '';
 	var histHTML = '';
 
-	for (var i=0; i<jabber.browse.o.length; i++) {
-		if (jabber.browse.o[i].tagname =! 'message') // skip
-			continue;
+	for (var i=0; i<iq.getNode().firstChild.getElementsByTagName('message').length; i++) {
 
-		var msg = jabber.browse.o[i];
-		if (typeof(msg.to) != 'undefined') // message from me
+		var msg = JSJaCPWrapNode(iq.getNode().firstChild.getElementsByTagName('message').item(i));
+		if (msg.getTo() != null) // message from me
 			histHTML += "<font color=\"blue\">&lt;" + srcW.nick + "&gt;</font> ";
 		else
 			histHTML += "<font color=\"red\">&lt;" + user.name + "&gt;</font> ";
 
-		histHTML += msg.body + '<br>';
+		histHTML += msg.getBody() + '<br>';
 		continue;
 	}
   	selected_collection.document.body.innerHTML = histHTML;
 }
 
-function handleCollsGet(jabber) {
-	if (srcW.Debug.log)
-		srcW.Debug.log(jabber,2);
-
-	if (jabber.error)
+function handleCollsGet(iq) {
+	if (!iq || iq.getType() != 'result')
 		return;
 
-	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'http://jabber.org/protocol/archive') // not for me
-		return;
+	srcW.Debug.log(iq.getDoc().xml,2);
 
-	var items = jabber.browse.o;
+	var items = iq.getNode().firstChild.getElementsByTagName('item');
 
 	var myTable = collections.document.createElement("TABLE");
 	var myTableBody = collections.document.createElement("TBODY");
@@ -67,24 +63,21 @@ function handleCollsGet(jabber) {
 	myTable.appendChild(myTableBody);
 
 	var row, cell, textN;
-	for (var i in items) {
+	for (var i=0; i<items.length; i++) {
 
-		if (items[i].tagname != 'item') // skip
-			continue;
+		var item = items.item(i);
 
-		var item = items[i];
-
-		if (cutResource(item.jid) != cutResource(jid)) // skip
+		if (cutResource(item.getAttribute('jid')) != cutResource(jid)) // skip
 			continue;
 		
 		row = collections.document.createElement("TR");
-		row.setAttribute("cid",item.cid);
+		row.setAttribute("cid",item.getAttribute('cid'));
 		myTableBody.appendChild(row);
 
 		cell = collections.document.createElement("TD");
 		row.appendChild(cell);
 
-		textN = collections.document.createTextNode(hrTime(item.start));
+		textN = collections.document.createTextNode(hrTime(item.getAttribute('start')));
 		cell.appendChild(textN);
 
 	}
@@ -126,8 +119,14 @@ function init() {
 	document.title = dtitle;
 
 	// get collections
-	this.roster = srcW.roster;
-	srcW.fCBLoad("archive-get","?sid="+srcW.sid+"&to="+srcW.loghost+"&jid="+msgEscape(jid),roster.getUserByJID(jid).histW.handleCollsGet);
+	var aIQ = new JSJaCIQ();
+	aIQ.setType('get');
+	aIQ.setTo(srcW.loghost);
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+	aNode.setAttribute('jid',jid);
+	me = this;
+	srcW.con.send(aIQ,me.handleCollsGet);
 }
 
 function keyPressed(e) {

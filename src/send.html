@@ -3,36 +3,47 @@
   <head>
     <title><l>JWChat - Send Message</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="browsercheck.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var jid;
 var srcW; // the source window with necessary data
 var msgbox;
 
 function sendMSG() {
-  var url = "?to=" + jid + "&sid=" + srcW.sid;
   var body = msgbox.value;
   
   if (body == '') // don't send empty message
     return false;
-  
-  url += "&body=" + msgEscape(body);
-  if(document.forms[0].subject.value != '')
-    url += "&subject=" + msgEscape(document.forms[0].subject.value);
-  
-  srcW.fhdLoad("message",url);
 
+	var aMessage = new JSJaCMessage();
+	aMessage.setTo(jid);
+  aMessage.setBody(body);
+
+  if(document.forms[0].subject.value != '')
+		aMessage.setSubject(document.forms[0].subject.value);
+
+	srcW.con.send(aMessage);
+  
 	// save message
-	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined')
-		srcW.fCBLoad("archive-set","?sid="+srcW.sid+"&to="+srcW.loghost+"&msg_to="+msgEscape(jid)+"&msg_body="+msgEscape(body));
+	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined') {
+		var aIQ = new JSJaCIQ();
+		aIQ.setType('set');
+		aIQ.setTo(srcW.loghost);
+		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+		aNode.appendChild(aMessage.getNode().cloneNode(true));
+		srcW.con.send(aIQ);
+	}
   
   if (!opener.roster && srcW.roster.getUserByJID(jid).messages.length == 0)
     opener.close();
   window.close();
-  return true;
+  return false;
 }
 
 function init() {

@@ -3,29 +3,36 @@
   <head>
     <title><l>JWChat - Chat</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="browsercheck.js"></script>
+    <script src="emoticons.js"></script>
     <script src="switchStyle.js"></script>
-    <script src="statusLed.js" language="JavaScript1.2"></script>
-    <script language="JavaScript1.2">
+    <script src="statusLed.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var user;
 var srcW;
 var cFrame;
 
-function putMsgHTML(msg,mtime,user,usercolor) {
+function putMsgHTML(msg,mtime,user,usercolor,err) {
   var msgHTML = '';
   
   msg = msgFormat(msg);
   
-  msgHTML += "<span class=time>["+mtime+"] </span>";
-  if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>* "+user+"</b></font> ");
+  msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";
+	if (err) {
+		msgHTML += "<span style='color:red;'>";
+  } else if (msg.match(/^\/me /)) {
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">* "+user+"</span> ");
   } else {
-    msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
+    msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
   }
-  msgHTML += " " + msg + "<br>";
+  msgHTML += " " + msg;
+	if (err)
+		msgHTML += '</span>';
+	msgHTML += "</div>";
   cFrame.body.innerHTML += msgHTML;
   chat.scrollTo(0,cFrame.body.scrollHeight);
 }
@@ -42,8 +49,8 @@ function popMsgs() {
 
 		// calc date
 		var now;
-		if (msg.timestamp)
-			now = msg.timestamp;
+		if (msg.jwcTimestamp)
+			now = msg.jwcTimestamp;
 		else
 			now = new Date();
 
@@ -53,10 +60,8 @@ function popMsgs() {
 		mtime += ":";
 		mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
 
-		if (!msg.body && msg.o && msg.o[0].tagname == 'body')
-			msg.body = msg.o[0].data;
   
-    putMsgHTML(msg.body,mtime,user.name,"red");
+    putMsgHTML(msg.getBody(),mtime,user.name,"red");
   }
   if (jwcMain.focusWindows) document.forms.chatform.msgbox.focus();
   if (user.lastsrc != null && user.messages.length == 0) {
@@ -132,23 +137,32 @@ function displayTimestamp() {
 }
 
 function submitClicked() {
-	var url = "?to=" + user.jid + "&type=chat&sid=" + parent.jwcMain.sid;
 	var body = document.forms[0].elements["msgbox"].value;
-	
 	if (body == '') // don't send empty message
 		return true;
-	
-	url += "&body=" + msgEscape(body);
-	jwcMain.fhdLoad("message",url); // send to client
-	
-	// store message
-	if (typeof(window.cid) != 'undefined') {
-		if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined')
-			jwcMain.fCBLoad("archive-set","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&msg_to="+msgEscape(user.jid)+"&msg_body="+msgEscape(body)+"&cid="+msgEscape(window.cid));
-	} else {
-		storeCID = jwcMain.storeCID;
-		if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined')
-			jwcMain.fCBLoad("archive-set","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&msg_to="+msgEscape(user.jid)+"&msg_body="+msgEscape(body),storeCID,user.jid);
+
+	var aMessage = new JSJaCMessage();
+	aMessage.setType('chat');
+	aMessage.setTo(user.jid);
+	aMessage.setBody(body);
+
+	jwcMain.con.send(aMessage);
+
+	// store message - [TODO]
+	if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined') {
+		var aIQ = new JSJaCIQ();
+		aIQ.setType('set');
+		aIQ.setTo(jwcMain.loghost);
+		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+		aNode.appendChild(aMessage.getNode().cloneNode(true));
+		if (typeof(window.cid) != 'undefined') {
+			aNode.setAttribute('cid',user.chatW.cid);
+			jwcMain.con.send(aIQ);
+		} else {
+			storeCID = jwcMain.storeCID;
+			jwcMain.con.send(aIQ,storeCID,user.jid);
+		}
 	}
 
 	// insert into chat window
@@ -240,8 +254,15 @@ function msgboxKeyDown(el,e) {
 }
 
 function cleanUp() {
-	if (typeof(window.cid) != 'undefined')
-		jwcMain.fhdLoad("archive-done","?sid="+jwcMain.sid+"&to="+jwcMain.loghost+"&cid="+window.cid);
+	if (typeof(window.cid) != 'undefined') {
+		var aIQ = new JSJaCIQ();
+		aIQ.setType('set');
+		aIQ.setTo(jwcMain.loghost);
+		var aNode= aIQ.getNode().appendChild(aIQ.getDoc().createElement('done'));
+		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+		aNode.setAttribute('cid',window.cid);
+		jwcMain.con.send(aIQ.clone());
+	}
 }
 
 onload = init;

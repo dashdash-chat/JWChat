@@ -3,32 +3,38 @@
   <head>
     <title>JWChat - Groupchat</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="emoticons.js" language="JavaScript1.2"></script>
-    <script src="config.js" language="JavaScript1.2"></script>
-    <script src="statusLed.js" language="JavaScript1.2"></script>
-    <script src="roster.js" language="JavaScript1.2"></script>   
-    <script language="JavaScript1.2">
+    <script src="shared.js"></script>
+    <script src="browsercheck.js"></script>
+    <script src="emoticons.js"></script>
+    <script src="config.js"></script>
+    <script src="statusLed.js"></script>
+    <script src="roster.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
 var colors = new Array('maroon','green','olive','navy','purple','teal','red','blue');
 
-function putMsgHTML(msg,mtime,user,usercolor) {
+function putMsgHTML(msg,mtime,user,usercolor,err) {
   var msgHTML = '';
   
   msg = msgFormat(msg);
 
-  msgHTML += "<span class=time>["+mtime+"] </span>";    
+  msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<font color=\"green\" title='@ "+mtime+"'><b>* "+user+"</b></font> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\">* "+user+"</span> ");
   } else if (user != group) {
-    msgHTML += "<font color=\""+usercolor+"\" title='@ "+mtime+"'>&lt;" + user + "&gt;</font>";
+    msgHTML += "<span style=\"color:"+usercolor+";\">&lt;" + user + "&gt;</span>";
   }
 
-  if (user == group) /* channel status messages */
-    msgHTML += "<b>"+msg+"</b><br>";
-  else
-    msgHTML += " " + msg + "<br>";
+  if (user == group) {/* channel status messages */
+		if (err)
+			msgHTML += "<span style=\"font-weight:bold;color:red;\">"+msg+"</span>";
+		else
+			msgHTML += "<span style=\"font-weight:bold;\">"+msg+"</span>";
+  } else
+    msgHTML += " " + msg;
+	msgHTML += "</div>";
   
   cFrame.body.innerHTML += msgHTML;
   frames.groupchatChat.groupchatIChat.scrollTo(0,cFrame.body.scrollHeight);
@@ -47,24 +53,16 @@ function popMsgs() {
     } else
       msg = user.chatmsgs.shift();
 
-    if (msg.from.indexOf('/') != -1)
-      msg.from = msg.from.substring(msg.from.indexOf('/')+1);
+		var from = msg.getFrom();
+    if (msg.getFrom().indexOf('/') != -1)
+      from = msg.getFrom().substring(msg.getFrom().indexOf('/')+1);
 
 		/* get date */
 		var timestamp;
-		if (msg.timestamp)
-			timestamp = msg.timestamp;
+		if (msg.jwcTimestamp)
+			timestamp = msg.jwcTimestamp;
 		else
 			timestamp = new Date();
-
-		if (typeof(msg.o) != 'undefined' && msg.o.length > 0) { // chan-history
-			for (var i in msg.o)
-				if (msg.o[i].tagname == 'x' && typeof(msg.o[i].stamp) != 'undefined' && msg.o[i].xmlns == 'jabber:x:delay') { // found timestamp
-					var stamp = msg.o[i].stamp;
-					timestamp = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
-					break; // done
-				}
-		}
 
 		var mtime = '';
 		if (new Date() - timestamp > 24*3600*1000)
@@ -73,25 +71,22 @@ function popMsgs() {
 		mtime += timestamp.toLocaleTimeString();
     
     /* look for a subject */
-    if (msg.subject) { // set topic
-      user.roster.subject = msg.subject;
-      frames.groupchatTop.document.forms[0].elements['subject'].value = msg.subject;
-//      putMsgHTML(loc("/me has set the topic to: [_1]", msg.subject), mtime, msg.from);
+    if (msg.getSubject()) { // set topic
+      user.roster.subject = msg.getSubject();
+      frames.groupchatTop.document.forms[0].elements['subject'].value = msg.getSubject();
+			putMsgHTML(loc("/me has set the topic to: [_1]", msg.getSubject()), mtime, from);
 			return;
     }
 
-    if(!msg.body || msg.body == '') {
-			if (msg.o && msg.o[0].tagname == 'body')
-				msg.body = msg.o[0].data;
-			else
+    if(!msg.getBody() || msg.getBody() == '')
 				return;
-		}
+	
     /* calculate color */
     var charSum = 0;
-    for (var i=0; i<msg.from.length; i++)
-      charSum += msg.from.charCodeAt(i);
+    for (var i=0; i<from.length; i++)
+      charSum += from.charCodeAt(i);
     
-    putMsgHTML(msg.body,mtime,msg.from,colors[charSum%(colors.length)]);
+    putMsgHTML(msg.getBody(),mtime,from,colors[charSum%(colors.length)]);
   }
 
 	/* disabled: it's annoying */
@@ -128,21 +123,57 @@ function updateMe() {
 		frames.groupchatRoster.updateMe();
 }
 
-function changeUserStat(jid,stat,val,confirm) {
+function changeUserStat(jid,stat,val,confirm,reason) {
   var user = roster.getUserByJID(jid);
-  var url = "?sid="+srcW.sid+"&to="+msgEscape(group)+"&nick="+user.name+"&"+stat+"="+val;
-  var reason;
-  if (confirm && (reason = prompt("Reason","")) != '')
-    srcW.fhdLoad("muc-set",url+"&reason="+reason);
-  else
-    srcW.fhdLoad("muc-set",url);
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(group);
+
+	var query = iq.setQuery('http://jabber.org/protocol/muc#admin');
+	var item = query.appendChild(iq.getDoc().createElement('item'));
+	item.setAttribute('nick',user.name);
+
+	item.setAttribute(stat,val);
+	
+  if (reason || (confirm && (reason = prompt("Reason","")) != ''))
+		item.appendChild(iq.getDoc().createElement('reason')).appendChild(iq.getDoc().createTextNode(reason));
+
+	me = this;
+	srcW.con.send(iq,me.handleError);
 }
 
-function changeRole(jid,role,confirm) {
-  changeUserStat(jid,"role",role,confirm);
+function handleError(iq) {
+	// handle error
+	if (iq && iq.getType() == 'error') {
+		srcW.Debug.log(iq.getDoc().xml,1);
+		var error = iq.getNode().getElementsByTagName('error').item(0);
+		if (error) {
+			var msg = '';
+			for (var i=0; i<error.childNodes.length; i++) {
+				switch (error.childNodes.item(i).nodeName) {
+				case 'not-allowed':
+					putMsgHTML(loc("Not Allowed"),new Date(),group,null,true);
+					break;
+				case 'forbidden':
+					putMsgHTML(loc("Forbidden"),new Date(),group,null,true);
+					break;
+				case 'item-not-found':
+					putMsgHTML(loc("Not Found"),new Date(),group,null,true);
+					break;
+				default:
+					putMsgHTML(error.childNodes.item(i).nodeName,new Date(),group,null,true);
+					break;
+				}
+			}
+		}
+	}
 }
 
-function changeAffiliation(jid,affil,confirm) {
+function changeRole(jid,role,confirm,reason) {
+  changeUserStat(jid,"role",role,confirm,reason);
+}
+
+function changeAffiliation(jid,affil,confirm,reason) {
   changeUserStat(jid,"affiliation",affil,confirm);
 }
 
@@ -162,10 +193,13 @@ function cleanUp() {
 function part() {
 	cleanUp();
 
-  if (!srcW.fhdLoad)
-      return;
-	if (typeof(roster.me) != 'undefined' && roster.me.role != 'none' && srcW.sid) // we are off anyway
-		srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"&type=unavailable");
+  if (srcW.con) {
+		var presence = new JSJaCPresence();
+		presence.setType('unavailable');
+		presence.setTo(group);
+		srcW.con.send(presence);
+	}
+
   if (!user.messages.length && !user.chatmsgs.length) {
     srcW.roster.removeUser(user);
     srcW.roster.print();
@@ -190,10 +224,29 @@ function init() {
 
 	if (passedArgs['pass'] != 'undefined')
 		pass = passedArgs['pass'];
-  
+
   srcW.Debug.log("groupchat room: "+jid+", nick: "+nick + ", pass: "+pass ,2);
   
-	srcW.fhdLoad("muc-presence","?sid="+srcW.sid+"&to="+msgEscape(group)+"/"+msgEscape(nick)+"&pass="+msgEscape(pass)+"&show="+srcW.onlstat+"&status="+srcW.onlmsg);
+	// send presence
+	var aPresence = new JSJaCPresence();
+	aPresence.setTo(group+'/'+nick);
+
+	var x = aPresence.getDoc().createElement('x');
+	x.setAttribute('xmlns','http://jabber.org/protocol/muc');
+	if (typeof(pass) != 'undefined' && pass != '')
+		x.appendChild(aPresence.getDoc().createElement('password')).appendChild(aPresence.getDoc().createTextNode(pass));
+
+	aPresence.getNode().appendChild(x);
+
+	if (srcW.onlstat != 'available' && srcW.onlstat != 'invisible')
+		aPresence.setShow(srcW.onlstat);
+
+	if (srcW.onlmsg != '')
+		aPresence.setStatus(srcW.onlmsg);
+
+	srcW.Debug.log("sending muc presence:\n"+aPresence.getDoc().xml,3);
+
+	srcW.con.send(aPresence);
   
   cFrame = frames.groupchatChat.groupchatIChat.document;
 

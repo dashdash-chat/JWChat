@@ -3,25 +3,32 @@
   <head>
     <title><l>JWChat - Subscription-Request</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="emoticons.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var jid;
 var msg;
 var srcW; // the source window with necessary data
 
 function sendSub() {
-  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+jid+"&type=subscribed");
+	var aPresence = new JSJaCPresence();
+	aPresence.setTo(jid);
+	aPresence.setType('subscribed');
+
+	srcW.con.send(aPresence);
   window.close();
-  return false;      
 }
 
 function sendUnsub() {
-  srcW.fhdLoad("presence","?sid="+srcW.sid+"&to="+jid+"&type=unsubscribed");
+	var aPresence = new JSJaCPresence();
+	aPresence.setTo(jid);
+	aPresence.setType('unsubscribed');
+
   window.close();
-  return false;
 }    
 
 function init() {
@@ -30,15 +37,16 @@ function init() {
 			
   getArgs();
   jid = passedArgs['jid'];
-  msg = passedArgs['msg'];
+	if (typeof(passedArgs['msg']) != 'undefined')
+		msg = passedArgs['msg'];
 
   document.title = loc("Subscribe request from [_1]",jid);
 
 	var from = "<b><span class=\"link\" onClick=\"return srcW.openUserInfo('"+jid+"');\" title=\""+loc("show user info for [_1]", jid)+"\">"+jid.substring(0,jid.indexOf('@'))+"</a></b> ";
   
   document.getElementById("requestingUser").innerHTML = from;
-	if (typeof(msg) != 'undefined')
-		msgbox.document.body.innerHTML = msgFormat(unescape(msg));
+	if (msg)
+		msgbox.document.body.innerHTML = msgFormat(msg);
 }
 		
 function keyPressed(e) {

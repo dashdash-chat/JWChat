@@ -3,15 +3,18 @@
   <head>
     <title><l>JWChat - Subscribe to user</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
     <script language="JavaScript1.2">
       <!--
 var jid;
 var srcW; // the source window with necessary data
 
 function sendSub() {
-  var param = "?sid=" + srcW.sid + "&type=subscribe";
+	var aPresence = new JSJaCPresence();
+	aPresence.setType('subscribe');
   
   if (!document.forms[0].to.value || document.forms[0].to.value == '') {
     alert(loc("JID missing"));
@@ -22,15 +25,14 @@ function sendSub() {
   var to = document.forms[0].to.value;
   if (to.indexOf('@') == -1)
     to += '@' + srcW.JABBERSERVER;
-  
-  param += "&to=" + to;
+
+  aPresence.setTo(to);
   if (document.forms[0].msg.value && document.forms[0].msg.value != '')
-    param += "&status="+msgEscape(document.forms[0].msg.value);
-  
-  srcW.fhdLoad("presence",param);
+		aPresence.setStatus(document.forms[0].msg.value);
+
+  srcW.con.send(aPresence);
     
   window.close();
-  return false;
 }
 
 function selectService(selbox) {
@@ -65,14 +67,14 @@ function init() {
 	
 	var services = document.forms[0].elements["services"];
 	var optidx=1;
-	for (var i=0; i<srcW.disco.items.length; i++) {
-		if (typeof(srcW.disco.items[i].info) != 'undefined') {
-			for (var j=0; j<srcW.disco.items[i].info.length; j++) {
-				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'gateway')
-					services.options[optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
-			}
+	for (var i in srcW.disco) {
+		if (srcW.disco[i].getNode().getElementsByTagName('identity').item(0)) {
+			var item = srcW.disco[i].getNode().getElementsByTagName('identity').item(0);
+			if (item.getAttribute('category') == 'gateway')
+				services.options[optidx++] = new Option(item.getAttribute('name'),srcW.disco[i].getFrom());
 		}
 	}
+
 }
 		
 function keyPressed(e) {

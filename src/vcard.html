@@ -3,54 +3,42 @@
 	<head>
 		<title><l>JWChat - VCard - </l></title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<script src="shared.js" language="JavaScript1.2"></script>
+		<script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-		<script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+		<script>
 		<!--
 		var jid , vcard;
 		var srcW; // the source window with necessary data
 
     function sendSub() {
-      var params = "?sid="+srcW.sid;
+			var iq = new JSJaCIQ();
+			iq.setType('set');
+
+			var vCard = iq.getNode().appendChild(iq.getDoc().createElement('vCard'));
+			vCard.setAttribute('xmlns','vcard-temp');
 
       for (var i=0; i<document.forms[0].elements.length; i++) {
-        if (document.forms[0].elements[i].id == '') continue;
-        if (document.forms[0].elements[i].value == '' ) continue;
-        params += "&"+msgEscape(document.forms[0].elements[i].id)+"="+msgEscape(document.forms[0].elements[i].value);
-      }
-
-      srcW.fhdLoad("vcard-set",params);
-      window.close();
-      return false;
-    }
-
-    function fillVCard(vcard,prefix) {
-      for (var i in vcard) {
-        if (typeof(vcard[i]) == 'object') {
-          fillVCard(vcard[i],i+".");
-          continue;
-        }
-        if (typeof(document.forms[0].elements[prefix+i]) == 'undefined') continue;
-        document.forms[0].elements[prefix+i].value = vcard[i];
-      }
-
-    }
-
-    function handleVCardTemp(jabber) {
-
-			if (jabber.error || jabber.type == 'error') {
-				srcW.Debug.log(jabber,1);
-				return;
+				var item = document.forms[0].elements[i];
+        if (item.id == '') continue;
+        if (item.value == '' ) continue;
+				if (item.id.indexOf('.') != -1) {
+					var tagname = item.id.substring(0,item.id.indexOf('.'));
+					var aNode;
+					if (vCard.getElementsByTagName(tagname).length > 0)
+						aNode = vCard.getElementsByTagName(tagname).item(0);
+					else
+						aNode = vCard.appendChild(iq.getDoc().createElement(tagname));
+					aNode.appendChild(iq.getDoc().createElement(item.id.substring(item.id.indexOf('.')+1))).appendChild(iq.getDoc().createTextNode(item.value));
+				} else {
+					vCard.appendChild(iq.getDoc().createElement(item.id)).appendChild(iq.getDoc().createTextNode(item.value));
+				}
 			}
-
-			srcW.Debug.log(jabber,2);
-			
-			if (typeof(jabber.ns) == 'undefined' || jabber.ns != 'vcard-temp') // not form me
-				return;
-			
-      fillVCard(jabber.vcard,'');
-		}
-
+			srcW.Debug.log(iq.getDoc().xml,3);
+			srcW.con.send(iq);
+      window.close();
+    }
 
     function init() {
       srcW = opener.top;
@@ -72,18 +60,41 @@
         document.getElementById("savebox").style.display = 'none';
 
 			// request vcard
-			if (cutResource(jid) == cutResource(srcW.jid)) { // it's me
-				var vcardW = window;
-				srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),vcardW.handleVCardTemp);
-			} else {
-				var roster = srcW.roster;
-				if (roster.getUserByJID(cutResource(jid)).roster) // groupchat(!)
-					srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),roster.getUserByJID(cutResource(jid)).roster.getUserByJID(jid).vcardW.handleVCardTemp);
-				else
-					srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+msgEscape(jid),roster.getUserByJID(jid).vcardW.handleVCardTemp);
-			}
-      
+
+			var iq = new JSJaCIQ();
+			iq.setType('get');
+      if (cutResource(jid) != srcW.cutResource(srcW.jid)) // not me
+				iq.setTo(cutResource(jid));
+			var vCard = iq.getNode().appendChild(iq.getDoc().createElement('vCard'));
+			vCard.setAttribute('xmlns','vcard-temp');
+			me = this;
+			srcW.con.send(iq,me.handleVCard);
     }
+
+		function handleVCard(iq) {
+			if (!iq) {
+				srcW.Debug.log('got empty iq result',1);
+				return;
+			}
+
+			srcW.Debug.log(iq.getDoc().xml,3);
+
+			if (iq.getNode().getElementsByTagName('vCard').item(0)) {
+				for (var i=0; i<iq.getNode().getElementsByTagName('vCard').item(0).childNodes.length; i++) {
+					var token = iq.getNode().getElementsByTagName('vCard').item(0).childNodes.item(i);
+					tokenname = token.nodeName;
+					if (token.firstChild.nodeType != 3) { // found a container
+						for (var j=0; j<token.childNodes.length; j++) {
+							if (typeof(document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName]) != 'undefined')
+								document.forms[0].elements[tokenname+"."+token.childNodes.item(j).nodeName].value = token.childNodes.item(j).firstChild.nodeValue;
+						}
+
+					} else
+						if (typeof(document.forms[0].elements[tokenname]) != 'undefined')
+							document.forms[0].elements[tokenname].value = token.firstChild.nodeValue;
+				}
+			}
+		}
 
 		function keyPressed(e) {
 			if (e.keyCode == 27)
@@ -153,9 +164,11 @@
 
     <fieldset>
       <legend><l>About</l></legend>
-      <table>
+      <table width="100%">
           <tr><th><l>Birthday</l>:</th><td width="100%"><input type=text id="BDAY" class="vcardBoxEditable"></td></tr>
-          <tr><th><l>Description</l>:</th><td width="100%"><input type=text id="DESC" class="vcardBoxEditable"></td></tr>
+		<tr><td colspan=2>&nbsp;</td></tr>
+          <tr><th><l>Description</l>:</th><td width="100%">&nbsp;</td></tr>
+          <tr><td colspan=2 width="100%"><textarea id="DESC" class="vcardBoxEditable" style="width:100%;" rows=4 wrap=virtual></textarea></td></tr>
       </table>
     </fieldset>
     <div id="savebox">

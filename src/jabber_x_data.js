@@ -1,64 +1,63 @@
 function genJabberXDataTable(x) {
 	var html = '<input type=hidden name="jwchat_form_type" value="jabber:x:data">';
 
-	if (x.title)
-		html += "<h1>"+x.title.replace(/\n/g,"<br>")+"</h1>";
-	if (x.instructions)
-		html += x.instructions.replace(/\n/g,"<br>");
+	if (x.getElementsByTagName('title').item(0))
+		html += "<h1>"+x.getElementsByTagName('title').item(0).firstChild.nodeValue.replace(/\n/g,"<br>")+"</h1>";
+	if (x.getElementsByTagName('instructions').item(0))
+		html += x.getElementsByTagName('instructions').item(0).firstChild.nodeValue.replace(/\n/g,"<br>");
 
-	if (!x.o)
+	if (!x.getElementsByTagName('field').length)
 		return html;
 
 	html += '<table width="100%">';
-	for (var i in x.o) {
-		if (x.o[i].tagname != 'field')
-			continue;
+	for (var i=0; i<x.getElementsByTagName('field').length; i++) {
+		var aField = x.getElementsByTagName('field').item(i);
  		html += "<tr>";
-		switch (x.o[i].type) {
+		switch (aField.getAttribute('type')) {
 		case 'hidden':
-			html += "<td colspan=2><input type=hidden name='"+x.o[i].far+"' value='"+x.o[i].value+"'></td>";
+			html += "<td colspan=2><input type=hidden name='"+aField.getAttribute('var')+"' value='"+aField.firstChild.firstChild.nodeValue+"'></td>";
 			break;
 		case 'fixed':
-			html += "<td colspan=2><b>"+x.o[i].value+"</b></td>";
+			html += "<td colspan=2><b>"+aField.firstChild.firstChild.nodeValue+"</b></td>";
 			break;
 		case 'text-single':
-			html += "<th>" + x.o[i].label + "</th>";
+			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
-			html += "<input type=text size='24' name='" + x.o[i].far + "'";
-			if (x.o[i].value)
-				html += " value='" + x.o[i].value + "'";
+			html += "<input type=text size='24' name='" + aField.getAttribute('var') + "'";
+			if (aField.firstChild.firstChild)
+				html += " value='" + aField.firstChild.firstChild.nodeValue + "'";
 			html += ">";
 			html += "</td>";
 			break;
 		case 'text-private':
-			html += "<th>" + x.o[i].label + "</th>";
+			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
-			html += "<input type=password size='24' name='" + x.o[i].far + "'";
-			if (x.o[i].value)
-				html += " value='" + x.o[i].value + "'";
+			html += "<input type=password size='24' name='" + aField.getAttribute('var') + "'";
+			if (aField.firstChild.firstChild)
+				html += " value='" + aField.firstChild.firstChild.nodeValue + "'";
 			html += ">";
 			html += "</td>";
 			break;
 		case 'text-multi':
-			html += "<th valign=top>" + x.o[i].label + "</th>";
+			html += "<th valign=top>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
-			html += "<textarea cols=24 rows=4 name='" + x.o[i].far + "'>";
-			if (x.o[i].value)
-				html += x.o[i].value;
+			html += "<textarea cols=24 rows=4 name='" + aField.getAttribute('var') + "'>";
+			if (aField.firstChild.firstChild)
+				html += aField.firstChild.firstChild.nodeValue;
 			html += "</textarea>";
 			html += "</td>";
 			break;
 		case 'list-single':
-			html += "<th>" + x.o[i].label + "</th>";
+			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
-			html += "<select name='" + x.o[i].far + "'>";
-			if (x.o[i].o) {
-				for (var j in x.o[i].o) {
-					if (x.o[i].o[j].tagname == 'option') {
-						html += "<option value='" + x.o[i].o[j].value + "'";
-						if (x.o[i].value == x.o[i].o[j].value)
-							html += " selected";
-						html += ">"+x.o[i].o[j].label+"</option>";
+			html += "<select name='" + aField.getAttribute('var') + "'>";
+			if (aField.childNodes.length) {
+				for (var j=0; j<aField.childNodes.length; j++) {
+					if (aField.childNodes.item(j).nodeName == 'option') {
+						html += "<option value='" + aField.childNodes.item(j).firstChild.nodeValue + "'";
+// 						if (x.o[i].value == x.o[i].o[j].value)
+// 							html += " selected";
+						html += ">"+aField.childNodes.item(j).getAttribute('label')+"</option>";
 					}
 				}
 			}
@@ -66,16 +65,16 @@ function genJabberXDataTable(x) {
 			html += "</td>";
 			break;
 		case 'boolean':
-			html += "<th>" + x.o[i].label + "</th>";
+			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
-			html += "<input type=checkbox name='" + x.o[i].far + "'";
-			if (x.o[i].value == '1')
+			html += "<input type=checkbox name='" +aField.getAttribute('var') + "'";
+			if (aField.firstChild.firstChild.nodeValue == '1')
 				html += " checked";
 			html += ">";
 			html += "</td>";
 			break;
 		default:
-			srcW.Debug.log("unknown type: " + x.o[i].type,1);
+			srcW.Debug.log("unknown type: " + aField.getAttribute('type'),1);
 			break;
 		}
  		html += "</tr>";

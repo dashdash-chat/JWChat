@@ -3,9 +3,9 @@
   <head>
     <title><l>JWChat - Change Online Status</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script>
       <!--
 var jid;
 var srcW; // the source window with necessary data
@@ -31,7 +31,6 @@ function doSubmit() {
 		opener.top.changeStatus(newstat,away);
   
   window.close();
-  return false;
 }
 
 var jid;

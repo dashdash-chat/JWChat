@@ -3,76 +3,53 @@
   <head>
     <title><l>JWChat - Search for Rooms</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var srcW; // the source window with necessary data
 
-function handleItemVCard(jabber) {
-	srcW.Debug.log(jabber,2);
+var conference_server;
+function doSub() {
+	conference_server = document.forms[0].conference_server.value;
 
-	// add item to table
-	if (jabber.vcard)
-		disco_items[disco_items_at].vcard = jabber.vcard;
-	var item = disco_items[disco_items_at];
-	if (item.tagname == 'item') {
-		row = search_result_iframe.document.createElement("TR");
-		
-		cell = search_result_iframe.document.createElement("TD");
-		textN = search_result_iframe.document.createTextNode(item.name);
-		cell.appendChild(textN);
-		row.appendChild(cell);
-		
-		cell = search_result_iframe.document.createElement("TD");
-		if (item.vcard && item.vcard.DESC)
-			textN = search_result_iframe.document.createTextNode(item.vcard.DESC);
-		else
-			textN = search_result_iframe.document.createTextNode('\ ');
-		cell.appendChild(textN);
-		row.appendChild(cell);
-		
-		row.setAttribute("jid",item.jid);
-		myTableBody.appendChild(row);
+	/* check for errors */
+	if (conference_server.indexOf('@') != -1 || conference_server.indexOf('/') != -1) {
+		alert(loc("this doesn't look like a valid hostname"));
+		return false;
 	}
+	
+	document.getElementById("search_tab").style.display = 'none';
+	document.getElementById("search_result_tab").style.display = '';
+	document.getElementById("search_result_iframe").style.display = 'none';
+	document.getElementById("addbookmark_button").style.display = 'none';
+	document.getElementById("join_room_button").style.display = 'none';
+	document.getElementById("search_result_header").innerHTML = loc("Search results for [_1]",conference_server);
+	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by...",conference_server);
+	search_result_iframe.document.body.innerHTML = '';
+	search_result_iframe.selectedRow = null;
 
-	// tell frame about it
-	search_result_iframe.init();
+	var iq = new JSJaCIQ();
+	iq.setType('get');
+	iq.setTo(conference_server);
+	iq.setID(conference_server+"IQ");
+	iq.setQuery('http://jabber.org/protocol/disco#items');
 
-	if (disco_items_at < disco_items.length-1) {
-		// query next
-		frames['jwc_main'] = srcW.frames['jwc_main'];
-		srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[++disco_items_at].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
-
-	} else { // got them all
-
-		// update form
-		document.getElementById("search_result_info").innerHTML = loc('Finished.');
-	}
-
+	me = this;
+	srcW.con.send(iq,me.getDiscoItems);
+	return false;
 }
 
-var disco_items;
-var disco_items_at;
-var myTableBody;
-function handleDiscoItemsResult(jabber) {
-	srcW.Debug.log(jabber,2);
-
-	if (jabber.browse && jabber.browse.o && !(jabber.error || jabber.type == 'error')) {
-		disco_items = new Array();
-		for (var i in jabber.browse.o) {
-			if (jabber.browse.o[i].tagname == 'item') // it's really an item
-				disco_items[disco_items.length] = jabber.browse.o[i];
-		}
-	} else {
+function getDiscoItems(iq) {
+	if (!iq || iq.getType() != 'result') {
 		document.getElementById("search_result_info").innerHTML = loc("An Error Occured!");
-		return;
+		if (iq)
+			srcW.Debug.log(iq.getDoc().xml,1);
+		return false;
 	}
-
-	if (disco_items.length == 0) {
-		document.getElementById("search_result_info").innerHTML = loc("No items found");
-		return;
-	}
+	srcW.Debug.log(iq.getDoc().xml,2);
 
 	var myTable = search_result_iframe.document.createElement("TABLE");
 
@@ -108,38 +85,53 @@ function handleDiscoItemsResult(jabber) {
 	document.getElementById("addbookmark_button").disabled = true;
 	document.getElementById("join_room_button").disabled = true;
 
-	// start querying each item
-	disco_items_at = 0;
-	frames['jwc_main'] = srcW.frames['jwc_main'];
-	srcW.fCBLoad("vcard","?sid="+srcW.sid+"&to="+disco_items[disco_items_at].jid,frames['jwc_main'].groupw.srw.handleItemVCard); 
+	disco_items = new Array();
+	disco_at = 0;
+	disco_items_length = iq.getQuery().getElementsByTagName('item').length;
+	for (var i=0; i<iq.getQuery().getElementsByTagName('item').length; i++) {
+		var aNode = iq.getQuery().getElementsByTagName('item').item(i);
+		disco_items[aNode.getAttribute('jid')] = aNode;
+		
+		// get vcard
+		var aIQ = new JSJaCIQ();
+		aIQ.setTo(aNode.getAttribute('jid'));
+		aIQ.setType('get');
+		aIQ.getNode().appendChild(aIQ.getDoc().createElement('vCard')).setAttribute('xmlns','vcard-temp');
 
-}
-
-var conference_server;
-function doSub() {
-	conference_server = document.forms[0].conference_server.value;
-
-	/* check for errors */
-	if (conference_server.indexOf('@') != -1 || conference_server.indexOf('/') != -1) {
-		alert(loc("this doesn't look like a valid hostname"));
-		return false;
+		srcW.con.send(aIQ, me.getVCard);
 	}
-	
-
-	frames['jwc_main'] = srcW.frames['jwc_main'];
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+conference_server+"&ns=http://jabber.org/protocol/disco%23items",frames['jwc_main'].groupw.srw.handleDiscoItemsResult); 
-
-	document.getElementById("search_tab").style.display = 'none';
-	document.getElementById("search_result_tab").style.display = '';
-	document.getElementById("search_result_iframe").style.display = 'none';
-	document.getElementById("addbookmark_button").style.display = 'none';
-	document.getElementById("join_room_button").style.display = 'none';
-	document.getElementById("search_result_header").innerHTML = loc("Search results for [_1]",conference_server);
-	document.getElementById("search_result_info").innerHTML = loc("Querying [_1]. Please stand by...",conference_server);
-	search_result_iframe.document.body.innerHTML = '';
-	search_result_iframe.selectedRow = null;
 
 	return false;
+}
+
+function getVCard(iq) {
+	var aNode = disco_items[iq.getFrom()];
+	
+	row = search_result_iframe.document.createElement("TR");
+	
+	cell = search_result_iframe.document.createElement("TD");
+	textN = search_result_iframe.document.createTextNode(aNode.getAttribute('name'));
+	cell.appendChild(textN);
+	row.appendChild(cell);
+		
+	cell = search_result_iframe.document.createElement("TD");
+	if (iq.getType() == 'result' && iq.getNode().getElementsByTagName('DESC').item(0) && iq.getNode().getElementsByTagName('DESC').item(0).firstChild)
+		textN = search_result_iframe.document.createTextNode(iq.getNode().getElementsByTagName('DESC').item(0).firstChild.nodeValue);
+	else
+		textN = search_result_iframe.document.createTextNode('\ ');
+	cell.appendChild(textN);
+	row.appendChild(cell);
+	
+	row.setAttribute("jid",aNode.getAttribute('jid'));
+	myTableBody.appendChild(row);
+
+	disco_at++;
+
+	if (disco_at == disco_items_length) {
+	// we're done tell frame about it
+		search_result_iframe.init();
+		document.getElementById("search_result_info").innerHTML = loc('Finished.');
+	}
 }
 
 function joinRoom() {

@@ -3,80 +3,126 @@
   <head>
     <title></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="browsercheck.js"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 
 function submitClicked() {
-  var url = "?sid=" + parent.srcW.sid + "&to=" + msgEscape(parent.group);
   var body = document.forms[0].elements["msgbox"].value;
-  
 
   if (body == '') // don't send empty message
     return false;
-          
+
+	var aMessage = new JSJaCMessage();
+	aMessage.setTo(parent.group);
+	
   /* handle commands */
   if (body.match(/^\/say (.+)/)) {
+
+		/* *** say *** */
+
 		body = RegExp.$1;
-		url += "&body=" + msgEscape(body) + "&type=groupchat";
-    parent.srcW.fhdLoad("message",url); // send to client
+		aMessage.setBody(body);
+		aMessage.setType('groupchat');
+		parent.srcW.con.send(aMessage);
   } else if (body.match(/^\/nick (.+)/)) {
+
+		/* *** nick *** */
+
     var nick = body.replace(/^\/nick (.+)/,"$1");
-    url += "/"+msgEscape(nick);
-    parent.srcW.fhdLoad("presence",url);
+		var aPresence = new JSJaCPresence();
+		aPresence.setTo(parent.group+"/"+nick);
+		parent.srcW.con.send(aPresence);
   } else if (body.match(/^\/topic (.+)/)) {
+
+		/* *** topic *** */
+
     var topic = body.replace(/^\/topic (.+)/,"$1");
-    url += "&type=groupchat&subject="+msgEscape(topic);
-    parent.srcW.fhdLoad("message",url);
+		aMessage.setType('groupchat');
+		aMessage.setSubject(topic);
+		parent.srcW.con.send(aMessage);
   } else if (body.match(/^\/ban (\S+)\s*(.*)/)) {
+
+		/* *** ban *** */
+
 		var nick = RegExp.$1;
 		var reason = RegExp.$2;
 
-		var jid = parent.roster.getRealJIDByNick(nick);
+		var jid = parent.roster.getFullJIDByNick(nick);
 		if (jid == null) {
 			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
 		} else {
-
-			var param = "?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&ns="+escape("http://jabber.org/protocol/muc#admin");
-			param += "&set="+msgEscape("<item jid='"+jid+"' affiliation='outcast'><reason>"+reason+"</reason></item>");
-			parent.srcW.fhdLoad("iq",param);
+			parent.changeAffiliation(jid,'outcast',false,reason);
 		}
   } else if (body.match(/^\/kick (\S+)\s*(.*)/)) {
+
+		/* *** kick *** */
+
 		var nick = RegExp.$1;
 		var reason = RegExp.$2;
 
-		var jid = parent.roster.getRealJIDByNick(nick);
+		var jid = parent.roster.getFullJIDByNick(nick);
 		if (jid == null) {
 			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
 		} else {
-
-			var param = "?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&ns="+escape("http://jabber.org/protocol/muc#admin");
-			param += "&set="+msgEscape("<item jid='"+jid+"' role='none'><reason>"+reason+"</reason></item>");
-			parent.srcW.fhdLoad("iq",param);
+			parent.changeRole(jid,'none',false,reason);
 		}
-  } else if (body.match(/^\/invite (\S+)\s*(.*)/)) {
+  } else if (body.match(/^\/invite (\S+)\s*(.*)/)) { // [TODO]
+
+		/* *** invite *** */
+
 		var jid = RegExp.$1;
 		var reason = RegExp.$2;
-		parent.srcW.fhdLoad("muc-invite","?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&invitee="+msgEscape(jid)+"&reason="+reason);
+
+		var x = aMessage.getNode().appendChild(aMessage.getDoc().createElement('x'));
+		x.setAttribute('xmlns','http://jabber.org/protocol/muc#user');
+		var aNode = x.appendChild(aMessage.getDoc().createElement('invite'));
+		aNode.setAttribute('to',jid);
+		if (reason && reason != '')
+			aNode.appendChild(aMessage.getDoc().createElement('reason')).appendChild(aMessage.getDoc().createTextNode(reason));
+		parent.srcW.con.send(aMessage);
   } else if (body.match(/^\/join (\S+)\s*(.*)/)) {
+
+		/* *** join *** */
+
 		var room = RegExp.$1;
 		var pass = RegExp.$2;
 		parent.srcW.openGroupchat(room,parent.nick,pass);
   } else if (body.match(/^\/msg (\S+)\s*(.*)/)) {
+
+		/* *** msg *** */
+
 		var nick = RegExp.$1;
 		var body = RegExp.$2;
 
 		var jid = parent.roster.getFullJIDByNick(nick);
 		if (jid == null)
 			parent.putMsgHTML(loc("No such nick")+": " + nick, new Date().toLocaleTimeString(), parent.jid);
-		else
-			parent.srcW.fhdLoad("message","?sid="+parent.srcW.sid+"&to="+msgEscape(jid)+"&body="+msgEscape(body));
+		else {
+			aMessage.setType('chat');
+			aMessage.setTo(jid);
+			aMessage.setBody(body);
+			parent.srcW.con.send(aMessage);
+		}
   } else if (body.match(/^\/part\s*(.*)/)) {
+
+		/* *** part *** */
+
 		var msg = RegExp.$1;
-		parent.srcW.fhdLoad("presence","?sid="+parent.srcW.sid+"&to="+msgEscape(parent.jid)+"&type=unavailable&status="+msg);
+		var aPresence = new JSJaCPresence();
+		aPresence.setTo(parent.group);
+		aPresence.setType('unavailable');
+		if (msg && msg != '')
+			aPresence.setStatus(msg);
+		parent.srcW.con.send(aPresence);
   } else if (body.match(/^\/whois (\S+)/)) {
+
+		/* *** whois *** */
+
 		var nick = RegExp.$1;
 		var jid = parent.roster.getFullJIDByNick(nick);
 		if (jid == null)
@@ -84,10 +130,14 @@ function submitClicked() {
 		else
 			parent.srcW.openUserInfo(jid);
   } else if (body.match(/^\/help/)) {
+
+		/* *** help *** */
+
 		open("http://www.jabber.org/jeps/jep-0045.html#impl-client-irc");
   } else {
-    url += "&body=" + msgEscape(body) + "&type=groupchat";
-    parent.srcW.fhdLoad("message",url); // send to client
+		aMessage.setType('groupchat');
+		aMessage.setBody(body);
+		parent.srcW.con.send(aMessage);
   }			
 
   // add message to our message history

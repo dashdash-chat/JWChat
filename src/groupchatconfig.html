@@ -3,30 +3,32 @@
   <head>
     <title><l>JWChat - Channel Config for</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="jabber_x_data.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="jabber_x_data.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 
 function doSub() {
 	var els = document.forms[0].elements;
 
-	var xml = "<x xmlns='jabber:x:data' type='submit'>";
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(opener.jid);
 
-	for (var i=0; i<els.length; i++) {
-		if (els[i].name == '' || els[i].value == '')
-			continue;
-		xml += "<field var='" +els[i].name + "'><value>";
-		if (els[i].type == 'checkbox')
-			xml += (els[i].checked) ? '1':'0';
-		else
-			xml += els[i].value;
-		xml += "</value></field>";
-	}
+	var query = iq.setQuery('http://jabber.org/protocol/muc#owner');
 
-	xml += "</x>";
-	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns="+escape("http://jabber.org/protocol/muc#owner")+"&set="+msgEscape(xml));
+	var xmldoc = XmlDocument.create();
+	xmldoc.loadXML('<body>'+genJabberXDataReply(document.forms[0])+'</body>');
+	
+	for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
+		query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
+	
+	srcW.Debug.log(iq.getDoc().xml,2);
+	
+	srcW.con.send(iq);
 	window.close();
 	return false;
 }
@@ -36,29 +38,24 @@ function destroy() {
 	if (!reason)
 		return false;
 
-	srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns=http://jabber.org/protocol/muc%23owner&set="+msgEscape("<destroy><reason>"+reason+"</reason></destroy>"));
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(opener.jid);
+	var query = iq.setQuery('http://jabber.org/protocol/muc#owner');
+	query.appendChild(iq.getDoc().createElement('destroy')).appendChild(iq.getDoc().createElement('reason')).appendChild(iq.getDoc().createTextNode(reason));
+	srcW.con.send(iq);
 	window.close();
 	return false;
 }
 	
-function handleConfig(jabber) {
-	srcW.Debug.log(jabber,2);
+function handleConfig(iq) {
+	srcW.Debug.log(iq.getDoc().xml,2);
 
-	if (jabber.type == 'error')
+	if (iq.getType() == 'error')
 		return;
 
-	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined')
-		return;
-
-	// get x
-	var x;
-	for (var i in jabber.browse.o)
-		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].type == 'form') {
-			x = jabber.browse.o[i];
-			break;
-		}
-
-	document.getElementById("jabberXDataForm").innerHTML = genJabberXDataTable(x);
+	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data')
+		document.getElementById("jabberXDataForm").innerHTML = genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0));
 }
 
 var srcW;
@@ -69,7 +66,15 @@ function init() {
 	document.title += " " + opener.jid;
 
 	var roster = srcW.roster;
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(opener.jid)+"&ns="+escape("http://jabber.org/protocol/muc#owner"),roster.getUserByJID(opener.jid).chatW.configW.handleConfig);
+
+	var iq = new JSJaCIQ();
+	iq.setTo(opener.jid);
+	iq.setType('get');
+	iq.setQuery('http://jabber.org/protocol/muc#owner');
+
+
+	me = this;
+	srcW.con.send(iq, me.handleConfig);
 }
 
 function keyPressed(e) {

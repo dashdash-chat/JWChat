@@ -3,9 +3,11 @@
   <head>
     <title><l>JWChat - Edit Bookmarks</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var jid;
 var srcW; // the source window with necessary data
@@ -14,23 +16,27 @@ var srcW; // the source window with necessary data
  * send bookmarks to server for storage 
  */
 function doSub() {
-	
-	var param = "<storage xmlns='storage:bookmarks'>";
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:private');
+	var storage = query.appendChild(iq.getDoc().createElement('storage'));
+	storage.setAttribute('xmlns','storage:bookmarks');
 
 	for (var i in srcW.bookmarks) {
-		param += "<conference name='"+srcW.bookmarks[i].name+"' jid='"+srcW.bookmarks[i].jid+"'";
+		var item = storage.appendChild(iq.getDoc().createElement('conference'));
+		item.setAttribute('name',srcW.bookmarks[i].name);
+		item.setAttribute('jid',srcW.bookmarks[i].jid);
 		if (srcW.bookmarks[i].autojoin && srcW.bookmarks[i].autojoin == '1')
-			param += " autojoin='"+srcW.bookmarks[i].autojoin+"'";
-		param +="><nick>"+srcW.bookmarks[i].nick+"</nick>";
+			item.setAttribute('autojoin',srcW.bookmarks[i].autojoin);
+		item.appendChild(iq.getDoc().createElement('nick')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].nick));
 		if (typeof(srcW.bookmarks[i].pass) != 'undefined' && srcW.bookmarks[i].pass != '')
-			param += "<pass>"+srcW.bookmarks[i].pass+"</pass>";
-		param += "</conference>";
-	}
-	param += "</storage>";
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+msgEscape(param));
-	
+			item.appendChild(iq.getDoc().createElement('pass')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].pass));
+	}	
+
+	srcW.Debug.log(iq.getDoc().xml,2);
+
+	srcW.con.send(iq);
   window.close();
-  return false;
 }
 
 /* saveBookmark
@@ -48,7 +54,7 @@ function saveBookmark() {
   bookmark.nick = (document.forms[0].nick.value == '') ? srcW.jid.substring(0,srcW.jid.indexOf('@')) : document.forms[0].nick.value;
 
   if (document.forms[0].group.value == '') {
-		alert(loc("Please enter a channel/group to join"));
+		alert(loc("Please enter a room to join"));
     return false;
 	}
 

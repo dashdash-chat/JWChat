@@ -2,9 +2,11 @@
 <html>
     <head>
     <title>Invite Users</title>
-    <script src="switchStyle.js"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script language="JavaScript1.2">
+    <script src="switchStyle.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 
 function doSub() {
@@ -12,15 +14,20 @@ function doSub() {
 
 	for (var i=0; i < users_selector.options.length; i++) {
 		if (users_selector.options[i].selected) {
-			var param = "?sid="+srcW.sid+"&to="+escape(opener.parent.jid)+"&invitee="+escape(users_selector.options[i].value);
+			var aMessage = new JSJaCMessage();
+			aMessage.setTo(opener.parent.jid);
+			var x = aMessage.getNode().appendChild(aMessage.getDoc().createElement('x'));
+			x.setAttribute('xmlns','http://jabber.org/protocol/muc#user');
+			var aNode = x.appendChild(aMessage.getDoc().createElement('invite'));
+			aNode.setAttribute('to',users_selector.options[i].value);
 			if (document.forms[0].reason.value != '')
-				param += "&reason="+opener.parent.msgEscape(document.forms[0].reason.value);
-			srcW.fhdLoad("muc-invite",param);
+				aNode.appendChild(aMessage.getDoc().createElement('reason')).appendChild(aMessage.getDoc().createTextNode(document.forms[0].reason.value));
+			srcW.Debug.log(aMessage.getDoc().xml);
+			srcW.con.send(aMessage);
 		}
 	}
 
 	window.close();
-	return false;
 }
 
 var srcW;

@@ -68,6 +68,9 @@ function makeWindowName(wName) {
 }
 
 function htmlEnc(str) {
+	if (!str)
+		return null;
+
   str = str.replace(/&/g,"&amp;");
   str = str.replace(/</g,"&lt;");
   str = str.replace(/>/g,"&gt;");
@@ -75,6 +78,8 @@ function htmlEnc(str) {
 }
 
 function msgFormat(msg) { // replaces emoticons and urls in a message
+	if (!msg)
+		return null;
 
   msg = htmlEnc(msg);
 
@@ -92,10 +97,10 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
   msg = msg.replace(/(\s|^)(\w+\@\S+\.\S+)/g,"$1<a href=\"mailto:$2\">$2</a>");
   
   // replace *<pattern>*
-  msg = msg.replace(/(\s|^)\*([^\*]+)\*/g,"$1<i><b>$2</b></i>");
+  msg = msg.replace(/(\s|^)\*([^\*\r\n]+?)\*/g,"$1<i><b>$2</b></i>");
 
   // replace _bla_ 
-  msg = msg.replace(/(\s|^)\_([^\*]+)\_/g,"$1<u>$2</u>");
+  msg = msg.replace(/(\s|^)\_([^\*\r\n]+?)\_/g,"$1<u>$2</u>");
 
   msg = msg.replace(/\n/g,"<br>");
 

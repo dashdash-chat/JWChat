@@ -2,35 +2,35 @@
 <html>
     <head>
     <title><l>JWChat - Options</l></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="switchStyle.js"></script>
     <script src="version.js"></script>
     <script src="shared.js"></script>
-    <script src="jabber_x_data.js" language="JavaScript1.2"></script>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script language="JavaScript1.2">
+    <script src="jabber_x_data.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
-
-function handleIQSet(jabber) {
-	if (jabber && jabber.type == 'error')
-		opener.top.Debug.log(jabber,1);
-}
-
-var ow = window;
 function savePrefs() {
 	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval','enableLog');
 
-	var xml = "<jwchat xmlns='jwchat:prefs'>";
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:private');
+	var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
+	jNode.setAttribute('xmlns','jwchat:prefs');
 
-	for (var i in prefs)
+	for (var i in prefs) {
+		var item = jNode.appendChild(iq.getDoc().createElement(prefs[i]));
 		if (prefs[i] == 'usersHidden')
-			xml += "<"+prefs[i]+">"+eval("srcW.roster."+prefs[i])+"</"+prefs[i]+">";
+			item.appendChild(iq.getDoc().createTextNode(eval("srcW.roster."+prefs[i])));
 		else
-			xml += "<"+prefs[i]+">"+eval("srcW."+prefs[i])+"</"+prefs[i]+">";
+			item.appendChild(iq.getDoc().createTextNode(eval("srcW."+prefs[i])));
+	}
 
-	xml += "</jwchat>";
+	srcW.Debug.log(iq.getDoc().xml,3);
 
-	if (srcW.sid)
-		srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
+	srcW.con.send(iq);
 }
 
 	
@@ -82,66 +82,6 @@ function getOptions() {
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
-function handleIQRegister(jabber,pane) {
-	//	var transport_pane = document.getElementById('transport_pane');
-	if (jabber.error) {
-		pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";
-		return;
-	}
-
-	if (typeof(jabber.xmlns) == 'undefined' || jabber.xmlns != 'jabber:iq:register')
-		return; // not for me
-
-	srcW.Debug.log(jabber,2);
-
-	// check if it's jabber:x:data
-	var x;
-	for (var i in jabber.browse.o)
-		if (jabber.browse.o[i].tagname == 'x' && jabber.browse.o[i].type == 'form') {
-			x = jabber.browse.o[i];
-			break;
-		}
-
-	var html = '';
-	if (x) {
-		html += "<form>"+genJabberXDataTable(x)+"</form>";
-	} else {
-		if (typeof(jabber.browse.registered) != 'undefined')
-			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
-		if (typeof(jabber.browse.instructions) != 'undefined')
-			html += "<div class='pane_el'>"+jabber.browse.instructions+"</div>";
-		html += "<form name='transport'><table>";
-		for (var i in jabber.browse) {
-			switch (i) {
-			case 'o':
-			case 'oX':
-			case 'instructions':
-			case 'registered': 
-				break;
-			case 'key': // hide key
-				html += "<tr><td colspan=2><input type=hidden name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-				break;
-			case 'password':
-				html += "<tr><td>"+i+"</td><td><input type='password' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-				break;
-			default:
-				html += "<tr><td>"+i+"</td><td><input type='text' name='"+i+"' value='"+jabber.browse[i]+"'></td></tr>";
-			}
-		}
-		html += "</table></form>";
-	}
-	html += "<div class='pane_el' align='right'>";
-	if (typeof(jabber.browse.registered) != 'undefined') {
-		html += "<button onClick=\"unregisterGateway('"+jabber.from+"');\">"+loc("Unregister")+"</button>";
-		html += "&nbsp;";
-		html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Update")+"</button>";
-	} else
-		html += "<button onClick=\"registerService('"+jabber.from+"','"+pane.id+"');\">"+loc("Register")+"</button>";
-	html += "</div>";
-	pane.innerHTML = html;
-}
-
-var ow = window;
 function service_selected(el) {
 	var pane = el.nextSibling;
 	if (el.options[el.selectedIndex].value == '') {
@@ -150,7 +90,69 @@ function service_selected(el) {
 	}
 
 	pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Service ...<br>Please stand by!")+"</div>";
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&to="+el.options[el.selectedIndex].value+"&ns=jabber:iq:register",ow.handleIQRegister,pane);
+
+	var iq = new JSJaCIQ();
+	iq.setType('get');
+	iq.setTo(el.options[el.selectedIndex].value);
+	iq.setQuery('jabber:iq:register');
+
+	me = this;
+	srcW.con.send(iq,me.getRegisterForm);
+}
+
+function getRegisterForm(iq) {
+	if (!iq || iq.getType() != 'result' || iq.getQueryXMLNS() != 'jabber:iq:register') {
+		pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";		
+		return;
+	}
+	srcW.Debug.log(iq.getDoc().xml,2);
+
+	// check if it's jabber:x:data
+
+	var html = '';
+	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
+		html += "<form>"+genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0))+"</form>";
+	} else {
+		var query = iq.getQuery();
+		if (query.getElementsByTagName('registered').item(0))
+			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
+		if (query.getElementsByTagName('instructions').item(0))
+			html += "<div class='pane_el'>"+query.getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</div>";
+		html += "<form name='transport'><table>";
+		for (var i=0; i<query.childNodes.length; i++) {
+			var aItem = query.childNodes.item(i);
+			switch (aItem.nodeName) {
+			case 'instructions':
+			case 'registered': 
+				break;
+			case 'key': // hide key
+				html += "<tr><td colspan=2><input type=hidden name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+				break;
+			case 'password':
+				if (aItem.firstChild)
+					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+				else
+					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"'></td></tr>";
+				break;
+			default:
+				if (aItem.firstChild)
+					html += "<tr><td>"+i+"</td><td><input type='text' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+				else
+					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"'></td></tr>";
+			}
+		}
+		html += "</table></form>";
+	}
+	html += "<div class='pane_el' align='right'>";
+	if (query.getElementsByTagName('registered').item(0)) {
+		html += "<button onClick=\"unregisterGateway('"+iq.getFrom()+"');\">"+loc("Unregister")+"</button>";
+		html += "&nbsp;";
+		html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Update")+"</button>";
+	} else
+		html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Register")+"</button>";
+	html += "</div>";
+	pane.innerHTML = html;
+
 }
 
 var ie5=document.all&&document.getElementById;
@@ -191,15 +193,28 @@ function registerService(jid,paneid) {
 	
 	if (jabberXData) {
 		setxml = genJabberXDataReply(aForm);
-		srcW.fhdLoad("iq","?sid="+srcW.sid+"&to="+msgEscape(jid)+"&ns=jabber:iq:register&set="+msgEscape(setxml));
 	}	else {
 		for (var i=0; i<aForm.elements.length; i++) {
 			var el = aForm.elements[i];
-			setxml += "&"+msgEscape(el.name)+"="+msgEscape(el.value);
+			setxml += "<"+el.name+">"+el.value+"</"+el.name+">";
 		}
-		var param = "?sid="+srcW.sid+"&to="+msgEscape(jid)+"&ns=jabber:iq:register"+setxml;
-		srcW.fhdLoad("iq-set",param);
 	}
+
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(jid);
+
+	var query = iq.setQuery('jabber:iq:register');
+
+	var xmldoc = XmlDocument.create();
+	xmldoc.loadXML('<body>'+setxml+'</body>');
+	
+	for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
+		query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
+
+	srcW.Debug.log(iq.getDoc().xml,2);
+		
+	srcW.con.send(iq);
 
 	window.close();
 }
@@ -207,7 +222,14 @@ function registerService(jid,paneid) {
 function unregisterGateway(jid) {
 	var fulljid = srcW.roster.getUserByJID(jid).fulljid;
 
-	srcW.fhdLoad("roster","?sid="+srcW.sid+"&jid="+fulljid+"&subscription=remove");
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:roster');
+	var item = query.appendChild(iq.getDoc().createElement('item'));
+	item.setAttribute('jid',fulljid);
+	item.setAttribute('subscription','remove');
+
+	srcW.con.send(iq);
 	window.close();
 }
 
@@ -232,13 +254,23 @@ function init() {
  	var transport_optidx = 1;
 	var directory_selector = document.getElementById('directory_selector');
  	var directory_optidx = 1;
-	for (var i in srcW.disco.items) {
-		if (typeof(srcW.disco.items[i].info) != 'undefined') {
-			for (var j in srcW.disco.items[i].info) {
-				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'gateway')
-					transports_selector.options[transport_optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
-				if (srcW.disco.items[i].info[j].tagname == 'identity' && srcW.disco.items[i].info[j].category == 'directory')
-					directory_selector.options[directory_optidx++] = new Option(srcW.disco.items[i].name,srcW.disco.items[i].jid);
+	for (var i in srcW.disco) {
+		var item = srcW.disco[i];
+		if (item.getNode().getElementsByTagName('identity').item(0)) {
+			if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway') {
+				for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
+					if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
+						transports_selector.options[transport_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
+						break;
+					}
+				}
+			} else if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'directory') {
+				for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
+					if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
+						directory_selector.options[directory_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -327,7 +359,7 @@ onunload = savePrefs;
 								<tr>
 									<td colspan="2">
 										<l>Update interval</l>:
-										<select name="timerval" onChange="srcW.setPollInterval(this.value);">
+										<select name="timerval" onChange="srcW.con.setPollInterval(this.value);srcW.timerval=this.value;">
 											<option value="2000"><l>2 sec.</l></option>
 											<option value="5000"><l>5 sec.</l></option>
 											<option value="10000"><l>10 sec.</l></option>

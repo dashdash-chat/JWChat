@@ -3,17 +3,28 @@
   <head>
     <title><l>JWChat</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="config.js" language="JavaScript1.2"></script>
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="sounds.js" language="JavaScript1.2"></script>
-    <script src="statusLed.js" language="JavaScript1.2"></script>
-    <script src="roster.js" language="JavaScript1.2"></script>
-    <script src="Debugger.js" language="JavaScript1.2"></script>
-    <script language="JavaScript1.2">
+
+    <script src="config.js"></script>
+    <script src="shared.js"></script>
+    <script src="browsercheck.js"></script>
+    <script src="sounds.js"></script>
+    <script src="statusLed.js"></script>
+    <script src="roster.js"></script>
+
+<!-- Debugger -->
+    <script src="Debugger.js"></script>
+
+<!-- JabberConnection -->
+    <script src="sha1.js"></script>
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCConnection.js"></script>
+    <script src="JSJaCHttpPollingConnection.js"></script>
+    <script src="JSJaCPacket.js"></script>
+
+    <script>
 <!--
 
- /*
+ /* ***
   * JWChat, a web based jabber client
   * Copyright (C) 2003-2004 Stefan Strigler <steve@zeank.in-berlin.de>
   *
@@ -39,16 +50,16 @@
  ************************************************************************
  */
 var jid;
-var pass;	
+var pass;
+var register = false; // whether to register new account
 var nick;
 var vcard;
 var status = '';
-var sid = 0;
 var onlstat = '';
 var onlmsg = '';
 var autoPopup = true;
 var autoPopupAway = false;
-var playSounds = false;
+var playSounds = true;
 var focusWindows = true;
 var timestamps = false;
 var usersHidden = false;
@@ -57,11 +68,8 @@ var loghost;
 
 /* some globals */
 var roster;
-var timeout_tag;
+var fmd; // frames.main.document
 
-var fmd; // shortcut to main frame
-var fhd; // shortcut to hidden frame
-/* var statusbox;*/  // shortcut to status select box
 var statusLed;
 var statusMsg;
 
@@ -72,7 +80,7 @@ onlstatus["away"] = loc("away");
 onlstatus["xa"] = loc("not available");
 onlstatus["dnd"] = loc("do not disturb");
 onlstatus["invisible"] = loc("invisible");
-onlstatus["unavailable"] = loc("invisible");
+onlstatus["unavailable"] = loc("offline");
 
 
 /************************************************************************
@@ -114,22 +122,27 @@ function openCustomPresence(aJid) {
 }
 
 function sendCustomPresence(aJid,presence,msg) {
-	var param = "?sid="+sid+"&to="+msgEscape(aJid);
+	var oPresence = new JSJaCPresence();
+	oPresence.setTo(aJid);
+	if (roster.getUserByJID(aJid).roster)
+		oPresence.setXMLNS();
 
 	switch (presence) {
 	case 'offline':
-		param += "&type=unavailable";
+		oPresence.setType('unavailable');
 	case 'unavailable':
-		param += "&type=unavailable";
+		oPresence.setType('unavailable');
 		presence = "invisible";
 	default:
-		param += "&show="+presence;
+		if (presence != 'available')
+			oPresence.setShow(presence);
 	}
 
 	if (typeof(msg) != 'undefined' && msg != '')
-		param += "&status="+msgEscape(msg);
+		oPresence.setStatus(msg);
 
-	fhdLoad("presence",param);
+	Debug.log(oPresence.getDoc().xml,2);
+	con.send(oPresence);
 }
 
 function openUserProps(aJid) {
@@ -140,7 +153,15 @@ function openUserProps(aJid) {
 function removeUser(aJid) {
 	// get fulljid
 	var fulljid = roster.getUserByJID(aJid).fulljid;
-  fhdLoad("roster","?sid="+sid+"&jid="+msgEscape(fulljid)+"&subscription=remove");
+
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:roster');
+	var item = query.appendChild(iq.getDoc().createElement('item'));
+	item.setAttribute('jid',fulljid);
+	item.setAttribute('subscription','remove');
+
+	con.send(iq);
 }
 
 var vcardW; // my vcardW;
@@ -233,18 +254,30 @@ function addtoHistory(message) {
 }
 
 /* system sounds */
+var soundPlaying = false;
+function soundLoaded() {
+	soundPlaying = false;
+}
+
 function playSound(action) {
   if (!playSounds)
     return;
+
   if(!SOUNDS[action]) {
-    Debug.log("no sound for '" + action + "'",2);
+    Debug.log("no sound for '" + action + "'",1);
     return;
   }
 
-	if (onlstat != 'available' && onlstat != 'chat')
+	if (onlstat != '' && onlstat != 'available' && onlstat != 'chat')
 		return;
+
+	if (soundPlaying)
+		return;
+
+	soundPlaying = true;
 	
   var frameD = frames["jwc_sound"].document;
+
   var html = "<embed src=\""+SOUNDS[action]+"\" width=\"1\" height=\"1\" quality=\"high\" pluginspage=\"http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash\" type=\"application/x-shockwave-flash\">";
   frameD.open();
   frameD.write(html);
@@ -252,148 +285,23 @@ function playSound(action) {
 }
 
 
-/* load frame and store callback */
-var registeredCBs = new Array();
-function fCBLoad(func,param,callback,args) {
-
-	// register callback with handler (this is a oneshot handler!)
-	var cbObj = new Object();
-	cbObj.func = callback;
-	cbObj.args = args || null;
-	registeredCBs[registeredCBs.length] = cbObj;
-
-	Debug.log("registeredCBs: " + registeredCBs,4);
-
-  if (is.ie5 || is.op)
-    frameLoad(frames["jwc_cb"],func,param,"parent.handleCB();");
-  else
-    frameLoad(frames["jwc_cb"],func,param);
-}
-
-function fhdLoad(func,param) {
-  if (is.ie5 || is.op)
-    frameLoad(frames["jwc_out"],func,param,"parent.run();");
-  else
-    frameLoad(frames["jwc_out"],func,param);
-}
-
-function frameLoad(frame,func,param,onload) {
-  var ext = ".jsx"; // protocol extension for wcs
-  var ext2 = ".js";
-  var url = sWCS + func + ext + param;
-  var url2 = sWCS2 + func + ext2 + param;
-  /* doesn't work with mozilla */
-  if (is.ie || is.op) {
-    Debug.log("frameLoad:\n" + url2,4);
-    frame.document.open();
-    if (onload)
-      frame.document.write("<script src=\""+url2+"\"></script><script>function checkData() { if (typeof(jabber)=='undefined') setTimeout(\"checkData()\",100); else " + onload + " } onload = checkData;</script>");
-    else 
-      frame.document.write("<script src=\""+url2+"\"></script>");
-    frame.document.close();
-  } else {
-    Debug.log("url:\n" + url,4);
-    
-    frame.location.replace(url);
-  }
-}
-
 function isGateway(aJid) {
 	aJid = cutResource(aJid);
-	for (var i in disco.items)
-		if (aJid == disco.items[i].jid)
-			if (typeof(disco.items[i].info) != 'undefined') {
-				for (var j in disco.items[i].info)
-					if (disco.items[i].info[j].tagname == 'identity' && disco.items[i].info[j].category == 'gateway') {
-						return true;
-					}
+	for (var i in disco)
+		if (i == aJid)
+			if (disco[i].getNode().getElementsByTagName('identity').item(0)) {
+				if (disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway')
+					return true;
 			}
+
 	return false;
 }
 
-function setPollInterval(val) {
-  if (timeout_tag)
-    clearTimeout(timeout_tag);
-  timerval = val;
-  poll();
-}
+function storeCID(iq,jid) {
+	if (!iq || iq.getType() != 'result')
+		return;
 
-/************************************************************************
- *                   ***** EVENT - HANDLER *****
- ************************************************************************
- */
-
-var rh = new Object(); // registered handlers
-function registerHandler(type,func) {
-  if (!rh[type])
-    rh[type] = new Array(func);
-  else 
-    rh[type] = rh[type].concat(func);
-}
-	
-function handleEvent() {
-  
-  if (status != 'polling')
-    return;
-
-  var jabber = frames["jwc_in"].jabber;
-
-  /* error handling */
-  if (!jabber) { // connection lost
-    if (typeof(pass) == 'undefined') { // no pw - we can't reconnect
-      alert(loc("An error occured!\nAborting..."));
-      window.close();
-      return;
-    }
-
-    if (confirm(loc("Connection lost!\nReconnect?"))) {
-      cleanUp();
-      changeStatus(onlstat);
-    } else {
-      logout();
-    }
-    return;
-  }
-  
-	Debug.log(jabber,4);
-  
-  if (jabber && jabber.error && sid != 0) {
-		Debug.log("From: " + jabber.from + "\n" + jabber.error,1);
-    if (!jabber.type || jabber.type != "error") {
-      alert(loc("An error occured!\nAborting..."));
-      if (typeof(pass) == 'undefined')
-        window.close();
-      else
-        logout();
-      return;
-    }
-  }
-  /* END error handling */		
-
-  if (!jabber.name) { // no event to handle
-    clearTimeout(timeout_tag);
-    timeout_tag = setTimeout("poll()",timerval);
-    return; // don't trigger again
-  }
-  
-
-  if (rh[jabber.name]) {
-    for (var i in rh[jabber.name])
-      rh[jabber.name][i](jabber);
-  } else {
-    Debug.log("handleEvent: unregistered type: " + jabber.name,1);
-  }
-  
-  poll(); // trigger new poll
-}
-
-/************************************************************************
- * handleMessage
- ************************************************************************
- */
-
-function storeCID(jabber,jid) {
-	Debug.log(jabber,0);
+	Debug.log(iq.getDoc().xml,2);
 	var user = roster.getUserByJID(jid);
 	if (user == null) {
 		Debug.log("user with jid " + jid + " not found",1);
@@ -401,53 +309,149 @@ function storeCID(jabber,jid) {
 	}
 
 	if (user.chatW && !user.chatW.closed) // store cid
-		user.chatW.cid = jabber.cid;
+		user.chatW.cid = iq.getNode().firstChild.getAttribute('cid');
 }
 
-function handleMessage(jabber) {
+/************************************************************************
+ *                       ******  CHANGESTATUS   *******
+ ************************************************************************
+ */
 
-	Debug.log(jabber,2);
+function sendPresence2Groupchats(gc,val,away) {
+	var aPresence;
+	for (var i=0; i<gc.length; i++) {
+		aPresence = new JSJaCPresence();
+		//aPresence.setXMLNS();
+		aPresence.setTo(gc[i]);
+		if (away && away != '')
+			aPresence.setStatus(away);
+		if (val != 'available')
+			aPresence.setShow(val);
+		con.send(aPresence);
+	}
+}
 
-	if (jabber.type == 'error')
+function changeStatus(val,away) {
+  
+  Debug.log("changeStatus: "+val+","+away, 2);
+  
+  onlstat = val;
+	if (away)
+		onlmsg = away;
+
+	if (!con.connected() && val != 'offline') {
+		init();
+		return;
+	}
+		
+
+	var aPresence = new JSJaCPresence();
+  
+  switch(val) {
+  case "unavailable":
+    val = "invisible";
+		aPresence.setType('invisible');
+    break;
+  case "offline":
+    val = "unavailable";
+		aPresence.setType('unavailable');
+		con.send(aPresence);
+		con.disconnect();
+    var img = eval(val+"Led");
+    statusLed.src = img.src;
+    if (away)
+      statusMsg.value = away;
+    else
+      statusMsg.value = onlstatus[val];
+    cleanUp();
+    return;
+    break;
+  case "available":
+    val = 'available'; // needed for led in status bar
+    if (away) {
+			aPresence.setStatus(away);
+    }
+		aPresence.setPriority(8);
+		break;
+	case "chat":
+		aPresence.setPriority(8);
+  default:
+    if (away) {
+			aPresence.setStatus(away);
+    }
+		aPresence.setShow(val);
+  }
+
+	con.send(aPresence);
+
+  /* send presence to chatrooms
+   */
+  if (typeof(roster) != 'undefined' && onlstat != 'invisible') {
+		sendPresence2Groupchats(roster.getGroupchats(),onlstat,onlmsg);
+  }
+
+  var img = eval(val+"Led");
+	statusLed.src = img.src;
+	if (away)
+		statusMsg.value = away;
+	else
+		statusMsg.value = onlstatus[val];
+}
+
+/************************************************************************
+ *                   ***** EVENT - HANDLER *****
+ ************************************************************************
+ */
+
+
+/************************************************************************
+ * handleMessage
+ ************************************************************************
+ */
+function handleMessage(aMessage) {
+
+	Debug.log(aMessage.getDoc().xml,2);
+
+	if (aMessage.getType() == 'error')
 		return;
 
 	/* check if this is a groupchat invite */
-	if (jabber.o) {
-		for (var i in jabber.o) {
-			if (jabber.o[i].tagname == 'x' && jabber.o[i].xmlns == 'http://jabber.org/protocol/muc#user' && jabber.o[i].o) {
-				var from, to, reason, pass;
-				for (var j in jabber.o[i].o) { // collect data
-					if (jabber.o[i].o[j].tagname == 'invite') {
-						from = jabber.o[i].o[j].from;
-						to = jabber.from;
-						if (jabber.o[i].o[j].password)
-							pass = jabber.o[i].o[j].password;
-						if (jabber.o[i].o[j].reason)
-							reason = jabber.o[i].o[j].reason;
-					}
-				}
-				Debug.log("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
-				var user = roster.getUserByJID(from);
-				if (user == null) {// users not in roster (yet)
-					Debug.log("creating new user "+from,3);
-					user = roster.addUser(new RosterUser(from));
-					user.lastsrc = eval(user.status + "Led").src;
-					roster.print();
-				}
-
-				if (typeof(user.iwArr) == 'undefined')
-					user.iwArr = new Array();
-
-				user.iwArr[to] = open("groupchat_invite.html?to="+to+"&from="+from+"&pass="+pass+"&reason="+reason,"iw"+makeWindowName(to),"width=320,height=320,resizable=yes");
-
-				return;
-			}
+	var x;
+	for (var i=0; i<aMessage.getNode().getElementsByTagName('x').length; i++)
+		if (aMessage.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/muc#user') {
+			x = aMessage.getNode().getElementsByTagName('x').item(i);
+			break;
 		}
+
+	if (x) {
+		var from, to, reason, pass;
+		to = aMessage.getFrom();
+		var aInvite = x.getElementsByTagName('invite').item(0);
+		from = aInvite.getAttribute('from');
+		if (aInvite.firstChild && aInvite.firstChild.nodeName == 'reason' && aInvite.firstChild.firstChild)
+			reason = aInvite.firstChild.firstChild.nodeValue;
+		if (x.getElementsByTagName('password').item(0))
+			pass = x.getElementsByTagName('password').item(0).firstChild.nodeValue;
+		Debug.log("You have been invited to " + jid + " pass " + pass + " by " + from + "\nreason:" + reason,2);
+		var user = roster.getUserByJID(cutResource(from));
+		if (!user) {// users not in roster (yet)
+			Debug.log("creating new user "+from,3);
+			user = roster.addUser(new RosterUser(cutResource(from)));
+			user.lastsrc = eval(user.status + "Led").src;
+			roster.print();
+		}
+
+		if (typeof(user.iwArr) == 'undefined')
+			user.iwArr = new Array();
+
+		user.iwArr[to] = open("groupchat_invite.html?to="+escape(to)+"&from="+escape(from)+"&pass="+escape(pass)+"&reason="+escape(reason),"iw"+makeWindowName(to),"width=320,height=320,resizable=yes");
+		
+		return;
 	}
 
-  var from = cutResource(jabber.from);
-  
-  Debug.log("from: "+from+", jabber.from: "+jabber.from,3);
+  var from = cutResource(aMessage.getFrom());
+  var type = aMessage.getType();
+  Debug.log("from: "+from+"\naMessage.getFrom(): "+aMessage.getFrom(),3);
 
   var user = roster.getUserByJID(from);
   if (user == null) {// users not in roster (yet)
@@ -460,14 +464,14 @@ function handleMessage(jabber) {
   Debug.log("got user jid: "+user.jid,3);
 
   var aRoster = roster;
-  if (jabber.type != 'groupchat' && user.roster && from != jabber.from) { // private groupchat message
+  if (type != 'groupchat' && user.roster && from != aMessage.getFrom()) { // private groupchat message
     aRoster = user.roster;
-    from = jabber.from; // we cut the resource - now 
+    from = aMessage.getFrom(); // use from with resource (had been cut off first)
     user = user.roster.getUserByJID(from);
   }
 
   /* change icon in roster - but not if it's a groupchat item */
-  if (jabber.type != 'groupchat') {
+  if (type != 'groupchat') {
     if (!user.lastsrc)
       user.lastsrc = eval(user.status + "Led").src;
       
@@ -481,14 +485,23 @@ function handleMessage(jabber) {
   }
 
 	// set current timestamp
-	jabber.timestamp = new Date();
+	var x;
+	for (var i=0; i<aMessage.getNode().getElementsByTagName('x').length; i++)
+		if (aMessage.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'jabber:x:delay') {
+			x = aMessage.getNode().getElementsByTagName('x').item(i);
+			break;
+		}
 
-  if (jabber.type == 'chat' && !(jabber.o && jabber.o[0] && typeof(jabber.o[0].stamp) != 'undefined')) {
+	if (x) {
+			Debug.log("found offline message: "+x.getAttribute('stamp'),3);
+			var stamp = x.getAttribute('stamp');
+			aMessage.jwcTimestamp = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
+	} else
+		aMessage.jwcTimestamp = new Date();
+
+  if (type == 'chat') {
     
-      /* we got a real chat message (and not an offline message)
-       */
-
-    user.chatmsgs = user.chatmsgs.concat(jabber);
+    user.chatmsgs = user.chatmsgs.concat(aMessage);
     
     if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
       user.chatW.popMsgs();
@@ -503,28 +516,32 @@ function handleMessage(jabber) {
 			// let arrow blink for toggled groups
 			for (var i in user.groups) {
 				if (user.groups[i] != '') {
-					//fmd.getElementById(user.groups[i]+"Head").style.color = "red";
 					if (roster.hiddenGroups[user.groups[i]])
 						fmd.images[user.groups[i]+"Img"].src = arrow_right_blinking.src;
 				}					
 			}
     }
 
-		// send back to server
-    if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
-			if (enableLog && typeof(loghost) != 'undefined')
-				fhdLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body)+"&cid="+msgEscape(user.chatW.cid));
-		} else {
-			if (enableLog && typeof(loghost) != 'undefined')
-				fCBLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body),storeCID,user.jid);
+		// send back to server - [TODO]
+		if (enableLog && typeof(loghost) != 'undefined') {
+			var aIQ = new JSJaCIQ();
+			aIQ.setType('set');
+			aIQ.setTo(loghost);
+			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+			aNode.appendChild(aMessage.getNode().cloneNode(true));
+			if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
+				aNode.setAttribute('cid',user.chatW.cid);
+				con.send(aIQ);
+			} else
+				con.send(aIQ,storeCID,user.jid);
 		}
-
-  } else if (jabber.type == 'groupchat') {
+  } else if (type == 'groupchat') {
 
       /* handle groupchat message 
        */
 
-    user.chatmsgs = user.chatmsgs.concat(jabber);
+    user.chatmsgs = user.chatmsgs.concat(aMessage);
     if (user.chatW && !user.chatW.closed && user.chatW.srcW && typeof(user.chatW.srcW.roster) != 'undefined' && user.chatW.popMsgs) {
       user.chatW.popMsgs();
     } 
@@ -533,11 +550,7 @@ function handleMessage(jabber) {
     
   } else {
 
-      /* must have been an offline message - handle as normal message as
-       * opening a chat window doesn't make sense most probably 
-       */
-
-    user.messages = user.messages.concat(jabber);
+    user.messages = user.messages.concat(aMessage);
     if (autoPopup && (autoPopupAway || onlstat == "available" || onlstat == "chat") && (!user.mW || user.mW.closed)) {
       aRoster.openMessage(from);
       playSound('message_recv');
@@ -551,7 +564,6 @@ function handleMessage(jabber) {
 			// let arrow blink for toggled groups
 			for (var i in user.groups) {
 				if (user.groups[i] != '') {
-					//fmd.getElementById(user.groups[i]+"Head").style.color = "red";
 					if (roster.hiddenGroups[user.groups[i]])
 						fmd.images[user.groups[i]+"Img"].src = arrow_right_blinking.src;
 				}					
@@ -559,9 +571,15 @@ function handleMessage(jabber) {
 
     }
 
-		// store message
+		// store message - [TODO]
 		if (enableLog && typeof(loghost) != 'undefined')
-			fhdLoad("archive-set","?sid="+sid+"&to="+loghost+"&msg_from="+msgEscape(jabber.from)+"&msg_body="+msgEscape(jabber.body));
+			var aIQ = new JSJaCIQ();
+			aIQ.setType('set');
+			aIQ.setTo(loghost);
+			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+			aNode.appendChild(aMessage.getNode().cloneNode(true));
+			con.send(aIQ);
   }
 
 }
@@ -572,14 +590,27 @@ function handleMessage(jabber) {
  */
 var error_messages = new Array();
 var errorW;
-function handleMessageError(jabber) {
+function handleMessageError(aJSJaCPacket) {
 
-	if (jabber.type != 'error')
+	if (aJSJaCPacket.getType() != 'error')
 		return;
 
-	Debug.log(jabber,1);
+	Debug.log(aJSJaCPacket.getDoc().xml,3);
 
-	error_messages = error_messages.concat(jabber);
+	var user = roster.getUserByJID(cutResource(aJSJaCPacket.getFrom()));
+
+	if (user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
+		var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
+		if (error) {
+			if (error.getElementsByTagName('text').item(0)) {
+				user.chatW.putMsgHTML(error.getElementsByTagName('text').item(0).firstChild.nodeValue,new Date(),aJSJaCPacket.getFrom(),null,true);
+				playSound('error');
+				return;
+			}
+		}
+	}
+
+	error_messages = error_messages.concat(aJSJaCPacket);
 
 	if (!errorW || errorW.closed)
 		errorW = open("error_message.html","errorW"+makeWindowName(jid),"width=360,height=270,dependent=yes,resizable=yes");
@@ -596,30 +627,48 @@ function handleMessageError(jabber) {
  ************************************************************************
  */
 
-function handlePresence(jabber) {
-  var from = cutResource(jabber.from);
+function handlePresence(presence) {
+	Debug.log(presence.getDoc().xml,2);
+
+  var from = cutResource(presence.getFrom());
+	var type = presence.getType();
+	var show = presence.getShow();
+	var status = presence.getStatus();
+
   var aRoster = roster;
 
   if (from == cutResource(jid)) // skip my own presence msgs
     return;
 
-  if (!is.ie)
-    Debug.log(jabber,2);
-
-  if (jabber.type) {
-    if (jabber.type == 'subscribe') {
+  if (type) {
+    if (type == 'subscribe') {
 			if (isGateway(from)) { // automatically subscribe to gateways
-				fhdLoad("presence","?sid="+sid+"&to="+jabber.from+"&type=subscribed");
+				var aPresence = new JSJaCPresence();
+				aPresence.setTo(from);
+				aPresence.setType('subscribed');
+				con.send(aPresence);
 			}
 			else
-				window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(jabber.status),"sr"+makeWindowName(from),"width=320,height=240");
+				if (status)
+					window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(status),"sr"+makeWindowName(from),"width=320,height=240");
+				else
+					window.open("subscriptionRequest.html?jid="+escape(from),"sr"+makeWindowName(from),"width=320,height=240");
 
       return;
     }
-    if (jabber.type == 'unsubscribe')
-      alert(loc("You have been unsubscribed from [_1]", jabber.from));
+    if (type == 'unsubscribe')
+      alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
 
-		if (jabber.type == 'error' && typeof(jabber.o) != 'undefined') {
+		if (type == 'error') { // [TODO]
+
+			var user = roster.getUserByJID(from);
+			if (user && user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
+				if (presence.getNode().getElementsByTagName('error').item(0)) {
+					var error = presence.getNode().getElementsByTagName('error').item(0);
+					if (error.getElementsByTagName('text').item(0))
+						user.chatW.putMsgHTML(error.getElementsByTagName('text').item(0).firstChild.nodeValue,new Date(),from,null,true);
+				}
+			}
 // 			for (var i in jabber.o) {
 // 				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
 // 					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
@@ -632,146 +681,164 @@ function handlePresence(jabber) {
   if (!user) // presence from unsubscribed user
     return;
 
-	/* handle presence for groupchat roster */
-  if (jabber.o && user.roster) { // seems to be a special presence (assumed to be for MUC)
-    Debug.log("opresence: " + jabber.o,3);
-    
-    var ofrom = jabber.from.substring(jabber.from.indexOf('/')+1);
+	/* handle presence for MUC */
+	var x;
+	for (var i=0; i<presence.getNode().getElementsByTagName('x').length; i++)
+		if (presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/muc#user') {
+			x = presence.getNode().getElementsByTagName('x').item(i);
+			break;
+		}
 
-    Debug.log("jabber.from:"+jabber.from+", ofrom:"+ofrom,3);
+  if (user.roster && x) { 
+    var ofrom = presence.getFrom().substring(presence.getFrom().indexOf('/')+1);
 
-    var ouser = user.roster.getUserByJID(jabber.from);
+    Debug.log("jabber.from:"+presence.getFrom()+", ofrom:"+ofrom,3);
+
+    var ouser = user.roster.getUserByJID(presence.getFrom());
     if (!ouser) // no user? create one!
-      ouser = new GroupchatRosterUser(jabber.from,ofrom);
+      ouser = new GroupchatRosterUser(presence.getFrom(),ofrom);
 
-    /* grep for extended attributes */
+		var item = x.getElementsByTagName('item').item(0);
+
+		ouser.affiliation = item.getAttribute('affiliation');
+		ouser.role = item.getAttribute('role');
+		ouser.nick = item.getAttribute('nick');
+		ouser.realjid = item.getAttribute('jid');
+		if (item.getElementsByTagName('reason').item(0))
+			ouser.reason = item.getElementsByTagName('reason').item(0).firstChild.nodeValue;
+		if (item.getElementsByTagName('actor').item(0))
+			ouser.actor = item.getElementsByTagName('actor').item(0).firstChild.nodeValue;
+		
+		if (ouser.role != '') {
+			ouser.add2Group(ouser.role+'s');
+			
+			/* check if it is our own presence
+			 * must be done here cause we want to be sure that role != ''
+			 */
+            
+			if (ouser.name == user.roster.nick) { // seems to be me
+				user.roster.me = ouser; // store this reference
+				if (user.chatW.updateMe)
+					user.chatW.updateMe();
+			}
+		}
+
+		Debug.log("ouser.jid: "+ ouser.jid + ", ouser.fulljid:" + ouser.fulljid + ", ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,3);
+
+
 		var nickChanged = false;
-    for (var i in jabber.o) {
-      if (jabber.o[i].tagname = 'x' && jabber.o[i].o) {
-        for (var j in jabber.o[i].o) {
-          if (jabber.o[i].o[j].tagname == 'item') {
-						var item = jabber.o[i].o[j];
-						ouser.affiliation = item.affiliation;
-						ouser.role = item.role;
-						ouser.nick = item.nick;
-						ouser.realjid = item.jid;
-						ouser.reason = item.reason;
-						if (item.o) {
-							for (var k in item.o) {
-								if (item.o[k].tagname = 'actor')
-									ouser.actor = item.o[k].jid;
-							}
-						}
-
-            Debug.log("ouser.jid: "+ ouser.jid + ", ouser.fulljid:" + ouser.fulljid + ", ouser.name:"+ouser.name+", user.roster.nick:"+user.roster.nick,3);
-
-
-						if (item.role != '') {
-							ouser.add2Group(ouser.role+'s');
-            
-							/* check if it is our own presence
-							 * must be done here cause we want to be sure that role != ''
-							 */
-            
-							if (ouser.name == user.roster.nick) { // seems to be me
-								user.roster.me = ouser; // store this reference
-								if (user.chatW.updateMe)
-									user.chatW.updateMe();
-							}
-						}
-          }
+		if (x.getElementsByTagName('status').item(0)) {
+			var code = x.getElementsByTagName('status').item(0).getAttribute('code');
+			switch (code) {
+			case '201': // room created
+				/* popup dialog to ask for whether to accept default
+				 * configuration or make a custom room 
+				 */
+				if (confirm(loc("A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\nNote: Click on 'Cancel' to start with a default configuration!")))
+					user.chatW.openConfig();
+				else {
+					var iq = new JSJaCIQ();
+					iq.setType('set');
+					iq.setTo(user.jid);
+					var query = iq.setQuery('http://jabber.org/protocol/muc#owner');
+					var x = query.appendChild(iq.getDoc().createElement('x'));
+					x.setAttribute('xmlns','jabber:x:data');
+					x.setAttribute('type','submit');
+					
+					con.send(iq);
 				}
-        for (var j in jabber.o[i].o) {
-					if (jabber.o[i].o[j].tagname == 'status' && typeof(jabber.o[i].o[j].code) != 'undefined') {
-						switch (jabber.o[i].o[j].code) {
-						case '201': // room created
-							/* popup dialog to ask for whether to accept default
-							 * configuration or make a custom room 
-							 */
-							if (confirm(loc("A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\nNote: Click on 'Cancel' to start with a default configuration!")))
-								user.chatW.openConfig();
-							else
-								fhdLoad("iq","?sid="+sid+"&to="+msgEscape(user.jid)+"&ns=http://jabber.org/protocol/muc%23owner&set="+escape("<x xmlns='jabber:x:data' type='submit'/>"));
-							break;
-						case '303': // nick change
-							// display message
-							if (!ouser.nick)
-								return;
+				break;
+			case '303': // nick change
+				// display message
+				if (!ouser.nick)
+					return;
 
-							var aMessage = new Object();
-							aMessage.from = user.jid;
-							aMessage.body = loc("[_1] is now known as [_2]",ouser.name, ouser.nick);
-							user.chatmsgs = user.chatmsgs.concat(aMessage);
-							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
-								user.chatW.popMsgs();			
+				var aMessage = new JSJaCMessage();
+				aMessage.setFrom(user.jid);
+				aMessage.setBody(loc("[_1] is now known as [_2]",ouser.name, ouser.nick));
+				user.chatmsgs = user.chatmsgs.concat(aMessage);
+				if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+					user.chatW.popMsgs();
 
-							// update nick if it's me
-							if (ouser.name == user.roster.nick)
-								user.roster.nick = ouser.nick;
+				// update nick if it's me
+				if (ouser.name == user.roster.nick)
+					user.roster.nick = ouser.nick;
 
-							// remove old user
-							var aChatW = ouser.chatW;
-							user.roster.removeUser(ouser);
+				// remove old user
+				var aChatW = ouser.chatW;
+				user.roster.removeUser(ouser);
 
-							// add new user
-							ouser = new GroupchatRosterUser(jabber.from.substring(0,jabber.from.lastIndexOf('/')+1).concat(ouser.nick),ouser.nick);
+				// add new user
+				ouser = new GroupchatRosterUser(presence.getFrom().substring(0,presence.getFrom().lastIndexOf('/')+1).concat(ouser.nick),ouser.nick);
 
-							if (aChatW && !aChatW.closed) {
-								ouser.chatW = aChatW;
-								ouser.chatW.user = ouser;
-							}
-							user.roster.addUser(ouser);
-							nickChanged = true;
-							break;
-						case '301': // user has been kicked
-							var aMessage = new Object();
-							aMessage.from = user.jid;
-							aMessage.body = loc("[_1] has been banned by [_2]: [_3]",ouser.name,ouser.actor,ouser.reason);
-							user.chatmsgs = user.chatmsgs.concat(aMessage);
-							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
-								user.chatW.popMsgs();			
+				if (aChatW && !aChatW.closed) {
+					ouser.chatW = aChatW;
+					ouser.chatW.user = ouser;
+				}
+				user.roster.addUser(ouser);
+				nickChanged = true;
+				break;
+			case '301': // user has been kicked
+				var aMessage = new JSJaCMessage();
+				aMessage.setFrom(user.jid);
+				var body;
+				if (ouser.actor)
+					body = loc("[_1] has been banned by [_2]",ouser.name,ouser.actor);
+				else
+					body = loc("[_1] has been banned",ouser.name);
+				if (ouser.reason)
+					body += ": " + ouser.reason;
+				aMessage.setBody(body);
+				user.chatmsgs = user.chatmsgs.concat(aMessage);
+				if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+					user.chatW.popMsgs();			
+				
+				playSound('chat_recv');
+				break;
+			case '307': // user has been kicked
+				var aMessage = new JSJaCMessage();
+				aMessage.setFrom(user.jid);
+				var body;
+				if (ouser.actor)
+					body = loc("[_1] has been kicked by [_2]",ouser.name,ouser.actor);
+				else
+					body = loc("[_1] has been kicked",ouser.name);
+				if (ouser.reason)
+					body += ": " + ouser.reason;
+				aMessage.setBody(body);
+				user.chatmsgs = user.chatmsgs.concat(aMessage);
+				if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
+					user.chatW.popMsgs();	
 							
-							playSound('chat_recv');
-							break;
-						case '307': // user has been kicked
-							var aMessage = new Object();
-							aMessage.from = user.jid;
-							aMessage.body = loc("[_1] has been kicked by [_2]: [_3]",ouser.name,ouser.actor,ouser.reason);
-							user.chatmsgs = user.chatmsgs.concat(aMessage);
-							if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
-								user.chatW.popMsgs();			
-							
-							playSound('chat_recv');
-							break;
-						}
-					}
-        }
-      }
-    }
+				playSound('chat_recv');
+				break;
+			}
+		}
 
     Debug.log("<"+ouser.name+"> affiliation:"+ouser.affiliation+", role:"+ouser.role,3);
 
-    if (!user.roster.getUserByJID(jabber.from) && !nickChanged) {
+    if (!user.roster.getUserByJID(presence.getFrom()) && !nickChanged) {
 			// add user
       user.roster.addUser(ouser);
 
 			// show join message
-			var aMessage = new Object();
-			aMessage.from = user.jid;
-			aMessage.body = loc("[_1] has become available",ouser.name);
+			var aMessage = new JSJaCMessage();
+			aMessage.setFrom(user.jid);
+			aMessage.setBody(loc("[_1] has become available",ouser.name));
 			user.chatmsgs = user.chatmsgs.concat(aMessage);
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 				user.chatW.popMsgs();			
 
 			playSound('online');
 
-    } else if (jabber.type && jabber.type == 'unavailable' && !nickChanged) {
+    } else if (presence.getType() == 'unavailable' && !nickChanged) {
 			// show part message
-			var aMessage = new Object();
-			aMessage.from = user.jid;
-			aMessage.body = loc("[_1] has left",ouser.name);
-			if (jabber.status)
-				aMessage.body += ": " + jabber.status;
+			var aMessage = new JSJaCMessage();
+			aMessage.setFrom(user.jid);
+			var body = loc("[_1] has left",ouser.name);
+			if (presence.getStatus())
+				body += ": " + presence.getStatus();
+			aMessage.setBody(body);
 			user.chatmsgs = user.chatmsgs.concat(aMessage);
 			if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 				user.chatW.popMsgs();			
@@ -786,14 +853,14 @@ function handlePresence(jabber) {
     user = ouser;
   } 
 
-  if (jabber.show) {
+  if (show) {
     if (user.status == 'unavailable')
       playSound('online');
-		if (jabber.show == 'online') // quick fix for JIT which sends this presence ...
-			jabber.show = 'available';
-    user.status = jabber.show;
-  } else if (jabber.type) {
-    if (jabber.type == 'unsubscribe') {
+		if (show == 'online') // quick fix for JIT which sends this presence ...
+			show = 'available';
+    user.status = show;
+  } else if (type) {
+    if (type == 'unsubscribe') {
       user.subscription = 'from';
       user.status = 'stalker';
     } else if (user.status != 'stalker')
@@ -816,13 +883,13 @@ function handlePresence(jabber) {
     user.lastsrc = img.src;
   
   // show away message
-  if (jabber.status)
-    user.statusMsg = jabber.status;
+  if (status)
+    user.statusMsg = status;
   else
     user.statusMsg = null;
   
 	// update presence indicator of chat window
-	if (user.chatW && !user.chatW.closed) 
+	if (user.chatW && !user.chatW.closed && user.chatW.updateUserPresence) 
 		user.chatW.updateUserPresence();
 
   aRoster.print(); // update roster
@@ -833,437 +900,401 @@ function handlePresence(jabber) {
  ************************************************************************
  */
 
-function handleIQSet(jabber) {
-  if (jabber.type != "set")
+function handleIQSet(iq) {
+  if (iq.getType() != "set") {
+		Debug.log("not handling iq:\n"+iq.getDoc().xml,3);
     return;
+	}
 
-  Debug.log("got iq type 'set':\n"+jabber,2);
-  
-  for (var i in jabber.items) {
-    var item = jabber.items[i];
-    var user = roster.getUserByJID(cutResource(item.jid));
+  Debug.log("got iq type 'set':\n"+iq.getDoc().xml,2);
+
+	if (iq.getQueryXMLNS() != 'jabber:iq:roster') { // only handle roster items so far
+		Debug.log("not handling iq:\n"+iq.getDoc().xml,1);
+		return;
+	}
+
+  for (var i=0; i<iq.getQuery().childNodes.length; i++) {
+    var item = iq.getQuery().childNodes.item(i);
+    var user = roster.getUserByJID(cutResource(item.getAttribute('jid')));
     if (user) {
-      user.subscription = item.subscription;
-      if (item.subscription == 'remove') {
+      user.subscription = item.getAttribute('subscription');
+      if (item.getAttribute('subscription') == 'remove') {
 				Debug.log("removing user " + user.jid,2);
         roster.removeUser(user);
       } else { // update user
-        item.name = item.name? item.name : item.jid;
-        user.name = item.name;
-        user.groups = item.groups;
+        user.name = item.getAttribute('name')? item.getAttribute('name') : item.getAttribute('jid');
+        user.groups = new Array('');
+				for (var j=0; j<item.childNodes.length; j++)
+					if (item.childNodes.item(j).nodeName == 'group')
+						user.groups = user.groups.concat(item.childNodes.item(j).firstChild.nodeValue);
         roster.updateGroups();
       }
+			if (item.getAttribute('subscription') == "from")
+				openSubscription(item.getAttribute('jid')); // subscribe to user
     } else {// got a new user
-			if (isGateway(item.jid)) { // auto add
+			if (isGateway(cutResource(item.getAttribute('jid')))) { // auto add
 				// get name
-				item.name = item.jid;
-				for (var i in disco.items)
-					if (disco.items[i].jid == cutResource(item.jid))
-						item.name = disco.items[i].name;
+				var name = cutResource(item.getAttribute('jid'));
+				for (var i in disco)
+					if (i == cutResource(item.getAttribute('jid')))
+						name = disco[i].getQuery().getElementsByTagName('identity').item(0).getAttribute('name');
 
 				// add to roster
-				var aUser = new RosterUser(cutResource(item.jid),item.subscription,["Gateways"],item.name);
-				aUser.fulljid = item.jid;
+				var aUser = new RosterUser(cutResource(item.getAttribute('jid')),item.getAttribute('subscription'),["Gateways"],name);
+				aUser.fulljid = item.getAttribute('jid');
 				roster.addUser(aUser);
 
 				// tell server about it
-				fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group=Gateways");
+				var aIQ = new JSJaCIQ();
+				aIQ.setType('set');
+				var query = aIQ.setQuery('jabber:iq:roster');
+				var aItem = query.appendChild(aIQ.getDoc().createElement('item'));
+				aItem.setAttribute('jid',cutResource(item.getAttribute('jid')));
+				aItem.setAttribute('name',name);
+				aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode('Gateways'));
 
-				// send subscription
-				/*				if (item.subscription == "from")
-				 * fhdLoad("presence","?sid="+sid+"&to="+item.jid+"&type=subscribe");*/
+				con.send(aIQ);
 			} else {
-				if (typeof(item.name) == 'undefined' || item.name == '')
-					item.name = item.jid;
-				
-				roster.addUser(new RosterUser(item.jid,item.subscription,item.groups,item.name));
+        var name = item.getAttribute('name')? item.getAttribute('name') : item.getAttribute('jid');
+				if (name.indexOf('@') != -1)
+					name = name.substring(0,name.indexOf('@'));
 
-				var groups = '';
-				for (var i in item.groups)
-					if (item.groups[i] != '')
-						groups += item.groups[i] + ";";
-				if (groups != '')
-					fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name+"&group="+groups); // don't set groups
-				else
-					fhdLoad("roster","?sid="+sid+"&jid="+item.jid+"&name="+item.name); // don't set groups
-				//				openUserProps(item.jid);
-				if (item.subscription == "from")
-					openSubscription(item.jid); // subscribe to user
+				item.setAttribute('name',name);
+        var groups = new Array('');
+				for (var j=0; j<item.childNodes.length; j++)
+					if (item.childNodes.item(j).nodeName == 'group')
+						groups = groups.concat(item.childNodes.item(j).firstChild.nodeValue);
+				
+				roster.addUser(new RosterUser(item.getAttribute('jid'),item.getAttribute('subscription'),groups,name));
+
+				var aIQ = new JSJaCIQ();
+				aIQ.setType('set');
+				var query = aIQ.setQuery('jabber:iq:roster');
+
+				var aItem = item.cloneNode(true);
+				aItem.removeAttribute('subscription');
+				query.appendChild(aItem);
+
+				con.send(aIQ); // set stripped name
+
+				if (item.getAttribute('subscription') == "from")
+					openSubscription(item.getAttribute('jid')); // subscribe to user
 			}
     }
   }
   roster.print();
 }
 
-/************************************************************************
- * handleIQResult
- ************************************************************************
- */
-	
-function handleIQResult(jabber) {
-  if (!jabber) // nothing to do
-    return;
-
-  if (jabber.type != 'result' && jabber.type != 'error') // error handling should be done
-                                                         // inside specific iq handler
-    return;
-
-  Debug.log("got iq type 'result':\n"+jabber,2);
+function handleConError(e) {
+	switch (e.getAttribute('code')) {
+	case '401':
+		alert(loc("Authorization failed"));
+		if (!con.connected())
+			window.close();
+		break;
+	case '409':
+		alert(loc('Registration failed!\n\nPlease choose a different username!'));
+		break;
+	case '503':
+		alert(loc("Service unavailable"));
+		break;
+	case '500':
+		if (!con.connected())
+			if (confirm(loc("Internal Server Error.\n\nDisconnected.\n\nReconnect?")))
+				changeStatus(onlstat,onlmsg);
+		break;
+	default:
+		alert("An Error Occured:\nCode: "+e.getAttribute('code')+"\nType: "+e.getAttribute('type')+"\nCondition: "+e.firstChild.nodeName); // this shouldn't happen :)
+		break;
+	}
 }
 
-registerHandler("message",handleMessage);
-registerHandler("message",handleMessageError);
-registerHandler("presence",handlePresence);
-registerHandler("iq",handleIQSet);
-registerHandler("iq",handleIQResult);
+function handleDisconnect() {
+	if (logoutCalled || onlstat == 'offline')
+		return;
 
-/************************************************************************
- * handleCB
- * handles the registered Callback from fCBLoad
- ************************************************************************
- */
-function handleCB(jabber) {
-  jabber = jabber || frames['jwc_cb'].jabber;
-	
-	if (!jabber) // nothing to do
-    return;
+	// disconnecting not with onunload handler triggered
+	statusLed.src = unavailableLed.src; // offline icon
+	statusMsg.value = '';
 
-  Debug.log(jabber,3);
+  fmd.getElementById('roster').innerHTML = '';
 
-	if (registeredCBs.length == 0) {
-		Debug.log("no callbacks registered ... aborting!",1);
+// 	if (confirm(loc("Disconnected\n\nReconnect?")))
+// 		changeStatus(onlstat,onlmsg);
+}
+
+function handleConnected() {
+
+	Debug.log("Connected",0);
+
+	if (register && opener && opener.document.forms[0] && opener.document.forms[0].register)
+		opener.document.forms[0].register.checked = false; 
+
+	/* get/setup roster */
+	iq = new JSJaCIQ();
+	iq.setIQ(null,null,'get','roster_1');
+	iq.setQuery('jabber:iq:roster');
+	con.send(iq,getRoster); // cascading information retrieval
+}
+
+/* *** cascading onconnect handlers *** */
+function getRoster(iq) {
+	if (!iq || iq.getType() != 'result') {
+		if (iq)
+			Debug.log("Error fetching roster:\n"+iq.getDoc().xml,1);
+		else
+			Debug.log("Error fetching roster",1);
 		return;
 	}
 
-	/* loop registered callbacks */
+	Debug.log("got roster:\n"+iq.getDoc().xml,2);
+	
+	roster = new Roster(iq.getQuery().childNodes,fmd);
+	roster.usersHidden = usersHidden;
+	roster.nick = jid.substring(0,jid.indexOf('@')); // remember nick for 1:1 Chats
 
-	for (var i=0; i<registeredCBs.length; i++) {
-		if (typeof(registeredCBs[i].func) != 'undefined' && registeredCBs[i].func) {
-			if (registeredCBs[i].args)
-			 	registeredCBs[i].func(jabber,registeredCBs[i].args);
-			else
-			 	registeredCBs[i].func(jabber);
-			 
+	// get saved state
+	iq = new JSJaCIQ();
+	iq.setIQ(null,null,'get','jwchat_state');
+	var query = iq.setQuery('jabber:iq:private');
+	query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:state');
+
+	con.send(iq,getSavedState);
+}
+
+function getSavedState(iq) {
+	if (!iq || iq.getType() != 'result')
+		if (iq)
+			Debug.log("Error retrieving saved state:\n"+iq.getDoc().xml,1);
+		else
+			Debug.log("Error retrieving saved state",1);
+			
+	if (iq && iq.getType() == 'result') {
+		Debug.log(iq.getDoc().xml,3);
+		var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
+		for (var i=0; i<jNode.childNodes.length; i++) {
+			var item = jNode.childNodes.item(i);
+			if (item.nodeName == 'presence' && item.firstChild && onlstat == '')
+				onlstat = item.firstChild.nodeValue;
+			if (item.nodeName == 'hiddenGroups' && item.firstChild) {
+				var hiddenGroups = item.firstChild.nodeValue.split(',');
+				for (var j in hiddenGroups)
+					if (hiddenGroups[j] != '')
+						roster.hiddenGroups[hiddenGroups[j]] = true;
 			}
-			else
-				Debug.log("No callback assigned for this query",1);
+		}
+	}
 
-		/* remove callback from list */
+	// get prefs
+	iq = new JSJaCIQ();
+	iq.setIQ(null,null,'get','jwchat_prefs');
+	var query = iq.setQuery('jabber:iq:private');
+	query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:prefs');
 
-		registeredCBs = registeredCBs.slice(0,i).concat(registeredCBs.slice(i+1,registeredCBs.length));
+	con.send(iq,getPrefs);
+}
 
+function getPrefs(iq) {
+	if (!iq || iq.getType() != 'result')
+		if (iq)
+			Debug.log("Error retrieving preferences:\n"+iq.getDoc().xml,1);
+		else
+			Debug.log("Error retrieving preferences",1);
+
+	if (iq && iq.getType() == 'result') {
+		Debug.log(iq.getDoc().xml,3);
+		if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
+			var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
+			for (var i=0; i<jNode.childNodes.length; i++) {
+				switch (jNode.childNodes.item(i).nodeName) {
+				case 'usersHidden':
+					if (eval(jNode.childNodes.item(i).firstChild.nodeValue))
+						roster.toggleHide();
+					break;
+				case 'timerval':
+					timerval = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'autoPopup':
+					autoPopup = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'autoPopupAway':
+					autoPopupAway = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'playSounds':
+					playSounds = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'focusWindows':
+					focusWindows = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'timestamps':
+					timestamps = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				case 'enableLog':
+					enableLog = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+					break;
+				}
+			}
+		}
+	}
+
+	// print roster
+	roster.print();
+
+	// send presence
+	if (onlstat == '')
+		onlstat = 'available';
+	changeStatus(onlstat);
+
+	playSound('connected');
+
+	// start polling
+	con.process(timerval);
+
+	// Start Service Discovery
+	iq = new JSJaCIQ();
+	iq.setIQ(con.server,null,'get','disco_item_1');
+	iq.setQuery('http://jabber.org/protocol/disco#items');
+
+	con.send(iq,getDiscoItems);
+
+	// get bookmarks
+	iq = new JSJaCIQ();
+	iq.setIQ(null,null,'get','storage_bookmarks');
+	var query = iq.setQuery('jabber:iq:private');
+	query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:bookmarks');
+
+	con.send(iq,getBookmarks);
+
+	// get annotations
+	iq = new JSJaCIQ();
+	iq.setIQ(null,null,'get','jwchat_notes');
+	var query = iq.setQuery('jabber:iq:private');
+	query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:notes');
+
+	con.send(iq,getAnnotations);
+}
+
+function getDiscoItems(iq) {
+	if (!iq)
+		return;
+	
+	var items = iq.getNode().firstChild.childNodes;
+
+	/* query items */
+	for (var i=0; i<items.length; i++) {
+		if (items[i].nodeName != 'item' || !items[i].getAttribute('jid') || items[i].getAttribute('node')!=null) // skip those
+			continue;
+		var aIQ = new JSJaCIQ();
+		aIQ.setIQ(items[i].getAttribute('jid'),null,'get','disco_info_'+i);
+		aIQ.setQuery("http://jabber.org/protocol/disco#info");
+		
+		con.send(aIQ,getDiscoInfo);
 	}
 }
 
-/************************************************************************
- *                  ***** CALLBACKS from fCBLoad *****
- ************************************************************************
- */
+var disco = new Array();
+function getDiscoInfo(iq) {
+	if (!iq || iq.getType() != 'result')
+		return;
 
-var annotations = new Array();
-function handleAnnotations(jabber) {
-	if (jabber)
-		Debug.log(jabber,2);
-
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		Debug.log(jabber,1);
-
-	if (jabber && !(jabber.error || jabber.type == 'error')) {
-		if (jabber.browse.o[0] && jabber.browse.o[0].tagname == 'jwchat' && jabber.browse.o[0].o) {
-			for (var i in jabber.browse.o[0].o) {
-				if (jabber.browse.o[0].o[i].tagname == 'item') {
-					var item = jabber.browse.o[0].o[i];
-					annotations[item.jid] = item.data;
+	Debug.log(iq.getDoc().xml,3);
+	if (iq.getType() == 'result') {
+		disco[iq.getFrom()] = iq;
+		
+		// set loghost
+		if (iq.getNode().getElementsByTagName('identity').item(0)) {
+			if (iq.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'store') {
+				for (var j=0; j<iq.getNode().getElementsByTagName('feature').length; j++) {
+					if (iq.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'http://jabber.org/protocol/archive') {
+						loghost = iq.getFrom();
+						break;
+					}
 				}
 			}
-		}	
+		}
 	}
-
-	// start service discovery
-	fCBLoad("iq","?sid="+sid+"&to="+JABBERSERVER+"&ns=http://jabber.org/protocol/disco%23items",handleDiscoItemResult); 
 }
 
 var bookmarks = new Array();
-function handleBookmarks(jabber) {
-	if (jabber)
-		Debug.log(jabber,2);
+function getBookmarks(iq) {
+	if (!iq || iq.getType() != 'result')
+		return;
 
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		Debug.log(jabber,1);
+	Debug.log(iq.getDoc().xml,3);
 
-	if (jabber && !(jabber.error || jabber.type == 'error')) {
+	if (iq.getNode().getElementsByTagName('storage').item(0)) {
+		var jNode = iq.getNode().getElementsByTagName('storage').item(0);
+		for (var i=0; i<jNode.childNodes.length; i++) {
+			var item = jNode.childNodes.item(i);
+			if (item.nodeName == 'conference') {
+				var bookmark = new Object();
+				bookmark.jid = item.getAttribute('jid');
+				bookmark.name = item.getAttribute('name');
+				if (item.getAttribute('autojoin') == '1')
+					bookmark.autojoin = '1';
+				if (item.getElementsByTagName('nick').item(0))
+					bookmark.nick = item.getElementsByTagName('nick').item(0).firstChild.nodeValue;
+				if (item.getElementsByTagName('pass').item(0))
+					bookmark.pass = item.getElementsByTagName('pass').item(0).firstChild.nodeValue;
+				bookmarks[bookmarks.length] = bookmark;
+				if (bookmark.autojoin == '1') {
+					openGroupchat(bookmark.jid, bookmark.nick, bookmark.pass);
+				}
+			}
+		}
+	}
+}
+
+var annotations = new Array();
+function getAnnotations(iq) {
+	if (!iq || iq.getType() != 'result')
+		return;
 	
-		for (i in jabber.browse.o) {
-			var idx = 0;
-			if (jabber.browse.o[i].tagname == 'storage') {
-				for (var j in jabber.browse.o[i].o) {
-					var bookmark = jabber.browse.o[i].o[j];
-					
-					if (bookmark.tagname != 'conference')
-						continue;
-					
-					bookmarks[idx++] = bookmark; // store bookmark
-					
-					// do autojoin
-					if (bookmark.autojoin == '1')
-						openGroupchat(bookmark.jid,bookmark.nick,bookmark.pass);
-				}
-			}
+	Debug.log(iq.getDoc().xml,3);
+	
+	if (iq.getType() == 'result') {
+		if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
+			var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
+			for (var i=0; i<jNode.childNodes.length; i++)
+				if (jNode.childNodes.item(i).nodeName == 'item')
+					annotations[jNode.childNodes.item(i).getAttribute('jid')] = jNode.childNodes.item(i).firstChild.nodeValue;
 		}
 	}
-
-	// get annotations
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:notes' />"),handleAnnotations);
 }
 
-function handlePrefs(jabber) {
-	if (jabber)
-		Debug.log(jabber,2);
-
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		Debug.log(jabber,1);
-
-	if (jabber && !(jabber.error || jabber.type == 'error')) {
-		for (var i in jabber.browse.o) {
-			var item = jabber.browse.o[i];
-			if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:prefs') {
-				if (eval(item.usersHidden))
-					roster.toggleHide();
-				if (typeof(item.timerval) != 'undefined' && !isNaN(item.timerval))
-					timerval = item.timerval;
-				if (typeof(item.autoPopup) != 'undefined' && item.autoPopup != 'undefined')
-					autoPopup = eval(item.autoPopup);
-				if (typeof(item.autoPopupAway) != 'undefined' && item.autoPopupAway != 'undefined')
-					autoPopupAway = eval(item.autoPopupAway);
-				if (typeof(item.playSounds) != 'undefined' && item.playSounds != 'undefined')
-					playSounds = eval(item.playSounds);
-				if (typeof(item.focusWindows) != 'undefined' && item.focusWindows != 'undefined')
-					focusWindows = eval(item.focusWindows);
-				if (typeof(item.timestamps) != 'undefined' && item.timestamps != 'undefined')
-					timestamps = eval(item.timestamps);
-				if (typeof(item.enableLog) != 'undefined' && item.enableLog != 'undefined')
-					enableLog = eval(item.enableLog);
-			}
-		}
-	}
-
-	// get bookmarks
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<storage xmlns='storage:bookmarks' />"),handleBookmarks);
-}
-
-function handleSavedState(jabber) {
-	if (jabber)
-		Debug.log(jabber,2);
-
-	if (jabber && (jabber.error || jabber.type == 'error'))
-		Debug.log(jabber,1);
-
-	if (jabber && !(jabber.error || jabber.type == 'error')) {
-		for (var i in jabber.browse.o) {
-			var item = jabber.browse.o[i];
-			if (item.tagname == 'jwchat' && item.xmlns == 'jwchat:state') {
-				if (typeof(item.presence) != 'undefined' && item.presence != 'undefined' && onlstat == 'login')
-					onlstat = item.presence;
-				
-				if (typeof(jabber.browse.o[i].hiddenGroups) != 'undefined'  && jabber.browse.o[i].hiddenGroups != '') {
-					var hiddenGroups = jabber.browse.o[i].hiddenGroups.split(",");
-					for (var i in hiddenGroups)
-						if (hiddenGroups[i] != '')
-							roster.hiddenGroups[hiddenGroups[i]] = true;
-					roster.print();
-				}
-			}
-		}
-	}
-
-	if (onlstat == 'login')
-		onlstat = 'available';
-	// send presence
-	changeStatus(onlstat);
-
-	// get prefs
-	fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:prefs' />"),handlePrefs);
-}
-
-var disco = new Object();
-var disco_info_count;
-function handleDiscoItemResult(jabber) {
-
-	Debug.log(jabber,2);
-
-	if (typeof(jabber.browse) == 'undefined' || typeof(jabber.browse.o) == 'undefined' || jabber.browse.o.length == 0) {
-		Debug.log("missing jabber.browse.o: " + jabber,1);
-	} else {
-
-  	var target;
-    if (jabber.from != JABBERSERVER)
-      Debug.log("target not yet implemented",1)
-	  else {
-      target = disco;
-		
-    	target.items = new Array();
-    	for (var i in jabber.browse.o) {
-		    var item = new Object();
-        item = jabber.browse.o[i];
-		    target.items = target.items.concat(item);
-      }
-	    // now start querying items
-      disco_info_count = 0;
-      fCBLoad("iq","?sid="+sid+"&to="+target.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
-      return;
-    }
-  }  
-  poll();
-}
-
-function handleDiscoInfoResult(jabber) {
-
-	Debug.log(jabber,2);
-
-	if (jabber.type == 'error' || typeof(jabber.browse) == 'undefined' || !jabber.browse.o)
-		disco.items[disco_info_count].error = true;
-	else {
-		disco.items[disco_info_count].info = new Array();
-		disco.items[disco_info_count].info = jabber.browse.o;
-
-		// check if we've got a loghost
-		var store_found = false;
-		var xmlns_found = false;
-		for (var i in disco.items[disco_info_count].info) {
-			var item = disco.items[disco_info_count].info[i];
-			if (item.tagname == 'identity' && item.category == 'store')
-				store_found = true;
-			if (item.tagname == 'feature' && item.far == 'http://jabber.org/protocol/archive')
-				xmlns_found = true;
-		}
-		if (store_found && xmlns_found)
-			loghost = jabber.from;
-
-	}
-
-	// query next item
-	disco_info_count++;
-	if (disco_info_count < disco.items.length)
-		fCBLoad("iq","?sid="+sid+"&to="+disco.items[disco_info_count].jid+"&ns=http://jabber.org/protocol/disco%23info",handleDiscoInfoResult);
-	else
-	 poll(); // now start polling
-}
 
 /************************************************************************
- *                       ****** END HANDLERS  ******* 
+ *                       ******  END HANDLERS  ******* 
  ************************************************************************
  */
 
 
 /************************************************************************
- *                       ******  MY OWN STATE  *******
+ *                           ******  INIT  *******
  ************************************************************************
  */
-
-function poll() {
-  if (sid == 0 || status != 'polling')
-    return;
-  if (is.ie5 || is.op)
-    frameLoad(frames["jwc_in"],"cache","?sid="+sid,"parent.handleEvent();");
-  else
-    frameLoad(frames["jwc_in"],"cache","?sid="+sid);
-}
-
-var groupchatsAt = 0;
-var groupchats = new Array();
-function handleSetGroupchatPresence(jabber,param) {
-	if (groupchats.length > groupchatsAt) {
-		fCBLoad("presence",param+"&to="+msgEscape(groupchats[groupchatsAt++]),handleSetGroupchatPresence,param);
-	}
-}
-
-function sendPresence2Groupchats(gc,val,away) {
-	groupchatsAt = 0;
-	groupchats = gc;
-	if (groupchats.length > 0) {
-		var param = "?sid="+sid+"&show="+val;
-		if (away && away != '')
-			param += "&status="+msgEscape(away);
-		fCBLoad("presence",param+"&to="+msgEscape(groupchats[groupchatsAt++]),handleSetGroupchatPresence,param);
-	}
-}
-
-function changeStatus(val,away) {
-  
-  Debug.log("changeStatus: "+val+","+away, 2);
-  
-  onlstat = val;
-	if (away)
-		onlmsg = away;
-  if (sid == 0) { // login first
-		status = 'sendPresence';
-    fhdLoad("login-sid","?jid=" + msgEscape(jid) + "&pass=" + msgEscape(pass) + "&timeout=" + timeout);
-    return;
-  }
-
-  var param = "?sid=" + sid;
-  
-  switch(val) {
-  case "unavailable":
-    val = "invisible";
-    param += "&type="+val;
-    break;
-  case "offline":
-    val = "unavailable";
-    fhdLoad("logout-sid","?sid=" + sid);
-    var img = eval(val+"Led");
-    statusLed.src = img.src;
-    if (away)
-      statusMsg.value = away;
-    else
-      statusMsg.value = onlstatus[val];
-    cleanUp();
-    return;
-    break;
-  case "available":
-    val = 'available'; // needed for led in status bar
-    if (away) {
-      param += "&status=" + msgEscape(away);
-    }
-		break;
-  default:
-    if (away) {
-      param += "&status=" + msgEscape(away);
-    }
-    param += "&show="+val;
-  }
-
-  fhdLoad("presence",param);
-
-  /* send presence to chatrooms
-   */
-  if (typeof(roster) != 'undefined') {
-		sendPresence2Groupchats(roster.getGroupchats(),val,away);
-  }
-
-  var img = eval(val+"Led");
-  if (sid != 0) {
-    statusLed.src = img.src;
-    if (away)
-      statusMsg.value = away;
-    else
-      statusMsg.value = onlstatus[val];
-  }
-}
-
+var con, Debug, srcW;
 function init() {
 
-  Debug.log("init: jid="+jid+", pass="+pass,2);
+	/* initialise debugger */
+	if (!Debug || typeof(Debug) == 'undefined' || !Debug.start) {
+		if (typeof(Debugger) != 'undefined')
+			Debug = new Debugger(DEBUG_LVL,'JWChat ' + cutResource(jid));
+		else {
+			Debug = new Object();
+			Debug.log = function() {};
+			Debug.start = function() {};
+		}
+	}
+	if (DEBUG || (USE_DEBUGJID && DEBUGJID == cutResource(jid)))
+		Debug.start();
 
-  /* get frames */
-  fhd = frames["jwc_out"].document;
+  Debug.log("jid: "+jid+"\npass: "+pass,2);
+
+  /* get some refs to static elements */
   statusLed = frames["jwc_main"].document.getElementById('statusLed');
   statusMsg = frames["jwc_main"].document.getElementById('statusMsg');
   fmd = frames["jwc_main"].iRoster.document;
-
-  /* login */
-  if (is.ie5 && !is.mac) // still needed? check this again!
-    frames["jwc_out"].document.body.attachEvent("onload",run);
   
   /* set title */
   document.title = "JWChat - " + nick;
@@ -1271,81 +1302,30 @@ function init() {
   /* set nick */
   frames["jwc_main"].document.getElementById('myNickname').innerHTML = nick;  
 
-  if (sid) {
-    status = 'sendPresence';
-		onlstat = 'available';
-    run();
-  } else {
-    changeStatus("login");
-  }
+	/* ***
+	 * create new connection
+	 */
+	con = new JSJaCHttpPollingConnection();
+
+	/* register handlers */
+	con.registerHandler('iq',handleIQSet);
+	con.registerHandler('presence',handlePresence);
+	con.registerHandler('message',handleMessage);
+	con.registerHandler('message',handleMessageError);
+	con.registerHandler('ondisconnect',handleDisconnect);
+	con.registerHandler('onconnect',handleConnected);
+	con.registerHandler('onerror',handleConError);
+
+	/* connect to remote */
+	con.connect(HTTPBASE,JABBERSERVER,jid.substring(0,jid.indexOf('@')),jid.substring(jid.indexOf('/')+1),pass,register);
 }
 
-function run() {
-  
-  Debug.log("status:" + status,3);
-	
-  switch (status) {
-  case 'sendPresence':
-    
-    var jabber = frames["jwc_out"].jabber;
-    if (jabber && jabber.error) { // seems to be a not registered user
-      if (typeof(pass) != 'undefined' && confirm(loc("Couldn't log in!\nCreate new account?"))) {
-        fhdLoad("pub/register","?jid="+msgEscape(jid)+"&pass="+msgEscape(pass));
-      } else {
-				if (typeof(pass) == 'undefined')
-					alert(loc("An error occured.\n\nYou need to restart this application from the login screen."));
-        window.close();
-      }
-      break;
-    }
-
-    status = 'getRoster';
-        
-    fmd.getElementById('roster').innerHTML = "<div style=\"padding: 4px;\"><l>Loading Roster...<br>Please wait!</l></div>";
-        
-    if (!sid && (!jabber || !jabber.sid)) {
-      changeStatus("available");
-      return;
-    }
-
-    if (!sid)
-      sid = jabber.sid;
-    
-    Debug.log("got sid:\n" + sid,2);
-
-    //changeStatus(onlstat);
-		//break;
-  case 'getRoster':
-    status = 'printRoster';
-    fhdLoad("roster","?sid="+sid);
-    break;
-  case 'printRoster':
-    status = 'polling';
-		Debug.log("got roster: "+frames["jwc_out"].jabber.items,2);
-    roster = new Roster(frames["jwc_out"].jabber.items,fmd);
-		roster.usersHidden = usersHidden;
-		roster.nick = jid.substring(0,jid.indexOf('@')); // remember nick for 1:1 Chats
-    roster.print();
-    
-    playSound('connected');
-
-		// get presence
-		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&get="+msgEscape("<jwchat xmlns='jwchat:state' />"),handleSavedState);
-
-    //poll();	// initial poll (not nice here)
-    break;
-  case 'polling':
-    break;
-  default:
-    Debug.log('unknown status: ' + status,1);
-    break;
-  }
-}
+/************************************************************************
+ *                       ******  LOGOUT  *******
+ ************************************************************************
+ */
 
 function cleanUp() {
-  sid = 0;
-  status = '';
-
   /* close dependent windows */
 	if (roster)
 		roster.cleanUp();
@@ -1368,39 +1348,49 @@ function cleanUp() {
   frames["jwc_sound"].document.open();
   frames["jwc_sound"].document.write();
   frames["jwc_sound"].document.close();
-  frames["jwc_in"].document.open();
-  frames["jwc_in"].document.write();
-  frames["jwc_in"].document.close();
-  frames["jwc_cb"].document.open();
-  frames["jwc_cb"].document.write();
-  frames["jwc_cb"].document.close();
-  frames["jwc_out"].document.open();
-  frames["jwc_out"].document.write();
-  frames["jwc_out"].document.close();  
 }
 
+var logoutCalled = false;
 function logout() {
-	// save presence
-	var xml = "<jwchat xmlns='jwchat:state'><presence>"+onlstat+"</presence>";
-	// save roster.hiddenGroups
-	xml += "<hiddenGroups>";
+	logoutCalled = true;
+	cleanUp();
 
+	if (!con.connected())
+		return;
+
+	/* save state */
+	var iq = new JSJaCIQ();
+	iq.setIQ(null,null,'set');
+	var query = iq.setQuery('jabber:iq:private');
+	var aNode = query.appendChild(iq.getDoc().createElement('jwchat'));
+	aNode.setAttribute('xmlns','jwchat:state');
+
+	// save presence
+	aNode.appendChild(iq.getDoc().createElement('presence')).appendChild(iq.getDoc().createTextNode(onlstat));
+	
+	var hiddengroups = '';
 	if (typeof(roster) != 'undefined') {
 		for (var i in roster.hiddenGroups)
 			if (roster.hiddenGroups[i])
-				xml += i+",";
-		
-		xml += "</hiddenGroups></jwchat>";
-		
-		fCBLoad("iq","?sid="+sid+"&ns=jabber:iq:private&set="+msgEscape(xml));
+				hiddengroups += i+",";
 	}
 
-	if (typeof(pass) == 'undefined') {
-    fhdLoad("logout-sid","?sid=" + sid);
-		cleanUp();
-	} else
-		changeStatus("offline");
+	if (hiddengroups != '')
+		aNode.appendChild(iq.getDoc().createElement('hiddenGroups')).appendChild(iq.getDoc().createTextNode(hiddengroups));
+
+	con.send(iq,false);
+
+	var aPresence = new JSJaCPresence();
+	aPresence.setType('unavailable');
+	con.send(aPresence,false);
+
+	con.disconnect();
 }
+
+/************************************************************************
+ *                     ******  INITIALISE VARS  *******
+ ************************************************************************
+ */
 
 /* check for unsupported browsers */
 if (is.b == 'op' || 
@@ -1418,41 +1408,41 @@ if (is.b == 'op' ||
 /* quick hack - need this info before onload */
 /* get args */
 getArgs();
-if (passedArgs['sid']) {
-  sid = passedArgs['sid'];
-} else {
-  if (!passedArgs['pass']) {
-    alert(loc("Password is missing.\nAborting..."));
-    window.close();
-    //    return false;
-  }
-  pass = passedArgs['pass'];
-}
-        
-if (!passedArgs['jid']) {
-  alert(loc("JID is missing.\nAborting..."));
+
+if (opener.pass)
+	pass = opener.pass;
+else if (passedArgs['pass'])
+	pass = passedArgs['pass'];
+
+if (opener.jid)
+	jid = opener.jid;
+else if (passedArgs['jid'])
+	jid = passedArgs['jid'];
+
+if (opener.register)
+	register = opener.register
+else if (passedArgs['register'])
+	register = eval(passedArgs['register']);
+
+if (!jid) {
+	alert(loc("JID is missing.\nAborting..."));
   window.close();
-  // return false;
 }
-jid = passedArgs['jid'];
+if (!pass) {
+	alert(loc("Password is missing.\nAborting..."));
+	window.close();
+}
 
 if (!isValidJID(jid))
   window.close();
 
-/************************************************************************
- *                    ****** Initialise Debugger ******
- ************************************************************************
- */
-
-var Debug = new Debugger(DEBUG_LVL,'JWChat ' + jid);
-if (DEBUG && !(USE_DEBUGJID && DEBUGJID != cutResource(jid)))
-	Debug.start();
-
 nick = jid.substring(0,jid.indexOf('@'));
 
 /* get style */
-if (passedArgs['style']) 
-  stylesheet = THEMESDIR + "/" + passedArgs['style'] + "/" + stylesheet;
+if (opener.myStyle)
+  stylesheet = THEMESDIR + "/" + opener.myStyle + "/" + stylesheet;
+else if (passedArgs['myStyle']) 
+  stylesheet = THEMESDIR + "/" + passedArgs['myStyle'] + "/" + stylesheet;
 
 function updateStyleIE() {
   if (roster)
@@ -1468,10 +1458,7 @@ onresize = updateStyleIE;
   </head>
   <frameset rows="100%,0,0,0,0" border="0">
     <frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
-    <frame src="empty.html" name="jwc_out" onload="run()" marginwidth="0" marginheight="0">
-    <frame src="empty.html" name="jwc_in" onload="handleEvent()" marginwidth="0" marginheight="0">
-    <frame src="empty.html" name="jwc_cb" onload="handleCB(frames['jwc_cb'].jabber)" marginwidth="0" marginheight="0">
-    <frame src="empty.html" name="jwc_sound" marginwidth="0" marginheight="0">
+    <frame src="empty.html" name="jwc_sound" marginwidth="0" marginheight="0" onLoad="soundLoaded();">
   </frameset>
   <body>
     <l>Your browser must support frames and javascript to use this application. Please refer to our <a href="help.html">online manual</a> for a list of supported browser.</l>

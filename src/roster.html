@@ -5,8 +5,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <script src="switchStyle.js"></script>
     <script src="shared.js"></script>
-    <script type="text/javascript" src="pngfix.js"></script>
-    <script language="JavaScript1.2">
+    <script src="pngfix.js"></script>
+    <script>
       <!--
 
 function openHelp(button) {
@@ -18,7 +18,7 @@ function openHelp(button) {
 var ow;
 function openOptions(el) {
   if (!top.ow || top.ow.closed)
-    top.ow = open("options.html","ow"+makeWindowName(parent.jid),"width=330,height=330,resizable=yes");
+    top.ow = open("options.html","ow"+makeWindowName(parent.jid),"width=380,height=380,resizable=yes");
   el.blur();
   top.ow.focus();
   return false;
@@ -70,6 +70,8 @@ function setStatusMessage() {
 }
 
 function keyPressed(e) {
+	if (e.ctrlKey && e.keyCode == 74)
+		parent.Debug.start();
   if (e.keyCode != 13)
     return;
   var firingObj = (top.is.ie)?event.srcElement:e.target;

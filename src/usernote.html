@@ -3,11 +3,13 @@
   <head>
     <title><l>JWChat - Annotation</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="emoticons.js" language="JavaScript1.2"></script>
+    <script src="shared.js"></script>
+    <script src="browsercheck.js"></script>
+    <script src="emoticons.js"></script>
     <script src="switchStyle.js"></script>
-    <script language="JavaScript1.2">
+    <script src="xmlextras.js"></script>
+    <script src="JSJaCPacket.js"></script>
+    <script>
       <!--
 var srcW, jid;
 function init() {
@@ -36,16 +38,21 @@ function saveNotes() {
   // save note
   srcW.annotations[jid] = document.getElementById('note').value;
 
-  // store notes at server
-  var xml = "<jwchat xmlns='jwchat:notes'>";
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	var query = iq.setQuery('jabber:iq:private');
+	var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
+	jNode.setAttribute('xmlns','jwchat:notes');
 
 	for (var i in srcW.annotations)
-		if (srcW.annotations[i] != '')
-			xml += "<item jid='"+i+"'>"+srcW.annotations[i]+"</item>";
+		if (srcW.annotations[i] != '') {
+			var item = jNode.appendChild(iq.getDoc().createElement('item'));
+			item.setAttribute('jid',i);
+			item.appendChild(iq.getDoc().createTextNode(srcW.annotations[i]));
+		}
 
-	xml += '</jwchat>';
-
-	srcW.fCBLoad("iq","?sid="+srcW.sid+"&ns=jabber:iq:private&set="+escape(xml));
+	srcW.Debug.log(iq.getDoc().xml,3);
+	srcW.con.send(iq);
 }
 
 onload = init;
