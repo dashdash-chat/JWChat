@@ -67,7 +67,7 @@ function search() {
 
 	}
 
-	srcW.Debug.log("created query:" + iq.getDoc().xml,3);
+	srcW.Debug.log("created query:" + iq.getDoc().xml,2);
 
 	me = this;
 	srcW.con.send(iq,me.getQueryResult);
@@ -208,7 +208,7 @@ function getSearchForm(iq) {
 		srcW.Debug.log("empty result",1);
 		return false;
 	}
-	srcW.Debug.log(iq.getDoc().xml,3);
+	srcW.Debug.log(iq.getDoc().xml,2);
 
 	// check if it's jabber:x:data
 	var html = '';
@@ -220,14 +220,19 @@ function getSearchForm(iq) {
 		if (iq.getNode().getElementsByTagName('instructions').item(0))
 			html += "<tr><th colspan=2>"+iq.getNode().getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</th></tr>";
 		
-		for (var i=0; i<iq.getNode().childNodes.length; i++) {
-			var aNode = iq.getNode().childNodes.item(i);
+		for (var i=0; i<iq.getQuery().childNodes.length; i++) {
+			var aNode = iq.getQuery().childNodes.item(i);
 			if (aNode.nodeName == 'instructions')
 				continue;
 			if (aNode.nodeName == 'key')
 				html += "<tr><td colspan=2><input type=hidden value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
-			else
-				html += "<tr><td>"+i+"&nbsp;</td><td><input type=\"text\" name=\""+i+"\" value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
+			else {
+				if (aNode.firstChild)
+					html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\" value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
+				else
+					html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\"></td></tr>";
+			}
+
 		}
 		html += "</table>";
 	}
