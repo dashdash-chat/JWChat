@@ -1408,17 +1408,17 @@ if (is.b == 'op' ||
 /* get args */
 getArgs();
 
-if (opener.pass)
+if (opener && opener.pass)
 	pass = opener.pass;
 else if (passedArgs['pass'])
 	pass = passedArgs['pass'];
 
-if (opener.jid)
+if (opener && opener.jid)
 	jid = opener.jid;
 else if (passedArgs['jid'])
 	jid = passedArgs['jid'];
 
-if (opener.register)
+if (opener && opener.register)
 	register = opener.register
 else if (passedArgs['register'])
 	register = eval(passedArgs['register']);
@@ -1438,7 +1438,7 @@ if (!isValidJID(jid))
 nick = jid.substring(0,jid.indexOf('@'));
 
 /* get style */
-if (opener.myStyle)
+if (opener && opener.myStyle)
   stylesheet = THEMESDIR + "/" + opener.myStyle + "/" + stylesheet;
 else if (passedArgs['myStyle']) 
   stylesheet = THEMESDIR + "/" + passedArgs['myStyle'] + "/" + stylesheet;
