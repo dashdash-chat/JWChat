@@ -238,7 +238,7 @@
     if (!is.ie)
       fdebug(jabber.toSource(),4);
 
-		if (jabber && jabber.error && sid != 0) {
+		if (jabber && jabber.error && sid != 0 && 0) {
 			if (jabber.type && jabber.type == "error") {
         fdebug("From: " + jabber.from + "\n" + jabber.error,0);
 			} else {
@@ -313,7 +313,7 @@
     }
 
 
-    if (jabber.type == 'chat' && !(jabber.o && jabber.o[0].stamp)) {
+    if (jabber.type == 'chat' && !(jabber.o && jabber.o[0] && typeof(jabber.o[0].stamp) != 'undefined')) {
 
       /* we got a real chat message (and not an offline message)
        */
