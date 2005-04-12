@@ -1,13 +1,13 @@
 If you got JWChat from anonymous CVS you have to download JSJaC
 separately. Please be sure to use CVS version of JSJaC too.
 
-JSJaC can found at http://jsjac.jabberstudio.org/
+JSJaC can be found at http://jsjac.jabberstudio.org/
 
 Basic steps: 
 
 'cd' to jwchat's top-level directory
 $ cd lib
-$ export CVSROOT=:pserver:anonymous@jabberstudio.org:/home/cvs
+$ export CVSROOT=:pserver:anonymous@cvs.jabberstudio.org:/home/cvs
 $ cvs login
 
 when prompted for a password just hit return
