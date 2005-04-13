@@ -20,6 +20,7 @@ function genJabberXDataTable(x) {
 		case 'fixed':
 			html += "<td colspan=2><b>"+aField.firstChild.firstChild.nodeValue+"</b></td>";
 			break;
+		case 'jid-single':
 		case 'text-single':
 			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
@@ -38,6 +39,7 @@ function genJabberXDataTable(x) {
 			html += ">";
 			html += "</td>";
 			break;
+		case 'jid-multi':
 		case 'text-multi':
 			html += "<th valign=top>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
@@ -54,7 +56,25 @@ function genJabberXDataTable(x) {
 			if (aField.childNodes.length) {
 				for (var j=0; j<aField.childNodes.length; j++) {
 					if (aField.childNodes.item(j).nodeName == 'option') {
-						html += "<option value='" + aField.childNodes.item(j).firstChild.nodeValue + "'";
+						html += "<option value='" + aField.childNodes.item(j).firstChild.firstChild.nodeValue + "'";
+// 						if (x.o[i].value == x.o[i].o[j].value)
+// 							html += " selected";
+						html += ">"+aField.childNodes.item(j).getAttribute('label')+"</option>";
+					}
+				}
+			}
+			html += "</select>";
+			html += "</td>";
+			break;
+		case 'list-multi':
+			html += "<th>" + aField.getAttribute('label') + "</th>";
+			html += "<td>";
+			html += "<select name='" + aField.getAttribute('var') + "' "
+				+ "multiple='true'>";
+			if (aField.childNodes.length) {
+				for (var j=0; j<aField.childNodes.length; j++) {
+					if (aField.childNodes.item(j).nodeName == 'option') {
+						html += "<option value='" + aField.childNodes.item(j).firstChild.firstChild.nodeValue + "'";
 // 						if (x.o[i].value == x.o[i].o[j].value)
 // 							html += " selected";
 						html += ">"+aField.childNodes.item(j).getAttribute('label')+"</option>";
