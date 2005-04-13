@@ -146,7 +146,7 @@ td.menubar {
 .myStatusMsgSelected { 
   cursor: text;
   border: 1px;
-  background-color: white;
+  background-color: #f9fae1;
 }
 
 .msgnick {
