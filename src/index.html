@@ -52,12 +52,13 @@ function loginCheck(form) { /* check if user want's to register new
 	}
 
 	if (document.getElementById('tr_server').style.display != 'none') {
-		if (document.getElementById('server').value == '') {
+		var val = document.getElementById('server').value;
+		if (val == '') {
 			alert(loc("You need to supply a jabber server"));
 			return false;
 		}
 
-		JABBERSERVER = document.getElementById('server').value;
+		JABBERSERVER = val;
 	}
 
   jid = form.jid.value + "@" + JABBERSERVER + "/";
@@ -130,12 +131,14 @@ function backendSelected() {
 			var input = document.createElement('input');
 			input.setAttribute("type","text");
 			input.setAttribute("id","server");
+			input.setAttribute("name","server");
 			input.setAttribute("tabindex","2");
+			input.className = 'input_text';
 
 			if (default_server)
 				input.setAttribute("value",default_server);
 
-			var td = tr_server.getElementsByTagName('td').item(1);
+			var td = tr_server.getElementsByTagName('td').item(0);
 			for (var i=0; i<td.childNodes.length; i++)
 				td.removeChild(td.childNodes.item(i));
 											 
@@ -150,15 +153,16 @@ function backendSelected() {
 		var tr_server = document.getElementById('tr_server');
 		
 		var select = document.createElement('select');
+		select.setAttribute('id','server');
 		select.setAttribute('name','server');
 		select.setAttribute('tabindex',"2");
 
 		for (var i in servers_allowed) {
-			var opt = new Option(servers_allowed[i]);
+			var opt = new Option(servers_allowed[i],servers_allowed[i]);
 			select.options.add(opt);
 		}
 
-		var td = tr_server.getElementsByTagName('td').item(1);
+		var td = tr_server.getElementsByTagName('td').item(0);
 		for (var i=0; i<td.childNodes.length; i++)
 			td.removeChild(td.childNodes.item(i));
 
@@ -194,10 +198,11 @@ function init() {
 		}
 
 		var tr = document.createElement('tr');
-		var td = tr.appendChild(document.createElement('td'));
-		td.appendChild(document.createTextNode(loc("Choose Backend")));
-		td.setAttribute('align','right');
-		td.setAttribute('style','font-weight:bold;');
+		var td = tr.appendChild(document.createElement('th'));
+		var label = td.appendChild(document.createElement('label'));
+		label.setAttribute('for','backend_selector');
+		label.appendChild(document.createTextNode(loc("Choose Backend")));
+
 		tr.appendChild(document.createElement('td')).appendChild(select);
 
 		var tr_server = document.getElementById('tr_server');
@@ -205,12 +210,15 @@ function init() {
 
 		tr = document.createElement('tr');
 		td = tr.appendChild(document.createElement('td'));
-		td = tr.appendChild(document.createElement('td'));
+		td = document.createElement('td');
 		td.setAttribute('id','backend_description');
+		td.className= 'desc';
+		tr.appendChild(td);
 
 		tr_server.parentNode.insertBefore(tr,tr_server);
 
 		backendSelected();
+		document.getElementById('login_button').disabled = false;
 	}
 	document.forms[0].jid.focus();
 }
@@ -221,85 +229,147 @@ onload = init;
     </script>
     <style type="text/css">
 			body {
-			font-size: 0.8em; 
 			color: #2a3847;
+			background-color: white;
 			}
+
+			th {
+			font-size: 0.8em;
+			text-align: right;
+			white-space: nowrap;
+			}
+
 			a { color: #2a3847; } 
-			h1 { font-size: 1.4em; margin-top:0px; }
+
+			h1 { 
+			font-size: 1.4em; 
+			margin-top:0px; 
+			margin-bottom: 0px; 
+			}
+
+			h2 { padding-top: 0px; margin-top: 0px; }
+
+			h3 {
+			border-bottom: 1px solid #2a3847;
+			margin-bottom: 0px;
+
+			font-style: normal;
+			font-variant: small-caps;
+
+			text-align: right;
+			}
+			
+			input.input_text {
+			border: 1px solid #2a3847;
+			}
+
+			input:focus, input:hover {
+			background-color: #f9fae1;
+			}
+
       .toggleOpts { cursor: pointer; }
+
+			.desc {
+			font-size: 0.65em;
+			}
+
+			.form_spacer {
+			padding-top: 20px;
+			}
+
+			#td_top {
+			padding-top: 20px;
+			}
+			#td_form {
+			padding-top: 20px;
+			}
+			#td_bottom {
+			padding: 4px;
+			font-size:8pt; 
+			border-top:1px solid #2a3847;
+			}
+			#lTable {
+			padding: 8px;
+
+			border: 2px solid #2a3847;
+			-moz-border-radius: 8px;
+
+			background-color: #81addc;
+			}
+			
     </style>
   </head>
   
   <body>
-
-    <div style="padding: 20px;">
-
-			<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=92011&type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" hspace=2 align=right /></a>
-    <h1 id="welcomeh1"></h1>
-
-      <p>
-      <l>JWChat is a web based, full featured jabber client. <a href="http://www.jabber.org">Jabber</a> is an advanced  instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger.</l></p>
-        <p>
-      <l>Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program.</l></p>
-        <p>
-      <l>If you don't have an account yet a new one can be created for you by checking the register flag below.</l></p>
-
-    <fieldset style="margin: 20px; padding: 10px;"><legend><l>Login</l></legend>
-      <form name="login" onSubmit="return loginCheck(this);">
-    <table border=0 cellspacing=0 cellpadding=2 id="lTable">
-      <tr id="tr_server" style="display:none;">
-        <td align=right title="Select jabber server to connect to"><b><l>Server</l></b></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td align=right><b><l>Username</l></b></td>
-        <td><input type="text" name="jid" tabindex=3></td>
-      </tr>
-<tr><td colspan=2 nowrap><l>Username must not contain</l>: <script>document.write(prohibited)</script></td></tr>
-			<tr><td colspan=2 height="10">&nbsp;</td></tr>
-      <tr>
-        <td align=right><b><l>Password</l></b></td>
-        <td><input type="password" name="pass" tabindex=4></td>
-      </tr>
-      <tr><td>&nbsp;</td><td><input type=checkbox name=register id=register> <label for="register"><l>Register New Account</l></label></td></tr>
-			<tr id="showMoreOpts" class="toggleOpts">
-				<td colspan=2 onClick="return toggleMoreOpts(1);"><img src="images/group_close.gif" title="<l>Show More Options</l>"> <l>Show More Options</l></td>
-			</tr>
-			<tr id="showLessOpts" class="toggleOpts" style="display:none;">
-				<td colspan=2 onClick="return toggleMoreOpts(0);"><img src="images/group_open.gif" title="<l>Show Less Options</l>"> <l>Show Less Options</l></td>
-			</tr>
-      <tr class="moreOpts" style="display:none;">
-        <td align=right><b><l>Resource</l></b></td>
-        <td><input type="text" name="res"></td>
-      </tr>
-      <tr class="moreOpts" style="display:none;">
-        <td align=right><b><l>Priority</l></b><br>[unused]</td>
-        <td><input type="text" name="prio"></td>
-      </tr>
-							
-      <tr><td>&nbsp;</td><td><button type="submit" tabindex=5><l>Login</l></button></td></tr>
-    </table>
-      </form>
-      </fieldset>
-
-        <p>
-      <l>If you want to learn more about JWChat please visit our homepage at <a href="http://jwchat.sourceforge.net">http://jwchat.sourceforge.net</a>!</l>
-
-				<p>
-				<h2><a href="https://sourceforge.net/donate/index.php?group_id=92011">Donate to JWChat</a></h2>
-				If you feel happy and pleased with jwchat and would like to support its further development, any donations will be kindly appreciated.
-				<div align=center>
-				<a href="http://sourceforge.net/donate/index.php?group_id=92011"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" style="padding-top: 10px;" /></a>
-				</div>
-
-    </div>
-    <div style="padding-top: 10px; font-size: 8pt;">
-      <hr noshade size=1 width=120 align=left color="#6c8bb1">
-      &copy; 2003-2004 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
+			<table width="100%" height="100%">
+					<tr>
+						<td align=center id='td_top'>
+						<table>
+							<tr>
+									<td>
+										<h1 id="welcomeh1"><l>Welcome to JWChat</l></h1>
+										<h2><l>A web-based Jabber<sup><small>&reg;</small></sup> client</l></h2>
+									</td>
+								</tr>
+						</table>
+						</td>
+					</tr>
+		<form name="login" onSubmit="return loginCheck(this);">
+					<tr>
+						<td height="100%" align=center valign=top id='td_form'>
+					<table border=0 cellspacing=0 cellpadding=2 id="lTable" align=center width=380>
+					<tr>
+						<td colspan=2><h3><l>Login</l><img src="images/available.gif" width=16 height=16></h3></td>
+					</tr>
+					<tr id="tr_server" style="display:none;">
+						<th title="<l>Select Jabber server to connect to</l>"><label for='server'><l>Server</l></label></th>
+						<td></td>
+					</tr>
+					<tr>
+						<th class='form_spacer'><label for='jid'><l>Username</l></label></td>
+						<td class='form_spacer' width="100%"><input type="text" id='jid' name="jid" tabindex=3 class='input_text'></td>
+					</tr>
+					<tr><td>&nbsp;</td><td nowrap class="desc"><l>Username must not contain</l>: <script>document.write(prohibited)</script></td></tr>
+					<tr>
+						<th><label for='pass'><l>Password</l></label></th>
+							<td><input type="password" id='pass' name="pass" tabindex=4 class='input_text'></td>
+					</tr>
+					<tr><td>&nbsp;</td><td><input type=checkbox name=register id=register> <label for="register"><l>Register New Account</l></label></td></tr>
+					<tr id="showMoreOpts" class="toggleOpts">
+							<td>&nbsp;</td>
+						<td onClick="return toggleMoreOpts(1);"><img src="images/group_close.gif" title="<l>Show More Options</l>"> <l>Show More Options</l></td>
+					</tr>
+					<tr id="showLessOpts" class="toggleOpts" style="display:none;">
+							<td>&nbsp;</td>
+						<td onClick="return toggleMoreOpts(0);"><img src="images/group_open.gif" title="<l>Show Less Options</l>"> <l>Show Less Options</l></td>
+					</tr>
+					<tr class="moreOpts" style="display:none;">
+						<th><label for='res'><l>Resource</l></label></th>
+						<td><input type="text" id='res' name="res" class='input_text'></td>
+					</tr>
+					<tr class="moreOpts" style="display:none;">
+						<th><label for='prio'><l>Priority</l></label></th>
+						<td><input type="text" id='prio'  name="prio" class='input_text' disabled></td>
+					</tr>
+					
+					<tr><td>&nbsp;</td><td><button type="submit" id='login_button' tabindex=5 disabled><l>Login</l></button></td></tr>
+			</table>
+		</form>	
+		</td>
+		</tr>
+		<tr>
+    <td id='td_bottom'>
+			<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=92011&type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" align=right /></a>
+			<a href="http://sourceforge.net/donate/index.php?group_id=92011"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" align=right /></a>
+				<l>For details please visit <a href="http://jwchat.sourceforge.net">JWChat's Homepage</a>.</l>
+				<br>
+      &copy; 2003-2005 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Wed Feb 23 20:20:27 CET 2005
+Last modified: Wed Apr 13 14:31:54 CEST 2005
 <!-- hhmts end -->
-    </div>
+    </td>
+</tr>
+			</table>
   </body>
 </html>
