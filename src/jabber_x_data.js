@@ -54,11 +54,15 @@ function genJabberXDataTable(x) {
 			html += "<td>";
 			html += "<select name='" + aField.getAttribute('var') + "'>";
 			if (aField.childNodes.length) {
+				var val;
+				for (var j=0; j<aField.childNodes.length; j++) 
+					if (aField.childNodes.item(j).nodeName == 'value') 
+						val = aField.childNodes.item(j).firstChild.nodeValue;
 				for (var j=0; j<aField.childNodes.length; j++) {
 					if (aField.childNodes.item(j).nodeName == 'option') {
 						html += "<option value='" + aField.childNodes.item(j).firstChild.firstChild.nodeValue + "'";
-// 						if (x.o[i].value == x.o[i].o[j].value)
-// 							html += " selected";
+ 						if (val && val == aField.childNodes.item(j).firstChild.firstChild.nodeValue)
+ 							html += " selected";
 						html += ">"+aField.childNodes.item(j).getAttribute('label')+"</option>";
 					}
 				}
