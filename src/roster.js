@@ -119,7 +119,7 @@ function RosterOpenChat(jid) {
 		this.openMessage(jid);
 		
   if (!user.chatW || user.chatW.closed)
-    user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=360,resizable=yes");
+    user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=390,resizable=yes");
   else if (user.chatW.popMsgs)
     user.chatW.popMsgs();
 }
@@ -294,9 +294,6 @@ function printRoster() {
 
   this.rosterW.getElementById("roster").innerHTML = rosterHTML;
   this.updateStyleIE();
-
-  if (typeof(this.eprint) != 'undefined')
-    this.eprint();
 }
 
 
@@ -304,6 +301,58 @@ function printRoster() {
  * GROUPCHAT ROSTER
  *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  */
+function GCRosterSort(a,b) {
+  return (a.name.toLowerCase()<b.name.toLowerCase())?-1:1;
+}
+
+function GroupchatRosterPrint() {
+  var rosterHTML = '';
+  
+  this.groups = this.groups.sort(GCRosterSort);
+
+	/* ***
+	 * loop rostergroups 
+	 */
+  for (var i=0; i<this.groups.length; i++) {
+    var rosterGroupHeadClass = (this.groups[i].users.length == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
+    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"'><nobr>";
+    rosterHTML += this.groups[i].users.length + " " + this.groups[i].name;
+    rosterHTML += "</nobr></div>";
+    rosterHTML += "<div id='"+this.groups[i].name+"' class='rosterGroup'>";
+    
+    this.groups[i].users = this.groups[i].users.sort(rosterSort);
+
+		/* ***
+		 * loop users in rostergroup 
+		 */
+    for (var j=0; j<this.groups[i].users.length; j++) {
+      var user = this.groups[i].users[j];
+      var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
+      rosterHTML += "<div id='"+user.jid+"/"+this.groups[i].name+"Entry' class='"+rosterUserClass+"' onClick=\"return userClicked(this,'"+user.jid+"');\" title=\""+user.name;
+			if (user.realjid)
+				rosterHTML += "&#10;JID: "+ user.realjid;
+			else
+				rosterHTML += "&#10;JID: "+ user.jid;
+			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
+      if (user.statusMsg)
+        rosterHTML += "&#10;"+loc("Message")+": " + user.statusMsg;
+			if ((user.messages.length + user.chatmsgs.length) > 0)
+				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
+      rosterHTML += "\"><nobr>";
+      
+      var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
+      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' width=16 height=16 border=0 align='left'>";
+      rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
+      if (user.statusMsg)
+        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
+      rosterHTML += "</div></nobr></div>";
+    } /* END inner loop */
+    rosterHTML += "</div>";
+  }
+
+  this.rosterW.getElementById("roster").innerHTML = rosterHTML;
+  this.updateStyleIE();
+}
 
 function GroupchatRosterUserAdd2Group(group) {
   this.groups = [group];
@@ -335,10 +384,6 @@ function getRosterGetFullJIDByNick(nick) {
 	return null;
 }
 			
-function GroupchatRosterPrint() {
-  this.targetW.document.getElementById('chan_count').innerHTML = this.users.length;
-}
-
 function getGroupchatRosterUserByJID(jid) {
 	// need to search fulljid here
   return getElFromArrByProp(this.users,"fulljid",jid);
@@ -356,7 +401,7 @@ function GroupchatRoster(targetW) {
 
   this.name = 'GroupchatRoster';
 
-  //  this.eprint = GroupchatRosterPrint;
+	this.print = GroupchatRosterPrint;
 	this.getUserByJID = getGroupchatRosterUserByJID;
 	this.getRealJIDByNick = getRosterGetRealJIDByNick;
 	this.getFullJIDByNick = getRosterGetFullJIDByNick;

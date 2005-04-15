@@ -100,7 +100,7 @@ function openGroupchat(aJid,nick,pass) {
     roster.print();
   }
 	if (!user.chatW || user.chatW.closed)
-		user.chatW = open("groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=390,height=520,resizable=yes");
+		user.chatW = open("groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=520,height=390,resizable=yes");
 	user.chatW.focus();
 }
 

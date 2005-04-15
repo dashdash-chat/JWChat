@@ -311,13 +311,13 @@ onresize = updateStyleIE;
       //-->
     </script>
 
-    <frameset rows="40,*,90" frameborder=2 framespacing=2 border=2 bordercolor=black>
-      <frame src="groupchat_top.html" name="groupchatTop" scrolling="no">
-      <frameset cols="70%,*">
-        <frame src="groupchat_chat.html" name="groupchatChat" scrolling="no">
-        <frame src="groupchat_roster.html" name="groupchatRoster" scrolling="no">
+		<frameset cols="75%,*" frameborder=2 framespacing=2 border=2 bordercolor=black>
+			<frameset rows="40,*,90" frameborder=2 framespacing=2 border=2 bordercolor=black>
+				<frame src="groupchat_top.html" name="groupchatTop" scrolling="no" />
+				<frame src="groupchat_chat.html" name="groupchatChat" scrolling="no" />
+				<frame src="groupchat_bottom.html" name="groupchatBottom" scrolling="no" />
       </frameset>
-      <frame src="groupchat_bottom.html" name="groupchatBottom" scrolling="no">
+      <frame src="groupchat_roster.html" name="groupchatRoster" scrolling="no" />
     </frameset>
 
   </head>
