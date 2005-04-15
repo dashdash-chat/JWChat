@@ -150,6 +150,7 @@ td.menubar {
 }
 
 .msgnick {
+	cursor: default;
 	white-space:nowrap;
 }
 

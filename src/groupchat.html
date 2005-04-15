@@ -19,12 +19,12 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
   
   msg = msgFormat(msg);
 
-  msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";    
+  msgHTML += "<div><span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+user+"</span> ");
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick title='@ "+mtime+"'>*&nbsp;"+user+"</span> ");
   } else if (user != group) {
-    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick>&lt;" + user + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick title='@ "+mtime+"'>&lt;" + user + "&gt;</span>";
   }
 
   if (user == group) {/* channel status messages */
