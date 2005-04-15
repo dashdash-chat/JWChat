@@ -315,7 +315,7 @@ function GroupchatRosterPrint() {
 	 */
   for (var i=0; i<this.groups.length; i++) {
     var rosterGroupHeadClass = (this.groups[i].users.length == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
-    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"'><nobr>";
+    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"'><nobr>&nbsp;";
     rosterHTML += this.groups[i].users.length + " " + this.groups[i].name;
     rosterHTML += "</nobr></div>";
     rosterHTML += "<div id='"+this.groups[i].name+"' class='rosterGroup'>";
