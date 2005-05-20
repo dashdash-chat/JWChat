@@ -46,7 +46,7 @@ $DEBUG = 1;
 $FILECAT = {};
 
 # extract all strings and stuff them into $FILECAT
-File::Find::find( { wanted => \&extract_strings_from_code, follow => 1 }, '.' );
+File::Find::find( { wanted => \&extract_strings_from_code, follow => 1 }, './src' );
 
 # ensure proper escaping and [_1] => %1 transformation
 foreach my $str ( sort keys %{$FILECAT} ) {
