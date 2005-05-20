@@ -99,10 +99,10 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
   msg = msg.replace(/(\s|^)(\w+\@\S+\.\S+)/g,"$1<a href=\"mailto:$2\">$2</a>");
   
   // replace *<pattern>*
-  msg = msg.replace(/(\s|^)\*([^\*\r\n]+?)\*/g,"$1<b>\*$2\*</b>");
+  msg = msg.replace(/(\s|^)\*([^\*\r\n]+)\*/g,"$1<b>\$2\</b>");
 
   // replace _bla_ 
-  msg = msg.replace(/(\s|^)\_([^\*\r\n]+?)\_/g,"$1<u>$2</u>");
+  msg = msg.replace(/(\s|^)\_([^\*\r\n]+)\_/g,"$1<u>$2</u>");
 
   msg = msg.replace(/\n/g,"<br>");
 
