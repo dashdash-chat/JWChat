@@ -26,7 +26,7 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var SITENAME = "zeank.darktech.org"
+var SITENAME = "localhost"
 var DEFAULTRESOURCE = "jwchat";
 
 /* BACKENDS
@@ -55,30 +55,29 @@ var DEFAULTRESOURCE = "jwchat";
 var BACKENDS = 
 [
 		{
-			name:"zeank.darktech.org",
-			description:"Local Ejabberd's HTTP Polling Backend",
+			name:"Native",
+			description:"Ejabberd's native HTTP Polling backend",
 			httpbase:"/http-poll/",
 			type:"polling",
-			servers_allowed:['zeank.darktech.org']
+			servers_allowed:['localhost']
 		},
 		{
 			name:"Open Relay",
-			description:"HTTP Binding Backend that Allows Connecting to any Jabber Server",
+			description:"HTTP Binding backend that allows connecting to any jabber server",
 			httpbase:"/tomcat/JHB/",
 			type:"binding",
-			default_server: "zeank.darktech.org"
+			default_server: "localhost"
 		},
 		{
 			name:"Restricted Relay",
-			description:"This one's for demonstrational purpose only",
+			description:"This one let's you choose from a limited list of allowed servers",
 			httpbase:"/tomcat/JHB/",
 			type:"binding",
-			servers_allowed:['zeank.darktech.org','jwchat.org']
+			servers_allowed:['localhost','jabber.org','jwchat.org']
 		},
 ];
 
 var timerval = 2000; // poll frequency in msec
-var timeout = 150; // timeout of wcs
 
 var stylesheet = "jwchat.css";
 var THEMESDIR = "themes";
@@ -87,11 +86,11 @@ var THEMESDIR = "themes";
  * default values for joingroupchat form
  */
 var DEFAULTCONFERENCEROOM = "talks";
-var DEFAULTCONFERENCESERVER = "conference.zeank.darktech.org";
+var DEFAULTCONFERENCESERVER = "conference.localhost";
 
 /* debugging options */
 var DEBUG = false; // turn debugging on
-var DEBUG_LVL = 1; // debug-level 0..4 (4 = very noisy)
+var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
-var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages
+var DEBUGJID = "admin@localhost"; // which user get's debug messages
