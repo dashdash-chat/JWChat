@@ -152,21 +152,23 @@ function backendSelected() {
 	} else { // create selectbox
 		var tr_server = document.getElementById('tr_server');
 		
-		var select = document.createElement('select');
-		select.setAttribute('id','server');
-		select.setAttribute('name','server');
-		select.setAttribute('tabindex',"2");
-
-		for (var i in servers_allowed) {
-			var opt = new Option(servers_allowed[i],servers_allowed[i]);
-			select.options.add(opt);
-		}
+		var oSelect = document.createElement('select');
+		oSelect.setAttribute('id','server');
+		oSelect.setAttribute('name','server');
+		oSelect.setAttribute('tabindex',"2");
 
 		var td = tr_server.getElementsByTagName('td').item(0);
 		for (var i=0; i<td.childNodes.length; i++)
 			td.removeChild(td.childNodes.item(i));
 
-		td.appendChild(select);
+		td.appendChild(oSelect);
+
+		for (var i in servers_allowed) {
+			if (typeof(servers_allowed[i]) == 'undefined')
+				continue;
+			oSelect.options.add(new Option(servers_allowed[i],servers_allowed[i]));
+		}
+
 		tr_server.style.display = ''; 
 	}
 
@@ -185,17 +187,11 @@ function init() {
 		backendSelected();
 	} else {
 		// create chooser
-		var select = document.createElement('select');
-		select.setAttribute('id','backend_selector');
-		select.setAttribute('name','backend');
-		select.setAttribute('tabindex',"1");
-		select.onchange = backendSelected;
-
-		for (var i in BACKENDS) {
-			var opt = new Option(BACKENDS[i].name,BACKENDS[i].httpbase);
-			opt.setAttribute('description',BACKENDS[i].description);
-			select.options.add(opt);
-		}
+		var oSelect = document.createElement('select');
+		oSelect.setAttribute('id','backend_selector');
+		oSelect.setAttribute('name','backend');
+		oSelect.setAttribute('tabindex',"1");
+		oSelect.onchange = backendSelected;
 
 		var tr = document.createElement('tr');
 		var td = tr.appendChild(document.createElement('th'));
@@ -203,7 +199,7 @@ function init() {
 		label.setAttribute('for','backend_selector');
 		label.appendChild(document.createTextNode(loc("Choose Backend")));
 
-		tr.appendChild(document.createElement('td')).appendChild(select);
+		tr.appendChild(document.createElement('td')).appendChild(oSelect);
 
 		var tr_server = document.getElementById('tr_server');
 		tr_server.parentNode.insertBefore(tr,tr_server);
@@ -216,6 +212,14 @@ function init() {
 		tr.appendChild(td);
 
 		tr_server.parentNode.insertBefore(tr,tr_server);
+
+		for (var i in BACKENDS) {
+			if (typeof(BACKENDS[i]) == 'undefined')
+				continue;
+			var oOption =  new Option(BACKENDS[i].name,BACKENDS[i].httpbase);
+			oOption.setAttribute('description',BACKENDS[i].description);
+			oSelect.options[i] = oOption;
+		}
 
 		backendSelected();
 	}
@@ -359,14 +363,13 @@ onload = init;
 		</tr>
 		<tr>
     <td id='td_bottom'>
-			<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=92011&type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" align=right /></a>
 			<a href="http://sourceforge.net/donate/index.php?group_id=92011"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" align=right /></a>
 				<l>For details please visit <a href="http://jwchat.sourceforge.net">JWChat's Homepage</a>.</l>
 				<br>
       &copy; 2003-2005 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Fri Apr 15 12:49:04 CEST 2005
+Last modified: Fri May 20 15:10:14 CEST 2005
 <!-- hhmts end -->
     </td>
 </tr>
