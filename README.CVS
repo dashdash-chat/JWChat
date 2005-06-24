@@ -21,3 +21,14 @@ subdirectory.
 When done you can install by issuing "make install" (be sure to edit
 src/config.js first!)
 
+Additional Requirements
+=======================
+
+For the Makefile to work you need perl-5.8 or newer plus some perl modules.
+You can get them from CPAN (http://www.cpan.org).
+
+* Encode::compat (to support perl < v5.8.0)
+* Regexp::Common
+* Locale::Maketext (>=1.01)
+* Locale::Maketext::Lexicon (>=0.10)
+( depends Locale::Maketext::Fuzzy )

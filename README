@@ -38,24 +38,19 @@ Linux:
 Requirements
 ============
 
-You need to have access to a Jabber server with HTTP-Polling component
-enabled. E.g. Ejabberd has support for HTTP-Polling built in. With
-'tonneru' (http://tonneru.tanoshi.net/) you should be able to access
-any Jabber server, but this is untested so far as I didn't get tonneru
-working. If you succeed, please drop me a line!
+You need to have access to a jabber server by way of either [1]HTTP Polling
+or [2]HTTP Binding. Either use some server that has support for one of these
+protocols biult in (e.g. [3]ejabberd) or use some gateway like [4]punjab 
+(python based) or [5]JabberHTTPBind (a java servlet).
+
+[1]http://www.jabber.org/jeps/jep-0025.html
+[2]http://www.jabber.org/jeps/jep-0124.html
+[3]http://ejabberd.jabber.ru
+[4]http://punjab.sourceforge.net
+[5]http://www.strigler.de/~zeank/JabberHTTPBind-0.2.4.war
 
 Additionally you need a web-server of your choice capable
-of doing address rewriting. Both must be installed on the same host.
-
-
-For the Makefile to work you need perl-5.8 or newer plus some perl modules.
-You can get them from CPAN (http://www.cpan.org).
-
-* Encode::compat (to support perl < v5.8.0)
-* Regexp::Common
-* Locale::Maketext (>=1.01)
-* Locale::Maketext::Lexicon (>=0.10)
-( depends Locale::Maketext::Fuzzy )
+of doing address rewriting.
 
 Download
 ========
@@ -66,32 +61,31 @@ download instructions.
 Quick Install Guide
 ===================
 
-* Edit <jwchat-dir>/src/config.js to suit your needs.
+* Edit 'config.js' to suit your needs.
 
-* Do "make install" in the jwchat directory. This generates a htdocs
-  directory. If you get an error please check the path to your local
-  perl interpreter in scripts/templateparser.pl and make sure that the
-  perl modules mentioned above are available on your system.
+* Now you have to setup your web server so that it redirects requests
+  to the URLs given at httpbase of config.js to an http polling/binding
+  capable jabber server component.
 
-* Now you have to setup your web server so that it redirects requests to the URL given at HTTP_BASE of config.js to an http polling capable jabber server component.
-
-  Here is an example from my local apache's httpd.conf:
+  Here is an example that should work with a default ejabberd
+  installation on the same host (your directory structure might
+  defer):
 
 %<-----<schnipp>-----
 <VirtualHost *>
-  ServerName zeank.darktech.org
-  DocumentRoot /home/zeank/src/jwchat/htdocs
-  <Directory /home/zeank/src/jwchat>
+  ServerName localhost
+  DocumentRoot /var/www/jwchat
+  <Directory /var/www/jwchat>
     Options  +Indexes +Multiviews
   </Directory>
   AddDefaultCharset UTF-8
   RewriteEngine on
-  RewriteRule http://tonneru.tanoshi.net/
+  RewriteRule http-poll/ http://127.0.0.1:5280/http-poll/ [P]
 </VirtualHost>
 %<-----<schnapp>-----
 
   If you don't plan to have a separated virtual host for jwchat you
-  could include a .htaccess file within jwchat's htdocs/ subdirectory
+  could include a .htaccess file within jwchat subdirectory
   like this:
 
 %<-----<schnipp>-----
