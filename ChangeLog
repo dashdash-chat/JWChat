@@ -1,3 +1,7 @@
+2005-06-24  Stefan Strigler  <steve@zeank.in-berlin.de>
+
+	* po/nl.po: update translation for nl
+
 2004-10-25  Stefan Strigler  <steve@zeank.in-berlin.de>
 	* use JSJaC for communication. support for WebClientService has
 	been dropped in favor of HTTP-Polling/HTTP-Binding
