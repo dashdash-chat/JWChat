@@ -21,42 +21,60 @@ msgstr ""pass is missing.\\n"
 "Code absent.\\n"
 "Annulation..."
 
-#: src/jwchat.html:755
+#: src/jwchat.html:833
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 est en ligne"
 
-#: src/jwchat.html:723
-#. (ouser.name,ouser.actor,ouser.reason)
+#: src/jwchat.html:794
+#. (ouser.name)
+msgid "%1 has been banned"
+msgstr ""
+
+#: src/jwchat.html:792
+#. (ouser.name,ouser.actor)
+msgid "%1 has been banned by %2"
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 a été banni(e) par %2: %3"
 
-#: src/jwchat.html:733
-#. (ouser.name,ouser.actor,ouser.reason)
+#: src/jwchat.html:811
+#. (ouser.name)
+msgid "%1 has been kicked"
+msgstr ""
+
+#: src/jwchat.html:809
+#. (ouser.name,ouser.actor)
+msgid "%1 has been kicked by %2"
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 a été éjecté par %2: %3"
 
-#: src/jwchat.html:766
+#: src/jwchat.html:844
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 est parti(e)"
 
-#: src/jwchat.html:697
+#: src/jwchat.html:764
 #. (ouser.name, ouser.nick)
 msgid "%1 is now known as %2"
 msgstr "%1 s'appelle désormais %2"
 
-#: src/roster.js:288
+#: src/roster.js:282 src/roster.js:340
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 message(s) en attente"
 
-#: src/search.html:190
+#: src/search.html:321
 msgid "- Choose Directory -"
 msgstr "- Choix répertoire -"
 
-#: src/groupchat.html:79
-#. (msg.subject)
+#: src/groupchat.html:94
+#. (msg.getSubject())
 msgid "/me has set the topic to: %1"
 msgstr "/me a instauré le thème: %1"
 
@@ -64,19 +82,19 @@ msgstr "/me a instauré le thème: %1"
 msgid "1 sec."
 msgstr "1 sec."
 
-#: src/options.html:301
+#: src/options.html:372
 msgid "10 sec."
 msgstr "10 sec."
 
-#: src/options.html:299
+#: src/options.html:370
 msgid "2 sec."
 msgstr "2 sec."
 
-#: src/options.html:302
+#: src/options.html:373
 msgid "30 sec."
 msgstr "30 sec."
 
-#: src/options.html:300
+#: src/options.html:371
 msgid "5 sec."
 msgstr "5 sec."
 
@@ -84,19 +102,23 @@ msgstr "5 sec."
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> participants"
 
-#: src/jwchat.html:685
+#: src/jwchat.html:743
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "Un nouveau salon est créé, mais attend que tu le configures. Veux-tu personnaliser la configuration maintenant ?\\nNB: Clique 'Cancel' pour utiliser une configuration par défaut!"
 
-#: src/options.html:259 src/vcard.html:137
+#: src/index.html:315
+msgid "A web-based Jabber<sup><small>&reg;</small></sup> client"
+msgstr ""
+
+#: src/options.html:330 src/vcard.html:166
 msgid "About"
 msgstr "A propos"
 
-#: src/groupchat_modifylist.html:298
+#: src/groupchat_modifylist.html:311
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/roster.html:149
+#: src/roster.html:151
 msgid "Add Contact"
 msgstr "Ajouter contact"
 
@@ -108,11 +130,11 @@ msgstr "Clique sur <img src=\"images/screenshots/add-button.gif\" width=\"24\" h
 msgid "Adding an User to your Contact List"
 msgstr "Ajouter quelqu'un à ta liste de contacts."
 
-#: src/vcard.html:115 src/vcard.html:117
+#: src/vcard.html:144 src/vcard.html:146
 msgid "Address"
 msgstr "Adresse"
 
-#: src/vcard.html:118
+#: src/vcard.html:147
 msgid "Address2"
 msgstr "Adresse2"
 
@@ -128,48 +150,52 @@ msgstr "Liste admin"
 msgid "After having sent this subscription request the user is added to your contact list and an edit user dialog pops up where you can set your custom nickname for this user and add him/her to one or more groups in your contact list."
 msgstr "Après l'envoi de cette demande d'autorisation, le contact est ajouté automatiquement à ta liste de contacts et il apparaît un cadre pour cet utilisateur/ cette utilisatrice, où tu peux lui donner un surnom et l'ajouter à un ou plusieurs goupes de contacts."
 
-#: src/subscriptionRequest.html:73
+#: src/subscriptionRequest.html:81
 msgid "Allow"
 msgstr "Autoriser"
 
-#: src/searchrooms.html:68
+#: src/searchrooms.html:47
 msgid "An Error Occured!"
 msgstr "Erreur détectée!"
 
-#: src/search.html:93
+#: src/search.html:223
 msgid "An Error Occured\\nAborting..."
 msgstr "Erreur détecté\\nAbandon..."
 
-#: src/groupchat_modifylist.html:208
+#: src/groupchat_modifylist.html:211
 msgid "An Error has occured"
 msgstr "Erreur détectée"
 
-#: src/options.html:85
+#: src/options.html:106
 msgid "An Error occured ..."
 msgstr "Erreur détectée..."
 
-#: src/search.html:50
+#: src/search.html:79
 msgid "An error has occured"
 msgstr "Erreur détectée"
 
-#: src/jwchat.html:338 src/jwchat.html:357
+#: NOT FOUND IN SOURCE
 msgid "An error occured!\\nAborting..."
 msgstr "Erreur détectée!\\nAbandon..."
 
-#: src/jwchat.html:1311
+#: NOT FOUND IN SOURCE
 msgid "An error occured.\\n\\nYou need to restart this application from the login screen."
 msgstr "Erreur détectée.\\n\\nTu dois redémarrer l'application depuis l'écran de connexion"
 
-#: src/usernote.html:27
+#: src/usernote.html:29
 #. (user.name)
 msgid "Annotations for %1"
 msgstr "Notes pour %1"
 
-#: src/help.html:117 src/options.html:277
+#: src/jwchat.html:997
+msgid "Authorization failed"
+msgstr ""
+
+#: src/help.html:117 src/options.html:348
 msgid "Auto-Pop-Up if away"
 msgstr "Auto-Popup si disparu"
 
-#: src/editbookmarks.html:172
+#: src/editbookmarks.html:178
 msgid "Autojoin"
 msgstr "Auto-rejoindre"
 
@@ -177,15 +203,15 @@ msgstr "Auto-rejoindre"
 #~ #, fuzzy
 #~ msgid "Auto-Pop-up if away"
 #~ msgstr "Auto-Popup si disparu"
-#: src/help.html:115 src/options.html:273
+#: src/help.html:115 src/options.html:344
 msgid "Automatically open messages and chats"
 msgstr "Ouvre les chats et messages automatiquement"
 
-#: src/userprops.html:116
+#: src/userprops.html:124
 msgid "Available groups"
 msgstr "Groupes disponibles"
 
-#: src/searchrooms.html:215
+#: src/searchrooms.html:207
 msgid "Back"
 msgstr "Retour"
 
@@ -197,11 +223,11 @@ msgstr "Bannir"
 msgid "Ban List"
 msgstr "Liste des bannis"
 
-#: src/vcard.html:139
+#: src/vcard.html:168
 msgid "Birthday"
 msgstr "Anniversaire"
 
-#: src/editbookmarks.html:164 src/joingroupchat.html:115 src/searchrooms.html:215
+#: src/editbookmarks.html:170 src/joingroupchat.html:115 src/searchrooms.html:207
 msgid "Bookmark"
 msgstr "Marque-page"
 
@@ -213,19 +239,19 @@ msgstr "Camino 0.7"
 msgid "Can't display User Info:\\nUser not local!"
 msgstr "Impossible d'afficher les infos utilisateur:\\nUtilisateur pas local!"
 
-#: src/changestatus.html:93 src/editbookmarks.html:179 src/groupchatconfig.html:187 src/joingroupchat.html:124 src/send.html:91 src/subscription.html:120 src/userprops.html:139 src/vcard.html:146
+#: src/changestatus.html:92 src/editbookmarks.html:185 src/groupchatconfig.html:107 src/joingroupchat.html:124 src/send.html:102 src/subscription.html:120 src/userprops.html:147 src/vcard.html:177
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/roster.html:141
+#: src/roster.html:143
 msgid "Change Online Status"
 msgstr "Changer statut connexion"
 
-#: src/roster.html:142
+#: src/roster.html:144
 msgid "Change Status Message"
 msgstr "Changer information statut"
 
-#: src/roster.html:141
+#: src/roster.html:143
 msgid "Change User Info"
 msgstr "Changer info utilisateur"
 
@@ -237,61 +263,65 @@ msgstr "Change ton statut de connexion en choisissant une option de la liste de 
 msgid "Channel/Group"
 msgstr "Canal/groupe"
 
-#: src/groupchat.html:199 src/jwchat.html:126
+#: src/groupchat.html:275 src/jwchat.html:97
 msgid "Chat Rooms"
 msgstr "Salons de discussion"
 
-#: src/userhist.html:124
+#: src/userhist.html:117
 #. (user.name)
 msgid "Chat history for %1"
 msgstr "Historique de discussion pour %1"
 
-#: src/chat.html:110
+#: src/chat.html:128
 #. (user.name)
 msgid "Chat with %1"
 msgstr "Discuter avec %1"
 
-#: src/editbookmarks.html:164 src/joingroupchat.html:115
+#: src/index.html:200
+msgid "Choose Backend"
+msgstr ""
+
+#: src/editbookmarks.html:170 src/joingroupchat.html:115
 msgid "Choose Bookmark"
 msgstr "Choix marque-page"
 
-#: src/options.html:309
+#: src/options.html:380
 msgid "Choose Directory"
 msgstr "Choix répertoire"
 
-#: src/options.html:309
+#: src/options.html:380
 msgid "Choose Gateway"
 msgstr "Choix passerelle"
 
-#: src/vcard.html:119
+#: src/vcard.html:148
 msgid "City"
 msgstr "Ville"
 
-#: src/chat.html:254
+#: src/chat.html:291
 msgid "Click to show user's vcard"
 msgstr "Clique pour voir la carte de visite de l'utilisateur"
 
-#: src/error_message.html:106 src/message.html:140
+#: src/error_message.html:106 src/message.html:145
 msgid "Close"
 msgstr "Fermer"
 
-#: src/groupchat_bottom.html:222
+#: src/groupchat_bottom.html:277
 msgid "Config"
 msgstr "Config"
 
-#: src/jwchat.html:343
+#: NOT FOUND IN SOURCE
 msgid "Connection lost!\\nReconnect?"
 msgstr "Connexion perdue!\\nReconnecter?"
 
-#: src/jwchat.html:1307
+#: NOT FOUND IN SOURCE
 msgid "Couldn't log in!\\nCreate new account?"
 msgstr "Connexion impossible!\\nCréer nouveau compte ?"
 
-#: src/vcard.html:122
+#: src/vcard.html:151
 msgid "Country"
 msgstr "Pays"
 
-#: src/userprops.html:129
+#: src/userprops.html:137
 msgid "Current groups"
 msgstr "Groupes courants"
 
@@ -299,35 +329,39 @@ msgstr "Groupes courants"
 msgid "Customizing (Your Preferences)"
 msgstr "Adapter (tes paramètres)"
 
-#: src/error_message.html:102 src/message.html:134
+#: src/error_message.html:102 src/message.html:139
 msgid "Date"
 msgstr "Date"
 
-#: src/groupchat_invite.html:59
+#: src/groupchat_invite.html:66
 msgid "Decline"
 msgstr "Décliner"
 
-#: src/groupchat_modifylist.html:298
+#: src/groupchat_modifylist.html:311
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/subscriptionRequest.html:73
+#: src/subscriptionRequest.html:81
 msgid "Deny"
 msgstr "Refuser"
 
-#: src/searchrooms.html:83 src/vcard.html:140
+#: src/searchrooms.html:60 src/vcard.html:170
 msgid "Description"
 msgstr "Description"
 
-#: src/groupchatconfig.html:187
+#: src/groupchatconfig.html:107
 msgid "Destroy"
 msgstr "Détruire"
 
-#: src/groupchat.html:120
+#: src/groupchat.html:135
 msgid "Disconnected."
 msgstr "Déconnecté."
 
-#: src/options.html:289
+#: src/jwchat.html:1028
+msgid "Disconnected\\n\\nReconnect?"
+msgstr ""
+
+#: src/options.html:360
 msgid "Display timestamps in chat windows"
 msgstr "Afficher horodatage dans fenêtres de discussion"
 
@@ -335,7 +369,7 @@ msgstr "Afficher horodatage dans fenêtres de discussion"
 msgid "Display timestamps in one-to-one chats"
 msgstr "Montre horodatage dans les discussions individuelles."
 
-#: src/vcard.html:109
+#: src/vcard.html:138
 msgid "E-mail"
 msgstr "courriel"
 
@@ -355,11 +389,11 @@ msgstr "Traiter le contact."
 msgid "Edit User: Opens the edit dialog for this user where you can set his nickname and change the groups he/she belongs to"
 msgstr "Traiter le contact: Ouvre le cadre de traitement pour cet utilisateur/ cette utilisatrice. Tu peux y modifier son surnom et son appartenance aux groupes."
 
-#: src/userprops.html:111
+#: src/userprops.html:119
 msgid "Edit groups for <span id=\"groupjid\"></span>"
 msgstr "Traiter des groupes pour <span id=\"groupjid\"></span> "
 
-#: src/userprops.html:103
+#: src/userprops.html:111
 msgid "Edit nickname for <span id=\"nickjid\"></span>"
 msgstr "Modifie le surnom pour <span id=\"nickjid\"></span>"
 
@@ -367,16 +401,16 @@ msgstr "Modifie le surnom pour <span id=\"nickjid\"></span>"
 msgid "Edit properties for "
 msgstr "Traiter le contact: %1"
 
-#: src/userprops.html:59
+#: src/userprops.html:67
 #. (jid)
 msgid "Edit properties for %1"
 msgstr "Editer propriétés de %1"
 
-#: src/options.html:293
+#: src/options.html:364
 msgid "Enable logging of messages"
 msgstr "Activer l'enregistrement des messages"
 
-#: src/error_message.html:100 src/error_message.html:87 src/groupchat_modifylist.html:58 src/message.html:42
+#: src/error_message.html:100 src/error_message.html:87 src/groupchat_modifylist.html:62 src/message.html:36
 msgid "Error"
 msgstr "Erreur"
 
@@ -384,19 +418,27 @@ msgstr "Erreur"
 msgid "Error saving roster preferences"
 msgstr "Erreur à l'enregistrement des préférences de la liste de contacts"
 
-#: src/vcard.html:100
+#: src/vcard.html:129
 msgid "Family Name"
 msgstr "Nom de famille"
 
-#: src/searchrooms.html:50
+#: src/searchrooms.html:133
 msgid "Finished."
 msgstr "Terminé."
 
-#: src/groupchat_invite.html:52
+#: src/index.html:367
+msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
+msgstr ""
+
+#: src/groupchat.html:175
+msgid "Forbidden"
+msgstr ""
+
+#: src/groupchat_invite.html:59
 msgid "From"
 msgstr "De"
 
-#: src/vcard.html:99
+#: src/vcard.html:128
 msgid "Full Name"
 msgstr "Nom complet"
 
@@ -404,11 +446,11 @@ msgstr "Nom complet"
 msgid "Gateway"
 msgstr "Passerelle"
 
-#: src/options.html:259
+#: src/options.html:330
 msgid "Gateways"
 msgstr "Passerelles"
 
-#: src/options.html:259
+#: src/options.html:330
 msgid "General"
 msgstr "Général"
 
@@ -428,19 +470,19 @@ msgstr "Accorder privilège de modération"
 msgid "Grant Voice"
 msgstr "Accorder la voix"
 
-#: src/userprops.html:119
+#: src/userprops.html:127
 msgid "Group"
 msgstr "Groupe"
 
-#: src/groupchat_invite.html:50
+#: src/groupchat_invite.html:57
 msgid "Groupchat Invitation"
 msgstr "Invitation à un salon de discussion"
 
-#: src/roster.html:137
+#: src/roster.html:139
 msgid "Help"
 msgstr "Aide"
 
-#: src/help.html:113 src/options.html:269
+#: src/help.html:113 src/options.html:340
 msgid "Hide offline users"
 msgstr "Cache les contacts hors ligne"
 
@@ -448,7 +490,7 @@ msgstr "Cache les contacts hors ligne"
 msgid "Hides users who are not online from your contact list."
 msgstr "Dissimule les utilisateurs /utilisatrices qui sont hors ligne sur ta liste des contacts."
 
-#: src/chat.html:256 src/iRoster.html:20
+#: src/chat.html:293 src/iRoster.html:20
 msgid "History"
 msgstr "Rapport"
 
@@ -472,54 +514,58 @@ msgstr "Si on a choisi cette option, les messages seront ouverts automatiquement
 msgid "If selected short jingles will play for certain actions like incoming messages or users going on- or offline."
 msgstr "Si on a choisi cette option, on entendra des sons dès que certaines actions comme  \"Message recu\" ou \"Un utilisateur va en/hors ligne\" - se passent."
 
-#: src/index.html:197
+#: NOT FOUND IN SOURCE
 msgid "If you don't have an account yet a new one can be created for you by checking the register flag below."
 msgstr "Si tu n'as pas encore de compte, tu peux en créer un en cochant la case \"Inscrire\" ci-dessous."
 
-#: src/index.html:234
+#: NOT FOUND IN SOURCE
 msgid "If you want to learn more about JWChat please visit our homepage at <a href=\"http://jwchat.sourceforge.net\">http://jwchat.sourceforge.net</a>!"
 msgstr "Pour en savoir plus sur JWChat, rendez vous sur notre page d'accueil <a href=\"http://jwchat.sourceforge.net\">http://jwchat.sourceforge.net</a>!""
 
-#: src/vcard.html:107
+#: src/vcard.html:136
 msgid "Information"
 msgstr "Information"
+
+#: src/jwchat.html:1009
+msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
+msgstr ""
 
 #: src/help.html:21 src/help.html:31
 msgid "Introduction"
 msgstr "Introduction"
 
-#: src/shared.js:112
+#: src/shared.js:121
 #. (prohibited[i])
 msgid "Invalid JID\\n'%1' not allowed in JID.\\nChoose another one!"
 msgstr "JID invalide\\n'%1' interdit dans JID.\\nChoisis-en un autre!"
 
-#: src/changestatus.html:85 src/status.html:15
+#: src/changestatus.html:84 src/status.html:15
 msgid "Invisible"
 msgstr "Invisible"
 
-#: src/groupchat_invite.html:42
+#: src/groupchat_invite.html:49
 #. (to)
 msgid "Invitation to %1"
 msgstr "Invitation à %1"
 
-#: src/groupchat_bottom.html:222 src/groupchat_invite_dialog.html:73
+#: src/groupchat_bottom.html:277 src/groupchat_invite_dialog.html:80
 msgid "Invite"
 msgstr "Inviter"
 
-#: src/groupchat_invite_dialog.html:39
+#: src/groupchat_invite_dialog.html:46
 #. (opener.parent.jid)
 msgid "Invite Users to %1"
 msgstr "Inviter des utilisateurs à %1"
 
-#: src/groupchat_modifylist.html:154
+#: src/groupchat_modifylist.html:160
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1443 src/userhist.html:118
+#: src/jwchat.html:1466 src/userhist.html:111
 msgid "JID is missing.\\nAborting..."
 msgstr "JID manquant.\\nAbandon..."
 
-#: src/subscription.html:17
+#: src/subscription.html:20
 msgid "JID missing"
 msgstr "JID manquant"
 
@@ -635,15 +681,19 @@ msgstr "JWChat - VCard - "
 msgid "JWChat is a web based instant messenger (IM) just like AIM, MSN Messenger, Yahoo! Messenger or ICQ. This means you can manage your contacts and chat with other users directly. Unlike other IMs you can use this with your web browser without having to install any additional software at all. For a list of <a href=\"#supported\">supported browsers</a> see below. Your contact list is stored on the server. This means that you have access to your contact list from almost any computer as long as you've got access to the internet."
 msgstr "JWChat est un <i>Instant Messenger</i> (IM) web, comme AOL Instant Messenger(AIM), MSN Messenger, Yahoo! Messenger ou ICQ. C'est à dire: tu peux l'utiliser pour gérer tes contacts et pour le chat direct avec d'autres utilisateurs/utilisatrices. Contrairement à d'autres IMs, tu peux employer celui-ci sans être obligé d'installer un logiciel supplémentaire sur ton ordinateur. Un browser de web plus ou moins moderne est suffisant. S'il te plaît, vérifie <a href=\"#supported\"> la liste des browsers supportés </a> plus bas! <br>Ta liste de contacts sera enregistrée sur un serveur web. Tu y as donc accès à partir de n'impore quel ordinateur connecté à l'internet."
 
-#: src/index.html:193
+#: NOT FOUND IN SOURCE
+msgid "JWChat is a web based, full featured jabber client. <a href=\"http://www.jabber.org\">Jabber</a> is an advanced  instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger."
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "JWChat is a web based, full featured jabber client. <a href=\"http://www.jabber.org\">Jabber</a> is an advanced instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger."
 msgstr "JWChat est un client jabber complet, basé sur le web. <a href=\"http://www.jabber.org\">Jabber</a> est un système avancé de messagerie, comparable à ICQ, AOL Instant Messenger ou Yahoo!Messenger."
 
-#: src/groupchat_invite.html:58 src/joingroupchat.html:124 src/searchrooms.html:215
+#: src/groupchat_invite.html:65 src/joingroupchat.html:124 src/searchrooms.html:207
 msgid "Join"
 msgstr "Entre"
 
-#: src/roster.html:149
+#: src/roster.html:151
 msgid "Join Groupchat"
 msgstr "Rejoindre la discussion de groupe"
 
@@ -655,15 +705,15 @@ msgstr "Ejecter"
 msgid "Left clicking an user pops up a message dialog."
 msgstr "Cliquer à gauche sur un enregistrement ouvre le dialogue - diffuser le message-."
 
-#: src/jwchat.html:1319
+#: NOT FOUND IN SOURCE
 msgid "Loading Roster...<br>Please wait!"
 msgstr "Messenger est en cours de chargement...<br>S'il te plaît, attends!"
 
-#: src/index.html:199 src/index.html:228
+#: src/index.html:326 src/index.html:359
 msgid "Login"
 msgstr "S'identifier"
 
-#: src/index.html:114
+#: NOT FOUND IN SOURCE
 msgid "Login failed. Wrong password?"
 msgstr "Echec identification. Mauvais mot de passe ?"
 
@@ -679,11 +729,11 @@ msgstr "Membre"
 msgid "Member List"
 msgstr "Liste membres"
 
-#: src/roster.js:286
+#: src/roster.js:280 src/roster.js:338
 msgid "Message"
 msgstr "Message"
 
-#: src/message.html:120
+#: src/message.html:125
 #. (user.name)
 msgid "Message from %1"
 msgstr "Message de %1"
@@ -696,7 +746,7 @@ msgstr "Modérateur"
 msgid "Moderator List"
 msgstr "Liste modérateur"
 
-#: src/groupchat_modifylist.html:252
+#: src/groupchat_modifylist.html:265
 #. (args[2])
 msgid "Modify %1"
 msgstr "Modifier %1"
@@ -709,7 +759,7 @@ msgstr "Modifier liste"
 msgid "Mozilla (stable) since version 1.0.2"
 msgstr "Mozilla (stable) depuis version 1.0.2"
 
-#: src/editbookmarks.html:166 src/vcard.html:101 src/vcard.html:129 src/vcard.html:97
+#: src/editbookmarks.html:172 src/vcard.html:126 src/vcard.html:130 src/vcard.html:158
 msgid "Name"
 msgstr "Nom"
 
@@ -717,27 +767,35 @@ msgstr "Nom"
 msgid "Netscape version 6 & 7"
 msgstr "Netscape version 6 & 7"
 
-#: src/groupchat_modifylist.html:154
+#: src/groupchat_modifylist.html:160
 msgid "Nick"
 msgstr "Pseudo"
 
-#: src/editbookmarks.html:168 src/joingroupchat.html:117 src/userprops.html:106 src/vcard.html:102
+#: src/editbookmarks.html:174 src/joingroupchat.html:117 src/userprops.html:114 src/vcard.html:131
 msgid "Nickname"
 msgstr "Surnom"
 
-#: src/groupchat_modifylist.html:213 src/searchrooms.html:73
+#: src/groupchat_modifylist.html:220
 msgid "No items found"
 msgstr "Aucun résultat"
 
-#: src/groupchat_bottom.html:39 src/groupchat_bottom.html:52 src/groupchat_bottom.html:73 src/groupchat_bottom.html:83
+#: src/groupchat_bottom.html:109 src/groupchat_bottom.html:134 src/groupchat_bottom.html:62 src/groupchat_bottom.html:75
 msgid "No such nick"
 msgstr "Pseudo inconnu"
 
-#: src/groupchat_invite.html:40
+#: src/groupchat_invite.html:47
 msgid "None Given"
 msgstr "Aucune saisie"
 
-#: src/groupchatconfig.html:187 src/userprops.html:139
+#: src/groupchat.html:172
+msgid "Not Allowed"
+msgstr ""
+
+#: src/groupchat.html:178
+msgid "Not Found"
+msgstr ""
+
+#: src/groupchatconfig.html:107 src/userprops.html:147
 msgid "OK"
 msgstr "Ok"
 
@@ -750,15 +808,14 @@ msgid "Open Search"
 msgstr "Ouvrir recherche"
 
 #: src/help.html:110
-msgid "Open the preferences dialog by clicking on 
-<img src=\"images/screenshots/pref-button.gif\" width=\"24\" height=\"22\" alt=\"Preferences Button\">. Here's a short explanation for each option you can select:"
+msgid "Open the preferences dialog by clicking on <img src=\"images/screenshots/pref-button.gif\" width=\"24\" height=\"22\" alt=\"Preferences Button\">. Here's a short explanation for each option you can select:"
 msgstr "Ouvre la fenêtre paramètres en cliquant sur <img src=\"images/screenshots/pref-button.gif\" width=\"24\" height=\"22\" alt=\"Bouton Paramètres\">. Voici les options que tu peux configurer:"
 
-#: src/options.html:265
+#: src/options.html:336
 msgid "Options"
 msgstr "Options"
 
-#: src/vcard.html:127
+#: src/vcard.html:156
 msgid "Organization"
 msgstr "Organisation"
 
@@ -774,39 +831,43 @@ msgstr "Liste propriétaire"
 msgid "Pass"
 msgstr "Pass"
 
-#: src/editbookmarks.html:171 src/index.html:209 src/joingroupchat.html:120
+#: src/editbookmarks.html:177 src/index.html:338 src/joingroupchat.html:120
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/jwchat.html:1435
+#: src/jwchat.html:1470
 msgid "Password is missing.\\nAborting..."
 msgstr "Mot de passe manquant.\\nAbandon..."
 
-#: src/search.html:190
+#: src/search.html:321
 msgid "Perform search at"
 msgstr "Recherche à"
 
-#: src/help.html:119 src/options.html:281
+#: src/help.html:119 src/options.html:352
 msgid "Play sounds"
 msgstr "Joue les sons"
 
-#: src/editbookmarks.html:51 src/joingroupchat.html:17
+#: src/joingroupchat.html:17
 msgid "Please enter a channel/group to join"
 msgstr "Indique un canal/groupe à rejoindre, STP !"
 
-#: src/editbookmarks.html:43
+#: src/editbookmarks.html:49
 msgid "Please enter a name for this bookmark!"
 msgstr "Donne un nom à ce marque-page, STP !"
 
-#: src/editbookmarks.html:56 src/joingroupchat.html:21
+#: src/editbookmarks.html:57
+msgid "Please enter a room to join"
+msgstr ""
+
+#: src/editbookmarks.html:62 src/joingroupchat.html:21
 msgid "Please enter a server name"
 msgstr "Donne un nom de serveur, STP !"
 
-#: src/vcard.html:121
+#: src/vcard.html:150
 msgid "Postal Code"
 msgstr "Code postal"
 
-#: src/roster.html:137
+#: src/roster.html:139
 msgid "Preferences"
 msgstr "Paramètres"
 
@@ -814,20 +875,20 @@ msgstr "Paramètres"
 msgid "Presence"
 msgstr "Présence"
 
-#: src/index.html:224
+#: src/index.html:355
 msgid "Priority"
 msgstr "Priorité"
 
-#: src/searchrooms.html:138
+#: src/searchrooms.html:30
 #. (conference_server)
 msgid "Querying %1. Please stand by..."
 msgstr "Interrogation de %1. Merci de patienter..."
 
-#: src/search.html:198
+#: src/search.html:32 src/search.html:329
 msgid "Querying ..."
 msgstr "Interrogation en cours..."
 
-#: src/options.html:131
+#: src/options.html:93
 msgid "Querying Service ...<br>Please stand by!"
 msgstr "Interrogation du service...<br>Merci de patienter!"
 
@@ -835,39 +896,43 @@ msgstr "Interrogation du service...<br>Merci de patienter!"
 msgid "Querying Transport ...<br>Please stand by!"
 msgstr "Interrogation du Transport...<br>Merci de patienter!"
 
-#: src/message.html:138
+#: src/message.html:143
 msgid "Quote"
 msgstr "Citer"
 
-#: src/help.html:121 src/options.html:285
+#: src/help.html:121 src/options.html:356
 msgid "Raise window if a new message is received"
 msgstr "Monte la fenêtre à réception d'un nouveau message"
 
-#: src/groupchatconfig.html:34
+#: src/groupchatconfig.html:37
 msgid "Really destroy this room?\\n\\nReason:"
 msgstr "Veux-tu vraiment détruire ce salon?\\n\\nRaison:"
 
-#: src/groupchat_invite.html:53 src/groupchat_invite.html:60 src/groupchat_invite_dialog.html:68 src/groupchat_modifylist.html:154
+#: src/groupchat_invite.html:60 src/groupchat_invite.html:67 src/groupchat_invite_dialog.html:75 src/groupchat_modifylist.html:160
 msgid "Reason"
 msgstr "Raison"
 
-#: src/userhist.html:152
+#: src/userhist.html:151
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: src/groupchat_bottom.html:222 src/options.html:116
+#: src/groupchat_bottom.html:277 src/options.html:153
 msgid "Register"
 msgstr "Inscrire"
 
-#: src/index.html:212
+#: src/index.html:341
 msgid "Register New Account"
 msgstr "Inscrire nouveau compte"
 
-#: src/options.html:309 src/options.html:309
+#: src/options.html:380 src/options.html:380
 msgid "Register at"
 msgstr "Inscrire à"
 
-#: src/index.html:90
+#: src/jwchat.html:1002
+msgid "Registration failed!\\n\\nPlease choose a different username!"
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "Registration failed. You might want to choose another username."
 msgstr "Echec à l'inscription. Choisis un autre nom d'utilisateur"
 
@@ -882,11 +947,11 @@ msgstr "Effacer"
 msgid "Remove: Removes this user from your contact list (completely) and revokes your authentication for him/her (if any)"
 msgstr "Effacer: efface cet utilisateur complètement de ta liste des contacts et révoque ton autorisation, de sorte qu'il ne puisse plus voir ton statut en ligne."
 
-#: src/message.html:138
+#: src/message.html:143
 msgid "Reply"
 msgstr "Répondre"
 
-#: src/index.html:220
+#: src/index.html:351
 msgid "Resource"
 msgstr "Ressource"
 
@@ -903,6 +968,10 @@ msgid "Revoke Administrative Privilege"
 msgstr "Révoque privilège d'administration"
 
 #: src/groupchat_iroster.html:31
+msgid "Revoke Membership"
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "Revoke Memebership"
 msgstr "Révoque qualité de membre"
 
@@ -914,31 +983,31 @@ msgstr "Révoque privilège de modération"
 msgid "Revoke Voice"
 msgstr "R2voque voix"
 
-#: src/vcard.html:132
+#: src/vcard.html:161
 msgid "Role"
 msgstr "Rôle"
 
-#: src/editbookmarks.html:169 src/groupchat_invite.html:51 src/joingroupchat.html:118 src/searchrooms.html:83
+#: src/editbookmarks.html:175 src/groupchat_invite.html:58 src/joingroupchat.html:118 src/searchrooms.html:60
 msgid "Room"
 msgstr "Salon"
 
-#: src/editbookmarks.html:179 src/groupchat_modifylist.html:298 src/vcard.html:146
+#: src/editbookmarks.html:185 src/groupchat_modifylist.html:311 src/vcard.html:177
 msgid "Save"
 msgstr "Sauve"
 
-#: src/search.html:110 src/searchrooms.html:202
+#: src/search.html:255 src/searchrooms.html:194
 msgid "Search"
 msgstr "Recherche"
 
-#: src/searchrooms.html:196
+#: src/searchrooms.html:188
 msgid "Search Server"
 msgstr "Recherche serveur"
 
-#: src/roster.html:149
+#: src/roster.html:151
 msgid "Search User"
 msgstr "Recherche utilisateur"
 
-#: src/joingroupchat.html:113 src/searchrooms.html:191
+#: src/joingroupchat.html:113 src/searchrooms.html:183
 msgid "Search for Rooms"
 msgstr "Recherche salons"
 
@@ -946,9 +1015,9 @@ msgstr "Recherche salons"
 msgid "Search for a User"
 msgstr "Recherche un utilisateur"
 
-#: src/search.html:54 src/searchrooms.html:137
+#: src/search.html:130 src/search.html:147 src/search.html:96 src/searchrooms.html:29
 #. (conference_server)
-#. (jabber.from)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Cherche %1 dans les résultats"
 
@@ -956,11 +1025,15 @@ msgstr "Cherche %1 dans les résultats"
 msgid "Select"
 msgstr "Choisir"
 
-#: src/groupchat_invite_dialog.html:66
+#: src/index.html:329
+msgid "Select Jabber server to connect to"
+msgstr ""
+
+#: src/groupchat_invite_dialog.html:73
 msgid "Select User(s)"
 msgstr "Choisir utilisateur(s)"
 
-#: src/chat.html:266 src/groupchat_bottom.html:222 src/send.html:91 src/subscription.html:120
+#: src/chat.html:303 src/groupchat_bottom.html:277 src/send.html:102 src/subscription.html:120
 msgid "Send"
 msgstr "Diffuser"
 
@@ -972,12 +1045,12 @@ msgstr "Diffuser le message"
 msgid "Send Message: Opens the message dialog for this user"
 msgstr "Diffuser le message: Ouvre le dialoge de la diffusion d'un message"
 
-#: src/send.html:60
+#: src/send.html:71
 #. (srcW.roster.getUserByJID(jid).name)
 msgid "Send message to %1"
 msgstr "Diffuse message à %1"
 
-#: src/subscription.html:57
+#: src/subscription.html:59
 msgid "Send subscription"
 msgstr "Diffuse demande d'autorisation"
 
@@ -985,7 +1058,7 @@ msgstr "Diffuse demande d'autorisation"
 msgid "Send subscription to"
 msgstr "Enregistrement de l'utilisateur"
 
-#: src/editbookmarks.html:170 src/joingroupchat.html:119
+#: src/editbookmarks.html:176 src/index.html:329 src/joingroupchat.html:119
 msgid "Server"
 msgstr "Serveur"
 
@@ -993,7 +1066,11 @@ msgstr "Serveur"
 msgid "Service (optional)"
 msgstr "Service (facultatif)"
 
-#: src/changestatus.html:93
+#: src/jwchat.html:1005
+msgid "Service unavailable"
+msgstr ""
+
+#: src/changestatus.html:92
 msgid "Set"
 msgstr "Choisir"
 
@@ -1009,15 +1086,15 @@ msgstr "Montre les Informations"
 msgid "Show Info: Show the user's profile"
 msgstr "Montre les Informations: Ouvre le profil du contact."
 
-#: src/index.html:217 src/index.html:217
+#: src/index.html:348 src/index.html:348
 msgid "Show Less Options"
 msgstr "Montre moins d'options"
 
-#: src/index.html:214 src/index.html:214
+#: src/index.html:344 src/index.html:344
 msgid "Show More Options"
 msgstr "Montre plus d'options"
 
-#: src/groupchat_iroster.html:24 src/iRoster.html:15 src/message.html:138
+#: src/groupchat_iroster.html:24 src/iRoster.html:15 src/message.html:143
 msgid "Start Chat"
 msgstr "Démarrer chat"
 
@@ -1025,27 +1102,27 @@ msgstr "Démarrer chat"
 msgid "Start Chat: Opens a chat window for this user"
 msgstr "Démarrer chat: Ouvre une fenêtre de chat pour ce contact."
 
-#: src/vcard.html:120
+#: src/vcard.html:149
 msgid "State"
 msgstr "Etat"
 
-#: src/roster.js:284
+#: src/roster.js:278 src/roster.js:336
 msgid "Status"
 msgstr "Statut"
 
-#: src/changestatus.html:90
+#: src/changestatus.html:89
 msgid "Status Message"
 msgstr "Message de statut"
 
-#: src/error_message.html:103 src/message.html:133 src/send.html:87
+#: src/error_message.html:103 src/message.html:138 src/send.html:98
 msgid "Subject"
 msgstr "Objet"
 
-#: src/groupchat_invite.html:71
+#: src/groupchat_invite.html:78
 msgid "Submit"
 msgstr "Soumettre"
 
-#: src/subscriptionRequest.html:35
+#: src/subscriptionRequest.html:43
 #. (jid)
 msgid "Subscribe request from %1"
 msgstr "Demande d'autorisation de %1"
@@ -1062,7 +1139,7 @@ msgstr "Navigateurs supportés"
 msgid "Supported browsers and plattforms"
 msgstr "Navigateurs et systèmes d'exploitation supportés"
 
-#: src/roster.js:36
+#: src/roster.js:24
 msgid "System"
 msgstr "Système"
 
@@ -1078,43 +1155,47 @@ msgstr "La liste des contacts contient des entrées pour tous les utilisateurs q
 msgid "This will cause your contact list or your chat dialog to be raised over all other open windows if a new message arrives"
 msgstr "Si tu choisis cette option, l'arrivée d'un nouveau message provoquera la mise au premier plan de la fenêtre de discussion concernée."
 
-#: src/vcard.html:131
+#: src/vcard.html:160
 msgid "Title"
 msgstr "Titre"
 
-#: src/groupchat_top.html:29
+#: src/groupchat_top.html:33
 msgid "Topic"
 msgstr "Sujet"
 
-#: src/roster.js:158 src/userprops.html:72
+#: src/roster.js:146 src/userprops.html:80
 msgid "Unfiled"
 msgstr "Brouillon"
 
-#: src/vcard.html:130
+#: src/vcard.html:159
 msgid "Unit"
 msgstr "Unité"
 
-#: src/options.html:112
+#: src/options.html:149
 msgid "Unregister"
 msgstr "Désinscrire"
 
-#: src/options.html:114
+#: src/options.html:151
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: src/options.html:297
+#: src/options.html:368
 msgid "Update interval"
 msgstr "Intervalle d'actualisation"
 
-#: src/index.html:195
+#: NOT FOUND IN SOURCE
 msgid "Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program."
 msgstr "Utilise le formulaire ci-dessous pour te connecter à jabber, et commencer l'utilisation de ton client léger. Aucun besoin d'installer un autre logiciel pour utiliser ce programme."
 
-#: src/options.html:259
+#: src/options.html:330
 msgid "User Directory"
 msgstr "Répertoire utilisateur"
 
 #: src/help.html:90
+msgid "User doesn't want to be disturbed"
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "User don't wants to be disturbed"
 msgstr "Ne pas déranger, s'il vous plaît!"
 
@@ -1146,11 +1227,11 @@ msgstr "En ligne"
 msgid "User is willing to chat"
 msgstr "Envie de chat"
 
-#: src/index.html:203
+#: src/index.html:333
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: src/index.html:206
+#: src/index.html:336
 msgid "Username must not contain"
 msgstr "Le nom ne doit pas contenir"
 
@@ -1162,7 +1243,7 @@ msgstr "Voix"
 msgid "Voice List"
 msgstr "Liste voix"
 
-#: src/vcard.html:110
+#: src/vcard.html:139
 msgid "Web Site"
 msgstr "Site web"
 
@@ -1170,12 +1251,16 @@ msgstr "Site web"
 msgid "Welcome to"
 msgstr "Bienvenue à"
 
-#: src/index.html:166
-#. (JABBERSERVER)
+#: src/index.html:314 src/index.html:4
+msgid "Welcome to JWChat"
+msgstr ""
+
+#: src/index.html:179
+#. (SITENAME)
 msgid "Welcome to JWChat at %1"
 msgstr "Bienvenue sur JWChat à %1"
 
-#: src/index.html:4
+#: NOT FOUND IN SOURCE
 msgid "Welcome to JWChat at jwchat.org"
 msgstr "Bienvenue sur JWChat à jwchat.org"
 
@@ -1191,7 +1276,7 @@ msgstr "Dit si les messages doivent être ouverts automatiquement, lorsque ton s
 msgid "Will display the time when a message arrived right to the users name in the chat dialog"
 msgstr "Montre dans les fenêtres du chat un horodatage à côté des messages individuels"
 
-#: src/options.html:89
+#: src/options.html:119
 msgid "You are already registered at this service!"
 msgstr "Tu es déjà enregistré(e) dans ce service!"
 
@@ -1199,20 +1284,28 @@ msgstr "Tu es déjà enregistré(e) dans ce service!"
 msgid "You are already registered with this Gateway!"
 msgstr "Tu es déjà enregistré(e) sur cette passerelle!"
 
-#: src/help.html:105
+#: NOT FOUND IN SOURCE
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\".  Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr "Tu peux créer un nouveau groupe d'utilisateurs, en donnant un nouveau nom dans la boîte \"Groupes disponibles \" et en cliquant\"&gt;\". Pour enlever un utilisateur d'un groupe, clique sur \"&lt;\"! Un groupe entièrement vidé, est effacé de ta liste des contacts."
 
-#: src/jwchat.html:614
-#. (jabber.from)
+#: src/help.html:105
+msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
+msgstr ""
+
+#: src/jwchat.html:660
+#. (presence.getFrom())
 msgid "You have been unsubscribed from %1"
 msgstr "On t'a enlevé l'autorisation de %1 ."
 
-#: src/index.html:45
+#: src/index.html:57
+msgid "You need to supply a jabber server"
+msgstr ""
+
+#: src/index.html:50
 msgid "You need to supply a password"
 msgstr "Tu dois fournir un mot de passe"
 
-#: src/index.html:40
+#: src/index.html:45
 msgid "You need to supply a username"
 msgstr "Tu dois fournir un nom d'utilisateur"
 
@@ -1220,11 +1313,11 @@ msgstr "Tu dois fournir un nom d'utilisateur"
 msgid "Your Contact List"
 msgstr "Ta liste des contacts"
 
-#: src/jwchat.html:1479
+#: src/jwchat.html:1503
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "Ton navigateur doit supporter les frames. STP, réfère-toi à notre <a href=\"help.html\">manuel en ligne</a> pour la liste des navigateurs supportés"
 
-#: src/changestatus.html:84 src/jwchat.html:67 src/status.html:12
+#: src/changestatus.html:83 src/jwchat.html:79 src/status.html:12
 msgid "away"
 msgstr "absent"
 
@@ -1232,7 +1325,7 @@ msgstr "absent"
 msgid "click to add user"
 msgstr "clique pour ajouter utilisateur"
 
-#: src/userhist_collections_iframe.html:26
+#: src/userhist_collections_iframe.html:28
 msgid "click to select collection"
 msgstr "clique pour choisir collection"
 
@@ -1248,19 +1341,19 @@ msgstr "clique pour choisir utilisateur"
 msgid "coming soon... ;-)"
 msgstr "Bientôt disponible... ;-)"
 
-#: src/changestatus.html:81 src/jwchat.html:69 src/status.html:14
+#: src/changestatus.html:80 src/jwchat.html:81 src/status.html:14
 msgid "do not disturb"
 msgstr "Ne pas déranger"
 
-#: src/chat.html:104
+#: src/chat.html:122
 msgid "error starting chat"
 msgstr "Erreur au démarrage chat"
 
-#: src/changestatus.html:80 src/jwchat.html:66 src/status.html:11
+#: src/changestatus.html:79 src/jwchat.html:78 src/status.html:11
 msgid "free for chat"
 msgstr "dispo pour le chat"
 
-#: src/jwchat.html:70 src/jwchat.html:71
+#: src/jwchat.html:82
 msgid "invisible"
 msgstr "invisible"
 
@@ -1268,19 +1361,19 @@ msgstr "invisible"
 msgid "local jabber user"
 msgstr "utilisateur jabber local"
 
-#: src/error_message.html:106 src/message.html:140
+#: src/error_message.html:106 src/message.html:145
 msgid "next"
 msgstr "prochain"
 
-#: src/changestatus.html:77 src/jwchat.html:68 src/status.html:13
+#: src/changestatus.html:76 src/jwchat.html:80 src/status.html:13
 msgid "not available"
 msgstr "pas disponible"
 
-#: src/changestatus.html:88 src/status.html:18
+#: src/changestatus.html:87 src/jwchat.html:83 src/status.html:18
 msgid "offline"
 msgstr "hors ligne"
 
-#: src/changestatus.html:76 src/jwchat.html:65 src/status.html:10
+#: src/changestatus.html:75 src/jwchat.html:77 src/status.html:10
 msgid "online"
 msgstr "en ligne"
 
@@ -1288,25 +1381,24 @@ msgstr "en ligne"
 msgid "optional"
 msgstr "facultatif"
 
-#: src/error_message.html:106 src/message.html:140
+#: src/error_message.html:106 src/message.html:145
 msgid "prev"
 msgstr "précédent"
 
-#: src/subscriptionRequest.html:37
+#: src/subscriptionRequest.html:45
 #. (jid)
 msgid "show user info for %1"
 msgstr "montre info utilisateur pour %1"
 
-#: src/searchrooms.html:124
+#: src/searchrooms.html:20
 msgid "this doesn't look like a valid hostname"
 msgstr "ça ne ressemble pas à un nom d'hôte valide"
 
-#: src/subscription.html:58
+#: src/subscription.html:60
 msgid "to"
 msgstr "à"
 
-#: src/subscriptionRequest.html:67
+#: src/subscriptionRequest.html:75
 msgid "wants to add you to his roster"
 msgstr "aimerait t'ajouter à ta liste des contacts"
-
 
