@@ -862,7 +862,8 @@ function handlePresence(presence) {
   if (show) {
     if (user.status == 'unavailable')
       playSound('online');
-		if (show == 'online') // quick fix for JIT which sends this presence ...
+		// fix broken pressenc status
+		if (show != 'chat' && show != 'away' && show != 'xa' && show != 'dnd')
 			show = 'available';
     user.status = show;
   } else if (type) {
@@ -883,12 +884,7 @@ function handlePresence(presence) {
     user.status = 'available';
   }
 
-	var img;
-	try {
-		img = eval(user.status+"Led");
-	} catch (e) {
-		img = availableLed;
-	}
+	var img = eval(user.status+"Led");
   
   if (user.lastsrc) // message is pending
     user.lastsrc = img.src;
