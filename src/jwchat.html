@@ -883,7 +883,12 @@ function handlePresence(presence) {
     user.status = 'available';
   }
 
-  var img = eval(user.status+"Led");
+	var img;
+	try {
+		img = eval(user.status+"Led");
+	} catch (e) {
+		img = availableLed;
+	}
   
   if (user.lastsrc) // message is pending
     user.lastsrc = img.src;
