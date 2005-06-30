@@ -75,10 +75,12 @@ function getOptions() {
 	if (typeof(srcW.loghost) == 'undefined')
 		document.getElementById('tr_enableLog').style.display = 'none';
 
-  for (var i=0; i<form.timerval.options.length; i++) {
-    if (form.timerval.options[i].value == srcW.timerval)
-      form.timerval.selectedIndex = i;
-  }
+	if (srcW.con.isPolling()) {
+		for (var i=0; i<form.timerval.options.length; i++) {
+			if (form.timerval.options[i].value == srcW.timerval)
+				form.timerval.selectedIndex = i;
+		}
+	}
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
@@ -237,7 +239,7 @@ function unregisterGateway(jid) {
 
 var srcW;
 function init() {
-	srcW = opener.top;
+	srcW = opener.parent;
 
 	getOptions();
 
@@ -363,17 +365,21 @@ onunload = savePrefs;
 									<td><input id="enableLog" type="checkbox" onChange="srcW.enableLog=this.checked;"></td>
 									<td><label for="enableLog"><l>Enable logging of messages</l></label></td>
 								</tr>
-								<tr>
-									<td colspan="2">
-										<l>Update interval</l>:
-										<select name="timerval" onChange="srcW.con.setPollInterval(this.value);srcW.timerval=this.value;">
-											<option value="2000"><l>2 sec.</l></option>
-											<option value="5000"><l>5 sec.</l></option>
-											<option value="10000"><l>10 sec.</l></option>
-											<option value="30000"><l>30 sec.</l></option>
-										</select>
-									</td>
-								</tr>
+<script language="JavaScript">
+									if (opener.parent.con.isPolling()) 
+										document.write(' \
+								<tr> \
+									<td colspan="2"> \
+										<l>Update interval</l>: \
+										<select name="timerval" onChange="srcW.con.setPollInterval(this.value);srcW.timerval=this.value;"> \
+											<option value="2000"><l>2 sec.</l></option> \
+											<option value="5000"><l>5 sec.</l></option> \
+											<option value="10000"><l>10 sec.</l></option> \
+											<option value="30000"><l>30 sec.</l></option> \
+										</select> \
+									</td> \
+								</tr>');
+</script>
 						</table>
 					</fieldset>
 				</form>
