@@ -70,7 +70,10 @@ function popMsgs() {
   
     putMsgHTML(msg.getBody(),mtime,user.name,"red");
   }
-  if (jwcMain.focusWindows) document.forms.chatform.msgbox.focus();
+  if (jwcMain.focusWindows)	{
+	  window.focus();
+	  document.forms.chatform.msgbox.focus(); 
+	}
   if (user.lastsrc != null && user.messages.length == 0) {
     var images = srcW.roster.getUserIcons(user.jid);
     for (var i=0; i<images.length; i++)
