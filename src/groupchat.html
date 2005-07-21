@@ -3,6 +3,10 @@
   <head>
     <title>JWChat - Groupchat</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script>
+ // this one's needed to make roster.js work
+var JABBERSERVER = opener.JABBERSERVER;
+</script>
     <script src="shared.js"></script>
     <script src="browsercheck.js"></script>
     <script src="emoticons.js"></script>
@@ -10,7 +14,9 @@
     <script src="statusLed.js"></script>
     <script src="xmlextras.js"></script>
     <script src="JSJaCPacket.js"></script>
-    <script>
+    <script src="roster.js"></script>
+    <script language="JavaScript1.2">
+<!--
 var colors = new Array('maroon','green','olive','navy','purple','teal','red','blue');
 
 var scrollHeight = 0;
@@ -233,8 +239,8 @@ function init() {
 	if(typeof(nick) == 'undefined' || nick == '')
 		nick = srcW.roster.nick; // guess a nick
 
-	meRegExp = new RegExp("\\b("+nick+")\\b","i");
-	notHREFMeRegExp = new RegExp("href=\"\\S*\\b"+nick+"\\b\\S*\"","i");
+ 	meRegExp = new RegExp("\\b("+nick+")\\b","i");
+ 	notHREFMeRegExp = new RegExp("href=\"\\S*\\b"+nick+"\\b\\S*\"","i");
 
 	if (passedArgs['pass'] != 'undefined')
 		pass = passedArgs['pass'];
@@ -284,7 +290,6 @@ function init() {
   displayTimestamp();
 }
 
-
 function keyPressed(e) {
   if (e.keyCode == 27)
     window.close();
@@ -295,14 +300,12 @@ function updateStyleIE() {
     user.roster.updateStyleIE();
 }
 
-var JABBERSERVER = opener.JABBERSERVER;
-
 onkeydown = keyPressed;
 onload = init;
 onunload = part;
 onresize = updateStyleIE;
+//-->
     </script>
-    <script src="roster.js"></script>
 
     <script for="document" event="onkeydown()" language="JScript">
       <!--
@@ -310,6 +313,7 @@ onresize = updateStyleIE;
       window.close();
       //-->
     </script>
+  </head>
 
 		<frameset cols="75%,*" frameborder=2 framespacing=2 border=2 bordercolor=black>
 			<frameset rows="40,*,90" frameborder=2 framespacing=2 border=2 bordercolor=black>
@@ -319,9 +323,4 @@ onresize = updateStyleIE;
       </frameset>
       <frame src="groupchat_roster.html" name="groupchatRoster" scrolling="no" />
     </frameset>
-
-  </head>
-
-  <body>
-  </body>
 </html>
