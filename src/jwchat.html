@@ -1322,10 +1322,12 @@ function init() {
 	/* ***
 	 * create new connection
 	 */
+	var oArg = {oDbg: Debug, httpbase: HTTPBASE, timerval: timerval};
+
 	if (BACKEND_TYPE == 'binding')
-		con = new JSJaCHttpBindingConnection(Debug);
+		con = new JSJaCHttpBindingConnection(oArg);
 	else
-		con = new JSJaCHttpPollingConnection(Debug);
+		con = new JSJaCHttpPollingConnection(oArg);
 
 	/* register handlers */
 	con.registerHandler('iq',handleIQSet);
@@ -1337,7 +1339,7 @@ function init() {
 	con.registerHandler('onerror',handleConError);
 
 	/* connect to remote */
-	con.connect(HTTPBASE,JABBERSERVER,jid.substring(0,jid.indexOf('@')),jid.substring(jid.indexOf('/')+1),pass,timerval,register);
+	con.connect({domain:JABBERSERVER,username:jid.substring(0,jid.indexOf('@')),resource:jid.substring(jid.indexOf('/')+1),pass:pass,register:register});
 }
 
 /************************************************************************
