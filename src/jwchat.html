@@ -1157,7 +1157,7 @@ function getPrefs(iq) {
 
 	// Start Service Discovery
 	iq = new JSJaCIQ();
-	iq.setIQ(con.server,null,'get','disco_item_1');
+	iq.setIQ(con.domain,null,'get','disco_item_1');
 	iq.setQuery('http://jabber.org/protocol/disco#items');
 
 	con.send(iq,getDiscoItems);
@@ -1216,7 +1216,7 @@ function getDiscoInfo(iq) {
 
 		// set loghost
 		if (iq.getNode().getElementsByTagName('identity').item(0)) {
-			if (iq.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'store') {
+			if (iq.getNode().getElementsByTagName('identity').item(0).getAttribute('type') == 'archive') {
 				for (var j=0; j<iq.getNode().getElementsByTagName('feature').length; j++) {
 					if (iq.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'http://jabber.org/protocol/archive') {
 						loghost = iq.getFrom();
