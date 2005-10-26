@@ -17,20 +17,50 @@ var srcW;
 var cFrame;
 
 var scrollHeight=0;
-function putMsgHTML(msg,mtime,user,usercolor,err) {
+function putMsgHTML(msg) {
   var msgHTML = '';
   
-  msg = msgFormat(msg);
-  
-  msgHTML += "<div title='@ "+mtime+"'><span class=time>["+mtime+"] </span>";
+  var body = '';
+	var err = false;
+	if (msg.getType() == 'error') {
+		var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
+		if (error && error.getElementsByTagName('text').item(0))
+			body = error.getElementsByTagName('text').item(0).firstChild.nodeValue;
+		err = true;
+	}	else
+		body = msg.getBody();
+
+	var now;
+	if (msg.jwcTimestamp)
+		now = msg.jwcTimestamp;
+	else
+		now = new Date();
+
+	var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+	mtime += ":";
+	mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+	mtime += ":";
+	mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+
+	if (msg.getTo() == user.jid){ // msg sent by me
+		nick = srcW.roster.nick;
+		nickcolor = 'blue';
+		dir = 'to'
+	} else {
+		nick = user.name;
+		nickcolor = 'red';
+		dir = 'from'
+	}
+
+  msgHTML += "<div title='@ "+mtime+"' cDate='"+now.getTime()+"' dir='"+dir+"' body='"+body+"'><span class=time>["+mtime+"] </span>";
 	if (err) {
 		msgHTML += "<span style='color:red;'>";
-  } else if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+user+"</span> ");
+  } else if (body.match(/^\/me /)) {
+    msg = body.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+nick+"</span> ");
   } else {
-    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick>&lt;" + user + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+nickcolor+";\" class=msgnick>&lt;" + nick + "&gt;</span>";
   }
-  msgHTML += "&nbsp;" + msg;
+  msgHTML += "&nbsp;" + msgFormat(body);
 	if (err)
 		msgHTML += '</span>';
 	msgHTML += "</div>";
@@ -55,20 +85,8 @@ function popMsgs() {
       msg = user.chatmsgs.shift();
 
 		// calc date
-		var now;
-		if (msg.jwcTimestamp)
-			now = msg.jwcTimestamp;
-		else
-			now = new Date();
-
-		var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-		mtime += ":";
-		mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-		mtime += ":";
-		mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
-
   
-    putMsgHTML(msg.getBody(),mtime,user.name,"red");
+    putMsgHTML(msg);
   }
   if (jwcMain.focusWindows)	{
 	  window.focus();
@@ -106,6 +124,29 @@ function updateUserPresence() {
 	img.src = eval(user.status + "Led").src;
 }
 
+function submitClicked() {
+	var body = document.forms[0].elements["msgbox"].value;
+	if (body == '') // don't send empty message
+		return true;
+
+	var aMessage = new JSJaCMessage();
+	aMessage.setType('chat');
+	aMessage.setTo(user.jid);
+	aMessage.setBody(body);
+
+	jwcMain.con.send(aMessage);
+
+	// insert into chat window
+	putMsgHTML(aMessage);
+
+	// add message to our message history
+	jwcMain.addtoHistory(body);
+	document.forms["chatform"].msgbox.value=''; // empty box
+	document.forms["chatform"].msgbox.focus(); // set focus back on input field
+	
+	return false;
+}
+
 var jwcMain;
 function init() {
   getArgs();
@@ -122,6 +163,8 @@ function init() {
     alert(loc("error starting chat"));
     window.close();
   }
+
+	cDate = new Date();
 
   cFrame = chat.document;
   user = srcW.roster.getUserByJID(jid);
@@ -149,53 +192,7 @@ function displayTimestamp() {
   }
 }
 
-function submitClicked() {
-	var body = document.forms[0].elements["msgbox"].value;
-	if (body == '') // don't send empty message
-		return true;
 
-	var aMessage = new JSJaCMessage();
-	aMessage.setType('chat');
-	aMessage.setTo(user.jid);
-	aMessage.setBody(body);
-
-	jwcMain.con.send(aMessage);
-
-	// store message - [TODO]
-	if (jwcMain.enableLog && typeof(jwcMain.loghost) != 'undefined') {
-		var aIQ = new JSJaCIQ();
-		aIQ.setType('set');
-		aIQ.setTo(jwcMain.loghost);
-		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-		aNode.appendChild(aMessage.getNode().cloneNode(true));
-		if (typeof(window.cid) != 'undefined') {
-			aNode.setAttribute('cid',user.chatW.cid);
-			jwcMain.con.send(aIQ);
-		} else {
-			storeCID = jwcMain.storeCID;
-			jwcMain.con.send(aIQ,storeCID,user.jid);
-		}
-	}
-
-	// insert into chat window
-	var now = new Date();
-
-	var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-	mtime += ":";
-	mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-	mtime += ":";
-	mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
-	putMsgHTML(body,mtime,srcW.roster.nick,"blue");
-
-	// add message to our message history
-	jwcMain.addtoHistory(body);
-	document.forms["chatform"].msgbox.value=''; // empty box
-	document.forms["chatform"].msgbox.focus(); // set focus back on input field
-	
-	return false;
-}
-			
 var group_open = new Image();
 group_open.src = 'images/group_open.gif';
 var group_close = new Image();
@@ -267,15 +264,30 @@ function msgboxKeyDown(el,e) {
 }
 
 function cleanUp() {
-	if (typeof(window.cid) != 'undefined') {
-		var aIQ = new JSJaCIQ();
-		aIQ.setType('set');
-		aIQ.setTo(jwcMain.loghost);
-		var aNode= aIQ.getNode().appendChild(aIQ.getDoc().createElement('done'));
-		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-		aNode.setAttribute('cid',window.cid);
-		jwcMain.con.syncSend(aIQ.clone());
+	if (!jwcMain.enableLog || typeof(jwcMain.loghost) == 'undefined')
+		return;
+
+	var nodes = cFrame.body.getElementsByTagName("div");
+	if (nodes.length == 0)
+		return;
+	
+	var aIQ = new JSJaCIQ();
+	aIQ.setType('set');
+	aIQ.setTo(jwcMain.loghost);
+	var aStore = aIQ.getNode().appendChild(aIQ.getDoc().createElement('store'));
+	aStore.setAttribute('xmlns','http://jabber.org/protocol/archive');
+	aStore.setAttribute('with',user.jid);
+	aStore.setAttribute('start',jabberDate(cDate));
+	
+	for (var i=0; i<nodes.length; i++) {
+		var node = nodes.item(i);
+		var aItem = aStore.appendChild(aIQ.getDoc().createElement(node.getAttribute('dir')));
+		aItem.setAttribute('secs',Math.round((node.getAttribute('cDate')-cDate.getTime())/1000));
+		aItem.appendChild(aIQ.getDoc().createElement("body")).appendChild(aIQ.getDoc().createTextNode(node.getAttribute('body')));
 	}
+
+	jwcMain.Debug.log(aIQ.xml(),2);
+	jwcMain.con.syncSend(aIQ);
 }
 
 onload = init;

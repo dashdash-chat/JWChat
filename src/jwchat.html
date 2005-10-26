@@ -522,20 +522,20 @@ function handleMessage(aMessage) {
 			}
     }
 
-		// send back to server - [TODO]
-		if (enableLog && typeof(loghost) != 'undefined') {
-			var aIQ = new JSJaCIQ();
-			aIQ.setType('set');
-			aIQ.setTo(loghost);
-			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-			aNode.appendChild(aMessage.getNode().cloneNode(true));
-			if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
-				aNode.setAttribute('cid',user.chatW.cid);
-				con.send(aIQ);
-			} else
-				con.send(aIQ,storeCID,user.jid);
-		}
+		// send back to server
+// 		if (enableLog && typeof(loghost) != 'undefined') {
+// 			var aIQ = new JSJaCIQ();
+// 			aIQ.setType('set');
+// 			aIQ.setTo(loghost);
+// 			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+// 			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+// 			aNode.appendChild(aMessage.getNode().cloneNode(true));
+// 			if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
+// 				aNode.setAttribute('cid',user.chatW.cid);
+// 				con.send(aIQ);
+// 			} else
+// 				con.send(aIQ,storeCID,user.jid);
+// 		}
   } else if (type == 'groupchat') {
 
       /* handle groupchat message 
@@ -603,7 +603,7 @@ function handleMessageError(aJSJaCPacket) {
 		var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
 		if (error) {
 			if (error.getElementsByTagName('text').item(0)) {
-				user.chatW.putMsgHTML(error.getElementsByTagName('text').item(0).firstChild.nodeValue,new Date(),aJSJaCPacket.getFrom(),null,true);
+				user.chatW.putMsgHTML(aJSJaCPacket);
 				playSound('error');
 				return;
 			}
@@ -666,7 +666,7 @@ function handlePresence(presence) {
 				if (presence.getNode().getElementsByTagName('error').item(0)) {
 					var error = presence.getNode().getElementsByTagName('error').item(0);
 					if (error.getElementsByTagName('text').item(0))
-						user.chatW.putMsgHTML(error.getElementsByTagName('text').item(0).firstChild.nodeValue,new Date(),from,null,true);
+						user.chatW.putMsgHTML(presence);
 					else if (error.firstChild && error.firstChild.nodeValue)
 						user.chatW.putMsgHTML(error.firstChild.nodeValue,new Date(),from,null,true);								
 				}

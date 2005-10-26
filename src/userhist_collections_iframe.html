@@ -51,11 +51,15 @@ function rowClicked(e) {
 	var aIQ = new JSJaCIQ();
 	aIQ.setType('get');
 	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('retrieve'));
 	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aNode.setAttribute('cid',selectedRow.getAttribute('cid'));
+	aNode.setAttribute('with',parent.jid);
+	aNode.setAttribute('start',selectedRow.getAttribute('start'));
 
-	target = parent
+	srcW.Debug.log(aIQ.xml(),2);
+
+	target = parent;
+
 	srcW.con.send(aIQ,target.handleCollGet);
 }
 		</script>

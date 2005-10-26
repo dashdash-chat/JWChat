@@ -10,7 +10,11 @@
     <script src="JSJaCPacket.js"></script>
     <script>
       <!--
-function reloadHistory() {
+function reloadHistory(iq) {
+
+	if (iq && iq.getType != 'result')
+		srcW.Debug.log(iq.xml(),1);
+
 	// clear iframes
 	selected_collection.document.body.innerHTML = '';
 	collections.document.body.innerHTML = '';
@@ -19,8 +23,9 @@ function reloadHistory() {
 	var aIQ = new JSJaCIQ();
 	aIQ.setType('get');
 	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-	aNode.setAttribute('jid',jid);
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('list'));
+	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+	aNode.setAttribute('with',jid);
 	srcW.con.send(aIQ,me.handleCollsGet);
 
 	return false;
@@ -30,23 +35,22 @@ function handleCollGet(iq) {
 	if (!iq || iq.getType() != 'result')
 		return;
 
-	srcW.Debug.log(iq.getDoc().xml,2);
+	srcW.Debug.log(iq.xml(),2);
 
-	//selected_collection.document.body.innerHTML = '';
 	var histHTML = '';
 
-	for (var i=0; i<iq.getNode().firstChild.getElementsByTagName('message').length; i++) {
-
-		var msg = JSJaCPWrapNode(iq.getNode().firstChild.getElementsByTagName('message').item(i));
-		if (msg.getTo() != null) // message from me
+	var aStore = iq.getNode().firstChild;
+	for (var i=0; i<aStore.childNodes.length; i++) {
+		var aChild = aStore.childNodes.item(i);
+		if (aChild.nodeName == 'to') // message from me
 			histHTML += "<font color=\"blue\">&lt;" + srcW.nick + "&gt;</font> ";
 		else
 			histHTML += "<font color=\"red\">&lt;" + user.name + "&gt;</font> ";
 
-		histHTML += msg.getBody() + '<br>';
+		histHTML += aChild.firstChild.firstChild.nodeValue + '<br>';
 		continue;
 	}
-  	selected_collection.document.body.innerHTML = histHTML;
+	selected_collection.document.body.innerHTML = histHTML;
 }
 
 function handleCollsGet(iq) {
@@ -55,7 +59,7 @@ function handleCollsGet(iq) {
 
 	srcW.Debug.log(iq.getDoc().xml,2);
 
-	var items = iq.getNode().firstChild.getElementsByTagName('item');
+	var items = iq.getNode().firstChild.getElementsByTagName('store');
 
 	var myTable = collections.document.createElement("TABLE");
 	var myTableBody = collections.document.createElement("TBODY");
@@ -67,11 +71,8 @@ function handleCollsGet(iq) {
 
 		var item = items.item(i);
 
-		if (cutResource(item.getAttribute('jid')) != cutResource(jid)) // skip
-			continue;
-		
 		row = collections.document.createElement("TR");
-		row.setAttribute("cid",item.getAttribute('cid'));
+		row.setAttribute("start",item.getAttribute('start'));
 		myTableBody.appendChild(row);
 
 		cell = collections.document.createElement("TD");
@@ -94,6 +95,23 @@ function handleCollsGet(iq) {
 
 	// tell frame about it
 	collections.init();
+}
+
+function deleteHistory() {
+	if (!confirm(loc("Are you sure you want to delete this chat history completely?")))
+		return;
+
+	var aIQ = new JSJaCIQ();
+	aIQ.setType('set');
+	aIQ.setTo(srcW.loghost);
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('remove'));
+	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+	aNode.setAttribute('with',jid);
+	
+	srcW.Debug.log(aIQ.xml(),2);
+
+	me = this;
+	srcW.con.send(aIQ,me.reloadHistory);
 }
 
 var srcW;
@@ -122,9 +140,9 @@ function init() {
 	var aIQ = new JSJaCIQ();
 	aIQ.setType('get');
 	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('list'));
 	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aNode.setAttribute('jid',jid);
+	aNode.setAttribute('with',jid);
 	me = this;
 	srcW.con.send(aIQ,me.handleCollsGet);
 }
@@ -148,7 +166,7 @@ onload = init;
   <body style="margin:8px;">
 		<table width="100%" height="100%" border=0>
 				<tr>
-					<td><h2 id="title"></h2></td><td align="right"><button onClick="return reloadHistory();"><l>Refresh</l></td>
+					<td><h2 id="title"></h2></td><td align="right"><button onClick="deleteHistory();"><l>Delete</l></button> <button onClick="reloadHistory();"><l>Refresh</l></td>
 				</tr>
 				<tr height="100%">
 					<td>

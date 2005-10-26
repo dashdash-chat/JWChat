@@ -126,10 +126,40 @@ function isValidJID(jid) {
 }
 
 /* hrTime - human readable Time
- * takes a timestamp in the form of 20040813T12:07:04 as argument
+ * takes a timestamp in the form of 2004-08-13T12:07:04±02:00 as argument
  * and converts it to some sort of humane readable format
  */
 function hrTime(ts) {
-	var date = new Date(Date.UTC(ts.substring(0,4),ts.substring(4,6)-1,ts.substring(6,8),ts.substring(9,11),ts.substring(12,14),ts.substring(15,17)));
+	var date = new Date(Date.UTC(ts.substr(0,4),ts.substr(5,2)-1,ts.substr(8,2),ts.substr(11,2),ts.substr(14,2),ts.substr(17,2)));
+	if (ts.substr(ts.length-6,1) != 'Z') { // there's an offset
+		var offset = new Date();
+		offset.setTime(0);
+		offset.setUTCHours(ts.substr(ts.length-5,2));
+		offset.setUTCMinutes(ts.substr(ts.length-2,2));
+		if (ts.substr(ts.length-6,1) == '+')
+			date.setTime(date.getTime() - offset.getTime());
+		else if (ts.substr(ts.length-6,1) == '-')
+			date.setTime(date.getTime() + offset.getTime());
+	}
 	return date.toLocaleString();
+}
+
+/* jabberDate
+ * somewhat opposit to hrTime (see above)
+ * expects a javascript Date object as parameter and returns a jabber 
+ * date string conforming to JEP-0082
+ */
+function jabberDate(date) {
+	if (!date.getUTCFullYear)
+		return;
+
+	var jDate = date.getUTCFullYear() + "-";
+	jDate += (((date.getUTCMonth()+1) < 10)? "0" : "") + (date.getUTCMonth()+1) + "-";
+	jDate += ((date.getUTCDate() < 10)? "0" : "") + date.getUTCDate() + "T";
+
+	jDate += ((date.getUTCHours()<10)? "0" : "") + date.getUTCHours() + ":";
+	jDate += ((date.getUTCMinutes()<10)? "0" : "") + date.getUTCMinutes() + ":";
+	jDate += ((date.getUTCSeconds()<10)? "0" : "") + date.getUTCSeconds() + "Z";
+
+	return jDate;
 }
