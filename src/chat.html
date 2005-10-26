@@ -172,7 +172,7 @@ function init() {
 
 	document.getElementById('user_name').innerHTML = user.name;
 
-	if (typeof(jwcMain.loghost) == 'undefined')
+	if (typeof(srcW.loghost) == 'undefined')
 		document.getElementById('hist_button').style.display = 'none';
 
 	updateUserPresence();
@@ -264,7 +264,7 @@ function msgboxKeyDown(el,e) {
 }
 
 function cleanUp() {
-	if (!jwcMain.enableLog || typeof(jwcMain.loghost) == 'undefined')
+	if (!srcW.enableLog || typeof(srcW.loghost) == 'undefined')
 		return;
 
 	var nodes = cFrame.body.getElementsByTagName("div");
