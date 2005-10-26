@@ -522,20 +522,6 @@ function handleMessage(aMessage) {
 			}
     }
 
-		// send back to server
-// 		if (enableLog && typeof(loghost) != 'undefined') {
-// 			var aIQ = new JSJaCIQ();
-// 			aIQ.setType('set');
-// 			aIQ.setTo(loghost);
-// 			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-// 			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-// 			aNode.appendChild(aMessage.getNode().cloneNode(true));
-// 			if (user.chatW && !user.chatW.closed && typeof(user.chatW.cid)!='undefined') {
-// 				aNode.setAttribute('cid',user.chatW.cid);
-// 				con.send(aIQ);
-// 			} else
-// 				con.send(aIQ,storeCID,user.jid);
-// 		}
   } else if (type == 'groupchat') {
 
       /* handle groupchat message 
@@ -571,16 +557,8 @@ function handleMessage(aMessage) {
 
     }
 
-		// store message
-		if (enableLog && typeof(loghost) != 'undefined') {
-			var aIQ = new JSJaCIQ();
-			aIQ.setType('set');
-			aIQ.setTo(loghost);
-			var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-			aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-			aNode.appendChild(aMessage.getNode().cloneNode(true));
-			con.send(aIQ);
-		}
+		// [TODO] zeank 2005-10-26
+		// archiving of single/plain messages
   }
 }
 
@@ -659,8 +637,7 @@ function handlePresence(presence) {
     if (type == 'unsubscribe')
       alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
 
-		if (type == 'error') { // [TODO]
-
+		if (type == 'error') {
 			var user = roster.getUserByJID(from);
 			if (user && user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
 				if (presence.getNode().getElementsByTagName('error').item(0)) {
@@ -672,10 +649,7 @@ function handlePresence(presence) {
 				}
 				
 			}
-// 			for (var i in jabber.o) {
-// 				if (jabber.o[i].tagname == 'error' && jabber.o[i].data != '')
-// 					alert("From: "+from+"\nError (Code:"+jabber.o[i].code+")\n\n"+jabber.o[i].data);
-// 			}
+
 			return;
 		}
   }
@@ -1006,7 +980,7 @@ function handleConError(e) {
 		alert(loc("Service unavailable"));
 		break;
 	case '500':
-		if (!con.connected())
+		if (!con.connected() && !logoutCalled && onlstat != 'offline')
 			if (confirm(loc("Internal Server Error.\n\nDisconnected.\n\nReconnect?")))
 				changeStatus(onlstat,onlmsg);
 		break;
