@@ -27,18 +27,21 @@ function sendMSG() {
   if(document.forms[0].subject.value != '')
 		aMessage.setSubject(document.forms[0].subject.value);
 
-	srcW.con.syncSend(aMessage);
+	srcW.con.send(aMessage);
   
-	// save message
-	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined') {
-		var aIQ = new JSJaCIQ();
-		aIQ.setType('set');
-		aIQ.setTo(srcW.loghost);
-		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
-		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-		aNode.appendChild(aMessage.getNode().cloneNode(true));
-		srcW.con.syncSend(aIQ);
-	}
+	// archive message
+  /* [TODO] [zeank] 20051028
+   * disabled by now as not compliant with latest version of jep
+   */
+//	if (srcW.enableLog && typeof(srcW.loghost) != 'undefined') {
+//		var aIQ = new JSJaCIQ();
+//		aIQ.setType('set');
+//		aIQ.setTo(srcW.loghost);
+// 		var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('archive'));
+// 		aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
+// 		aNode.appendChild(aMessage.getNode().cloneNode(true));
+//		srcW.con.send(aIQ); 
+// 	}
   
   if (!opener.roster && srcW.roster.getUserByJID(jid).messages.length == 0)
     opener.close();

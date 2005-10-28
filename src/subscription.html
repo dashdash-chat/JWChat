@@ -30,7 +30,7 @@ function sendSub() {
   if (document.forms[0].msg.value && document.forms[0].msg.value != '')
 		aPresence.setStatus(document.forms[0].msg.value);
 
-  srcW.con.syncSend(aPresence);
+  srcW.con.send(aPresence);
     
   window.close();
 }
