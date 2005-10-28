@@ -327,7 +327,7 @@ function sendPresence2Groupchats(gc,val,away) {
 			aPresence.setStatus(away);
 		if (val != 'available')
 			aPresence.setShow(val);
-		con.syncSend(aPresence);
+		con.send(aPresence);
 	}
 }
 
@@ -355,7 +355,7 @@ function changeStatus(val,away) {
   case "offline":
     val = "unavailable";
 		aPresence.setType('unavailable');
-		con.syncSend(aPresence);
+		con.send(aPresence);
 		con.disconnect();
     var img = eval(val+"Led");
     statusLed.src = img.src;
@@ -382,7 +382,7 @@ function changeStatus(val,away) {
 		aPresence.setShow(val);
   }
 
-	con.syncSend(aPresence);
+	con.send(aPresence);
 
   /* send presence to chatrooms
    */
@@ -1374,11 +1374,11 @@ function logout() {
 	if (hiddengroups != '')
 		aNode.appendChild(iq.getDoc().createElement('hiddenGroups')).appendChild(iq.getDoc().createTextNode(hiddengroups));
 
-	con.syncSend(iq);
+	con.send(iq);
 
 	var aPresence = new JSJaCPresence();
 	aPresence.setType('unavailable');
-	con.syncSend(aPresence);
+	con.send(aPresence);
 
 	con.disconnect();
 }
