@@ -1148,7 +1148,7 @@ function getPrefs(iq) {
 	iq = new JSJaCIQ();
 	iq.setIQ(null,null,'get','jwchat_notes');
 	var query = iq.setQuery('jabber:iq:private');
-	query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:notes');
+	query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:rosternotes');
 
 	con.send(iq,getAnnotations);
 }
@@ -1244,10 +1244,10 @@ function getAnnotations(iq) {
 	annotations = new Array();
 
 	if (iq.getType() == 'result') {
-		if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
-			var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
+		if (iq.getNode().getElementsByTagName('storage').item(0)) {
+			var jNode = iq.getNode().getElementsByTagName('storage').item(0);
 			for (var i=0; i<jNode.childNodes.length; i++)
-				if (jNode.childNodes.item(i).nodeName == 'item' && jNode.childNodes.item(i).firstChild)
+				if (jNode.childNodes.item(i).nodeName == 'note' && jNode.childNodes.item(i).firstChild)
 					annotations[jNode.childNodes.item(i).getAttribute('jid')] = jNode.childNodes.item(i).firstChild.nodeValue;
 		}
 	}

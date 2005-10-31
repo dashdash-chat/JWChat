@@ -41,12 +41,12 @@ function saveNotes() {
 	var iq = new JSJaCIQ();
 	iq.setType('set');
 	var query = iq.setQuery('jabber:iq:private');
-	var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
-	jNode.setAttribute('xmlns','jwchat:notes');
+	var jNode = query.appendChild(iq.getDoc().createElement('storage'));
+	jNode.setAttribute('xmlns','storage:rosternotes');
 
 	for (var i in srcW.annotations)
 		if (srcW.annotations[i] != '') {
-			var item = jNode.appendChild(iq.getDoc().createElement('item'));
+			var item = jNode.appendChild(iq.getDoc().createElement('note'));
 			item.setAttribute('jid',i);
 			item.appendChild(iq.getDoc().createTextNode(srcW.annotations[i]));
 		}
