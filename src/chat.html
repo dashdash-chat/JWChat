@@ -53,14 +53,15 @@ function putMsgHTML(msg) {
 	}
 
   msgHTML += "<div title='@ "+mtime+"' cDate='"+now.getTime()+"' dir='"+dir+"' body='"+body+"'><span class=time>["+mtime+"] </span>";
+	body = msgFormat(body);
 	if (err) {
-		msgHTML += "<span style='color:red;'>";
+		msgHTML += "<span style='color:red;'>&nbsp;";
   } else if (body.match(/^\/me /)) {
-    msg = body.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+nick+"</span> ");
+    body = body.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+nick+"</span> ");
   } else {
-    msgHTML += "<span style=\"color:"+nickcolor+";\" class=msgnick>&lt;" + nick + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+nickcolor+";\" class=msgnick>&lt;" + nick + "&gt;</span>&nbsp;";
   }
-  msgHTML += "&nbsp;" + msgFormat(body);
+  msgHTML += body;
 	if (err)
 		msgHTML += '</span>';
 	msgHTML += "</div>";
