@@ -30,7 +30,7 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
   if (msg.match(/^\/me /)) {
     msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick title='@ "+mtime+"'>*&nbsp;"+user+"</span> ");
   } else if (user != group) {
-    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick title='@ "+mtime+"'>&lt;" + user + "&gt;</span>";
+    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick title='@ "+mtime+"'>&lt;" + user + "&gt;</span>&nbsp;";
   }
 
   if (user == group) {/* channel status messages */
@@ -42,7 +42,7 @@ function putMsgHTML(msg,mtime,user,usercolor,err) {
 		if (user != nick && meRegExp.test(msg) && !notHREFMeRegExp.test(msg))
 			msgHTML += "&nbsp;" + msg.replace(meRegExp,"<span class='highlighted'>$1</span>");
 		else 
-			msgHTML += "&nbsp;" + msg;
+			msgHTML +=  msg;
 	}
 
 	msgHTML += "</div>";
