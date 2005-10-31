@@ -11,8 +11,6 @@ emoticons[':cat:'] = 'cat.gif';
 
 emoticons[':dog:'] = 'dog.gif';
 
-emoticons['::jaguar::'] = 'dog.gif';
-
 emoticons['@-\\)'] = 'alien.gif';
 
 emoticons['8-\\]'] = 'ogre.gif';
@@ -35,6 +33,7 @@ emoticons['o:\\)'] = 'angel.gif';
 emoticons['O:\\)'] = 'angel.gif';
 
 emoticons['\\(6\\)'] = 'devil.gif';
+emoticons[':devil:'] = 'devil.gif';
 
 emoticons['\\(y\\)'] = 'thumbup.gif';
 emoticons['\\(Y\\)'] = 'thumbup.gif';
@@ -138,10 +137,11 @@ emoticons[':speaker:'] = 'speaker.gif';
 emoticons[':tv:'] = 'tv.gif';
 emoticons[':television:'] = 'tv.gif';
 
+emoticons[':p'] = 'ditsy.gif';
+
 emoticons[':pill:'] = 'pill.png';
 emoticons['\\(E\\)'] = 'pill.png';
 emoticons['\\(e\\)'] = 'pill.png';
-emoticons['\:\:fxb'] = 'fxb.png';
 
 emoticons[':god:'] = 'trinity_glowing.gif';
 emoticons[':water:'] = 'water_molecule.gif';
@@ -160,8 +160,9 @@ emoticons[':\\|'] = 'normal.gif';
 emoticons[':-\\|'] = 'normal.gif';
 
 emoticons[':-\\\\'] = 'ermm.gif';
+emoticons[':\\\\'] = 'ermm.gif';
 emoticons[':-\\/'] = 'ermm.gif';
-emoticons[':-\\\\'] = 'ermm.gif';
+emoticons[':\\/'] = 'ermm.gif';
 
 emoticons[':S'] = 'puzzled.gif';
 emoticons[':s'] = 'puzzled.gif';
@@ -195,8 +196,6 @@ emoticons[':d'] = 'silly.gif';
 emoticons[':-D'] = 'silly.gif';
 
 emoticons[':o\\)'] = 'cheerful.gif';
-
-emoticons[':p'] = 'ditsy.gif';
 
 emoticons[':\\)'] = 'smiley.gif';
 
