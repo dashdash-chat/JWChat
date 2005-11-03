@@ -83,7 +83,7 @@ function htmlFullEnc(str) {
 		return '';
 
 	str = htmlEnc(str);
-	str = str.replace(/\'/g,"\\\'");
+	//	str = str.replace(/\'/g,"\\\'");
 	str = str.replace(/\"/g,"&quot;");
 	return str;
 }
