@@ -47,7 +47,9 @@ function handleCollGet(iq) {
 		else
 			histHTML += "<font color=\"red\">&lt;" + user.name + "&gt;</font> ";
 
-		histHTML += aChild.firstChild.firstChild.nodeValue + '<br>';
+		if (aChild.firstChild.firstChild)
+			histHTML += htmlEnc(aChild.firstChild.firstChild.nodeValue);
+		histHTML += '<br>';
 		continue;
 	}
 	selected_collection.document.body.innerHTML = histHTML;
