@@ -52,7 +52,7 @@ function putMsgHTML(msg) {
 		dir = 'from'
 	}
 
-  msgHTML += "<div title='@ "+mtime+"' cDate='"+now.getTime()+"' dir='"+dir+"' body='"+body+"'><span class=time>["+mtime+"] </span>";
+  msgHTML += "<div title=\"@ "+mtime+"\" cDate=\""+now.getTime()+"\" dir=\""+dir+"\" body=\""+htmlFullEnc(body)+"\"><span class=time>["+mtime+"] </span>";
 	body = msgFormat(body);
 	if (err) {
 		msgHTML += "<span style='color:red;'>&nbsp;";
@@ -282,6 +282,7 @@ function cleanUp() {
 	
 	for (var i=0; i<nodes.length; i++) {
 		var node = nodes.item(i);
+
 		var aItem = aStore.appendChild(aIQ.getDoc().createElement(node.getAttribute('dir')));
 		aItem.setAttribute('secs',Math.round((node.getAttribute('cDate')-cDate.getTime())/1000));
 		aItem.appendChild(aIQ.getDoc().createElement("body")).appendChild(aIQ.getDoc().createTextNode(node.getAttribute('body')));
