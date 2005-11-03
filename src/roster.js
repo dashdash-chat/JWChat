@@ -329,7 +329,7 @@ function GroupchatRosterPrint() {
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
       var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
-      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid)+"');\" title=\""+user.name;
+      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid).replace(/\'/g,"\\\'")+"');\" title=\""+user.name;
 			if (user.realjid)
 				rosterHTML += "&#10;JID: "+ htmlEnc(user.realjid);
 			else
