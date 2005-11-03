@@ -903,7 +903,7 @@ function handleIQSet(iq) {
 				Debug.log("removing user " + user.jid,2);
         roster.removeUser(user);
       } else { // update user
-        user.name = item.getAttribute('name')? item.getAttribute('name') : item.getAttribute('jid');
+        user.name = item.getAttribute('name')? htmlEnc(item.getAttribute('name')) : item.getAttribute('jid');
         user.groups = new Array('');
 				for (var j=0; j<item.childNodes.length; j++)
 					if (item.childNodes.item(j).nodeName == 'group')
