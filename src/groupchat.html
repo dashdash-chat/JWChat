@@ -23,14 +23,14 @@ var scrollHeight = 0;
 function putMsgHTML(msg,mtime,user,usercolor,err) {
   var msgHTML = '';
   
-  msg = msgFormat(msg);
-
   msgHTML += "<div><span class=time>["+mtime+"] </span>";    
   
   if (msg.match(/^\/me /)) {
-    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick title='@ "+mtime+"'>*&nbsp;"+user+"</span> ");
+		msg = msgFormat(msg);
+    msg = msg.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick title='@ "+mtime+"'>*&nbsp;"+htmlEnc(user)+"</span> ");
   } else if (user != group) {
-    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick title='@ "+mtime+"'>&lt;" + user + "&gt;</span>&nbsp;";
+		msg = msgFormat(msg);
+    msgHTML += "<span style=\"color:"+usercolor+";\" class=msgnick title='@ "+mtime+"'>&lt;" + htmlEnc(user) + "&gt;</span>&nbsp;";
   }
 
   if (user == group) {/* channel status messages */
