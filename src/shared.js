@@ -69,12 +69,23 @@ function makeWindowName(wName) {
 
 function htmlEnc(str) {
 	if (!str)
-		return null;
+		return '';
 
   str = str.replace(/&/g,"&amp;");
   str = str.replace(/</g,"&lt;");
   str = str.replace(/>/g,"&gt;");
   return str;
+}
+
+/* for use within tag attributes */
+function htmlFullEnc(str) {
+	if (!str)
+		return '';
+
+	str = htmlEnc(str);
+	str = str.replace(/\'/g,"\\\'");
+	str = str.replace(/\"/g,"&quot;");
+	return str;
 }
 
 function msgFormat(msg) { // replaces emoticons and urls in a message
@@ -94,6 +105,9 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 	
   // replace http://<url>
   msg = msg.replace(/(\s|^)(https?:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
+
+	// replace ftp://<url>
+  msg = msg.replace(/(\s|^)(ftp:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
   
   // replace mail-links
   msg = msg.replace(/(\s|^)(\w+\@\S+\.\S+)/g,"$1<a href=\"mailto:$2\">$2</a>");
