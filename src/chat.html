@@ -43,7 +43,7 @@ function putMsgHTML(msg) {
 	mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
 
 	if (msg.getTo() == user.jid){ // msg sent by me
-		nick = srcW.roster.nick;
+		nick = htmlEnc(srcW.roster.nick);
 		nickcolor = 'blue';
 		dir = 'to'
 	} else {
@@ -117,7 +117,7 @@ function updateUserPresence() {
 	document.getElementById('user_name').innerHTML = user.name;
 	if (user.statusMsg) {
 		awaymsg.style.display = '';
-		awaymsg.innerHTML = user.statusMsg;
+		awaymsg.innerHTML = htmlEnc(user.statusMsg);
 	} else
 		awaymsg.style.display = 'none';
 
