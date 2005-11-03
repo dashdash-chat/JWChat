@@ -1,5 +1,5 @@
 function RosterGroup(name) {
-  this.name = name;
+  this.name = htmlEnc(name);
   this.users = new Array();
   this.onlUserCount = 0;
   this.messagesPending = 0;
@@ -270,23 +270,24 @@ function printRoster() {
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
       var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
-      rosterHTML += "<div id='"+user.jid+"/"+this.groups[i].name+"Entry' class='"+rosterUserClass+"' onClick=\"return userClicked(this,'"+user.jid+"');\" title=\""+user.name;
+
+      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid)+"');\" title=\""+user.name;
 			if (user.realjid)
-				rosterHTML += "&#10;JID: "+ user.realjid;
+				rosterHTML += "&#10;JID: "+ htmlEnc(user.realjid);
 			else
-				rosterHTML += "&#10;JID: "+ user.jid;
+				rosterHTML += "&#10;JID: "+ htmlEnc(user.jid);
 			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
       if (user.statusMsg)
-        rosterHTML += "&#10;"+loc("Message")+": " + user.statusMsg;
+        rosterHTML += "&#10;"+loc("Message")+": " + htmlFullEnc(user.statusMsg);
 			if ((user.messages.length + user.chatmsgs.length) > 0)
 				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
       rosterHTML += "\"><nobr>";
       
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' width=16 height=16 border=0 align='left'>";
+      rosterHTML += "<img src=\""+userImg.src+"\" name=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"\" width=16 height=16 border=0 align=\"left\">";
       rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
       if (user.statusMsg)
-        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
+        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+htmlEnc(user.statusMsg)+"</span></nobr>";
       rosterHTML += "</div></nobr></div>";
     } /* END inner loop */
     rosterHTML += "</div>";
@@ -328,23 +329,22 @@ function GroupchatRosterPrint() {
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
       var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
-      rosterHTML += "<div id='"+user.jid+"/"+this.groups[i].name+"Entry' class='"+rosterUserClass+"' onClick=\"return userClicked(this,'"+user.jid+"');\" title=\""+user.name;
+      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid)+"');\" title=\""+user.name;
 			if (user.realjid)
-				rosterHTML += "&#10;JID: "+ user.realjid;
+				rosterHTML += "&#10;JID: "+ htmlEnc(user.realjid);
 			else
-				rosterHTML += "&#10;JID: "+ user.jid;
+				rosterHTML += "&#10;JID: "+ htmlEnc(user.jid);
 			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
       if (user.statusMsg)
-        rosterHTML += "&#10;"+loc("Message")+": " + user.statusMsg;
+        rosterHTML += "&#10;"+loc("Message")+": " + htmlFullEnc(user.statusMsg);
 			if ((user.messages.length + user.chatmsgs.length) > 0)
 				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
       rosterHTML += "\"><nobr>";
-      
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src='"+userImg.src+"' name='"+user.jid+"/"+this.groups[i].name+"' width=16 height=16 border=0 align='left'>";
+      rosterHTML += "<img src=\""+userImg.src+"\" name=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"\" width=16 height=16 border=0 align=\"left\">";
       rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
       if (user.statusMsg)
-        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+user.statusMsg+"</span></nobr>";
+        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+htmlEnc(user.statusMsg)+"</span></nobr>";
       rosterHTML += "</div></nobr></div>";
     } /* END inner loop */
     rosterHTML += "</div>";
