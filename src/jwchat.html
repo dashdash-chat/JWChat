@@ -734,14 +734,14 @@ function handlePresence(presence) {
 					return;
 
 				var aMessage = new JSJaCMessage();
-				aMessage.setFrom(user.jid);
-				aMessage.setBody(loc("[_1] is now known as [_2]",ouser.name, ouser.nick));
+				aMessage.setFrom(user.jid);f
+				aMessage.setBody(loc("[_1] is now known as [_2]",ouser.name, htmlEnc(ouser.nick)));
 				user.chatmsgs = user.chatmsgs.concat(aMessage);
 				if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 					user.chatW.popMsgs();
 
 				// update nick if it's me
-				if (ouser.name == user.roster.nick)
+				if (ouser.name == htmlEnc(user.roster.nick))
 					user.roster.nick = ouser.nick;
 
 				// remove old user
