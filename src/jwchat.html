@@ -696,7 +696,7 @@ function handlePresence(presence) {
 			 * must be done here cause we want to be sure that role != ''
 			 */
             
-			if (ouser.name == user.roster.nick) { // seems to be me
+			if (ouser.name == htmlEnc(user.roster.nick)) { // seems to be me
 				user.roster.me = ouser; // store this reference
 				if (user.chatW.updateMe)
 					user.chatW.updateMe();
@@ -734,7 +734,7 @@ function handlePresence(presence) {
 					return;
 
 				var aMessage = new JSJaCMessage();
-				aMessage.setFrom(user.jid);f
+				aMessage.setFrom(user.jid);
 				aMessage.setBody(loc("[_1] is now known as [_2]",ouser.name, htmlEnc(ouser.nick)));
 				user.chatmsgs = user.chatmsgs.concat(aMessage);
 				if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
