@@ -14,33 +14,30 @@ var curMSG = lastMSG = 0;
 function showMSG() {
 
   /* look for error message */
-  if (messages[curMSG].type == 'error' && messages[curMSG].o) {
-    for (var i in messages[curMSG].o) {
-      if (messages[curMSG].o[i].tagname && messages[curMSG].o[i].tagname == 'error') {
-				document.getElementById('error_code').innerHTML = messages[curMSG].o[i].code;
-				document.getElementById('error_data').innerHTML = messages[curMSG].o[i].data;
-      }
-    }
-      
-  }
+  if (messages[curMSG].getNode().getElementsByTagName('error').item(0)) {
+		var aErr = messages[curMSG].getNode().getElementsByTagName('error').item(0);
+		
+		if (aErr.getAttribute('code'))
+			document.getElementById('error_code').innerHTML = aErr.getAttribute('code');
+		if (aErr.firstChild.nodeValue)
+			document.getElementById('error_data').innerHTML = aErr.firstChild.nodeValue;
+	}
+
   /*set subject */
-  if (messages[curMSG].subject)
-    document.getElementById('subject').innerHTML = messages[curMSG].subject;
+  if (messages[curMSG].getSubject())
+    document.getElementById('subject').innerHTML = messages[curMSG].getSubject();
 
   /* set date */
   var date;
-  if (messages[curMSG].o && messages[curMSG].o[0] && typeof(messages[curMSG].o[0].stamp) != 'undefined') {
-    var now = new Date();
-    var stamp = messages[curMSG].o[0].stamp;
-    date = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
-  } else {
-    date = new Date();
-  }
+	if (messages[curMSG].jwcTimestamp)
+		date = messages[curMSG].jwcTimestamp;
+	else
+		date = new Date();
+
   document.getElementById('date').innerHTML = date.toLocaleString();
 
 	/* set body */
-	msgbox.document.body.innerHTML = msgFormat(messages[curMSG].body);
-
+	msgbox.document.body.innerHTML = msgFormat(messages[curMSG].getBody());
 
   /* set buttons */
   if (curMSG == 0)
