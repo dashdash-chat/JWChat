@@ -640,7 +640,8 @@ function handlePresence(presence) {
 		}
 		return;
 	case 'unsubscribe':
-		alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
+		if (!isGateway(from))
+			alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
 		break;
 	case 'error':
 		var user = roster.getUserByJID(from);
