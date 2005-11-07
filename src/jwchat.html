@@ -293,7 +293,6 @@ function isGateway(aJid) {
 				if (disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway')
 					return true;
 			}
-
 	return false;
 }
 
@@ -573,7 +572,7 @@ function handleMessageError(aJSJaCPacket) {
 	if (aJSJaCPacket.getType() != 'error')
 		return;
 
-	Debug.log(aJSJaCPacket.getDoc().xml,3);
+	Debug.log(aJSJaCPacket.getDoc().xml,2);
 
 	var user = roster.getUserByJID(cutResource(aJSJaCPacket.getFrom()));
 
@@ -618,41 +617,45 @@ function handlePresence(presence) {
   if (from == cutResource(jid)) // skip my own presence msgs
     return;
 
-  if (type) {
-    if (type == 'subscribe') {
-			if (isGateway(from)) { // automatically subscribe to gateways
-				var aPresence = new JSJaCPresence();
-				aPresence.setTo(from);
-				aPresence.setType('subscribed');
-				con.send(aPresence);
-			}
+	switch (type) {
+	case 'subscribe':
+		if (isGateway(from)) { // automatically subscribe gateways
+			
+			// Approve Subscription Request
+			var aPresence = new JSJaCPresence();
+			aPresence.setTo(presence.getFrom());
+			aPresence.setType('subscribed');
+			con.send(aPresence);
+
+			// Subscribe to Gateway's Presence
+			var bPresence = new JSJaCPresence();
+			bPresence.setTo(presence.getFrom());
+			bPresence.setType('subscribe');
+			con.send(bPresence);
+		}	else {
+			if (status)
+				window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(status),"sr"+makeWindowName(from),"width=320,height=240");
 			else
-				if (status)
-					window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(status),"sr"+makeWindowName(from),"width=320,height=240");
-				else
-					window.open("subscriptionRequest.html?jid="+escape(from),"sr"+makeWindowName(from),"width=320,height=240");
-
-      return;
-    }
-    if (type == 'unsubscribe')
-      alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
-
-		if (type == 'error') {
-			var user = roster.getUserByJID(from);
-			if (user && user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
-				if (presence.getNode().getElementsByTagName('error').item(0)) {
-					var error = presence.getNode().getElementsByTagName('error').item(0);
-					if (error.getElementsByTagName('text').item(0))
-						user.chatW.putMsgHTML(presence);
-					else if (error.firstChild && error.firstChild.nodeValue)
-						user.chatW.putMsgHTML(error.firstChild.nodeValue,new Date(),from,null,true);								
-				}
-				
-			}
-
-			return;
+				window.open("subscriptionRequest.html?jid="+escape(from),"sr"+makeWindowName(from),"width=320,height=240");
 		}
-  }
+		return;
+	case 'unsubscribe':
+		alert(loc("You have been unsubscribed from [_1]", presence.getFrom())); /* [TODO] don't use alert here */
+		break;
+	case 'error':
+		var user = roster.getUserByJID(from);
+		if (user && user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
+			if (presence.getNode().getElementsByTagName('error').item(0)) {
+				var error = presence.getNode().getElementsByTagName('error').item(0);
+				if (error.getElementsByTagName('text').item(0))
+					user.chatW.putMsgHTML(presence);
+				else if (error.firstChild && error.firstChild.nodeValue)
+					user.chatW.putMsgHTML(error.firstChild.nodeValue,new Date(),from,null,true);								
+			}
+			
+		}
+		return;
+	}
 
   var user = roster.getUserByJID(from);
   if (!user) // presence from unsubscribed user
@@ -910,10 +913,10 @@ function handleIQSet(iq) {
 						user.groups = user.groups.concat(item.childNodes.item(j).firstChild.nodeValue);
         roster.updateGroups();
       }
-			if (item.getAttribute('subscription') == "from")
+			if (item.getAttribute('subscription') == "from" && item.getAttribute('ask') != 'subscribe' && !isGateway(item.getAttribute('jid')))
 				openSubscription(item.getAttribute('jid')); // subscribe to user
     } else {// got a new user
-			if (isGateway(cutResource(item.getAttribute('jid')))) { // auto add
+			if (isGateway(item.getAttribute('jid'))) { // auto add gateways
 				// get name
 				var name = cutResource(item.getAttribute('jid'));
 				for (var i in disco)
@@ -922,20 +925,20 @@ function handleIQSet(iq) {
 
 				// add to roster
 				var aUser = new RosterUser(cutResource(item.getAttribute('jid')),item.getAttribute('subscription'),["Gateways"],name);
-				aUser.fulljid = item.getAttribute('jid');
+				//				aUser.fulljid = item.getAttribute('jid');
 				roster.addUser(aUser);
 
-				// tell server about it
+				// set name and group
 				var aIQ = new JSJaCIQ();
 				aIQ.setType('set');
 				var query = aIQ.setQuery('jabber:iq:roster');
 				var aItem = query.appendChild(aIQ.getDoc().createElement('item'));
-				aItem.setAttribute('jid',cutResource(item.getAttribute('jid')));
+				aItem.setAttribute('jid',item.getAttribute('jid'));
 				aItem.setAttribute('name',name);
 				aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode('Gateways'));
 
 				con.send(aIQ);
-			} else {
+			} else { // new but not a gateway
         var name = item.getAttribute('name')? item.getAttribute('name') : item.getAttribute('jid');
 				if (name.indexOf('@') != -1)
 					name = name.substring(0,name.indexOf('@'));
@@ -946,7 +949,7 @@ function handleIQSet(iq) {
 					if (item.childNodes.item(j).nodeName == 'group')
 						groups = groups.concat(item.childNodes.item(j).firstChild.nodeValue);
 				
-				roster.addUser(new RosterUser(item.getAttribute('jid'),item.getAttribute('subscription'),groups,name));
+				roster.addUser(new RosterUser(cutResource(item.getAttribute('jid')),item.getAttribute('subscription'),groups,name));
 
 				var aIQ = new JSJaCIQ();
 				aIQ.setType('set');
@@ -958,7 +961,7 @@ function handleIQSet(iq) {
 
 				con.send(aIQ); // set stripped name
 
-				if (item.getAttribute('subscription') == "from")
+				if (item.getAttribute('subscription') == "from" && item.getAttribute('ask') != 'subscribe')
 					openSubscription(item.getAttribute('jid')); // subscribe to user
 			}
     }
