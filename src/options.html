@@ -178,7 +178,7 @@ function tabclicked(e) {
 		}
 }
 
-function registerService(jid,paneid) {
+function registerService(sJid,paneid) {
 	var aForm;
 
 	var pane = document.getElementById(paneid);
@@ -205,7 +205,7 @@ function registerService(jid,paneid) {
 
 	var iq = new JSJaCIQ();
 	iq.setType('set');
-	iq.setTo(jid);
+	iq.setTo(sJid);
 
 	var query = iq.setQuery('jabber:iq:register');
 
@@ -216,10 +216,55 @@ function registerService(jid,paneid) {
 		query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
 
 	srcW.Debug.log(iq.getDoc().xml,2);
-		
-	srcW.con.send(iq);
+	
+	me = this;
+	srcW.con.send(iq,me.handleRegisterService,sJid);
 
-	window.close();
+	pane.innerHTML = "<strong>"+loc("Request sent to [_1]..",sJid)+"</strong><br>";
+}
+
+/* callback from registering a service */
+function handleRegisterService(iq,sJid) {
+	if (iq.getType() == 'error') {
+		
+		var html = "<strong style='color:red;'>"+loc("Error");
+		if (iq.getNode().getElementsByTagName('error').item(0)) {
+			var aErr = iq.getNode().getElementsByTagName('error').item(0);
+			if (aErr.getAttribute('code'))
+				html += " ("+aErr.getAttribute('code')+")";
+			html += ": ";
+			if (aErr.firstChild)
+				html += aErr.firstChild.nodeValue;
+		}
+		html += "</strong><br/>";
+		pane.innerHTML += html;
+		return;
+	}
+	pane.innerHTML += "<strong>"+loc("Registration successful.")+"</strong><br/>";
+
+	// set roster
+// 	pane.innerHTML += "<strong>"+loc("Updating Roster...")+"</strong><br/>";
+// 	var aIQ = new JSJaCIQ();
+// 	aIQ.setType('set');
+// 	var query = aIQ.setQuery('jabber:iq:roster');
+// 	var aItem = query.appendChild(aIQ.getDoc().createElement('item'));
+// 	aItem.setAttribute('jid',sJid);
+// 	var name = sJid;
+// 	for (var i in srcW.disco)
+// 		if (i == sJid)
+// 			name = srcW.disco[i].getQuery().getElementsByTagName('identity').item(0).getAttribute('name');
+// 	aItem.setAttribute('name',name);
+// 	aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode('Gateways'));
+// 	srcW.con.send(aIQ);
+	
+	// send presence
+	pane.innerHTML += "<strong>"+loc("Sending presence...")+"</strong><br />";
+	var aPresence = new JSJaCPresence();
+	aPresence.setTo(sJid);
+// 	aPresence.setShow(srcW.onlstat);
+// 	aPresence.setStatus(srcW.onlmsg);
+	srcW.con.send(aPresence);
+	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
 }
 
 function unregisterGateway(jid) {
