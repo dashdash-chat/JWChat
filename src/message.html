@@ -28,18 +28,7 @@ function showMSG() {
   document.getElementById('date').innerHTML = date.toLocaleString();
 
   /* set body */
-
-  /* look for error message */
-  if (messages[curMSG].getType() == 'error' && 0) { // [TODO] handle error
-    for (var i in messages[curMSG].o) {
-      if (messages[curMSG].o[i].name && messages[curMSG].o[i].name == 'error') {
-        msgbox.document.body.innerHTML = "<h2 style=\"color:red\">"+loc("Error")+ " " + messages[curMSG].o[i].code + "</h2>" + messages[curMSG].o[i].data;
-      }
-    }
-      
-  } else {
-    msgbox.document.body.innerHTML = msgFormat(messages[curMSG].getBody());
-  }
+	msgbox.document.body.innerHTML = msgFormat(messages[curMSG].getBody());
 
   /* set buttons */
   if (curMSG == 0)
