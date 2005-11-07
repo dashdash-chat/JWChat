@@ -14,6 +14,9 @@
 function savePrefs() {
 	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval','enableLog');
 
+	if (!srcW.roster)
+		return;
+
 	var iq = new JSJaCIQ();
 	iq.setType('set');
 	var query = iq.setQuery('jabber:iq:private');
@@ -261,25 +264,70 @@ function handleRegisterService(iq,sJid) {
 	pane.innerHTML += "<strong>"+loc("Sending presence...")+"</strong><br />";
 	var aPresence = new JSJaCPresence();
 	aPresence.setTo(sJid);
-// 	aPresence.setShow(srcW.onlstat);
-// 	aPresence.setStatus(srcW.onlmsg);
+ 	aPresence.setShow(srcW.onlstat);
+ 	aPresence.setStatus(srcW.onlmsg);
 	srcW.con.send(aPresence);
 	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
 }
 
-function unregisterGateway(jid) {
-	if (srcW.roster.getUserByJID(jid) != null)
-		jid = srcW.roster.getUserByJID(jid).fulljid;
+function unregisterGateway(sJid) {
+	if (srcW.roster.getUserByJID(sJid) != null)
+		sJid = srcW.roster.getUserByJID(sJid).fulljid;
+
+	pane.innerHTML = "<strong>"+loc("Unregistering from service [_1] ...",sJid)+"</strong><br />";
+	var iq = new JSJaCIQ();
+	iq.setType('set');
+	iq.setTo(sJid);
+	var query = iq.setQuery('jabber:iq:register');
+	var item = query.appendChild(iq.getDoc().createElement('remove'));
+	me = this;
+	srcW.con.send(iq,me.handleUnregisterService,sJid);
+}
+
+function handleUnregisterService(iq,sJid) {
+	if (iq.getType() == 'error') {
+		var html = "<strong style='color:red;'>"+loc("Error");
+		if (iq.getNode().getElementsByTagName('error').item(0)) {
+			var aErr = iq.getNode().getElementsByTagName('error').item(0);
+			if (aErr.getAttribute('code'))
+				html += " ("+aErr.getAttribute('code')+")";
+			html += ": ";
+			if (aErr.firstChild)
+				html += aErr.firstChild.nodeValue;
+		}
+		html += "</strong><br/>";
+		pane.innerHTML += html;
+		return;
+	}
+	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
+	pane.innerHTML += "<strong>"+loc("Removing [_1] from roster...",sJid)+"</strong><br />";
 
 	var iq = new JSJaCIQ();
 	iq.setType('set');
 	var query = iq.setQuery('jabber:iq:roster');
 	var item = query.appendChild(iq.getDoc().createElement('item'));
-	item.setAttribute('jid',jid);
+	item.setAttribute('jid',sJid);
 	item.setAttribute('subscription','remove');
 
 	srcW.con.send(iq);
-	window.close();
+
+	if (confirm(loc("Remove all associated contacts?"))) {
+		pane.innerHTML += "<strong>"+loc("Removing contacts...")+"</strong><br />";
+		var iq = new JSJaCIQ();
+		iq.setType('set');
+		var query = iq.setQuery('jabber:iq:roster');
+		for (var i in srcW.roster.users) {
+			if (cutResource(srcW.roster.users[i].jid.substring(srcW.roster.users[i].jid.indexOf('@')+1)) == cutResource(sJid) &&
+					srcW.roster.users[i].jid != cutResource(sJid)) {
+				var item = query.appendChild(iq.getDoc().createElement('item'));
+				item.setAttribute('jid',srcW.roster.users[i].fulljid);
+				item.setAttribute('subscription','remove');
+				pane.innerHTML += srcW.roster.users[i].name+"<br />";
+			}
+		}
+		srcW.con.send(iq);
+	}
+	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
 }
 
 var srcW;
