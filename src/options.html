@@ -236,8 +236,16 @@ function handleRegisterService(iq,sJid) {
 			if (aErr.getAttribute('code'))
 				html += " ("+aErr.getAttribute('code')+")";
 			html += ": ";
-			if (aErr.firstChild)
+			if (aErr.firstChild && aErr.firstChild.nodeValue)
 				html += aErr.firstChild.nodeValue;
+			else if (aErr.firstChild) {
+				switch (aErr.firstChild.nodeName) {
+				case 'bad-request': html += loc("Bad Request");
+					break;
+				default: html += aErr.firstChild.nodeName;
+					break;
+				}
+			}
 		}
 		html += "</strong><br/>";
 		pane.innerHTML += html;
@@ -292,8 +300,16 @@ function handleUnregisterService(iq,sJid) {
 			if (aErr.getAttribute('code'))
 				html += " ("+aErr.getAttribute('code')+")";
 			html += ": ";
-			if (aErr.firstChild)
+			if (aErr.firstChild && aErr.firstChild.nodeValue)
 				html += aErr.firstChild.nodeValue;
+			else if (aErr.firstChild) {
+				switch (aErr.firstChild.nodeName) {
+				case 'bad-request': html += loc("Bad Request");
+					break;
+				default: html += aErr.firstChild.nodeName;
+					break;
+				}
+			}
 		}
 		html += "</strong><br/>";
 		pane.innerHTML += html;
