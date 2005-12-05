@@ -116,7 +116,7 @@ td.menubar {
 
 #myNickname {
   font-weight: bold;
-  cursor: hand;
+  cursor: pointer;
 }
 
 #myNickname:hover { text-decoration: underline; }
@@ -137,7 +137,7 @@ td.menubar {
  }
 
 .myStatusMsg {  
-  cursor: hand;
+  cursor: pointer;
   border: 0;
 /*  background-color: #b8dbff; */
   background-color: #aecbe9;
@@ -171,7 +171,7 @@ td.menubar {
 }
 
 #statusLed { 
-  cursor: hand;
+  cursor: pointer;
   padding-bottom: 4px;
 }
 
@@ -184,7 +184,7 @@ td.menubar {
 a.menubar { 
   font-size: 90%;
 /*  font-weight: bold; */
-  cursor: hand;
+  cursor: pointer;
   text-decoration: none;
   color: menutext;
 }
@@ -193,7 +193,7 @@ a.menubar:hover {
   text-decoration: underline;
 }
 
-img.actionButton { cursor: hand; }
+img.actionButton { cursor: pointer; }
 
 h1 { font-size: 1.4em; }
 
