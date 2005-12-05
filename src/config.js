@@ -26,8 +26,7 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var SITENAME = "localhost"
-var DEFAULTRESOURCE = "jwchat";
+var SITENAME = "zeank.darktech.org";
 
 /* BACKENDS
  * Array of objects each describing a backend.
@@ -55,42 +54,56 @@ var DEFAULTRESOURCE = "jwchat";
 var BACKENDS = 
 [
 		{
-			name:"Native",
+			name:"Native Binding",
+			description:"Ejabberd's native HTTP Binding backend",
+			httpbase:"/http-bind/",
+			type:"binding",
+			servers_allowed:[SITENAME]
+		},
+		{
+			name:"Native Polling",
 			description:"Ejabberd's native HTTP Polling backend",
 			httpbase:"/http-poll/",
 			type:"polling",
-			servers_allowed:['localhost']
+			servers_allowed:[SITENAME]
 		},
 		{
 			name:"Open Relay",
 			description:"HTTP Binding backend that allows connecting to any jabber server",
-			httpbase:"/tomcat/JHB/",
+			httpbase:"/JHB/",
 			type:"binding",
-			default_server: "localhost"
+			default_server: SITENAME
 		},
 		{
 			name:"Restricted Relay",
 			description:"This one let's you choose from a limited list of allowed servers",
-			httpbase:"/tomcat/JHB/",
+			httpbase:"/JHB/",
 			type:"binding",
-			servers_allowed:['localhost','jabber.org','jwchat.org']
+			servers_allowed:[SITENAME,'jabber.org','jwchat.org']
 		},
 ];
+
+var DEFAULTRESOURCE = "jwchat";
+var DEFAULTPRIORITY = "10";
+
+/* DEFAULTCONFERENCEGROUP + DEFAULTCONFERENCESERVER
+ * default values for joingroupchat form
+ */
+var DEFAULTCONFERENCEROOM = "talks";
+var DEFAULTCONFERENCESERVER = "conference."+SITENAME;
+
+/* debugging options */
+var DEBUG = true; // turn debugging on
+var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
+
+var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
+var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages
+
+
+// most probably you don't want to change anything below
 
 var timerval = 2000; // poll frequency in msec
 
 var stylesheet = "jwchat.css";
 var THEMESDIR = "themes";
 
-/* DEFAULTCONFERENCEGROUP + DEFAULTCONFERENCESERVER
- * default values for joingroupchat form
- */
-var DEFAULTCONFERENCEROOM = "talks";
-var DEFAULTCONFERENCESERVER = "conference.localhost";
-
-/* debugging options */
-var DEBUG = false; // turn debugging on
-var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
-
-var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
-var DEBUGJID = "admin@localhost"; // which user get's debug messages
