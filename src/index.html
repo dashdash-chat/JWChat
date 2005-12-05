@@ -32,7 +32,7 @@
   * Please visit http://jwchat.sourceforge.net for more information!
   */
 
-var jid, pass, register;
+var jid, pass, register, prio;
 var jwchats = new Array();
 
 var JABBERSERVER;
@@ -77,6 +77,8 @@ function loginCheck(form) { /* check if user want's to register new
 
   pass = form.pass.value;
 	register = form.register.checked;
+
+	prio = form.prio[form.prio.selectedIndex].value;
 
 	jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
 
@@ -224,6 +226,10 @@ function init() {
 		backendSelected();
 	}
 	document.forms[0].jid.focus();
+	document.getElementById('chars_prohibited').innerHTML = prohibited;
+	if (typeof(DEFAULTRESOURCE) != 'undefined' && DEFAULTRESOURCE)
+		document.forms[0].res.value = DEFAULTRESOURCE;
+
 	document.getElementById('login_button').disabled = false;
 }
 
@@ -333,7 +339,7 @@ onload = init;
 						<th class='form_spacer'><label for='jid'><l>Username</l></label></th>
 						<td class='form_spacer' width="100%"><input type="text" id='jid' name="jid" tabindex=3 class='input_text'></td>
 					</tr>
-					<tr><td>&nbsp;</td><td nowrap class="desc"><l>Username must not contain</l>: <script>document.write(prohibited)</script></td></tr>
+					<tr><td>&nbsp;</td><td nowrap class="desc"><l>Username must not contain</l>: <span id='chars_prohibited'></span></td></tr>
 					<tr>
 						<th><label for='pass'><l>Password</l></label></th>
 							<td><input type="password" id='pass' name="pass" tabindex=4 class='input_text'></td>
@@ -349,11 +355,17 @@ onload = init;
 					</tr>
 					<tr class="moreOpts" style="display:none;">
 						<th><label for='res'><l>Resource</l></label></th>
-						<td><input type="text" id='res' name="res" class='input_text'></td>
+						<td><input type="text" id="res" name="res" class="input_text"></td>
 					</tr>
 					<tr class="moreOpts" style="display:none;">
 						<th><label for='prio'><l>Priority</l></label></th>
-						<td><input type="text" id='prio'  name="prio" class='input_text' disabled></td>
+								<td>
+									<select type="text" id="prio"  name="prio" class="input_text" size="1">
+										<option value="0"><l>low</l></option>
+										<option value="10" selected><l>medium</l></option>
+										<option value="100"><l>high</l></option>
+									</select>
+								</td>
 					</tr>
 					
 					<tr><td>&nbsp;</td><td><button type="submit" id='login_button' tabindex=5 disabled><l>Login</l></button></td></tr>
@@ -369,7 +381,7 @@ onload = init;
       &copy; 2003-2005 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Fri May 20 15:10:14 CEST 2005
+Last modified: Mon Dec  5 18:24:56 CET 2005
 <!-- hhmts end -->
     </td>
 </tr>
