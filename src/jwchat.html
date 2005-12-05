@@ -57,6 +57,7 @@ var vcard;
 var status = '';
 var onlstat = '';
 var onlmsg = '';
+var onlprio = '8';
 var autoPopup = true;
 var autoPopupAway = false;
 var playSounds = true;
@@ -330,19 +331,21 @@ function sendPresence2Groupchats(gc,val,away) {
 	}
 }
 
-function changeStatus(val,away) {
+function changeStatus(val,away,prio) {
   
-  Debug.log("changeStatus: "+val+","+away, 2);
-  
+  Debug.log("changeStatus: "+val+","+away+","+prio, 2);
+
   onlstat = val;
 	if (away)
 		onlmsg = away;
+
+	if (prio && !isNaN(prio))
+		onlprio = prio;
 
 	if (!con.connected() && val != 'offline') {
 		init();
 		return;
 	}
-		
 
 	var aPresence = new JSJaCPresence();
   
@@ -367,17 +370,27 @@ function changeStatus(val,away) {
     break;
   case "available":
     val = 'available'; // needed for led in status bar
-    if (away) {
+    if (away)
 			aPresence.setStatus(away);
-    }
-		aPresence.setPriority(8);
+	if (prio && !isNaN(prio))
+			aPresence.setPriority(prio);
+		else
+			aPresence.setPriority(onlprio);			
 		break;
 	case "chat":
-		aPresence.setPriority(8);
+	if (prio && !isNaN(prio))
+			aPresence.setPriority(prio);
+		else
+			aPresence.setPriority(onlprio);			
   default:
-    if (away) {
+    if (away)
 			aPresence.setStatus(away);
-    }
+
+		if (prio && !isNaN(prio))
+			aPresence.setPriority(prio);
+		else
+			aPresence.setPriority('0');
+
 		aPresence.setShow(val);
   }
 
@@ -1061,6 +1074,8 @@ function getSavedState(iq) {
 			var item = jNode.childNodes.item(i);
 			if (item.nodeName == 'presence' && item.firstChild && onlstat == '')
 				onlstat = item.firstChild.nodeValue;
+			if (item.nodeName == 'onlmsg' && item.firstChild && onlmsg == '')
+				onlmsg = item.firstChild.nodeValue;
 			if (item.nodeName == 'hiddenGroups' && item.firstChild) {
 				var hiddenGroups = item.firstChild.nodeValue.split(',');
 				for (var j in hiddenGroups)
@@ -1126,10 +1141,15 @@ function getPrefs(iq) {
 	// print roster
 	roster.print();
 
+	if (opener.prio)
+		onlprio = opener.prio;
+	else
+		onlprio = DEFAULTPRIORITY;
+
 	// send presence
 	if (onlstat == '')
 		onlstat = 'available';
-	changeStatus(onlstat);
+	changeStatus(onlstat,onlmsg,onlprio);
 
 	playSound('connected');
 
@@ -1370,6 +1390,7 @@ function logout() {
 
 	// save presence
 	aNode.appendChild(iq.getDoc().createElement('presence')).appendChild(iq.getDoc().createTextNode(onlstat));
+	aNode.appendChild(iq.getDoc().createElement('onlmsg')).appendChild(iq.getDoc().createTextNode(onlmsg));
 	
 	var hiddengroups = '';
 	if (typeof(roster) != 'undefined') {
