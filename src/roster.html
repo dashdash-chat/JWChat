@@ -106,7 +106,7 @@ function changePic(oldEl,newEl) {
     oldEl.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src="+newEl.src+", sizingMethod='scale')";
   else
     oldEl.src = newEl.src;
-  oldEl.style.cursor = 'hand';
+  oldEl.style.cursor = 'pointer';
 }
 
 function cleanUp() { //close dependant windows
