@@ -1,5 +1,5 @@
 
-all: po install
+all: install
 
 po:
 	@./scripts/extract-message-catalog.pl
