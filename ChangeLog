@@ -1,3 +1,15 @@
+2005-12-05  Stefan Strigler  <steve@zeank.in-berlin.de>
+
+	* src/index.html:
+	* src/jwchat.html:
+	- support presence priorities
+	- store onlmsg at server side, load on startup
+	* src/jwchat.css
+	- use 'cursor: pointer;' throughout
+	* src/chat_iframe.html:
+	* src/groupchat_iframe.html:
+	* src/help.html: fixed style tag comments
+
 2005-12-01  Stefan Strigler  <steve@zeank.in-berlin.de>
 
 	* po/sk.po: Slovak translation added
