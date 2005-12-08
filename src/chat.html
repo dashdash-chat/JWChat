@@ -128,7 +128,7 @@ function updateUserPresence() {
 function submitClicked() {
 	var body = document.forms[0].elements["msgbox"].value;
 	if (body == '') // don't send empty message
-		return true;
+		return false;
 
 	var aMessage = new JSJaCMessage();
 	aMessage.setType('chat');
@@ -223,8 +223,10 @@ function msgboxKeyPressed(el,e) {
 	switch (keycode) {
 	case 13:
 		if (e.shiftKey) {
-			if (!msgbox_toggled)
+			if (!msgbox_toggled) {
 				toggle_msgbox(document.getElementById('toggle_icon'));
+				return false;
+			}
 		} else
 			return submitClicked();
 		break;
@@ -306,7 +308,7 @@ onunload = cleanUp;
 		<span id="awaymsg" class="statusMsg"></span></td>
 		<td align=right valign=top><button id='hist_button' onClick="return openUserHistory();"><l>History</l></button></td></table>
 		</td></tr>
-    <tr><td width="100%" height="100%" colspan=2><iframe src="chat_iframe.html" id="chat" name="chat" scrolling="yes" style="width:100%;height:100%;"></iframe></td></tr>
+    <tr><td width="100%" height="100%" colspan=2><iframe src="chat_iframe.html" id="chat" name="chat" scrolling="auto"></iframe></td></tr>
  		<form name="chatform" style="border:0px;margin:0px;padding:0px;">
     <tr>
       <td valign=top><img id="toggle_icon" src="images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
