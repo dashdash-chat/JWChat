@@ -1340,7 +1340,15 @@ function init() {
 	con.registerHandler('onerror',handleConError);
 
 	/* connect to remote */
-	con.connect({domain:JABBERSERVER,username:jid.substring(0,jid.indexOf('@')),resource:jid.substring(jid.indexOf('/')+1),pass:pass,register:register});
+	oArg = {domain:JABBERSERVER,username:jid.substring(0,jid.indexOf('@')),resource:jid.substring(jid.indexOf('/')+1),pass:pass,register:register}
+
+	if (BACKEND_TYPE == 'binding') {
+		if (opener.connect_port && !isNaN(opener.connect_port))
+			oArg.port = opener.connect_port;
+		if (opener.connect_host && opener.connect_host != '')
+			oArg.host = opener.connect_host;
+	}
+	con.connect(oArg);
 }
 
 /************************************************************************

@@ -32,7 +32,7 @@
   * Please visit http://jwchat.sourceforge.net for more information!
   */
 
-var jid, pass, register, prio;
+var jid, pass, register, prio, connect_host, connect_port, connect_ssl;
 var jwchats = new Array();
 
 var JABBERSERVER;
@@ -80,6 +80,9 @@ function loginCheck(form) { /* check if user want's to register new
 
 	prio = form.prio[form.prio.selectedIndex].value;
 
+	connect_port = form.connect_port.value;
+	connect_host = form.connect_host.value;
+
 	jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
 
 	return false;
@@ -105,6 +108,17 @@ function toggleMoreOpts(show) {
 		}
 	}
 	return false;
+}
+
+function serverSelected() {
+	var oSel = document.getElementById('server');
+	var servers_allowed = BACKENDS[bs.selectedIndex].servers_allowed;
+
+	// TODO ...
+
+	/* change format of servers_allowed to be able to associate connect 
+	 * host information to it 
+	 */
 }
 
 function backendSelected() {
@@ -147,10 +161,18 @@ function backendSelected() {
 			td.appendChild(input);
 
 			tr_server.style.display = ''; 
+
+			document.getElementById('connect_port').disabled = false;
+			document.getElementById('connect_host').disabled = false;
+			//			document.getElementById('connect_ssl').disabled = false;
+			
 		}
 	else if (servers_allowed.length == 1) {
-		document.getElementById('tr_server').style.display = 'none'
+		document.getElementById('tr_server').style.display = 'none';
 		JABBERSERVER = servers_allowed[0];
+		document.getElementById('connect_port').disabled = true;
+		document.getElementById('connect_host').disabled = true;
+		//			document.getElementById('connect_ssl').disabled = true;
 	} else { // create selectbox
 		var tr_server = document.getElementById('tr_server');
 		
@@ -158,6 +180,7 @@ function backendSelected() {
 		oSelect.setAttribute('id','server');
 		oSelect.setAttribute('name','server');
 		oSelect.setAttribute('tabindex',"2");
+		oSelect.onchange = serverSelected;
 
 		var td = tr_server.getElementsByTagName('td').item(0);
 		for (var i=0; i<td.childNodes.length; i++)
@@ -172,10 +195,12 @@ function backendSelected() {
 		}
 
 		tr_server.style.display = ''; 
+		document.getElementById('connect_port').disabled = true;
+		document.getElementById('connect_host').disabled = true;
+		//			document.getElementById('connect_ssl').disabled = true;
 	}
 
 }
-
 
 function init() {
   var welcome = loc("Welcome to JWChat at [_1]", SITENAME);
@@ -367,6 +392,18 @@ onload = init;
 									</select>
 								</td>
 					</tr>
+							<tr class="moreOpts" style="display: none;">
+								<th class="form_spacer"><label for="connect_port"><l>Port</l></th>
+								<td class="form_spacer"><input type="text" name="connect_port" id="connect_port" class="input_text" disabled></td>
+							</tr>
+							<tr class="moreOpts" style="display: none;">
+								<th><label for="connect_host"><l>Connect Host</l></th>
+								<td><input type="text" name="connect_host" id="connect_host" class="input_text" disabled></td>
+							</tr>
+							<tr class="moreOpts" style="display: none;">
+								<td>&nbsp;</td>
+								<td><input type="checkbox" name="connect_ssl" id="connect_ssl" class="input_text" disabled> <label for="connect_ssl" title="<l>Advise connection manager to connect through SSL</l>" disabled><l>Use SSL</l></td>
+							</tr>
 					
 					<tr><td>&nbsp;</td><td><button type="submit" id='login_button' tabindex=5 disabled><l>Login</l></button></td></tr>
 			</table>
@@ -381,7 +418,7 @@ onload = init;
       &copy; 2003-2005 <a href="mailto:steve@zeank.in-berlin.de">Stefan Strigler</a> - 
       <!-- Created: Wed Feb  5 15:19:17 CET 2003 -->
       <!-- hhmts start -->
-Last modified: Mon Dec  5 18:24:56 CET 2005
+Last modified: Thu Dec  8 16:57:42 CET 2005
 <!-- hhmts end -->
     </td>
 </tr>
