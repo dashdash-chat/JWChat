@@ -40,11 +40,6 @@ fieldset {
 	color: black;
 }
 
-.chatbox { 
-	background-color: white;
-	color: black;
-}
-
 .hidden {
   display: none;
 }
@@ -88,6 +83,19 @@ fieldset {
 .menuitems{
   padding-left:4px;
   padding-right:4px;
+}
+
+/* END context menu */
+
+#chat { 
+	width:100%;
+	height:100%;
+}
+
+.chatbox {
+	margin: 4px;
+	background-color: white;
+	color: black;
 }
 
 .msgBox {
