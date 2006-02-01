@@ -92,14 +92,17 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 	if (!msg)
 		return null;
 
-  msg = htmlEnc(msg);
+  msg = htmlFullEnc(msg);
 
 	if (typeof(emoticons) != 'undefined') {
 		for (var i in emoticons) {
 			var iq = i.replace(/\\/g, '');
 			var emo = new Image();
 			emo.src = emoticonpath+emoticons[i];
-			msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" width='"+emo.width+"' height='"+emo.height+"' alt=\""+iq+"\" title=\""+iq+"\">$2");
+			if (emo.width > 0 && emo.height > 0)
+				msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" width='"+emo.width+"' height='"+emo.height+"' alt=\""+iq+"\" title=\""+iq+"\">$2");
+			else
+				msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" alt=\""+iq+"\" title=\""+iq+"\">$2");
 		}
 	}
 	
@@ -139,11 +142,10 @@ function isValidJID(jid) {
   return true;
 }
 
-/* hrTime - human readable Time
- * takes a timestamp in the form of 2004-08-13T12:07:04±02:00 as argument
- * and converts it to some sort of humane readable format
+/* jab2date
+ * converts from jabber timestamps to javascript date objects
  */
-function hrTime(ts) {
+function jab2date(ts) {
 	var date = new Date(Date.UTC(ts.substr(0,4),ts.substr(5,2)-1,ts.substr(8,2),ts.substr(11,2),ts.substr(14,2),ts.substr(17,2)));
 	if (ts.substr(ts.length-6,1) != 'Z') { // there's an offset
 		var offset = new Date();
@@ -155,7 +157,15 @@ function hrTime(ts) {
 		else if (ts.substr(ts.length-6,1) == '-')
 			date.setTime(date.getTime() + offset.getTime());
 	}
-	return date.toLocaleString();
+	return date;
+}
+
+/* hrTime - human readable Time
+ * takes a timestamp in the form of 2004-08-13T12:07:04±02:00 as argument
+ * and converts it to some sort of humane readable format
+ */
+function hrTime(ts) {
+	return jab2date(ts).toLocaleString();
 }
 
 /* jabberDate
