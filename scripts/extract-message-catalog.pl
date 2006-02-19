@@ -39,13 +39,14 @@ $SIG{__WARN__} = \&Carp::cluck;
 
 use vars qw($DEBUG $FILECAT);
 
-$DEBUG = 1;
+$DEBUG = 0;
 
 @ARGV = <po/*.po> unless @ARGV;
 
 $FILECAT = {};
 
 # extract all strings and stuff them into $FILECAT
+print "Grabbing strings from source files\n";
 File::Find::find( { wanted => \&extract_strings_from_code, follow => 1 }, './src' );
 
 # ensure proper escaping and [_1] => %1 transformation
@@ -53,9 +54,12 @@ foreach my $str ( sort keys %{$FILECAT} ) {
     my $entry = $FILECAT->{$str};
     my $oldstr = $str;
     $str =~ s/\\/\\\\/g;
-    $str =~ s/\"/\\"/g;
+    $str =~ s/\"/\\"/g; #"
     $str =~ s/\[_(\d+)\]/%$1/g;
     $str =~ s/~([\[\]])/$1/g;
+
+    $str =~ s/\n/\\n\"\n\"/g;
+    $entry =~ s/\n/\\n\"\n\"/g;
     delete $FILECAT->{$oldstr};
     $FILECAT->{$str} = $entry;
 }
@@ -80,9 +84,9 @@ sub extract_strings_from_code {
     return if ( /\.po$|\.bak$|\.gif$|\.png$|\.patch$|~|,D|,B$|extract-message-catalog\.pl$/ );
     return if ( /^[\.#]/ );
 
-    print "Looking at $File::Find::name\n";
+    print "Looking at $File::Find::name\n" if ($DEBUG);
     my $filename = $File::Find::name;
-    $filename =~ s'^\./'';
+    $filename =~ s'^\./''; #'
 
     unless (open _, $file) {
         print "Cannot open $file for reading ($!), skipping.\n";
@@ -97,7 +101,7 @@ sub extract_strings_from_code {
       while (m!\G.*?<&\|/l(.*?)&>(.*?)</&>!sg) {
         my ( $vars, $str ) = ( $1, $2 );
         $line += ( () = ( $& =~ /\n/g ) );    # cryptocontext!
-        $str =~ s/\\'/\'/g;
+        $str =~ s/\\'/\'/g; #'
         #print "STR IS $str\n";
         push @{ $FILECAT->{$str} }, [ $filename, $line, $vars ];
       }
@@ -106,11 +110,11 @@ sub extract_strings_from_code {
     # jwchat filter: <l>...</l>
     $line = 1;
     pos($_) = 0;
-    if ($file =~ /html/) {
+    if ($file =~ /html/ || $file =~ /php/ || $file =~ /inc/ || $file =~ /css/) {
       while (m!\G.*?<l(\s.*?|)>(.*?)</l>!sg) {
         my ( $vars, $str ) = ( $1, $2 );
         $line += ( () = ( $& =~ /\n/g ) );    # cryptocontext!
-        $str =~ s/\\'/\'/g;
+        $str =~ s/\\'/\'/g; #'
         #print "STR IS $str\n";
         push @{ $FILECAT->{$str} }, [ $filename, $line, $vars ];
       }
@@ -126,7 +130,7 @@ sub extract_strings_from_code {
 
         my ( $vars, $str );
         if ( $match =~
-                /\(\s*($RE{delimited}{-delim=>q{'"}}{-keep})(.*?)\s*\)$/ ) {
+                /\(\s*($RE{delimited}{-delim=>q{'"}}{-keep})(.*?)\s*\)$/ ) { #"'
 
             $str = substr( $1, 1, -1 );       # $str comes before $vars now
             $vars = $9;
@@ -136,8 +140,8 @@ sub extract_strings_from_code {
         }
 
         $vars =~ s/[\n\r]//g;
-        $str  =~ s/\\'/\'/g;
-        print STDERR "GOT $str ($vars)\n";
+        $str  =~ s/\\'/\'/g; #'
+        print STDERR "GOT $str ($vars)\n" if ($DEBUG);
         
 
         push @{ $FILECAT->{$str} }, [ $filename, $line, $vars ];
@@ -149,7 +153,7 @@ sub extract_strings_from_code {
     while (m/\G.*?($RE{delimited}{-delim=>q{'"}}{-keep})[\}\)\],]*\s*\#\s*loc\s*$/smg) {
       my $str = substr($1, 1, -1);
       $line += ( () = ( $& =~ /\n/g ) );    # cryptocontext!
-      $str  =~ s/\\'/\'/g;
+      $str  =~ s/\\'/\'/g; #'
       push @{ $FILECAT->{$str} }, [ $filename, $line, '' ];
     }
 
@@ -160,8 +164,8 @@ sub extract_strings_from_code {
 	my $key = $1;
 	my $val = substr($2, 1, -1);
 	$line += ( () = ( $& =~ /\n/g ) );    # cryptocontext!
-	$key  =~ s/\\'/\'/g;
-	$val  =~ s/\\'/\'/g;
+	$key  =~ s/\\'/\'/g; #'
+	$val  =~ s/\\'/\'/g; #'
 	push @{ $FILECAT->{$key} }, [ $filename, $line, '' ];
 	push @{ $FILECAT->{$val} }, [ $filename, $line, '' ];
     }
@@ -177,8 +181,8 @@ sub update {
     my $out = '';
 
     unless (-w $file) {
-	warn "Can't write to $lang, skipping...\n";
-	next;
+      warn "Can't write to $lang, skipping...\n";
+      next;
     }
 
     print "Updating $lang...\n";
@@ -189,16 +193,17 @@ sub update {
     # preserve header
     my $line;
     foreach $line (@lines) {
-	$out .= $line;
-        last if ($line =~ /^\s+/);
+      $out .= $line;
+      last if ($line =~ /^\s+/);
     }
     @lines = grep { !/^(#(:|\.)\s*|$)/ } @lines;
     while (@lines) {
         my $msghdr = "";
         $msghdr .= shift @lines while ( $lines[0] && $lines[0] !~ /^msgid/ );
-        my $msgid  = shift @lines;
+        my $msgid = "";
+        $msgid  .= shift @lines while ( $lines[0] =~ /^(msgid|")/ ); #"
         my $msgstr = "";
-        $msgstr .= shift @lines while ( $lines[0] =~ /^(msgstr|")/ );
+        $msgstr .= shift @lines while ( $lines[0] && $lines[0] =~ /^(msgstr|")/ ); #"
 
         last unless $msgid;
 
@@ -207,7 +212,7 @@ sub update {
 
         #print "string: $msgid\t$msgstr\n"; # debug
 
-        $msgid  =~ s/^msgid "(.*)"$/$1/    or die $msgid;
+        $msgid  =~ s/^msgid "(.*)"$/$1/ms or die $msgid;
         $msgstr =~ s/^msgstr "(.*)"$/$1/ms or die $msgstr;
 
         $Lexicon{$msgid} = $msgstr;
@@ -225,8 +230,8 @@ sub update {
         $nospace =~ s/ +$//;
 
         if ( !$Lexicon{$_} and $Lexicon{$nospace} ) {
-            $Lexicon{$_} =
-              $Lexicon{$nospace} . ( ' ' x ( length($_) - length($nospace) ) );
+          $Lexicon{$_} =
+            $Lexicon{$nospace} . ( ' ' x ( length($_) - length($nospace) ) );
         }
 
         next if !length( $Lexicon{$_} ) and $is_english;

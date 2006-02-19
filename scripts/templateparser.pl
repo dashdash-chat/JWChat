@@ -36,7 +36,7 @@ require "scripts/JWCI18N.pm";
 use File::Find;
 use File::Path;
 use File::Basename;
-use Encode::compat; # a no-op for Perl v5.7.1+
+#use Encode::compat; # a no-op for Perl v5.7.1+
 use Encode 'encode_utf8';
 use Regexp::Common;
 
@@ -65,7 +65,7 @@ my %isa_scan = ();
 # get template-list
 find(
      sub {
-       return unless /\.(html|js)$/;
+       return unless /\.(html|js|css|php|inc)$/;
 			 return if /^\.#/;
 			 $templates{substr($File::Find::name,length($TEMPLATEDIR))} = $File::Find::name;
 		 },
@@ -196,6 +196,18 @@ foreach my $filename (keys %templates) {
 
     print LANGFILE $translation;
     close(LANGFILE);
+
+    # [zeank] 2005-09-01: create extra sets of each language
+    my $dir = './htdocs.'.$lang;
+    mkdir ($dir) or die "Can't create $dir: $!" unless (-d $dir);
+    $langfile = "$dir/$filename";
+    $langfile =~ /(.*)(\/|\\)[^\/\\]+$/;
+    mkpath($1);
+    open(LANGFILE,">$langfile") or die "Can't open $dir/$langfile: $!";
+    binmode(LANGFILE, ":utf8");
+    print LANGFILE $translation;
+    close(LANGFILE);
+
     close(_);
 
 	if($lang eq $DEFAULTLANG) { # create default files
