@@ -113,13 +113,14 @@ function getRegisterForm(iq) {
 	}
 	srcW.Debug.log(iq.getDoc().xml,2);
 
+	var query = iq.getQuery();
+	
 	// check if it's jabber:x:data
 
 	var html = '';
 	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
 		html += "<form>"+genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0))+"</form>";
 	} else {
-		var query = iq.getQuery();
 		if (query.getElementsByTagName('registered').item(0))
 			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
 		if (query.getElementsByTagName('instructions').item(0))
