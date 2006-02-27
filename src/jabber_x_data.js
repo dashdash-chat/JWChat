@@ -15,7 +15,8 @@ function genJabberXDataTable(x) {
  		html += "<tr>";
 		switch (aField.getAttribute('type')) {
 		case 'hidden':
-			html += "<td colspan=2><input type=hidden name='"+aField.getAttribute('var')+"' value='"+aField.firstChild.firstChild.nodeValue+"'></td>";
+			if (aField.firstChild && aField.firstChild.firstChild)
+				html += "<td colspan=2><input type=hidden name='"+aField.getAttribute('var')+"' value='"+aField.firstChild.firstChild.nodeValue+"'></td>";
 			break;
 		case 'fixed':
 			html += "<td colspan=2><b>"+aField.firstChild.firstChild.nodeValue+"</b></td>";
@@ -92,7 +93,7 @@ function genJabberXDataTable(x) {
 			html += "<th>" + aField.getAttribute('label') + "</th>";
 			html += "<td>";
 			html += "<input type=checkbox name='" +aField.getAttribute('var') + "'";
-			if (aField.firstChild && aField.firstChild.firstChild.nodeValue == '1')
+			if (aField.firstChild && aField.firstChild.firstChild && aField.firstChild.firstChild.nodeValue == '1')
 				html += " checked";
 			html += ">";
 			html += "</td>";
