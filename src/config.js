@@ -26,7 +26,7 @@
  * Have a look at the README for hints and troubleshooting!
  */
 
-var SITENAME = "zeank.darktech.org";
+var SITENAME = "example.org";
 
 /* BACKENDS
  * Array of objects each describing a backend.
@@ -80,7 +80,7 @@ var BACKENDS =
 			httpbase:"/JHB/",
 			type:"binding",
 			servers_allowed:[SITENAME,'jabber.org','jwchat.org']
-		},
+		}
 ];
 
 var DEFAULTRESOURCE = "jwchat";
@@ -97,7 +97,7 @@ var DEBUG = true; // turn debugging on
 var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = true; // if true only DEBUGJID gets the debugger
-var DEBUGJID = "zeank@zeank.darktech.org"; // which user get's debug messages
+var DEBUGJID = "admin@example.org"; // which user get's debug messages
 
 
 // most probably you don't want to change anything below
