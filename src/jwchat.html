@@ -668,6 +668,7 @@ function handlePresence(presence) {
 			}
 			
 		}
+	case 'subscribed':
 		return;
 	}
 
@@ -1108,7 +1109,7 @@ function getPrefs(iq) {
 			for (var i=0; i<jNode.childNodes.length; i++) {
 				switch (jNode.childNodes.item(i).nodeName) {
 				case 'usersHidden':
-					if (eval(jNode.childNodes.item(i).firstChild.nodeValue))
+					if (eval(jNode.childNodes.item(i).firstChild.nodeValue) != usersHidden)
 						roster.toggleHide();
 					break;
 				case 'timerval':
