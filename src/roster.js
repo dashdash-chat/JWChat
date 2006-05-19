@@ -244,23 +244,53 @@ function printRoster() {
         this.groups[i].messagesPending++;
     }
   }
-	
-  var rosterHTML = '';
-  
+
   this.groups = this.groups.sort(rosterSort);
-  
+
+	var A = new Array();
+
 	/* ***
 	 * loop rostergroups 
 	 */
   for (var i=0; i<this.groups.length; i++) {
-    var rosterGroupHeadClass = (this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
-    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"' onClick='toggleGrp(\""+this.groups[i].name+"\");'><nobr>";
+    var rosterGroupHeadClass = (this.usersHidden && 
+																this.groups[i].onlUserCount == 0 && 
+																this.groups[i].messagesPending == 0 && 
+																this.groups[i].name != loc("Gateways")) 
+			? 'rosterGroupHeaderHidden':'rosterGroupHeader';
+    A[A.length] = "<div id='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "Head' class='";
+		A[A.length] = rosterGroupHeadClass;
+		A[A.length] = "' onClick='toggleGrp(\"";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "\");'><nobr>";
     var toggleImg = (this.hiddenGroups[this.groups[i].name])?'images/group_close.gif':'images/group_open.gif';
-    rosterHTML += "<img src='"+toggleImg+"' name='"+this.groups[i].name+"Img'> ";
-    rosterHTML += this.groups[i].name+ " (<span id='"+this.groups[i].name+"On'>"+this.groups[i].onlUserCount+"</span>/" + this.groups[i].users.length + ")";
-    rosterHTML += "</nobr></div>";
-    var rosterGroupClass = ((this.usersHidden && this.groups[i].onlUserCount == 0 && this.groups[i].messagesPending == 0) || this.hiddenGroups[this.groups[i].name])?'hidden':'rosterGroup';
-    rosterHTML += "<div id='"+this.groups[i].name+"' class='"+rosterGroupClass+"'>";
+    A[A.length] = "<img src='";
+		A[A.length] = toggleImg;
+		A[A.length] ="' name='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "Img'> ";
+    A[A.length] = this.groups[i].name;
+		A[A.length] = " (<span id='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "On'>";
+		A[A.length] = this.groups[i].onlUserCount;
+		A[A.length] = "</span>/";
+		A[A.length] = this.groups[i].users.length;
+		A[A.length] = ")";
+    A[A.length] = "</nobr></div>";
+    var rosterGroupClass = (
+														(this.usersHidden && this.groups[i].onlUserCount == 0 && 
+														 this.groups[i].messagesPending == 0 && 
+														 this.groups[i].name != loc("Gateways")) 
+														|| this.hiddenGroups[this.groups[i].name])
+			? 'hidden':'rosterGroup';
+    A[A.length] =  "<div id='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "' class='";
+		A[A.length] = rosterGroupClass;
+		A[A.length] = "'>";
     
     this.groups[i].users = this.groups[i].users.sort(rosterSort);
 
@@ -269,31 +299,69 @@ function printRoster() {
 		 */
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
-      var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
 
-      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid)+"');\" title=\""+user.name;
-			if (user.realjid)
-				rosterHTML += "&#10;JID: "+ htmlEnc(user.realjid);
-			else
-				rosterHTML += "&#10;JID: "+ htmlEnc(user.jid);
-			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
-      if (user.statusMsg)
-        rosterHTML += "&#10;"+loc("Message")+": " + htmlFullEnc(user.statusMsg);
-			if ((user.messages.length + user.chatmsgs.length) > 0)
-				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
-      rosterHTML += "\"><nobr>";
-      
+      var rosterUserClass = (this.usersHidden && 
+														 (user.status == 'unavailable' || 
+															user.status == 'stalker') && 
+														 !user.lastsrc && 
+														 this.groups[i].name != loc("Gateways")) 
+				? "hidden":"rosterUser";
+
+      A[A.length] = "<div id=\"";
+			A[A.length] = htmlEnc(user.jid);
+			A[A.length] = "/";
+			A[A.length] = this.groups[i].name;
+			A[A.length] = "Entry\" class=\"";
+			A[A.length] = rosterUserClass;
+			A[A.length] = "\" onClick=\"return userClicked(this,'";
+			A[A.length] = htmlFullEnc(user.jid);
+			A[A.length] = "');\" title=\"";
+			A[A.length] = user.name;
+			if (user.realjid) {
+				A[A.length] = "&#10;JID: ";
+				A[A.length] = htmlFullEnc(user.realjid);
+			} else {
+				A[A.length] = "&#10;JID: ";
+				A[A.length] = htmlFullEnc(user.jid);
+			}
+			A[A.length] = "&#10;";
+			A[A.length] = loc("Status");
+			A[A.length] = ": ";
+			A[A.length] = user.status;
+      if (user.statusMsg) {
+        A[A.length] = "&#10;";
+				A[A.length] = loc("Message");
+				A[A.length] = ": ";
+				A[A.length] = htmlFullEnc(user.statusMsg);
+			}
+			if ((user.messages.length + user.chatmsgs.length) > 0) {
+				A[A.length] = "&#10;";
+				A[A.length] = loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
+			}
+      A[A.length] = "\">";
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src=\""+userImg.src+"\" name=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"\" width=16 height=16 border=0 align=\"left\">";
-      rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
-      if (user.statusMsg)
-        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+htmlEnc(user.statusMsg)+"</span></nobr>";
-      rosterHTML += "</div></nobr></div>";
+      A[A.length] = "<nobr><img src=\"";
+			A[A.length] = userImg.src;
+			A[A.length] = "\" name=\"";
+			A[A.length] = htmlFullEnc(user.jid);
+			A[A.length] = "/";
+			A[A.length] = this.groups[i].name;
+			A[A.length] = "\" width='16' height='16' border='0' align='left'>";
+      A[A.length] = "<div><span class=\"nickName\">";
+			A[A.length] = user.name;
+			A[A.length] = "</span>";
+
+      if (user.statusMsg) {
+        A[A.length] = "<br clear=all><nobr><span class=\"statusMsg\">";
+				A[A.length] = htmlFullEnc(user.statusMsg);
+				A[A.length] = "</span></nobr>";
+			}
+      A[A.length] =  "</div></nobr></div>";
     } /* END inner loop */
-    rosterHTML += "</div>";
+    A[A.length] =  "</div>";
   }
 
-  this.rosterW.getElementById("roster").innerHTML = rosterHTML;
+  this.rosterW.getElementById("roster").innerHTML = A.join('');
   this.updateStyleIE();
 }
 
@@ -307,7 +375,7 @@ function GCRosterSort(a,b) {
 }
 
 function GroupchatRosterPrint() {
-  var rosterHTML = '';
+	var A = new Array();
   
   this.groups = this.groups.sort(GCRosterSort);
 
@@ -316,10 +384,19 @@ function GroupchatRosterPrint() {
 	 */
   for (var i=0; i<this.groups.length; i++) {
     var rosterGroupHeadClass = (this.groups[i].users.length == 0) ? 'rosterGroupHeaderHidden':'rosterGroupHeader';
-    rosterHTML += "<div id='"+this.groups[i].name+"Head' class='"+rosterGroupHeadClass+"'><nobr>&nbsp;";
-    rosterHTML += this.groups[i].users.length + " " + this.groups[i].name;
-    rosterHTML += "</nobr></div>";
-    rosterHTML += "<div id='"+this.groups[i].name+"' class='rosterGroup'>";
+
+    A[A.length] = "<div id='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "Head' class='";
+		A[A.length] = rosterGroupHeadClass;
+		A[A.length] = "'><nobr>&nbsp;";
+    A[A.length] = this.groups[i].users.length;
+		A[A.length] = " ";
+		A[A.length] = this.groups[i].name;
+    A[A.length] = "</nobr></div>";
+    A[A.length] = "<div id='";
+		A[A.length] = this.groups[i].name;
+		A[A.length] = "' class='rosterGroup'>";
     
     this.groups[i].users = this.groups[i].users.sort(rosterSort);
 
@@ -328,29 +405,65 @@ function GroupchatRosterPrint() {
 		 */
     for (var j=0; j<this.groups[i].users.length; j++) {
       var user = this.groups[i].users[j];
-      var rosterUserClass = (this.usersHidden && (user.status == 'unavailable' || user.status == 'stalker') && !user.lastsrc) ? "hidden":"rosterUser";
-      rosterHTML += "<div id=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"Entry\" class=\""+rosterUserClass+"\" onClick=\"return userClicked(this,'"+htmlFullEnc(user.jid).replace(/\'/g,"\\\'")+"');\" title=\""+user.name;
-			if (user.realjid)
-				rosterHTML += "&#10;JID: "+ htmlEnc(user.realjid);
-			else
-				rosterHTML += "&#10;JID: "+ htmlEnc(user.jid);
-			rosterHTML += "&#10;"+loc("Status")+": "+user.status;
-      if (user.statusMsg)
-        rosterHTML += "&#10;"+loc("Message")+": " + htmlFullEnc(user.statusMsg);
-			if ((user.messages.length + user.chatmsgs.length) > 0)
-				rosterHTML += "&#10;" + loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
-      rosterHTML += "\"><nobr>";
+      var rosterUserClass = (this.usersHidden && 
+														 (user.status == 'unavailable' || 
+															user.status == 'stalker') && 
+														 !user.lastsrc) 
+				? "hidden":"rosterUser";
+
+      A[A.length] = "<div id=\"";
+			A[A.length] = htmlEnc(user.jid);
+			A[A.length] = "/";
+			A[A.length] = this.groups[i].name;
+			A[A.length] = "Entry\" class=\"";
+			A[A.length] = rosterUserClass;
+			A[A.length] = "\" onClick=\"return userClicked(this,'";
+			A[A.length] = htmlFullEnc(user.jid).replace(/\'/g,"\\\'")+"');\" title=\"";
+			A[A.length] = user.name;
+			if (user.realjid) {
+				A[A.length] = "&#10;JID: ";
+				A[A.length] = htmlEnc(user.realjid);
+			} else {
+				A[A.length] = "&#10;JID: ";
+				A[A.length] = htmlEnc(user.jid);
+			}
+			A[A.length] = "&#10;";
+			A[A.length] = loc("Status");
+			A[A.length] = ": ";
+			A[A.length] = user.status;
+      if (user.statusMsg) {
+        A[A.length] = "&#10;";
+				A[A.length] = loc("Message");
+				A[A.length] = ": ";
+				A[A.length] = htmlFullEnc(user.statusMsg);
+			}
+			if ((user.messages.length + user.chatmsgs.length) > 0) {
+				A[A.length] = "&#10;";
+				A[A.length] = loc("[_1] message(s) pending",(user.messages.length + user.chatmsgs.length));
+			}
+      A[A.length] = "\"><nobr>";
       var userImg = (user.lastsrc) ? messageImg : eval(user.status + "Led");
-      rosterHTML += "<img src=\""+userImg.src+"\" name=\""+htmlEnc(user.jid)+"/"+this.groups[i].name+"\" width=16 height=16 border=0 align=\"left\">";
-      rosterHTML += "<div><span class=\"nickName\">"+user.name+"</span>";
-      if (user.statusMsg)
-        rosterHTML += "<br clear=all><nobr><span class=\"statusMsg\">"+htmlEnc(user.statusMsg)+"</span></nobr>";
-      rosterHTML += "</div></nobr></div>";
+      A[A.length] = "<img src=\"";
+			A[A.length] = userImg.src;
+			A[A.length] = "\" name=\"";
+			A[A.length] = htmlEnc(user.jid);
+			A[A.length] = "/";
+			A[A.length] = this.groups[i].name;
+			A[A.length] = "\" width=16 height=16 border=0 align=\"left\">";
+      A[A.length] = "<div><span class=\"nickName\">";
+			A[A.length] = user.name;
+			A[A.length] = "</span>";
+      if (user.statusMsg) {
+        A[A.length] = "<br clear=all><nobr><span class=\"statusMsg\">";
+				A[A.length] = htmlEnc(user.statusMsg);
+				A[A.length] = "</span></nobr>";
+			}
+      A[A.length] = "</div></nobr></div>";
     } /* END inner loop */
-    rosterHTML += "</div>";
+    A[A.length] = "</div>";
   }
 
-  this.rosterW.getElementById("roster").innerHTML = rosterHTML;
+  this.rosterW.getElementById("roster").innerHTML = A.join('');
   this.updateStyleIE();
 }
 
