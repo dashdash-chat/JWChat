@@ -630,6 +630,61 @@ function handlePresence(presence) {
   if (from == cutResource(jid)) // skip my own presence msgs
     return;
 
+	// roster subscriptions synchronisation
+	if (isGateway(from.substring(from.indexOf('@')+1))) {
+		var x;
+		for (var i=0; i<presence.getNode().getElementsByTagName('x').length; i++)
+			if (presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/roster-subsync' ||
+			    presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://delx.cjb.net/protocol/roster-subsync') {
+				x = presence.getNode().getElementsByTagName('x').item(i);
+				break;
+			}
+
+		if (x) {
+			var items = x.getElementsByTagName("item");
+			for (var i=0; i<items.length; i++) {
+				var aItem = items.item(i);
+				if (type == 'subscribe' && aItem.getAttribute("subscription") == 'both') {
+					// insert into roster
+					var aIQ = new JSJaCIQ();
+					aIQ.setType('set');
+					var query = aIQ.setQuery('jabber:iq:roster');
+					var bItem = query.appendChild(aIQ.getDoc().createElement('item'));
+					bItem.setAttribute('jid',from);
+					if (aItem.getAttribute('name') && aItem.getAttribute('name') != '')
+						bItem.setAttribute('name',aItem.getAttribute('name'));
+					else 
+						bItem.setAttribute('name',from.substring(0,from.lastIndexOf('@')).replace(/%/,'@'));
+					var itemGroups = aItem.getElementsByTagName("group");
+					for (var j=0; j<itemGroups.length; j++)
+						bItem.appendChild(itemGroups.item(j));
+
+					Debug.log("roster-subsync setting roster:"+aIQ.xml(),2);
+
+					con.send(aIQ);
+
+					// Approve Subscription Request
+					var aPresence = new JSJaCPresence();
+					aPresence.setTo(from);
+					aPresence.setType('subscribed');
+					con.send(aPresence);
+					
+					// Subscribe to gateway contact's presence
+					var bPresence = new JSJaCPresence();
+					bPresence.setTo(from);
+					bPresence.setType('subscribe');
+					con.send(bPresence);
+
+					var user = roster.getUserByJID(from);
+					if (user)
+						user.askSubscribe = true;
+
+				}
+			}
+			return;
+		}
+	}
+
 	switch (type) {
 	case 'subscribe':
 		if (isGateway(from)) { // automatically subscribe gateways
