@@ -57,10 +57,10 @@ function search() {
 		iq.setType('set');
 		var query = iq.setQuery('jabber:iq:search');
 
-		var xmldoc = XmlDocument.create();
+		var xmldoc = XmlDocument.create('body','foo');
 		xmldoc.loadXML('<body>'+searchstring+'</body>');
-	
-		for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
+
+		for (var i=0; i<xmldoc.documentElement.childNodes.length; i++)
 			query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
 
 		query.appendChild(xmldoc.firstChild.cloneNode(true));
@@ -157,44 +157,20 @@ function getQueryResult(iq) {
 			var item = iq.getQuery().childNodes.item(i);
  			html += "<tr>";
 			html += "<td>"+item.getAttribute('jid')+"</td>";
-			for (var j=0; j<document.forms['searchfields'].elements.length; j++) {
-				var val = item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0);
-				if (!val || !val.firstChild)
-					html += "<td nowrap>&nbsp;</td>";
-				else
-					html += "<td nowrap>"+val.firstChild.nodeValue+"</td>";
-			}
-			html += "</tr>";
- 		}
-
+      for (var j=0; j<document.forms['searchfields'].elements.length; j++) {
+        if (document.forms['searchfields'].elements[j].name != '' && item.getElementsByTagName(document.forms['searchfields'].elements[j].name).length > 0 && item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0).firstChild)
+          html += "<td nowrap>"+item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0).firstChild.nodeValue+"</td>";
+        else
+          html += "<td nowrap>&nbsp;</td>";
+      }
+		}
 	}
-
+	
 	html += "</table>";
 	resultF.document.getElementById('results').innerHTML = html;
 	resultF.init();
-
+	
 	return false;
-}
-
-function handleIQSearch(jabber) {
-		/* get items */
-	if (1) {
-	} else if (jabber.ns == 'jabber:iq:browse') {
-		html += "<tr><th>JID</th><th>Name</th></tr>";
-		for (var i in jabber.browse.o)
-			if (jabber.browse.o[i].tagname == 'user')
-				html += "<tr><td>"+jabber.browse.o[i].jid+"</td><td nowrap>"+jabber.browse.o[i].name+"</td></tr>";
-	} else {
-		html += "<tr><th>jid</th>";
-		for (var i=0; i<document.forms['searchfields'].elements.length; i++)
-			if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].name != 'jwchat_form_type')
-				html += "<th>"+ document.forms['searchfields'].elements[i].name+"</th>";
-		html += "</tr>";
-	}
-
-	html += "</table>";
-	resultF.document.getElementById('results').innerHTML = html;
-	resultF.init();
 }
 
 function serviceSelected(selbox) {
