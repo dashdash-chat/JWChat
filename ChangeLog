@@ -1,3 +1,9 @@
+2005-12-06  Stefan Strigler  <steve@zeank.in-berlin.de>
+
+	* src/roster.html: fixed style attrib 'cursor'
+
+	* src/options.html: fixed style tag comments 
+
 2005-12-05  Stefan Strigler  <steve@zeank.in-berlin.de>
 
 	* src/index.html:
