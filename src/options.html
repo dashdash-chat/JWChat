@@ -213,7 +213,7 @@ function registerService(sJid,paneid) {
 
 	var query = iq.setQuery('jabber:iq:register');
 
-	var xmldoc = XmlDocument.create();
+	var xmldoc = XmlDocument.create('body','foo');
 	xmldoc.loadXML('<body>'+setxml+'</body>');
 	
 	for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)

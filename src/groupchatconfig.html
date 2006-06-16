@@ -20,7 +20,7 @@ function doSub() {
 
 	var query = iq.setQuery('http://jabber.org/protocol/muc#owner');
 
-	var xmldoc = XmlDocument.create();
+	var xmldoc = XmlDocument.create('body','foo');
 	xmldoc.loadXML('<body>'+genJabberXDataReply(document.forms[0])+'</body>');
 	
 	for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
