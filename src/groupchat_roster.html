@@ -52,7 +52,7 @@ function updateMe() {
 
 function cleanUp() {
 	// close windows
-	for (var i in editListW)
+	for (var i=0;i<editListW.length; i++)
 		if (editListW[i] && !editListW[i].closed)
 			editListW[i].close();
 } 

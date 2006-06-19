@@ -12,42 +12,43 @@
     <script>
       <!--
 function savePrefs() {
-	var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval','enableLog');
+  var prefs = new Array('usersHidden','autoPopup','autoPopupAway','focusWindows','timestamps','playSounds','timerval','enableLog');
+  
+  if (!srcW.roster)
+    return;
 
-	if (!srcW.roster)
-		return;
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  var query = iq.setQuery('jabber:iq:private');
+  var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
+  jNode.setAttribute('xmlns','jwchat:prefs');
+  
+  for (var i=0; i<prefs.length; i++) {
+    var item = jNode.appendChild(iq.getDoc().createElement(prefs[i]));
+    if (prefs[i] == 'usersHidden')
+      item.appendChild(iq.getDoc().createTextNode(eval("srcW.roster."+prefs[i])));
+    else
+      item.appendChild(iq.getDoc().createTextNode(eval("srcW."+prefs[i])));
+  }
 
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	var query = iq.setQuery('jabber:iq:private');
-	var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
-	jNode.setAttribute('xmlns','jwchat:prefs');
+  srcW.Debug.log(iq.getDoc().xml,3);
 
-	for (var i in prefs) {
-		var item = jNode.appendChild(iq.getDoc().createElement(prefs[i]));
-		if (prefs[i] == 'usersHidden')
-			item.appendChild(iq.getDoc().createTextNode(eval("srcW.roster."+prefs[i])));
-		else
-			item.appendChild(iq.getDoc().createTextNode(eval("srcW."+prefs[i])));
-	}
-
-	srcW.Debug.log(iq.getDoc().xml,3);
-
-	srcW.con.send(iq);
+  srcW.con.send(iq);
 }
 
 	
 function displayTimestamps() {
-  opener.top.timestamps = form.timestamps.checked;
+  srcW.timestamps = form.timestamps.checked;
   /* set timestamp display in all open chat-windows */
-  for (var i=0; i<opener.top.roster.users.length; i++) {
-    if ((opener.top.roster.users[i].chatW) && (opener.top.roster.users[i].chatW.closed == false)) {
-      opener.top.roster.users[i].chatW.top.displayTimestamp();
+  for (var i=0; i<srcW.roster.users.length; i++) {
+    if ((srcW.roster.users[i].chatW) && (srcW.roster.users[i].chatW.closed == false)) {
+      srcW.roster.users[i].chatW.top.displayTimestamp();
     }
-    if (opener.top.roster.users[i].roster) {
-      for (var j in opener.top.roster.users[i].roster.users) {
-        if (opener.top.roster.users[i].roster.users[j].chatW && !opener.top.roster.users[i].roster.users[j].chatW.closed)
-          opener.top.roster.users[i].roster.users[j].chatW.displayTimestamp();
+    if (srcW.roster.users[i].roster) {
+      for (var j=0; j<srcW.roster.users[i].roster.users.length; j++) {
+        if (srcW.roster.users[i].roster.users[j].chatW && 
+	    !srcW.roster.users[i].roster.users[j].chatW.closed)
+          srcW.roster.users[i].roster.users[j].chatW.displayTimestamp();
          }
     }
   }
@@ -73,92 +74,92 @@ function getOptions() {
   if (srcW.focusWindows == true)
     form.focusWindows.checked = true;
 
-	form.enableLog.checked = srcW.enableLog;
+  form.enableLog.checked = srcW.enableLog;
 
-	if (typeof(srcW.loghost) == 'undefined')
-		document.getElementById('tr_enableLog').style.display = 'none';
+  if (typeof(srcW.loghost) == 'undefined')
+    document.getElementById('tr_enableLog').style.display = 'none';
 
-	if (srcW.con.isPolling()) {
-		for (var i=0; i<form.timerval.options.length; i++) {
-			if (form.timerval.options[i].value == srcW.timerval)
-				form.timerval.selectedIndex = i;
-		}
-	}
+  if (srcW.con.isPolling()) {
+    for (var i=0; i<form.timerval.options.length; i++) {
+      if (form.timerval.options[i].value == srcW.timerval)
+	form.timerval.selectedIndex = i;
+    }
+  }
   toggleAutoPopupAway(document.getElementById('autoPopup'));
 }
 
 var pane;
 function service_selected(el) {
-	pane = el.nextSibling;
-	if (el.options[el.selectedIndex].value == '') {
-		pane.innerHTML = '';
-		return;
-	}
+  pane = el.nextSibling;
+  if (el.options[el.selectedIndex].value == '') {
+    pane.innerHTML = '';
+    return;
+  }
 
-	pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Service ...<br>Please stand by!")+"</div>";
+  pane.innerHTML = "<div class='transport_pane'>"+loc("Querying Service ...<br>Please stand by!")+"</div>";
 
-	var iq = new JSJaCIQ();
-	iq.setType('get');
-	iq.setTo(el.options[el.selectedIndex].value);
-	iq.setQuery('jabber:iq:register');
-
-	me = this;
-	srcW.con.send(iq,me.getRegisterForm);
+  var iq = new JSJaCIQ();
+  iq.setType('get');
+  iq.setTo(el.options[el.selectedIndex].value);
+  iq.setQuery('jabber:iq:register');
+  
+  me = this;
+  srcW.con.send(iq,me.getRegisterForm);
 }
 
 function getRegisterForm(iq) {
-	if (!iq || iq.getType() != 'result' || iq.getQueryXMLNS() != 'jabber:iq:register') {
-		pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";		
-		return;
-	}
-	srcW.Debug.log(iq.getDoc().xml,2);
+  if (!iq || iq.getType() != 'result' || iq.getQueryXMLNS() != 'jabber:iq:register') {
+    pane.innerHTML = "<div class='transport_pane'>"+loc("An Error occured ...")+"</div>";		
+    return;
+  }
+  srcW.Debug.log(iq.getDoc().xml,2);
 
-	var query = iq.getQuery();
+  var query = iq.getQuery();
 	
-	// check if it's jabber:x:data
+  // check if it's jabber:x:data
 
-	var html = '';
-	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
-		html += "<form>"+genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0))+"</form>";
-	} else {
-		if (query.getElementsByTagName('registered').item(0))
-			html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
-		if (query.getElementsByTagName('instructions').item(0))
-			html += "<div class='pane_el'>"+query.getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</div>";
-		html += "<form name='transport'><table>";
-		for (var i=0; i<query.childNodes.length; i++) {
-			var aItem = query.childNodes.item(i);
-			switch (aItem.nodeName) {
-			case 'instructions':
-			case 'registered': 
-				break;
-			case 'key': // hide key
-				html += "<tr><td colspan=2><input type=hidden name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
-				break;
-			case 'password':
-				if (aItem.firstChild)
-					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
-				else
-					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"'></td></tr>";
-				break;
-			default:
-				if (aItem.firstChild)
-					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
-				else
-					html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"'></td></tr>";
-			}
-		}
-		html += "</table></form>";
-	}
-	html += "<div class='pane_el' align='right'>";
-	if (query.getElementsByTagName('registered').item(0)) {
-		html += "<button onClick=\"unregisterGateway('"+iq.getFrom()+"');\">"+loc("Unregister")+"</button>";
-		html += "&nbsp;";
-		html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Update")+"</button>";
-	} else
-		html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Register")+"</button>";
-	html += "</div>";
-	pane.innerHTML = html;
+  var html = '';
+  if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
+    html += "<form>"+genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0))+"</form>";
+  } else {
+    if (query.getElementsByTagName('registered').item(0))
+      html += "<div class='pane_el'><b style='color:red;'>"+loc("You are already registered at this service!")+"</b></div>";
+    if (query.getElementsByTagName('instructions').item(0))
+      html += "<div class='pane_el'>"+query.getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</div>";
+    html += "<form name='transport'><table>";
+    for (var i=0; i<query.childNodes.length; i++) {
+      var aItem = query.childNodes.item(i);
+      switch (aItem.nodeName) {
+      case 'instructions':
+      case 'registered': 
+	break;
+      case 'key': // hide key
+	html += "<tr><td colspan=2><input type=hidden name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+	break;
+      case 'password':
+	if (aItem.firstChild)
+	  html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+	else
+	  html += "<tr><td>"+aItem.nodeName+"</td><td><input type='password' name='"+aItem.nodeName+"'></td></tr>";
+	break;
+      default:
+	if (aItem.firstChild)
+	  html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"' value='"+aItem.firstChild.nodeValue+"'></td></tr>";
+	else
+	  html += "<tr><td>"+aItem.nodeName+"</td><td><input type='text' name='"+aItem.nodeName+"'></td></tr>";
+      }
+    }
+    html += "</table></form>";
+  }
+  html += "<div class='pane_el' align='right'>";
+  if (query.getElementsByTagName('registered').item(0)) {
+    html += "<button onClick=\"unregisterGateway('"+iq.getFrom()+"');\">"+loc("Unregister")+"</button>";
+    html += "&nbsp;";
+    html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Update")+"</button>";
+  } else
+    html += "<button onClick=\"registerService('"+iq.getFrom()+"','"+pane.id+"');\">"+loc("Register")+"</button>";
+  html += "</div>";
+  pane.innerHTML = html;
 
 }
 
@@ -166,233 +167,219 @@ var ie5=document.all&&document.getElementById;
 var oldactiveindex = 0;
 
 function tabclicked(e) {
-	// find index of clicked element
-	var firingobj=ie5? event.srcElement : e.target;
-	var tablabels = document.getElementById('tablabels');
-	for (var i in tablabels.childNodes)
-		if (tablabels.childNodes[i] == firingobj) {
-			if (oldactiveindex == i)
-			return;
-			var tabs = document.getElementById('tabs');
-			tabs.childNodes[oldactiveindex].className = 'tabinactive';
-			tabs.childNodes[i].className = 'tab';
-			tablabels.childNodes[i].className = 'tablabelactive';
-			tablabels.childNodes[oldactiveindex].className = 'tablabel';
-			oldactiveindex = i;
-		}
+  // find index of clicked element
+  var firingobj=ie5? event.srcElement : e.target;
+  var tablabels = document.getElementById('tablabels');
+  for (var i=0; i<tablabels.childNodes.length; i++)
+    if (tablabels.childNodes[i] == firingobj) {
+      if (oldactiveindex == i)
+	return;
+      var tabs = document.getElementById('tabs');
+      tabs.childNodes[oldactiveindex].className = 'tabinactive';
+      tabs.childNodes[i].className = 'tab';
+      tablabels.childNodes[i].className = 'tablabelactive';
+      tablabels.childNodes[oldactiveindex].className = 'tablabel';
+      oldactiveindex = i;
+    }
 }
 
 function registerService(sJid,paneid) {
-	var aForm;
+  var aForm;
+  
+  var pane = document.getElementById(paneid);
 
-	var pane = document.getElementById(paneid);
+  for (var i=0; i<pane.childNodes.length; i++) {
+    if (pane.childNodes[i].tagName == 'FORM') {
+      aForm = pane.childNodes[i];
+      break; // found
+    }
+  }
 
-	for (var i in pane.childNodes) {
-		if (pane.childNodes[i].tagName == 'FORM') {
-			aForm = pane.childNodes[i];
-			break; // found
-		}
-	}
-
-	var setxml = '';
+  var setxml = '';
 	
-	var jabberXData = (aForm.elements['jwchat_form_type'] && aForm.elements['jwchat_form_type'].value == 'jabber:x:data');
-	
-	if (jabberXData) {
-		setxml = genJabberXDataReply(aForm);
-	}	else {
-		for (var i=0; i<aForm.elements.length; i++) {
-			var el = aForm.elements[i];
-			setxml += "<"+el.name+">"+el.value+"</"+el.name+">";
-		}
-	}
+  var jabberXData = (aForm.elements['jwchat_form_type'] && aForm.elements['jwchat_form_type'].value == 'jabber:x:data');
+  
+  if (jabberXData) {
+    setxml = genJabberXDataReply(aForm);
+  }	else {
+    for (var i=0; i<aForm.elements.length; i++) {
+      var el = aForm.elements[i];
+      setxml += "<"+el.name+">"+el.value+"</"+el.name+">";
+    }
+  }
 
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	iq.setTo(sJid);
-
-	var query = iq.setQuery('jabber:iq:register');
-
-	var xmldoc = XmlDocument.create('body','foo');
-	xmldoc.loadXML('<body>'+setxml+'</body>');
-	
-	for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
-		query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
-
-	srcW.Debug.log(iq.getDoc().xml,2);
-	
-	me = this;
-	srcW.con.send(iq,me.handleRegisterService,sJid);
-
-	pane.innerHTML = "<strong>"+loc("Request sent to [_1]..",sJid)+"</strong><br>";
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  iq.setTo(sJid);
+  
+  var query = iq.setQuery('jabber:iq:register');
+  
+  var xmldoc = XmlDocument.create('body','foo');
+  xmldoc.loadXML('<body>'+setxml+'</body>');
+  
+  for (var i=0; i<xmldoc.firstChild.childNodes.length; i++)
+    query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
+  
+  srcW.Debug.log(iq.getDoc().xml,2);
+  
+  me = this;
+  srcW.con.send(iq,me.handleRegisterService,sJid);
+  
+  pane.innerHTML = "<strong>"+loc("Request sent to [_1]..",sJid)+"</strong><br>";
 }
 
 /* callback from registering a service */
 function handleRegisterService(iq,sJid) {
-	if (iq.getType() == 'error') {
+  if (iq.getType() == 'error') {
 		
-		var html = "<strong style='color:red;'>"+loc("Error");
-		if (iq.getNode().getElementsByTagName('error').item(0)) {
-			var aErr = iq.getNode().getElementsByTagName('error').item(0);
-			if (aErr.getAttribute('code'))
-				html += " ("+aErr.getAttribute('code')+")";
-			html += ": ";
-			if (aErr.firstChild && aErr.firstChild.nodeValue)
-				html += aErr.firstChild.nodeValue;
-			else if (aErr.firstChild) {
-				switch (aErr.firstChild.nodeName) {
-				case 'bad-request': html += loc("Bad Request");
-					break;
-				default: html += aErr.firstChild.nodeName;
-					break;
-				}
-			}
-		}
-		html += "</strong><br/>";
-		pane.innerHTML += html;
-		return;
+    var html = "<strong style='color:red;'>"+loc("Error");
+    if (iq.getNode().getElementsByTagName('error').item(0)) {
+      var aErr = iq.getNode().getElementsByTagName('error').item(0);
+      if (aErr.getAttribute('code'))
+	html += " ("+aErr.getAttribute('code')+")";
+      html += ": ";
+      if (aErr.firstChild && aErr.firstChild.nodeValue)
+	html += aErr.firstChild.nodeValue;
+      else if (aErr.firstChild) {
+	switch (aErr.firstChild.nodeName) {
+	case 'bad-request': html += loc("Bad Request");
+	  break;
+	default: html += aErr.firstChild.nodeName;
+	  break;
 	}
-	pane.innerHTML += "<strong>"+loc("Registration successful.")+"</strong><br/>";
-
-	// set roster
-// 	pane.innerHTML += "<strong>"+loc("Updating Roster...")+"</strong><br/>";
-// 	var aIQ = new JSJaCIQ();
-// 	aIQ.setType('set');
-// 	var query = aIQ.setQuery('jabber:iq:roster');
-// 	var aItem = query.appendChild(aIQ.getDoc().createElement('item'));
-// 	aItem.setAttribute('jid',sJid);
-// 	var name = sJid;
-// 	for (var i in srcW.disco)
-// 		if (i == sJid)
-// 			name = srcW.disco[i].getQuery().getElementsByTagName('identity').item(0).getAttribute('name');
-// 	aItem.setAttribute('name',name);
-// 	aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode('Gateways'));
-// 	srcW.con.send(aIQ);
+      }
+    }
+    html += "</strong><br/>";
+    pane.innerHTML += html;
+    return;
+  }
+  pane.innerHTML += "<strong>"+loc("Registration successful.")+"</strong><br/>";
 	
-	// send presence
-	pane.innerHTML += "<strong>"+loc("Sending presence...")+"</strong><br />";
-	var aPresence = new JSJaCPresence();
-	aPresence.setTo(sJid);
- 	aPresence.setShow(srcW.onlstat);
- 	aPresence.setStatus(srcW.onlmsg);
-	srcW.con.send(aPresence);
-	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
+  // send presence
+  pane.innerHTML += "<strong>"+loc("Sending presence...")+"</strong><br />";
+  var aPresence = new JSJaCPresence();
+  aPresence.setTo(sJid);
+  aPresence.setShow(srcW.onlstat);
+  aPresence.setStatus(srcW.onlmsg);
+  srcW.con.send(aPresence);
+  pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
 }
 
 function unregisterGateway(sJid) {
-	if (srcW.roster.getUserByJID(sJid) != null)
-		sJid = srcW.roster.getUserByJID(sJid).fulljid;
+  if (srcW.roster.getUserByJID(sJid) != null)
+    sJid = srcW.roster.getUserByJID(sJid).fulljid;
 
-	pane.innerHTML = "<strong>"+loc("Unregistering from service [_1] ...",sJid)+"</strong><br />";
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	iq.setTo(sJid);
-	var query = iq.setQuery('jabber:iq:register');
-	var item = query.appendChild(iq.getDoc().createElement('remove'));
-	me = this;
-	srcW.con.send(iq,me.handleUnregisterService,sJid);
+  pane.innerHTML = "<strong>"+loc("Unregistering from service [_1] ...",sJid)+"</strong><br />";
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  iq.setTo(sJid);
+  var query = iq.setQuery('jabber:iq:register');
+  var item = query.appendChild(iq.getDoc().createElement('remove'));
+  me = this;
+  srcW.con.send(iq,me.handleUnregisterService,sJid);
 }
 
 function handleUnregisterService(iq,sJid) {
-	if (iq.getType() == 'error') {
-		var html = "<strong style='color:red;'>"+loc("Error");
-		if (iq.getNode().getElementsByTagName('error').item(0)) {
-			var aErr = iq.getNode().getElementsByTagName('error').item(0);
-			if (aErr.getAttribute('code'))
-				html += " ("+aErr.getAttribute('code')+")";
-			html += ": ";
-			if (aErr.firstChild && aErr.firstChild.nodeValue)
-				html += aErr.firstChild.nodeValue;
-			else if (aErr.firstChild) {
-				switch (aErr.firstChild.nodeName) {
-				case 'bad-request': html += loc("Bad Request");
-					break;
-				default: html += aErr.firstChild.nodeName;
-					break;
-				}
-			}
-		}
-		html += "</strong><br/>";
-		pane.innerHTML += html;
-		return;
+  if (iq.getType() == 'error') {
+    var html = "<strong style='color:red;'>"+loc("Error");
+    if (iq.getNode().getElementsByTagName('error').item(0)) {
+      var aErr = iq.getNode().getElementsByTagName('error').item(0);
+      if (aErr.getAttribute('code'))
+	html += " ("+aErr.getAttribute('code')+")";
+      html += ": ";
+      if (aErr.firstChild && aErr.firstChild.nodeValue)
+	html += aErr.firstChild.nodeValue;
+      else if (aErr.firstChild) {
+	switch (aErr.firstChild.nodeName) {
+	case 'bad-request': html += loc("Bad Request");
+	  break;
+	default: html += aErr.firstChild.nodeName;
+	  break;
 	}
-	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
-	pane.innerHTML += "<strong>"+loc("Removing [_1] from roster...",sJid)+"</strong><br />";
-
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	var query = iq.setQuery('jabber:iq:roster');
+      }
+    }
+    html += "</strong><br/>";
+    pane.innerHTML += html;
+    return;
+  }
+  pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
+  pane.innerHTML += "<strong>"+loc("Removing [_1] from roster...",sJid)+"</strong><br />";
+  
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  var query = iq.setQuery('jabber:iq:roster');
+  var item = query.appendChild(iq.getDoc().createElement('item'));
+  item.setAttribute('jid',sJid);
+  item.setAttribute('subscription','remove');
+  
+  srcW.con.send(iq);
+  
+  if (confirm(loc("Remove all associated contacts?"))) {
+    pane.innerHTML += "<strong>"+loc("Removing contacts...")+"</strong><br />";
+    var iq = new JSJaCIQ();
+    iq.setType('set');
+    var query = iq.setQuery('jabber:iq:roster');
+    for (var i=0; i<srcW.roster.users.length; i++) {
+      if (cutResource(srcW.roster.users[i].jid.substring(srcW.roster.users[i].jid.indexOf('@')+1)) == cutResource(sJid) &&
+	  srcW.roster.users[i].jid != cutResource(sJid)) {
 	var item = query.appendChild(iq.getDoc().createElement('item'));
-	item.setAttribute('jid',sJid);
+	item.setAttribute('jid',srcW.roster.users[i].fulljid);
 	item.setAttribute('subscription','remove');
-
-	srcW.con.send(iq);
-
-	if (confirm(loc("Remove all associated contacts?"))) {
-		pane.innerHTML += "<strong>"+loc("Removing contacts...")+"</strong><br />";
-		var iq = new JSJaCIQ();
-		iq.setType('set');
-		var query = iq.setQuery('jabber:iq:roster');
-		for (var i in srcW.roster.users) {
-			if (cutResource(srcW.roster.users[i].jid.substring(srcW.roster.users[i].jid.indexOf('@')+1)) == cutResource(sJid) &&
-					srcW.roster.users[i].jid != cutResource(sJid)) {
-				var item = query.appendChild(iq.getDoc().createElement('item'));
-				item.setAttribute('jid',srcW.roster.users[i].fulljid);
-				item.setAttribute('subscription','remove');
-				pane.innerHTML += srcW.roster.users[i].name+"<br />";
-			}
-		}
-		srcW.con.send(iq);
-	}
-	pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
+	pane.innerHTML += srcW.roster.users[i].name+"<br />";
+      }
+    }
+    srcW.con.send(iq);
+  }
+  pane.innerHTML += "<strong>"+loc("Done.")+"</strong><br />";
 }
 
 var srcW;
 function init() {
-	srcW = opener.parent;
+  srcW = opener.parent;
 
-	getOptions();
-
-	// initialise handlers for tabs
-	var tablabels = document.getElementById('tablabels');
-	for (var i in tablabels.childNodes)
-		tablabels.childNodes[i].onclick = tabclicked;
-
-	// set version
-	var jwchat_version = document.getElementById('jwchat_version');
-	jwchat_version.innerHTML = VERSION;
-	if (VERSION == "CVS")
-	  jwchat_version.innerHTML += "<br>(" + document.lastModified + ")";
-
-	var transports_selector = document.getElementById('transports_selector');
- 	var transport_optidx = 1;
-	var directory_selector = document.getElementById('directory_selector');
- 	var directory_optidx = 1;
-	for (var i in srcW.disco) {
-		var item = srcW.disco[i];
-		if (item.getNode().getElementsByTagName('identity').item(0)) {
-			if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway') {
-				for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
-					if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
-						transports_selector.options[transport_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
-						break;
-					}
-				}
-			} else if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'directory') {
-				for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
-					if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
-						directory_selector.options[directory_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
-						break;
-					}
-				}
-			}
-		}
+  getOptions();
+  
+  // initialise handlers for tabs
+  var tablabels = document.getElementById('tablabels');
+  for (var i=0; i<tablabels.childNodes.length; i++)
+    tablabels.childNodes[i].onclick = tabclicked;
+  
+  // set version
+  var jwchat_version = document.getElementById('jwchat_version');
+  jwchat_version.innerHTML = VERSION;
+  if (VERSION == "CVS")
+    jwchat_version.innerHTML += "<br>(" + document.lastModified + ")";
+  
+  var transports_selector = document.getElementById('transports_selector');
+  var transport_optidx = 1;
+  var directory_selector = document.getElementById('directory_selector');
+  var directory_optidx = 1;
+  for (var i in srcW.disco) {
+    if (typeof(srcW.disco[i]) != 'object') continue;
+    var item = srcW.disco[i];
+    if (item.getNode().getElementsByTagName('identity').item(0)) {
+      if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway') {
+	for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
+	  if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
+	    transports_selector.options[transport_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
+	    break;
+	  }
 	}
-
-	if (directory_optidx == 1)
-		document.getElementById('dir_label').style.display = 'none';
-	if (transport_optidx == 1)
-		document.getElementById('gw_label').style.display = 'none';
+      } else if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'directory') {
+	for (var j=0; j<item.getNode().getElementsByTagName('feature').length; j++) {
+	  if (item.getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:register') {
+	    directory_selector.options[directory_optidx++] = new Option(item.getNode().getElementsByTagName('identity').item(0).getAttribute('name'),item.getFrom());
+	    break;
+	  }
+	}
+      }
+    }
+  }
+  
+  if (directory_optidx == 1)
+    document.getElementById('dir_label').style.display = 'none';
+  if (transport_optidx == 1)
+    document.getElementById('gw_label').style.display = 'none';
 }
 
 onload = init;

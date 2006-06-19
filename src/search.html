@@ -240,28 +240,27 @@ var searchW = window;
 var srcW;
 function init() {
   // determine source window
-  if (opener.roster)
-    srcW = opener.top;
+  if (opener.srcW)
+    srcW = opener.srcW;
   else
-    srcW = opener.opener.top;
+    srcW = opener;
 
-	// init elements ...
-	document.getElementById('search_results').style.display = 'none';
-	document.getElementById('add_button').disabled = true;
-	document.getElementById('info_button').disabled = true;
-
-	// detect services
-	var service = document.forms['service_select'].elements['service'];
-	var optidx = 1;
-	for (var i in srcW.disco) {
-		for (var j=0; j<srcW.disco[i].getNode().getElementsByTagName('feature').length; j++) {
-			if (srcW.disco[i].getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:search') {
-				service.options[optidx++] = new Option(srcW.disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('name'),srcW.disco[i].getFrom());
-				break;
-			}
-		}
-	}
-
+  // init elements ...
+  document.getElementById('search_results').style.display = 'none';
+  document.getElementById('add_button').disabled = true;
+  document.getElementById('info_button').disabled = true;
+  // detect services
+  var service = document.forms['service_select'].elements['service'];
+  var optidx = 1;
+  for (var i in srcW.disco) {
+    if (typeof(srcW.disco[i]) != 'object') continue;
+    for (var j=0; j<srcW.disco[i].getNode().getElementsByTagName('feature').length; j++) {
+      if (srcW.disco[i].getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:search') {
+	service.options[optidx++] = new Option(srcW.disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('name'),srcW.disco[i].getFrom());
+	break;
+      }
+    }
+  }
 }
 
 function keyPressed(e) {

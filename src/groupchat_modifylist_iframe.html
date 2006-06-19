@@ -19,7 +19,7 @@ function init() {
 	}
 
 	var rows = modTable.getElementsByTagName("TBODY").item(0).childNodes;
-	for (var i in rows) {
+	for (var i=0; i<rows.length; i++) {
 		rows[i].onmouseover = highlightRow;
 		rows[i].onmouseout = unhighlightRow;
 		rows[i].onclick = rowClicked;

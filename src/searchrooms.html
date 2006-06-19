@@ -59,7 +59,7 @@ function getDiscoItems(iq) {
 	var row = search_result_iframe.document.createElement("TR");
 	var header = new Array(loc('Room'),loc('Description'));
 	var cell; 
-	for (var i in header) {
+	for (var i=0; i<header.length; i++) {
 		cell = search_result_iframe.document.createElement("TH");
 		cell.appendChild(search_result_iframe.document.createTextNode(header[i]));
 		row.appendChild(cell);
@@ -173,10 +173,6 @@ onunload = cleanUp;
       return keyPressed(window.event);
       //-->
     </script>
-		<style type="text/css">
-			<!--
-			//-->
-		</style>
   </head>
   <body style="margin:8px;">
 		<div id="search_tab">

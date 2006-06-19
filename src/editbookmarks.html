@@ -16,26 +16,26 @@ var srcW; // the source window with necessary data
  * send bookmarks to server for storage 
  */
 function doSub() {
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	var query = iq.setQuery('jabber:iq:private');
-	var storage = query.appendChild(iq.getDoc().createElement('storage'));
-	storage.setAttribute('xmlns','storage:bookmarks');
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  var query = iq.setQuery('jabber:iq:private');
+  var storage = query.appendChild(iq.getDoc().createElement('storage'));
+  storage.setAttribute('xmlns','storage:bookmarks');
 
-	for (var i in srcW.bookmarks) {
-		var item = storage.appendChild(iq.getDoc().createElement('conference'));
-		item.setAttribute('name',srcW.bookmarks[i].name);
-		item.setAttribute('jid',srcW.bookmarks[i].jid);
-		if (srcW.bookmarks[i].autojoin && srcW.bookmarks[i].autojoin == '1')
-			item.setAttribute('autojoin',srcW.bookmarks[i].autojoin);
-		item.appendChild(iq.getDoc().createElement('nick')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].nick));
-		if (typeof(srcW.bookmarks[i].pass) != 'undefined' && srcW.bookmarks[i].pass != '')
-			item.appendChild(iq.getDoc().createElement('pass')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].pass));
-	}	
-
-	srcW.Debug.log(iq.getDoc().xml,2);
-
-	srcW.con.send(iq);
+  for (var i=0; i<srcW.bookmarks.length; i++) {
+    var item = storage.appendChild(iq.getDoc().createElement('conference'));
+    item.setAttribute('name',srcW.bookmarks[i].name);
+    item.setAttribute('jid',srcW.bookmarks[i].jid);
+    if (srcW.bookmarks[i].autojoin && srcW.bookmarks[i].autojoin == '1')
+      item.setAttribute('autojoin',srcW.bookmarks[i].autojoin);
+    item.appendChild(iq.getDoc().createElement('nick')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].nick));
+    if (typeof(srcW.bookmarks[i].pass) != 'undefined' && srcW.bookmarks[i].pass != '')
+      item.appendChild(iq.getDoc().createElement('pass')).appendChild(iq.getDoc().createTextNode(srcW.bookmarks[i].pass));
+  }	
+  
+  srcW.Debug.log(iq.getDoc().xml,2);
+  
+  srcW.con.send(iq);
   window.close();
 }
 
@@ -43,98 +43,98 @@ function doSub() {
  * updates or saves bookmark to global bookmark array
  */
 function saveBookmark() {
-	var bookmark = new Object();
+  var bookmark = new Object();
 
-	if (document.forms[0].save_bookmark_as.value == '') {
-		alert(loc("Please enter a name for this bookmark!"));
-		return false;
-	}
-	bookmark.name = document.forms[0].save_bookmark_as.value;
+  if (document.forms[0].save_bookmark_as.value == '') {
+    alert(loc("Please enter a name for this bookmark!"));
+    return false;
+  }
+  bookmark.name = document.forms[0].save_bookmark_as.value;
 
   bookmark.nick = (document.forms[0].nick.value == '') ? srcW.jid.substring(0,srcW.jid.indexOf('@')) : document.forms[0].nick.value;
-
+  
   if (document.forms[0].group.value == '') {
-		alert(loc("Please enter a room to join"));
+    alert(loc("Please enter a room to join"));
     return false;
-	}
+  }
 
-	if (document.forms[0].server.value == '') {
-		alert(loc("Please enter a server name"));
-		return false;
-	}
+  if (document.forms[0].server.value == '') {
+    alert(loc("Please enter a server name"));
+    return false;
+  }
   bookmark.jid = document.forms[0].group.value+"@"+document.forms[0].server.value;
-
-	bookmark.autojoin = (document.forms[0].autojoin.checked) ? '1' : '0';
-
-	bookmark.pass = document.forms[0].pass.value;
-
-	if (document.forms[0].bookmark_selector.selectedIndex == 0) { // add new bookmark
-		srcW.bookmarks[srcW.bookmarks.length] = bookmark;
-	} else { // update bookmark
-		srcW.bookmarks[document.forms[0].bookmark_selector.options[document.forms[0].bookmark_selector.selectedIndex].value] = bookmark;
-	}
-
-	updateBookmarks();
-	return false;
+  
+  bookmark.autojoin = (document.forms[0].autojoin.checked) ? '1' : '0';
+  
+  bookmark.pass = document.forms[0].pass.value;
+  
+  if (document.forms[0].bookmark_selector.selectedIndex == 0) { // add new bookmark
+    srcW.bookmarks[srcW.bookmarks.length] = bookmark;
+  } else { // update bookmark
+    srcW.bookmarks[document.forms[0].bookmark_selector.options[document.forms[0].bookmark_selector.selectedIndex].value] = bookmark;
+  }
+  
+  updateBookmarks();
+  return false;
 }
 
 function deleteBookmark() {
-	var bOpts = document.forms[0].bookmark_selector.options;
-	var bIdx = document.forms[0].bookmark_selector.selectedIndex;
-	if (bIdx == 0)
-		return;
+  var bOpts = document.forms[0].bookmark_selector.options;
+  var bIdx = document.forms[0].bookmark_selector.selectedIndex;
+  if (bIdx == 0)
+    return;
 
-	srcW.bookmarks = srcW.bookmarks.slice(0,bOpts[bIdx].value).concat(srcW.bookmarks.slice(bOpts[bIdx].value+1,bOpts.length));
+  srcW.bookmarks = srcW.bookmarks.slice(0,bOpts[bIdx].value).concat(srcW.bookmarks.slice(bOpts[bIdx].value+1,bOpts.length));
 	
-	updateBookmarks();
-	return false;
+  updateBookmarks();
+  return false;
 }
 
 
 /* fill in form */
 function bookmark_selected(el) {
-	if (el.selectedIndex == 0) { // clear form
- 		document.forms[0].reset();
-		return false;
-	} 
+  if (el.selectedIndex == 0) { // clear form
+    document.forms[0].reset();
+    return false;
+  } 
 
-	var bookmark= srcW.bookmarks[el.options[el.selectedIndex].value];
+  var bookmark= srcW.bookmarks[el.options[el.selectedIndex].value];
+  
+  document.forms[0].save_bookmark_as.value = bookmark.name;
+  
+  document.forms[0].nick.value = bookmark.nick;
+	
+  document.forms[0].group.value = bookmark.jid.substring(0,bookmark.jid.indexOf('@'));
 
-	document.forms[0].save_bookmark_as.value = bookmark.name;
+  document.forms[0].server.value = bookmark.jid.substring(bookmark.jid.indexOf('@')+1);
 
-	document.forms[0].nick.value = bookmark.nick;
+  if (typeof(bookmark.pass) != 'undefined')
+    document.forms[0].pass.value = bookmark.pass;
+  else
+    document.forms[0].pass.value = '';
 
-	document.forms[0].group.value = bookmark.jid.substring(0,bookmark.jid.indexOf('@'));
+  document.forms[0].autojoin.checked = (bookmark.autojoin == '1');
 
-	document.forms[0].server.value = bookmark.jid.substring(bookmark.jid.indexOf('@')+1);
-
-	if (typeof(bookmark.pass) != 'undefined')
-		document.forms[0].pass.value = bookmark.pass;
-	else
-		document.forms[0].pass.value = '';
-
-	document.forms[0].autojoin.checked = (bookmark.autojoin == '1');
-
-	return false;
+  return false;
 }
 
 /* get global bookmarks */
 function updateBookmarks() {
-	var bookmark_selector = document.getElementById('bookmark_selector');
-	var optidx = 1;
-	// clear list - don't remove first
-	for (var i=1; i<bookmark_selector.options.length; i++)
-		bookmark_selector.options[i] = null;
+  var bookmark_selector = document.getElementById('bookmark_selector');
+  var optidx = 1;
+  // clear list - don't remove first
+  for (var i=1; i<bookmark_selector.options.length; i++)
+    bookmark_selector.options[i] = null;
 
-	// fill from global arr
-	for (var i in srcW.bookmarks)
-		bookmark_selector.options[optidx++] = new Option(srcW.bookmarks[i].name,i);
+  // fill from global arr
+  for (var i=0; i<srcW.bookmarks.length; i++)
+    bookmark_selector.options[optidx++] = new Option(srcW.bookmarks[i].name,i);
 
-	document.forms[0].reset();
+  document.forms[0].reset();
 
-	// update bookmarks in joingroupchat too
-	if (srcW.frames['jwc_main'].groupw && srcW.frames['jwc_main'].groupw.updateBookmarks)
-		srcW.frames['jwc_main'].groupw.updateBookmarks();
+  // update bookmarks in joingroupchat too
+  if (srcW.frames['jwc_main'].groupw && srcW.frames['jwc_main'].groupw.updateBookmarks)
+    srcW.frames['jwc_main'].groupw.updateBookmarks();
 }
 
 
@@ -143,7 +143,7 @@ function init() {
   if (opener.top.roster)
     srcW = opener.top;
 
-	updateBookmarks();
+  updateBookmarks();
 }
 
 function keyPressed(e) {
@@ -177,7 +177,7 @@ onload = init;
           <tr><td nowrap><l>Password</l></td><td width="100%"><input type="text" name="pass" size=32 style="width:100%;"></td></tr>
 					<tr><td nowrap><l>Autojoin</l></td><td><input type="checkbox" name="autojoin"></td></tr>
       </table>
-      <div align="right" id="buttonbox" style="padding-top:10px,">
+      <div align="right" id="buttonbox">
  				<button onClick="return saveBookmark();">Add/Update</button>&nbsp;<button onClick="return deleteBookmark();">Delete</button>
       </div>
       <hr noshade size="1" size="100%">

@@ -16,20 +16,20 @@ var allgrpbox;
 var curgrpbox;
 
 function submitClicked() {
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	var query = iq.setQuery('jabber:iq:roster');
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  var query = iq.setQuery('jabber:iq:roster');
 
-	var aItem = query.appendChild(iq.getDoc().createElement('item'));
-	aItem.setAttribute('jid',jid);
-	aItem.setAttribute('name',document.userprops.nickname.value);
+  var aItem = query.appendChild(iq.getDoc().createElement('item'));
+  aItem.setAttribute('jid',jid);
+  aItem.setAttribute('name',document.userprops.nickname.value);
 
   if (curgrpbox.length > 0) {
     for (var i=0; i<curgrpbox.length; i++)
-			aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode(curgrpbox.options[i].value));
+      aItem.appendChild(iq.getDoc().createElement('group')).appendChild(iq.getDoc().createTextNode(curgrpbox.options[i].value));
   }
 
-	srcW.con.send(iq);
+  srcW.con.send(iq);
   window.close();
 }
 
@@ -69,14 +69,14 @@ function init() {
   document.getElementById('groupjid').innerHTML = jid;
   user = srcW.roster.getUserByJID(jid);
   curgrpbox = document.userprops.curgrps;
-  allgrpbox = document.userprops.allgrps
-    for (var i in user.groups) {
-      if (user.groups[i] != '') {
-        curgrpbox.options[curgrpbox.length] = new Option(user.groups[i],user.groups[i]);
-      }
+  allgrpbox = document.userprops.allgrps;
+  for (var i=0; i<user.groups.length; i++) {
+    if (user.groups[i] != '') {
+      curgrpbox.options[curgrpbox.length] = new Option(user.groups[i],user.groups[i]);
     }
+  }
   
-  for (var i in srcW.roster.groups) {
+  for (var i=0; i<srcW.roster.groups.length; i++) {
     if (srcW.roster.groups[i].name != loc('Unfiled')) {
       allgrpbox.options[allgrpbox.length] = new Option(srcW.roster.groups[i].name,srcW.roster.groups[i].name);
     }

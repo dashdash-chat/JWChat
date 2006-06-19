@@ -22,10 +22,10 @@ function init() {
 
   jid = passedArgs['jid'];
 
-	var user = srcW.roster.getUserByJID(jid);
-	if (!user)
-		return; // unbelievable
-
+  var user = srcW.roster.getUserByJID(jid);
+  if (!user)
+    return; // unbelievable
+  
   var titleStr = loc("Annotations for [_1]",user.name);
   document.title = titleStr;
   document.getElementById('title').innerHTML = titleStr;
@@ -38,21 +38,22 @@ function saveNotes() {
   // save note
   srcW.annotations[jid] = document.getElementById('note').value;
 
-	var iq = new JSJaCIQ();
-	iq.setType('set');
-	var query = iq.setQuery('jabber:iq:private');
-	var jNode = query.appendChild(iq.getDoc().createElement('storage'));
-	jNode.setAttribute('xmlns','storage:rosternotes');
+  var iq = new JSJaCIQ();
+  iq.setType('set');
+  var query = iq.setQuery('jabber:iq:private');
+  var jNode = query.appendChild(iq.getDoc().createElement('storage'));
+  jNode.setAttribute('xmlns','storage:rosternotes');
 
-	for (var i in srcW.annotations)
-		if (srcW.annotations[i] != '') {
-			var item = jNode.appendChild(iq.getDoc().createElement('note'));
-			item.setAttribute('jid',i);
-			item.appendChild(iq.getDoc().createTextNode(srcW.annotations[i]));
-		}
-
-	srcW.Debug.log(iq.getDoc().xml,3);
-	srcW.con.send(iq);
+  for (var i in srcW.annotations) {
+    if (typeof(srcW.annotations[i]) != 'string') continue;
+    if (srcW.annotations[i] != '') {
+      var item = jNode.appendChild(iq.getDoc().createElement('note'));
+      item.setAttribute('jid',i);
+      item.appendChild(iq.getDoc().createTextNode(srcW.annotations[i]));
+    }
+  }
+  srcW.Debug.log(iq.getDoc().xml,3);
+  srcW.con.send(iq);
 }
 
 onload = init;

@@ -13,8 +13,8 @@ var jid;
 var srcW; // the source window with necessary data
 
 function sendSub() {
-	var aPresence = new JSJaCPresence();
-	aPresence.setType('subscribe');
+  var aPresence = new JSJaCPresence();
+  aPresence.setType('subscribe');
   
   if (!document.forms[0].to.value || document.forms[0].to.value == '') {
     alert(loc("JID missing"));
@@ -28,7 +28,7 @@ function sendSub() {
 
   aPresence.setTo(to);
   if (document.forms[0].msg.value && document.forms[0].msg.value != '')
-		aPresence.setStatus(document.forms[0].msg.value);
+    aPresence.setStatus(document.forms[0].msg.value);
 
   srcW.con.send(aPresence);
     
@@ -36,14 +36,14 @@ function sendSub() {
 }
 
 function selectService(selbox) {
-	var el = selbox.options[selbox.selectedIndex];
-	var to = document.forms[0].elements['to'];
-	// cut off node
-	var i = to.value.indexOf('@');
-	if (i != -1)
-		to.value = to.value.substring(0,i);
-	if (el.value != '')
-		to.value += "@" + el.value;
+  var el = selbox.options[selbox.selectedIndex];
+  var to = document.forms[0].elements['to'];
+  // cut off node
+  var i = to.value.indexOf('@');
+  if (i != -1)
+    to.value = to.value.substring(0,i);
+  if (el.value != '')
+    to.value += "@" + el.value;
 }
 
 function init() {
@@ -60,18 +60,19 @@ function init() {
   document.title += (jid)?" <l>to</l> " + jid:"";
   if (jid)
     document.forms[0].to.value = jid;
-
-	/* detect services */
+  
+  /* detect services */
 	
-	var services = document.forms[0].elements["services"];
-	var optidx=1;
-	for (var i in srcW.disco) {
-		if (srcW.disco[i].getNode().getElementsByTagName('identity').item(0)) {
-			var item = srcW.disco[i].getNode().getElementsByTagName('identity').item(0);
-			if (item.getAttribute('category') == 'gateway')
-				services.options[optidx++] = new Option(item.getAttribute('name'),srcW.disco[i].getFrom());
-		}
-	}
+  var services = document.forms[0].elements["services"];
+  var optidx=1;
+  for (var i in srcW.disco) {
+    if (typeof(srcW.disco[i]) != 'object') continue;
+    if (srcW.disco[i].getNode().getElementsByTagName('identity').item(0)) {
+      var item = srcW.disco[i].getNode().getElementsByTagName('identity').item(0);
+      if (item.getAttribute('category') == 'gateway')
+	services.options[optidx++] = new Option(item.getAttribute('name'),srcW.disco[i].getFrom());
+    }
+  }
 
 }
 		

@@ -78,7 +78,7 @@ function doSub() {
 	iq.setTo(opener.parent.jid);
 	var query = iq.setQuery(args[1]);
 	
-	for (var i in deltaItems) {
+	for (var i=0; i<deltaItems.length; i++) {
 		var item = query.appendChild(iq.getDoc().createElement('item'));
 		item.setAttribute(deltaItems[i].state.split('=')[0],deltaItems[i].state.split('=')[1]);
 		if (deltaItems[i].nick)
@@ -159,7 +159,7 @@ function updateListFrame(modItems) {
 	var row = modifylistF.document.createElement("TR");
 	var header = new Array(loc('Nick'),loc('JID'),loc('Reason'));
 	var cell; 
-	for (var i in header) {
+	for (var i=0; i<header.length; i++) {
 		cell = modifylistF.document.createElement("TH");
 		cell.appendChild(modifylistF.document.createTextNode(header[i]));
 		row.appendChild(cell);

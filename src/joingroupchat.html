@@ -14,15 +14,15 @@ function doSub() {
   var nick = (document.forms[0].nick.value!='')?document.forms[0].nick.value:srcW.roster.nick;
   
   if (document.forms[0].group.value == '') {
-		alert(loc("Please enter a channel/group to join"));
+    alert(loc("Please enter a channel/group to join"));
     return false;
-	}
-	if (document.forms[0].server.value == '') {
-		alert(loc("Please enter a server name"));
-		return false;
-	}
+  }
+  if (document.forms[0].server.value == '') {
+    alert(loc("Please enter a server name"));
+    return false;
+  }
 
-	var pass = document.forms[0].pass.value;
+  var pass = document.forms[0].pass.value;
 
   var group = document.forms[0].group.value+"@"+document.forms[0].server.value;
 
@@ -33,39 +33,39 @@ function doSub() {
 }
 
 function bookmark_selected(el) {
-	var bookmark = srcW.bookmarks[el.options[el.selectedIndex].value];
+  var bookmark = srcW.bookmarks[el.options[el.selectedIndex].value];
 
-	document.forms[0].nick.value = bookmark.nick;
+  document.forms[0].nick.value = bookmark.nick;
+  
+  document.forms[0].group.value = bookmark.jid.substring(0,bookmark.jid.indexOf('@'));
 
-	document.forms[0].group.value = bookmark.jid.substring(0,bookmark.jid.indexOf('@'));
+  document.forms[0].server.value = bookmark.jid.substring(bookmark.jid.indexOf('@')+1);
 
-	document.forms[0].server.value = bookmark.jid.substring(bookmark.jid.indexOf('@')+1);
+  if (typeof(bookmark.pass) != 'undefined')
+    document.forms[0].pass.value = bookmark.pass;
 
-	if (typeof(bookmark.pass) != 'undefined')
-		document.forms[0].pass.value = bookmark.pass;
-
-	return false;
+  return false;
 }
 
 function updateBookmarks() {
-	var bookmark_selector = document.getElementById('bookmark_selector');
-	var optidx = 1;
+  var bookmark_selector = document.getElementById('bookmark_selector');
+  var optidx = 1;
 
-	// clear list - don't remove first
-	for (var i=1; i<bookmark_selector.options.length; i++)
-		bookmark_selector.options[i] = null;
+  // clear list - don't remove first
+  for (var i=1; i<bookmark_selector.options.length; i++)
+    bookmark_selector.options[i] = null;
 
-	// fill from global arr
-	for (var i in srcW.bookmarks)
-		bookmark_selector.options[optidx++] = new Option(srcW.bookmarks[i].name,i);
+  // fill from global arr
+  for (var i=0; i<srcW.bookmarks.length; i++)
+    bookmark_selector.options[optidx++] = new Option(srcW.bookmarks[i].name,i);
 }
 
 var srw;
 function openSearchRooms() {
-	if (!srw || srw.closed)
-		srw = open("searchrooms.html","srw"+makeWindowName(srcW.jid),"width=400,height=300,resizable=yes");
-	srw.focus();
-	return false;
+  if (!srw || srw.closed)
+    srw = open("searchrooms.html","srw"+makeWindowName(srcW.jid),"width=400,height=300,resizable=yes");
+  srw.focus();
+  return false;
 }
 
 function init() {
@@ -78,14 +78,14 @@ function init() {
   if (typeof(srcW.DEFAULTCONFERENCEROOM) != 'undefined' && srcW.DEFAULTCONFERENCEROOM != '')
     document.forms[0].group.value = srcW.DEFAULTCONFERENCEROOM;
 
-	document.forms[0].nick.value = srcW.nick;
+  document.forms[0].nick.value = srcW.nick;
 
-	updateBookmarks();
+  updateBookmarks();
 }
 
 function cleanUp() {
-	if (srw && !srw.closed)
-		srw.close();
+  if (srw && !srw.closed)
+    srw.close();
 }
 
 function keyPressed(e) {

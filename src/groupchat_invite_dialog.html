@@ -37,7 +37,7 @@ function init() {
 	// fill selector with users from main roster
 	var users_selector = document.getElementById('users_selector');
 	var optidx = 0;
-	for (var i in srcW.roster.users) {
+	for (var i=0; i<srcW.roster.users.length; i++) {
 		if (typeof(srcW.roster.users[i].roster) != 'undefined' || srcW.isGateway(srcW.roster.users[i].jid)) // skip groupchats and gateways
 			continue;
 		users_selector[optidx++] = new Option(srcW.roster.users[i].name,srcW.roster.users[i].jid);
