@@ -355,7 +355,7 @@ function init() {
   var directory_selector = document.getElementById('directory_selector');
   var directory_optidx = 1;
   for (var i in srcW.disco) {
-    if (typeof(srcW.disco[i]) != 'object') continue;
+    if (!srcW.disco[i].getNode) continue;
     var item = srcW.disco[i];
     if (item.getNode().getElementsByTagName('identity').item(0)) {
       if (item.getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway') {

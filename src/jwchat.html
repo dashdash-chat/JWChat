@@ -285,7 +285,7 @@ function playSound(action) {
 function isGateway(aJid) {
   aJid = cutResource(aJid);
   for (var i in disco) {
-    if (typeof(disco[i]) != 'object') continue;
+    if (!disco[i].getNode) continue;
     if (i == aJid)
       if (disco[i].getNode().getElementsByTagName('identity').item(0)) {
 	if (disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('category') == 'gateway')

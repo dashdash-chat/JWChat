@@ -253,7 +253,7 @@ function init() {
   var service = document.forms['service_select'].elements['service'];
   var optidx = 1;
   for (var i in srcW.disco) {
-    if (typeof(srcW.disco[i]) != 'object') continue;
+    if (!srcW.disco[i].getNode) continue;
     for (var j=0; j<srcW.disco[i].getNode().getElementsByTagName('feature').length; j++) {
       if (srcW.disco[i].getNode().getElementsByTagName('feature').item(j).getAttribute('var') == 'jabber:iq:search') {
 	service.options[optidx++] = new Option(srcW.disco[i].getNode().getElementsByTagName('identity').item(0).getAttribute('name'),srcW.disco[i].getFrom());
