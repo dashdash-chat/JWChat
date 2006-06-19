@@ -15,8 +15,8 @@ function getArgs(){
 }
 
 function cutResource(aJID) { // removes resource from a given jid
-	if (typeof(aJID) == 'undefined' || !aJID)
-		return;
+  if (typeof(aJID) == 'undefined' || !aJID)
+    return;
   var retval = aJID;
   if (retval.indexOf("/") != -1)
     retval = retval.substring(0,retval.indexOf("/"));
@@ -24,8 +24,8 @@ function cutResource(aJID) { // removes resource from a given jid
 }
 
 function msgEscape(msg) {
-	if (typeof(msg) == 'undefined' || !msg || msg == '')
-		return;
+  if (typeof(msg) == 'undefined' || !msg || msg == '')
+    return;
 
   msg = msg.replace(/%/g,"%25"); // must be done first
 
@@ -45,8 +45,8 @@ function msgEscape(msg) {
   msg = msg.replace(/\;/g,"%3B");
   msg = msg.replace(/</g,"%3C");
   msg = msg.replace(/=/g,"%3D");
-	msg = msg.replace(/>/g,"%3E");
-	msg = msg.replace(/@/g,"%40");
+  msg = msg.replace(/>/g,"%3E");
+  msg = msg.replace(/@/g,"%40");
 
   return msg;
 }
@@ -64,53 +64,43 @@ function makeWindowName(wName) {
   wName = wName.replace(/%/g,"percent");
   wName = wName.replace(/-/g,"dash");
   wName = wName.replace(/ /g,"blank");
-	wName = wName.replace(/\*/g,"asterix");
+  wName = wName.replace(/\*/g,"asterix");
   return wName;
 }
 
 function htmlEnc(str) {
-	if (!str)
-		return '';
+  if (!str)
+    return '';
 
   str = str.replace(/&/g,"&amp;");
   str = str.replace(/</g,"&lt;");
   str = str.replace(/>/g,"&gt;");
+  str = str.replace(/\"/g,"&quot;");
   return str;
 }
 
-/* for use within tag attributes */
-function htmlFullEnc(str) {
-	if (!str)
-		return '';
-
-	str = htmlEnc(str);
-	//	str = str.replace(/\'/g,"\\\'");
-	str = str.replace(/\"/g,"&quot;");
-	return str;
-}
-
 function msgFormat(msg) { // replaces emoticons and urls in a message
-	if (!msg)
-		return null;
+  if (!msg)
+    return null;
 
-  msg = htmlFullEnc(msg);
+  msg = htmlEnc(msg);
 
-	if (typeof(emoticons) != 'undefined') {
-		for (var i in emoticons) {
-			var iq = i.replace(/\\/g, '');
-			var emo = new Image();
-			emo.src = emoticonpath+emoticons[i];
-			if (emo.width > 0 && emo.height > 0)
-				msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" width='"+emo.width+"' height='"+emo.height+"' alt=\""+iq+"\" title=\""+iq+"\">$2");
-			else
-				msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" alt=\""+iq+"\" title=\""+iq+"\">$2");
-		}
-	}
+  if (typeof(emoticons) != 'undefined') {
+    for (var i in emoticons) {
+      var iq = i.replace(/\\/g, '');
+      var emo = new Image();
+      emo.src = emoticonpath+emoticons[i];
+      if (emo.width > 0 && emo.height > 0)
+	msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" width='"+emo.width+"' height='"+emo.height+"' alt=\""+iq+"\" title=\""+iq+"\">$2");
+      else
+	msg = msg.replace(eval("/\(\\s\|\^\)"+i+"\(\\s|\$\)/g"),"$1<img src=\""+emo.src+"\" alt=\""+iq+"\" title=\""+iq+"\">$2");
+    }
+  }
 	
   // replace http://<url>
   msg = msg.replace(/(\s|^)(https?:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
-
-	// replace ftp://<url>
+  
+  // replace ftp://<url>
   msg = msg.replace(/(\s|^)(ftp:\/\/\S+)/gi,"$1<a href=\"$2\" target=\"_blank\">$2</a>");
   
   // replace mail-links
@@ -118,7 +108,7 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
   
   // replace *<pattern>*
   msg = msg.replace(/(\s|^)\*([^\*\r\n]+)\*/g,"$1<b>\$2\</b>");
-
+  
   // replace _bla_ 
   msg = msg.replace(/(\s|^)\_([^\*\r\n]+)\_/g,"$1<u>$2</u>");
 
@@ -134,7 +124,7 @@ var prohibited = ['"',' ','&','\'','/',':','<','>','@']; // invalid chars
 function isValidJID(jid) {
   var nodeprep = jid.substring(0,jid.lastIndexOf('@')); // node name (string before the @)
 
-  for (var i in prohibited) {
+  for (var i=0; i<prohibited.length; i++) {
     if (nodeprep.indexOf(prohibited[i]) != -1) {
       alert(loc("Invalid JID\n'[_1]' not allowed in JID.\nChoose another one!",prohibited[i]));
       return false;
@@ -147,18 +137,18 @@ function isValidJID(jid) {
  * converts from jabber timestamps to javascript date objects
  */
 function jab2date(ts) {
-	var date = new Date(Date.UTC(ts.substr(0,4),ts.substr(5,2)-1,ts.substr(8,2),ts.substr(11,2),ts.substr(14,2),ts.substr(17,2)));
-	if (ts.substr(ts.length-6,1) != 'Z') { // there's an offset
-		var offset = new Date();
-		offset.setTime(0);
-		offset.setUTCHours(ts.substr(ts.length-5,2));
-		offset.setUTCMinutes(ts.substr(ts.length-2,2));
-		if (ts.substr(ts.length-6,1) == '+')
-			date.setTime(date.getTime() - offset.getTime());
+  var date = new Date(Date.UTC(ts.substr(0,4),ts.substr(5,2)-1,ts.substr(8,2),ts.substr(11,2),ts.substr(14,2),ts.substr(17,2)));
+  if (ts.substr(ts.length-6,1) != 'Z') { // there's an offset
+    var offset = new Date();
+    offset.setTime(0);
+    offset.setUTCHours(ts.substr(ts.length-5,2));
+    offset.setUTCMinutes(ts.substr(ts.length-2,2));
+    if (ts.substr(ts.length-6,1) == '+')
+      date.setTime(date.getTime() - offset.getTime());
 		else if (ts.substr(ts.length-6,1) == '-')
-			date.setTime(date.getTime() + offset.getTime());
-	}
-	return date;
+		  date.setTime(date.getTime() + offset.getTime());
+  }
+  return date;
 }
 
 /* hrTime - human readable Time
@@ -166,7 +156,7 @@ function jab2date(ts) {
  * and converts it to some sort of humane readable format
  */
 function hrTime(ts) {
-	return jab2date(ts).toLocaleString();
+  return jab2date(ts).toLocaleString();
 }
 
 /* jabberDate
@@ -175,16 +165,16 @@ function hrTime(ts) {
  * date string conforming to JEP-0082
  */
 function jabberDate(date) {
-	if (!date.getUTCFullYear)
-		return;
-
-	var jDate = date.getUTCFullYear() + "-";
-	jDate += (((date.getUTCMonth()+1) < 10)? "0" : "") + (date.getUTCMonth()+1) + "-";
-	jDate += ((date.getUTCDate() < 10)? "0" : "") + date.getUTCDate() + "T";
-
-	jDate += ((date.getUTCHours()<10)? "0" : "") + date.getUTCHours() + ":";
-	jDate += ((date.getUTCMinutes()<10)? "0" : "") + date.getUTCMinutes() + ":";
-	jDate += ((date.getUTCSeconds()<10)? "0" : "") + date.getUTCSeconds() + "Z";
-
-	return jDate;
+  if (!date.getUTCFullYear)
+    return;
+  
+  var jDate = date.getUTCFullYear() + "-";
+  jDate += (((date.getUTCMonth()+1) < 10)? "0" : "") + (date.getUTCMonth()+1) + "-";
+  jDate += ((date.getUTCDate() < 10)? "0" : "") + date.getUTCDate() + "T";
+  
+  jDate += ((date.getUTCHours()<10)? "0" : "") + date.getUTCHours() + ":";
+  jDate += ((date.getUTCMinutes()<10)? "0" : "") + date.getUTCMinutes() + ":";
+  jDate += ((date.getUTCSeconds()<10)? "0" : "") + date.getUTCSeconds() + "Z";
+  
+  return jDate;
 }
