@@ -52,7 +52,7 @@ function putMsgHTML(msg) {
 		dir = 'from'
 	}
 
-  msgHTML += "<div title=\"@ "+mtime+"\" cDate=\""+now.getTime()+"\" dir=\""+dir+"\" body=\""+htmlFullEnc(body)+"\"><span class=time>["+mtime+"] </span>";
+  msgHTML += "<div title=\"@ "+mtime+"\" cDate=\""+now.getTime()+"\" dir=\""+dir+"\" body=\""+htmlEnc(body)+"\"><span class=time>["+mtime+"] </span>";
 	body = msgFormat(body);
 	if (err) {
 		msgHTML += "<span style='color:red;'>&nbsp;";
