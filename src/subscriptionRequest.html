@@ -15,38 +15,45 @@ var msg;
 var srcW; // the source window with necessary data
 
 function sendSub() {
-	var aPresence = new JSJaCPresence();
-	aPresence.setTo(jid);
-	aPresence.setType('subscribed');
+  var aPresence = new JSJaCPresence();
+  aPresence.setTo(jid);
+  aPresence.setType('subscribed');
 
-	srcW.con.send(aPresence);
+  srcW.con.send(aPresence);
+
+  // maybe we want to subscribe to?
+
+  var user = srcW.roster.getUserByJID(jid);
+  if (!user || (user.subscription != 'both' && user.subscription != 'to'))
+    srcW.openSubscription(jid);
+
   window.close();
 }
 
 function sendUnsub() {
-	var aPresence = new JSJaCPresence();
-	aPresence.setTo(jid);
-	aPresence.setType('unsubscribed');
+  var aPresence = new JSJaCPresence();
+  aPresence.setTo(jid);
+  aPresence.setType('unsubscribed');
 
   window.close();
 }    
 
 function init() {
   // determine source window
-  srcW = opener.top;
+  srcW = opener;
 			
   getArgs();
   jid = passedArgs['jid'];
-	if (typeof(passedArgs['msg']) != 'undefined')
-		msg = passedArgs['msg'];
+  if (typeof(passedArgs['msg']) != 'undefined')
+    msg = passedArgs['msg'];
 
   document.title = loc("Subscribe request from [_1]",jid);
 
-	var from = "<b><span class=\"link\" onClick=\"return srcW.openUserInfo('"+jid+"');\" title=\""+loc("show user info for [_1]", jid)+"\">"+jid.substring(0,jid.indexOf('@'))+"</a></b> ";
+  var from = "<b><span class=\"link\" onClick=\"return srcW.openUserInfo('"+jid+"');\" title=\""+loc("show user info for [_1]", jid)+"\">"+jid.substring(0,jid.indexOf('@'))+"</a></b> ";
   
   document.getElementById("requestingUser").innerHTML = from;
-	if (msg)
-		msgbox.document.body.innerHTML = msgFormat(msg);
+  if (msg)
+    msgbox.document.body.innerHTML = msgFormat(msg);
 }
 		
 function keyPressed(e) {

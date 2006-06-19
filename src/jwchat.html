@@ -656,12 +656,7 @@ function handlePresence(presence) {
 	  var bPresence = new JSJaCPresence();
 	  bPresence.setTo(from);
 	  bPresence.setType('subscribe');
-	  con.send(bPresence);
-	  
-	  var user = roster.getUserByJID(from);
-	  if (user)
-	    user.askSubscribe = true;
-	  
+	  con.send(bPresence);	  
 	}
       }
       return;
@@ -669,6 +664,9 @@ function handlePresence(presence) {
   }
   
   switch (type) {
+  case null:
+  case '':
+    break;
   case 'subscribe':
     if (isGateway(from)) { // automatically subscribe gateways
       
@@ -706,7 +704,7 @@ function handlePresence(presence) {
       }
       
     }
-  case 'subscribed':
+  default:
     return;
   }
   
@@ -966,8 +964,6 @@ function handleIQSet(iq) {
 	    user.groups = user.groups.concat(item.childNodes.item(j).firstChild.nodeValue);
         roster.updateGroups();
       }
-      if (item.getAttribute('subscription') == "from" && item.getAttribute('ask') != 'subscribe' && !isGateway(item.getAttribute('jid')))
-	openSubscription(item.getAttribute('jid')); // subscribe to user
     } else {// got a new user
       if (isGateway(item.getAttribute('jid'))) { // auto add gateways
 	// get name
