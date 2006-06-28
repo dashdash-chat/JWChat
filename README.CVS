@@ -20,7 +20,11 @@ area and download Debugger.js.  Unpack into the jwchat's lib/
 subdirectory.
 
 When done you can install by issuing "make install" (be sure to edit
-src/config.js first!)
+src/config.js first!). This will create a set of translated html files. 
+There's a dedicated directory for each language (htdocs.en, htdocs.es, 
+htdocs.de etc.) and one containing all in one directory (htdocs/) for
+usage with [1]apache's mod_negotiation. Copy the desired directory to 
+your configured web root (see README) or make your web root point to it.
 
 Additional Requirements
 =======================
@@ -33,3 +37,5 @@ You can get them from CPAN (http://www.cpan.org).
 * Locale::Maketext (>=1.01)
 * Locale::Maketext::Lexicon (>=0.10)
 ( depends Locale::Maketext::Fuzzy )
+
+[1] http://httpd.apache.org/docs/2.0/content-negotiation.html
