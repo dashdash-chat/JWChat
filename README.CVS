@@ -6,6 +6,7 @@ JSJaC can be found at http://jsjac.jabberstudio.org/
 Basic steps: 
 
 'cd' to jwchat's top-level directory
+$ mkdir lib
 $ cd lib
 $ export CVSROOT=:pserver:anonymous@cvs.jabberstudio.org:/home/cvs
 $ cvs login
