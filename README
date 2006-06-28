@@ -84,7 +84,7 @@ Quick Install Guide
   ServerName jabber.example.com
   DocumentRoot /var/www/jwchat
   <Directory /var/www/jwchat>
-    Options  +Indexes +Multiviews
+    Options  +Indexes +MultiViews
   </Directory>
   AddDefaultCharset UTF-8
   RewriteEngine on
