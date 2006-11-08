@@ -335,7 +335,7 @@ function changeStatus(val,away,prio) {
   switch(val) {
   case "unavailable":
     val = "invisible";
-		aPresence.setType('invisible');
+      aPresence.setType('invisible');
     break;
   case "offline":
     val = "unavailable";
@@ -1108,7 +1108,8 @@ function getSavedState(iq) {
     var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
     for (var i=0; i<jNode.childNodes.length; i++) {
       var item = jNode.childNodes.item(i);
-      if (item.nodeName == 'presence' && item.firstChild && onlstat == '')
+      if (item.nodeName == 'presence' && item.firstChild && onlstat == '' && 
+      item.firstChild.nodeValue != 'offline')
 	onlstat = item.firstChild.nodeValue;
       if (item.nodeName == 'onlmsg' && item.firstChild && onlmsg == '')
 	onlmsg = item.firstChild.nodeValue;
@@ -1432,8 +1433,10 @@ function logout() {
   aNode.setAttribute('xmlns','jwchat:state');
   
   // save presence
-  aNode.appendChild(iq.getDoc().createElement('presence')).appendChild(iq.getDoc().createTextNode(onlstat));
-  aNode.appendChild(iq.getDoc().createElement('onlmsg')).appendChild(iq.getDoc().createTextNode(onlmsg));
+  if (onlstat != 'offline')
+    aNode.appendChild(iq.getDoc().createElement('presence')).appendChild(iq.getDoc().createTextNode(onlstat));
+  if (onlmsg != '')
+    aNode.appendChild(iq.getDoc().createElement('onlmsg')).appendChild(iq.getDoc().createTextNode(onlmsg));
   
   var hiddengroups = '';
   if (typeof(roster) != 'undefined') {
