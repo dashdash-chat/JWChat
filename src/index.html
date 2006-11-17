@@ -172,7 +172,7 @@ function backendSelected() {
     JABBERSERVER = servers_allowed[0];
     document.getElementById('connect_port').disabled = true;
     document.getElementById('connect_host').disabled = true;
-    //			document.getElementById('connect_ssl').disabled = true;
+    document.getElementById('connect_secure').disabled = true;
   } else { // create selectbox
     var tr_server = document.getElementById('tr_server');
     
@@ -197,7 +197,7 @@ function backendSelected() {
     tr_server.style.display = ''; 
     document.getElementById('connect_port').disabled = true;
     document.getElementById('connect_host').disabled = true;
-    //			document.getElementById('connect_ssl').disabled = true;
+    document.getElementById('connect_secure').disabled = true;
   }
 }
 
