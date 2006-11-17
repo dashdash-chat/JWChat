@@ -13,6 +13,9 @@
 <!-- JabberConnection -->
     <script type="text/javascript" src="JSJaC.js"></script>
 
+<!-- JabberConnection -->
+    <script type="text/javascript" src="JSJaC.js"></script>
+
 <!-- Debugger -->
     <script type="text/javascript" src="Debugger.js"></script>
 
@@ -1352,7 +1355,7 @@ function init() {
 
   /* set nick */
   frames["jwc_main"].document.getElementById('myNickname').innerHTML = nick;  
-  
+
   /* init empty roster */
   roster = new Roster();
   
@@ -1383,6 +1386,8 @@ function init() {
       oArg.port = opener.connect_port;
     if (opener.connect_host && opener.connect_host != '')
       oArg.host = opener.connect_host;
+    if (opener && opener.connect_secure)
+      oArg.secure = true;
   }
   con.connect(oArg);
 }
