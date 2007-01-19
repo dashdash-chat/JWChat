@@ -308,7 +308,7 @@ onresize = updateStyleIE;
 
     <script for="document" event="onkeydown()" language="JScript">
       <!--
-      if (window.event.keyCode == 27)
+      if (window.event && window.event.keyCode == 27)
       window.close();
       //-->
     </script>

@@ -103,7 +103,8 @@ onunload = cleanUp;
     </script>
     <script for="document" event="onkeydown()" language="JScript">
       <!--
-      return keyPressed(window.event);
+       if (window.event)
+        return keyPressed(window.event);
       //-->
     </script>
   </head>

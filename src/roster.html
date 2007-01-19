@@ -70,8 +70,8 @@ function setStatusMessage() {
 }
 
 function keyPressed(e) {
-	if (e.ctrlKey && e.keyCode == 74)
-		parent.Debug.start();
+  if (e.ctrlKey && e.keyCode == 74)
+    parent.Debug.start();
   if (e.keyCode != 13)
     return;
   var firingObj = (top.is.ie)?event.srcElement:e.target;
@@ -81,7 +81,7 @@ function keyPressed(e) {
 }      
 
 function handleClick(e) {
-  var firingObj = (top.is.ie)?event.srcElement:e.target;
+  var firingObj = (top.is.ie)?e.srcElement:e.target;
   if (firingObj.id == 'statusMsg' && !firingObj.selected)
     return selStatusMessage(firingObj);
   else
@@ -124,10 +124,12 @@ onkeydown = keyPressed;
       //-->
     </script>
     <script for="document" event="onclick()" language="JScript">
-      handleClick();
+    if (window.event)
+      handleClick(window.event);
     </script>
 
     <script for="document" event="onkeydown()" language="JScript">
+    if (window.event)
       keyPressed(window.event);
     </script>
   </head>
