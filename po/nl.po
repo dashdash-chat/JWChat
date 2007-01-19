@@ -1070,8 +1070,8 @@ msgid "Search for a User"
 msgstr "Contactpersoon zoeken"
 
 #: src/search.html:130 src/search.html:147 src/search.html:96 src/searchrooms.html:29
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Resultaten voor %1"
 
@@ -1245,6 +1245,10 @@ msgstr "Bijwerken"
 #: src/options.html:468
 msgid "Update interval"
 msgstr "Verversinterval"
+
+#: NOT FOUND IN SOURCE
+msgid "Updating Roster..."
+msgstr ""
 
 #: src/index.html:406
 msgid "Use SSL"
