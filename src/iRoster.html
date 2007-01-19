@@ -50,11 +50,11 @@ if (ie5||ns6)
 if (ie5||ns6)
   var gwMenu=document.getElementById("gwMenu");
 if (ie5||ns6)
-	var gChatMenu=document.getElementById("gChatMenu");
+  var gChatMenu=document.getElementById("gChatMenu");
 
 var selobj;
 function showmenuie5(e){
-
+  
   var firingobj=ie5? event.srcElement : e.target;
   while (firingobj && (!firingobj.className || (firingobj.className != "rosterUser" && firingobj.className != "rosterUserSelected")))
     firingobj = firingobj.parentNode;
@@ -64,14 +64,14 @@ function showmenuie5(e){
   selobj = firingobj;
   selectUser(selobj);
 
-	var user = parent.top.roster.getUserByJID(parent.top.cutResource(firingobj.id));
+  var user = parent.top.roster.getUserByJID(parent.top.cutResource(firingobj.id));
 
-	if (parent.top.isGateway(firingobj.id))
-		menuobj = gwMenu;
-	else if (user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
-		menuobj = gChatMenu;
-	else
-		menuobj = document.getElementById("ie5menu");
+  if (parent.top.isGateway(firingobj.id))
+    menuobj = gwMenu;
+  else if (user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
+    menuobj = gChatMenu;
+  else
+    menuobj = document.getElementById("ie5menu");
 
   //Find out how close the mouse is to the corner of the window
   var rightedge=ie5? document.body.clientWidth-event.clientX : window.innerWidth-e.clientX;
@@ -96,9 +96,9 @@ function showmenuie5(e){
   }
   else
     menuobj.style.top=ie5? document.body.scrollTop+event.clientY : window.pageYOffset+e.clientY;
-
-	if (typeof(top.loghost) == 'undefined')
-			document.getElementById('hist_menuitem').style.display = 'none';
+  
+  if (typeof(top.loghost) == 'undefined')
+    document.getElementById('hist_menuitem').style.display = 'none';
 
   menuobj.style.visibility="visible";
   return false;
@@ -112,8 +112,9 @@ function highlightie5(e){
   var firingobj=ie5? event.srcElement : e.target;
   if (firingobj.className=="menuitems"||ns6&&firingobj.parentNode.className=="menuitems"){
     if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode; //up one node
-    firingobj.style.backgroundColor="highlight";
-    firingobj.style.color="highlighttext";
+    firingobj.style.backgroundColor="Highlight";
+//     firingobj.style.color="HighlightText";
+    firingobj.style.color="black";
     if (display_url==1)
       window.status=event.srcElement.url;
   }
@@ -123,8 +124,9 @@ function lowlightie5(e){
   var firingobj=ie5? event.srcElement : e.target;
   if (firingobj.className=="menuitems"||ns6&&firingobj.parentNode.className=="menuitems"){
     if (ns6&&firingobj.parentNode.className=="menuitems") firingobj=firingobj.parentNode; //up one node
-    firingobj.style.backgroundColor="menu";
-    firingobj.style.color="menutext";
+    firingobj.style.backgroundColor="Menu";
+//     firingobj.style.color="MenuText";
+    firingobj.style.color="black";
     window.status='';
   }
 }
@@ -151,13 +153,13 @@ function selectUser(el) {
 function userClicked(el,jid) {
   selectUser(el);
 
-	var user = parent.top.roster.getUserByJID(parent.top.cutResource(jid));
+  var user = parent.top.roster.getUserByJID(parent.top.cutResource(jid));
 
-	if(user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
-		return parent.top.openGroupchat(jid);
+  if(user && typeof(user.type) != 'undefined' && user.type == 'groupchat')
+    return parent.top.openGroupchat(jid);
 
-	if (!parent.top.isGateway(jid))
-		return parent.top.roster.openChat(jid);
+  if (!parent.top.isGateway(jid))
+    return parent.top.roster.openChat(jid);
 }
 if (ie5||ns6){
   menuobj.style.display='';

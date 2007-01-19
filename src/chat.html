@@ -21,59 +21,59 @@ function putMsgHTML(msg) {
   var msgHTML = '';
   
   var body = '';
-	var err = false;
-	if (msg.getType() == 'error') {
-		var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
-		if (error && error.getElementsByTagName('text').item(0))
-			body = error.getElementsByTagName('text').item(0).firstChild.nodeValue;
-		err = true;
-	}	else
-		body = msg.getBody();
+  var err = false;
+  if (msg.getType() == 'error') {
+    var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
+    if (error && error.getElementsByTagName('text').item(0))
+      body = error.getElementsByTagName('text').item(0).firstChild.nodeValue;
+    err = true;
+  }	else
+    body = msg.getBody();
 
-	var now;
-	if (msg.jwcTimestamp)
-		now = msg.jwcTimestamp;
-	else
-		now = new Date();
+  var now;
+  if (msg.jwcTimestamp)
+    now = msg.jwcTimestamp;
+  else
+    now = new Date();
 
-	var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
-	mtime += ":";
-	mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
-	mtime += ":";
-	mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
+  var mtime = (now.getHours()<10)? "0" + now.getHours() : now.getHours();
+  mtime += ":";
+  mtime += (now.getMinutes()<10)? "0" + now.getMinutes() : now.getMinutes();
+  mtime += ":";
+  mtime += (now.getSeconds()<10)? "0" + now.getSeconds() : now.getSeconds();
 
-	if (msg.getTo() == user.jid){ // msg sent by me
-		nick = htmlEnc(srcW.roster.nick);
-		nickcolor = 'blue';
-		dir = 'to'
-	} else {
-		nick = user.name;
-		nickcolor = 'red';
-		dir = 'from'
-	}
+  if (msg.getTo() == user.jid){ // msg sent by me
+    nick = htmlEnc(srcW.roster.nick);
+    nickcolor = 'blue';
+    dir = 'to';
+  } else {
+    nick = user.name;
+    nickcolor = 'red';
+    dir = 'from';
+  }
 
   msgHTML += "<div title=\"@ "+mtime+"\" cDate=\""+now.getTime()+"\" dir=\""+dir+"\" body=\""+htmlEnc(body)+"\"><span class=time>["+mtime+"] </span>";
-	body = msgFormat(body);
-	if (err) {
-		msgHTML += "<span style='color:red;'>&nbsp;";
+  body = msgFormat(body);
+  if (err) {
+    msgHTML += "<span style='color:red;'>&nbsp;";
   } else if (body.match(/^\/me /)) {
     body = body.replace(/^\/me /,"<span style=\"color:green;font-weight:bold;\" class=msgnick>*&nbsp;"+nick+"</span> ");
   } else {
     msgHTML += "<span style=\"color:"+nickcolor+";\" class=msgnick>&lt;" + nick + "&gt;</span>&nbsp;";
   }
   msgHTML += body;
-	if (err)
-		msgHTML += '</span>';
-	msgHTML += "</div>";
+  if (err)
+    msgHTML += '</span>';
+  msgHTML += "</div>";
 
-	var auto_scroll = false;
-	if (cFrame.body.scrollTop+cFrame.body.clientHeight >= cFrame.body.scrollHeight) // scrollbar at bottom
-		auto_scroll = true;
+  var auto_scroll = false;
+  if (cFrame.body.scrollTop+cFrame.body.clientHeight >= cFrame.body.scrollHeight) // scrollbar at bottom
+    auto_scroll = true;
 
   cFrame.body.innerHTML += msgHTML;
 
-	if (auto_scroll)
-		chat.scrollTo(0,cFrame.body.scrollHeight);
+  if (auto_scroll)
+    chat.scrollTo(0,cFrame.body.scrollHeight);
 }
 
 function popMsgs() {
@@ -85,14 +85,14 @@ function popMsgs() {
     } else
       msg = user.chatmsgs.shift();
 
-		// calc date
+    // calc date
   
     putMsgHTML(msg);
   }
   if (jwcMain.focusWindows)	{
-	  window.focus();
-	  document.forms.chatform.msgbox.focus(); 
-	}
+    window.focus();
+    document.forms.chatform.msgbox.focus(); 
+  }
   if (user.lastsrc != null && user.messages.length == 0) {
     var images = srcW.roster.getUserIcons(user.jid);
     for (var i=0; i<images.length; i++)
@@ -104,48 +104,48 @@ function popMsgs() {
 }
 
 function openUserInfo() {
-	return jwcMain.openUserInfo(user.jid);
+  return jwcMain.openUserInfo(user.jid);
 }
 
 function openUserHistory() {
-	return jwcMain.openUserHistory(user.jid);
+  return jwcMain.openUserHistory(user.jid);
 }
 
 function updateUserPresence() {
-	//	var user = srcW.roster.getUserByJID(jid);
-	var awaymsg = document.getElementById('awaymsg');
-	document.getElementById('user_name').innerHTML = user.name;
-	if (user.statusMsg) {
-		awaymsg.style.display = '';
-		awaymsg.innerHTML = htmlEnc(user.statusMsg);
-	} else
-		awaymsg.style.display = 'none';
+  //	var user = srcW.roster.getUserByJID(jid);
+  var awaymsg = document.getElementById('awaymsg');
+  document.getElementById('user_name').innerHTML = user.name;
+  if (user.statusMsg) {
+    awaymsg.style.display = '';
+    awaymsg.innerHTML = htmlEnc(user.statusMsg);
+  } else
+    awaymsg.style.display = 'none';
 
-	var img = document.images['statusLed'];
-	img.src = eval(user.status + "Led").src;
+  var img = document.images['statusLed'];
+  img.src = eval(user.status + "Led").src;
 }
 
 function submitClicked() {
-	var body = document.forms[0].elements["msgbox"].value;
-	if (body == '') // don't send empty message
-		return false;
+  var body = document.forms[0].elements["msgbox"].value;
+  if (body == '') // don't send empty message
+    return false;
 
-	var aMessage = new JSJaCMessage();
-	aMessage.setType('chat');
-	aMessage.setTo(user.jid);
-	aMessage.setBody(body);
+  var aMessage = new JSJaCMessage();
+  aMessage.setType('chat');
+  aMessage.setTo(user.jid);
+  aMessage.setBody(body);
 
-	jwcMain.con.send(aMessage);
+  jwcMain.con.send(aMessage);
 
-	// insert into chat window
-	putMsgHTML(aMessage);
+  // insert into chat window
+  putMsgHTML(aMessage);
 
-	// add message to our message history
-	jwcMain.addtoHistory(body);
-	document.forms["chatform"].msgbox.value=''; // empty box
-	document.forms["chatform"].msgbox.focus(); // set focus back on input field
+  // add message to our message history
+  jwcMain.addtoHistory(body);
+  document.forms["chatform"].msgbox.value=''; // empty box
+  document.forms["chatform"].msgbox.focus(); // set focus back on input field
 	
-	return false;
+  return false;
 }
 
 var jwcMain;
@@ -165,18 +165,18 @@ function init() {
     window.close();
   }
 
-	cDate = new Date();
+  cDate = new Date();
 
   cFrame = chat.document;
   user = srcW.roster.getUserByJID(jid);
   document.title = loc("Chat with [_1]",  user.name);
 
-	document.getElementById('user_name').innerHTML = user.name;
+  document.getElementById('user_name').innerHTML = user.name;
 
-	if (typeof(srcW.loghost) == 'undefined')
-		document.getElementById('hist_button').style.display = 'none';
+  if (typeof(srcW.loghost) == 'undefined')
+    document.getElementById('hist_button').style.display = 'none';
 
-	updateUserPresence();
+  updateUserPresence();
 
   popMsgs();
   displayTimestamp();
@@ -200,98 +200,98 @@ var group_close = new Image();
 group_close.src = 'images/group_close.gif';
 var msgbox_toggled = false;
 function toggle_msgbox(el) {
-	if (msgbox_toggled) {
-		document.getElementById('msgbox').style.height = '1.4em';
-		document.getElementById('chat').style.height = '100%';
-		document.getElementById('submitbutton').style.display = 'none';
-		el.src = group_close.src;
-	} else {
-		document.getElementById('msgbox').style.height = '4.2em';
-		document.getElementById('chat').style.height = '99%';
-		document.getElementById('submitbutton').style.display = '';
-		el.src = group_open.src;
-	}
-	msgbox_toggled = !msgbox_toggled;
+  if (msgbox_toggled) {
+    document.getElementById('msgbox').style.height = '1.4em';
+    document.getElementById('chat').style.height = '100%';
+    document.getElementById('submitbutton').style.display = 'none';
+    el.src = group_close.src;
+  } else {
+    document.getElementById('msgbox').style.height = '4.2em';
+    document.getElementById('chat').style.height = '99%';
+    document.getElementById('submitbutton').style.display = '';
+    el.src = group_open.src;
+  }
+  msgbox_toggled = !msgbox_toggled;
 }
 
 function msgboxKeyPressed(el,e) {
-	var keycode;
-	if (window.event) { e  = window.event; keycode = window.event.keyCode; }
-	else if (e) keycode = e.which;
-	else return true;
+  var keycode;
+  if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+  else if (e) keycode = e.which;
+  else return true;
 	
-	switch (keycode) {
-	case 13:
-		if (e.shiftKey) {
-			if (!msgbox_toggled) {
-				toggle_msgbox(document.getElementById('toggle_icon'));
-				return false;
-			}
-		} else
-			return submitClicked();
-		break;
-	}
-	return true;
+  switch (keycode) {
+  case 13:
+    if (e.shiftKey) {
+      if (!msgbox_toggled) {
+        toggle_msgbox(document.getElementById('toggle_icon'));
+        return false;
+      }
+    } else
+      return submitClicked();
+    break;
+  }
+  return true;
 }
 
 function msgboxKeyDown(el,e) {
-	var keycode;
-	if (window.event) { e  = window.event; keycode = window.event.keyCode; }
-	else if (e) keycode = e.which;
-	else return true;
+  var keycode;
+  if (window.event) { e  = window.event; keycode = window.event.keyCode; }
+  else if (e) keycode = e.which;
+  else return true;
 
-	switch (keycode) {
-	case 38:				// shift+up
-		if (e.ctrlKey) {
-			el.value = jwcMain.getHistory('up', el.value);
-			el.focus(); el.select();
-		}
-		break;
-	case 40:				// shift+down 
-		if (e.ctrlKey) {
-			el.value = jwcMain.getHistory('down', el.value);
-			el.focus(); el.select();
-		}
-		break;
-	case 76:
-		if (e.ctrlKey) {   // ctrl+l
-			chat.document.body.innerHTML = '';
-			return false;
-		}
-		break;
-	case 27:
-		window.close();
-		break;
-	}
-	return true;
+  switch (keycode) {
+  case 38:				// shift+up
+    if (e.ctrlKey) {
+      el.value = jwcMain.getHistory('up', el.value);
+      el.focus(); el.select();
+    }
+    break;
+  case 40:				// shift+down 
+    if (e.ctrlKey) {
+      el.value = jwcMain.getHistory('down', el.value);
+      el.focus(); el.select();
+    }
+    break;
+  case 76:
+    if (e.ctrlKey) {   // ctrl+l
+      chat.document.body.innerHTML = '';
+      return false;
+    }
+    break;
+  case 27:
+    window.close();
+    break;
+  }
+  return true;
 }
 
 function cleanUp() {
-	if (!srcW.enableLog || typeof(srcW.loghost) == 'undefined')
-		return;
+  if (!srcW.enableLog || typeof(srcW.loghost) == 'undefined')
+    return;
 
-	var nodes = cFrame.body.getElementsByTagName("div");
-	if (nodes.length == 0)
-		return;
+  var nodes = cFrame.body.getElementsByTagName("div");
+  if (nodes.length == 0)
+    return;
 	
-	var aIQ = new JSJaCIQ();
-	aIQ.setType('set');
-	aIQ.setTo(jwcMain.loghost);
-	var aStore = aIQ.getNode().appendChild(aIQ.getDoc().createElement('store'));
-	aStore.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aStore.setAttribute('with',user.jid);
-	aStore.setAttribute('start',jabberDate(cDate));
+  var aIQ = new JSJaCIQ();
+  aIQ.setType('set');
+  aIQ.setTo(jwcMain.loghost);
+  var aStore = aIQ.getNode().appendChild(aIQ.getDoc().createElement('store'));
+  aStore.setAttribute('xmlns','http://jabber.org/protocol/archive');
+  aStore.setAttribute('with',user.jid);
+  aStore.setAttribute('start',jabberDate(cDate));
 	
-	for (var i=0; i<nodes.length; i++) {
-		var node = nodes.item(i);
+  for (var i=0; i<nodes.length; i++) {
+    var node = nodes.item(i);
 
-		var aItem = aStore.appendChild(aIQ.getDoc().createElement(node.getAttribute('dir')));
-		aItem.setAttribute('secs',Math.round((node.getAttribute('cDate')-cDate.getTime())/1000));
-		aItem.appendChild(aIQ.getDoc().createElement("body")).appendChild(aIQ.getDoc().createTextNode(node.getAttribute('body')));
-	}
+    var aItem = aStore.appendChild(aIQ.getDoc().createElement(node.getAttribute('dir')));
+    aItem.setAttribute('secs',Math.round((node.getAttribute('cDate')-cDate.getTime())/1000));
+    aItem.appendChild(aIQ.getDoc().createElement("body")).appendChild(aIQ.getDoc().createTextNode(node.getAttribute('body')));
+  }
 
-	jwcMain.Debug.log(aIQ.xml(),2);
-	jwcMain.con.send(aIQ);
+  jwcMain.Debug.log(aIQ.xml(),2);
+  jwcMain.con.send(aIQ);
 }
 
 onload = init;
