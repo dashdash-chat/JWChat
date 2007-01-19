@@ -528,8 +528,11 @@ function updateRoster() {
       var groupHeaderEl = this.rosterW.getElementById(group.name+'Head');
       if (groupHeaderEl) {
         groupHeaderEl.className = getRosterGroupHeaderClass(this.usersHidden, group);
-        this.rosterW.getElementById(group.name+'On').innerHTML = group.onlUserCount;
-        this.rosterW.getElementById(group.name+'All').innerHTML = group.users.length;
+
+        if (this.rosterW.getElementById(group.name+'On')) 
+          this.rosterW.getElementById(group.name+'On').innerHTML = group.onlUserCount;
+        if (this.rosterW.getElementById(group.name+'All'))
+          this.rosterW.getElementById(group.name+'All').innerHTML = group.users.length;
       }
     } else { // add group
       var groupHeaderEl = document.createElement('div');
