@@ -610,12 +610,9 @@ function handlePresence(presence) {
 
   var aRoster = roster;
 
-  if (from == cutResource(jid)) // skip my own presence msgs
-    return;
-
   // roster subscriptions synchronisation
+  var x;
   if (isGateway(from.substring(from.indexOf('@')+1))) {
-    var x;
     for (var i=0; i<presence.getNode().getElementsByTagName('x').length; i++)
       if (presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/roster-subsync' ||
 	  presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://delx.cjb.net/protocol/roster-subsync') {
@@ -624,6 +621,9 @@ function handlePresence(presence) {
       }
     
     if (x) {
+
+      Debug.log("detected roster-subsync presence",2);
+
       var items = x.getElementsByTagName("item");
       for (var i=0; i<items.length; i++) {
 	var aItem = items.item(i);
@@ -704,23 +704,24 @@ function handlePresence(presence) {
       }
       
     }
-  default:
-    return;
   }
   
   var user = roster.getUserByJID(from);
-  if (!user) // presence from unsubscribed user
+  if (!user) { // presence from unsubscribed user
+    Debug.log("presence from "+from+" not found on roster", 2);
     return;
+  }
   
   /* handle presence for MUC */
-  var x;
+  x = null; // reset
   for (var i=0; i<presence.getNode().getElementsByTagName('x').length; i++)
     if (presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/muc#user') {
       x = presence.getNode().getElementsByTagName('x').item(i);
       break;
     }
   
-  if (user.roster && x) { 
+  if (user.roster && x) {
+    Debug.log("muc presence detected", 2);
     var ofrom = presence.getFrom().substring(presence.getFrom().indexOf('/')+1);
     
     Debug.log("jabber.from:"+presence.getFrom()+", ofrom:"+ofrom,3);
