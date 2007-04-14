@@ -1068,7 +1068,7 @@ function handleConnected() {
   
   /* get/setup roster */
   iq = new JSJaCIQ();
-  iq.setIQ(null,null,'get','roster_1');
+  iq.setIQ(null,'get','roster_1');
   iq.setQuery('jabber:iq:roster');
   con.send(iq,getRoster); // cascading information retrieval
 }
@@ -1091,7 +1091,7 @@ function getRoster(iq) {
   
   // get saved state
   iq = new JSJaCIQ();
-  iq.setIQ(null,null,'get','jwchat_state');
+  iq.setIQ(null,'get','jwchat_state');
   var query = iq.setQuery('jabber:iq:private');
   query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:state');
   con.send(iq,getSavedState);
@@ -1125,7 +1125,7 @@ function getSavedState(iq) {
   
   // get prefs
   iq = new JSJaCIQ();
-  iq.setIQ(null,null,'get','jwchat_prefs');
+  iq.setIQ(null,'get','jwchat_prefs');
   var query = iq.setQuery('jabber:iq:private');
   query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:prefs');
   
@@ -1193,14 +1193,14 @@ function getPrefs(iq) {
   
   // Start Service Discovery
   iq = new JSJaCIQ();
-  iq.setIQ(con.domain,null,'get','disco_item_1');
+  iq.setIQ(con.domain,'get','disco_item_1');
   iq.setQuery('http://jabber.org/protocol/disco#items');
   
   con.send(iq,getDiscoItems);
   
   // get bookmarks
   iq = new JSJaCIQ();
-  iq.setIQ(null,null,'get','storage_bookmarks');
+  iq.setIQ(null,'get','storage_bookmarks');
   var query = iq.setQuery('jabber:iq:private');
   query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:bookmarks');
   
@@ -1208,7 +1208,7 @@ function getPrefs(iq) {
   
   // get annotations
   iq = new JSJaCIQ();
-  iq.setIQ(null,null,'get','jwchat_notes');
+  iq.setIQ(null,'get','jwchat_notes');
   var query = iq.setQuery('jabber:iq:private');
   query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:rosternotes');
   
@@ -1230,7 +1230,7 @@ function getDiscoItems(iq) {
     if (items[i].nodeName != 'item' || !items[i].getAttribute('jid') || items[i].getAttribute('node')!=null) // skip those
       continue;
     var aIQ = new JSJaCIQ();
-    aIQ.setIQ(items[i].getAttribute('jid'),null,'get','disco_info_'+i);
+    aIQ.setIQ(items[i].getAttribute('jid'),'get','disco_info_'+i);
     aIQ.setQuery("http://jabber.org/protocol/disco#info");
     
     con.send(aIQ,getDiscoInfo);
@@ -1430,7 +1430,7 @@ function logout() {
   
   /* save state */
   var iq = new JSJaCIQ();
-  iq.setIQ(null,null,'set');
+  iq.setIQ(null,'set');
   var query = iq.setQuery('jabber:iq:private');
   var aNode = query.appendChild(iq.getDoc().createElement('jwchat'));
   aNode.setAttribute('xmlns','jwchat:state');
