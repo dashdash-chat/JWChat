@@ -1236,7 +1236,7 @@ msgstr "Mettre à jour"
 
 #: src/options.html:468
 msgid "Update interval"
-msgstr "Intervalle d'actualisation"
+msgstr "Intervalle d\'actualisation"
 
 #: NOT FOUND IN SOURCE
 msgid "Updating Roster..."
