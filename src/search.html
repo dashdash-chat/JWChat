@@ -25,7 +25,7 @@ function back() {
 	return false;
 }
 
-function search() {
+function searchUser() {
 	document.getElementById('search_results').style.display = '';
 	document.getElementById('search_form').style.display = 'none';
 
@@ -228,7 +228,7 @@ function getSearchForm(iq) {
 		}
 		html += "</table>";
 	}
-	html += "<hr noshade size=1><div align=right><button onClick='return search();'>"+loc("Search")+"</button></div>";
+	html += "<hr noshade size=1><div align=right><button onClick='return searchUser();'>"+loc("Search")+"</button></div>";
 
 	var searchfields = document.getElementById('searchfields');
 	searchfields.innerHTML = html;
