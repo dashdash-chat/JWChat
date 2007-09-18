@@ -251,7 +251,8 @@ function Roster(items,targetW) {
     var groups = new Array('');
     for (var j=0;j<items.item(i).childNodes.length;j++)
       if (items.item(i).childNodes.item(j).nodeName == 'group')
-	groups = groups.concat(items.item(i).childNodes.item(j).firstChild.nodeValue);
+	if (items.item(i).childNodes.item(j).firstChild) //if stanza != <group/>
+          groups = groups.concat(items.item(i).childNodes.item(j).firstChild.nodeValue);
     this.addUser(new RosterUser(items.item(i).getAttribute('jid'),items.item(i).getAttribute('subscription'),groups,name));
   }
 }
