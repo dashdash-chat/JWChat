@@ -22,7 +22,8 @@ function RosterUser(jid,subscription,groups,name) {
     this.name = name;
   else if (this.jid == JABBERSERVER)
     this.name = loc("System");
-  else if ((this.jid.indexOf('@') != -1) && this.jid.substring(this.jid.indexOf('@')+1) == JABBERSERVER) // we found a local user
+  else if ((this.jid.indexOf('@') != -1) && 
+           this.jid.substring(this.jid.indexOf('@')+1) == JABBERSERVER) // we found a local user
     this.name = this.jid.substring(0,jid.indexOf('@'));
   else
     this.name = this.jid;
@@ -102,9 +103,13 @@ function RosterOpenMessage(jid) {
   var wName = makeWindowName(user.jid); 
 
   if (user.messages.length > 0 && (!user.mW || user.mW.closed)) // display messages
-    user.mW = open('message.html?jid='+escape(jid),"mw"+wName,'width=360,height=270,dependent=yes,resizable=yes');
+    user.mW = open('message.html?jid='+escape(jid),
+                   "mw"+wName,
+                   'width=360,height=270,dependent=yes,resizable=yes');
   else if (!user.sW || user.sW.closed) // open send dialog
-    user.sW = open("send.html?jid="+escape(jid),"sw"+wName,'width=320,height=200,dependent=yes,resizable=yes');
+    user.sW = open("send.html?jid="+escape(jid),
+                   "sw"+wName,
+                   'width=320,height=200,dependent=yes,resizable=yes');
   return false;
 }
 
@@ -119,7 +124,9 @@ function RosterOpenChat(jid) {
     this.openMessage(jid);
 		
   if (!user.chatW || user.chatW.closed)
-    user.chatW = open("chat.html?jid="+escape(jid),"chatW"+makeWindowName(user.jid),"width=320,height=390,resizable=yes");
+    user.chatW = open("chat.html?jid="+escape(jid),
+                      "chatW"+makeWindowName(user.jid),
+                      "width=320,height=390,resizable=yes");
   else if (user.chatW.popMsgs)
     user.chatW.popMsgs();
 }
