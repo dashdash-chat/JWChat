@@ -107,3 +107,19 @@ var timerval = 2000; // poll frequency in msec
 var stylesheet = "jwchat.css";
 var THEMESDIR = "themes";
 
+/* Auto-login options. Define parameters for guest user account and
+ * when JWChat page is called with 'jid' parameter which is equal
+ * to GUEST_ACC value then configuration below is used for autologin.
+ * Sample configuration:
+ * var GUEST_ACC = "guest_2";
+ * var GUEST_PWD = "guestpwd";
+ * Sample call:
+ * http://jwchat.localhost/index.html?jid=guest_2
+ * will triger auto-login for the 'guest_2' account.
+ *
+ * As it is possible that many people try to login at the same time
+ * the auto-login function will generate random resource based on
+ * algorithm: DEFAULTRESOURCE + Math.round(Math.random()*1000)
+ */
+var GUEST_ACC = "";
+var GUEST_PWD = "";

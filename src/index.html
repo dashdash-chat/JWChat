@@ -37,6 +37,51 @@ var jwchats = new Array();
 var JABBERSERVER;
 var HTTPBASE;
 var BACKEND_TYPE;
+var GUEST_ACC;
+var GUEST_PWD;
+
+/** Retrieve user name from URL parameters.
+  */
+function getUserName() {
+  var lsearch = location.search;
+  var idx = lsearch.indexOf("jid=");
+  if (idx >= 0) {
+    var query = lsearch.substr(idx);
+    idx = query.indexOf("&");
+    if (idx > 0) {
+      query = query.substring(0, idx);
+    }
+    var tmp_jid = query.substr("jid=".length);
+    return tmp_jid;
+  } else {
+    return '';
+  }
+}
+
+/** On page load if the user name given in jid parameter is a guest
+  * auto-login the user with preconfigured password.
+  */
+function tryAutoLogin() {
+
+  var user_name = getUserName();
+
+  if (typeof(GUEST_ACC) == 'undefined' || GUEST_ACC.length == 0) {
+    // Ignore
+  } else {
+    if (user_name == GUEST_ACC) {
+      jid = user_name + "@" + JABBERSERVER + "/" + DEFAULTRESOURCE + Math.round(Math.random()*1000);
+      pass = GUEST_PWD;
+      register = false;
+      prio = DEFAULTPRIORITY;
+      connect_secure = false;
+
+      jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
+			return true;
+    }
+  }
+  return false;
+
+}
 
 /* check if user want's to register new
  * account and things */    
@@ -253,7 +298,13 @@ function init() {
   if (typeof(DEFAULTRESOURCE) != 'undefined' && DEFAULTRESOURCE)
     document.forms[0].res.value = DEFAULTRESOURCE;
   
+	if (getUserName().length > 0) {
+	  document.getElementById('jid').setAttribute('value', getUserName());
+  }
+
   document.getElementById('login_button').disabled = false;
+
+  tryAutoLogin();
 }
 
 
