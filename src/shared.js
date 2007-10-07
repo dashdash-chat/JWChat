@@ -87,6 +87,8 @@ function msgFormat(msg) { // replaces emoticons and urls in a message
 
   if (typeof(emoticons) != 'undefined') {
     for (var i in emoticons) {
+			if (!emoticons.hasOwnProperty(i))
+				continue;
       var iq = i.replace(/\\/g, '');
       var emo = new Image();
       emo.src = emoticonpath+emoticons[i];
