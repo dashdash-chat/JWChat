@@ -97,7 +97,7 @@ var DEBUG = true; // turn debugging on
 var DEBUG_LVL = 2; // debug-level 0..4 (4 = very noisy)
 
 var USE_DEBUGJID = false; // if true only DEBUGJID gets the debugger
-var DEBUGJID = "admin@localhost"; // which user get's debug messages
+var DEBUGJID = "admin@"+SITENAME; // which user get's debug messages
 
 
 // most probably you don't want to change anything below
