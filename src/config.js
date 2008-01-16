@@ -80,7 +80,7 @@ var BACKENDS =
 			httpbase:"/JHB/",
 			type:"binding",
 			servers_allowed:[SITENAME,'jabber.org','jwchat.org']
-		},
+		}
 ];
 
 var DEFAULTRESOURCE = "jwchat";
