@@ -1,23 +1,28 @@
 If you got JWChat from anonymous CVS you have to download JSJaC
-separately. Please be sure to use CVS version of JSJaC too.
+separately. Please be sure to use the SVN version of JSJaC.
 
-JSJaC can be found at http://jsjac.jabberstudio.org/
+JSJaC can be found at http://zeank.in-berlin.de/jsjac/
 
 Basic steps: 
 
 'cd' to jwchat's top-level directory
-$ mkdir lib
 $ cd lib
-$ export CVSROOT=:pserver:anonymous@cvs.jabberstudio.org:/home/cvs
-$ cvs login
+$ svn co http://svn.stefan-strigler.de/jsjac/trunk/ jsjac
 
-when prompted for a password just hit return
+Now switch to the new directory jsjac and run make:
+$ cd jsjac
+$ make
 
-$ cvs -z3 co jsjac
 
-If you need to Debugger integrated with JWChat go to JSJaC's download
-area and download Debugger.js.  Unpack into the jwchat's lib/
-subdirectory.
+If you need the Debugger integrated with JWChat go to its new project page
+at http://zeank.in-berlin.de/javascript-debug-logger/
+
+Basic steps:
+
+'cd' to jwchat's top-level directory
+$ cd lib
+$ svn co http://svn.stefan-strigler.de/JSDebugger/trunk jsdebug
+
 
 When done you can install by issuing "make install" (be sure to edit
 src/config.js first!). This will create a set of translated html files. 
