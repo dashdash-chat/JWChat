@@ -61,6 +61,9 @@ download instructions.
 Quick Install Guide
 ===================
 
+* If you attained JWChat by checking it out via CVS, be sure to also
+  read README.CVS in the top-level directory.
+
 * Unpack jwchat into some directory that is accessible by your web
   server. E.g.: /var/www/jwchat
 
