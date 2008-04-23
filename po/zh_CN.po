@@ -127,17 +127,17 @@ msgid ""
 "Aborting..."
 msgstr ""
 
-#: src/jwchat.html:861
+#: src/jwchat.html:862
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 变为空闲状态"
 
-#: src/jwchat.html:822
+#: src/jwchat.html:823
 #. (ouser.name)
 msgid "%1 has been banned"
 msgstr "%1 被屏蔽了"
 
-#: src/jwchat.html:820
+#: src/jwchat.html:821
 #. (ouser.name,ouser.actor)
 msgid "%1 has been banned by %2"
 msgstr "%1 被 %2 屏蔽了"
@@ -146,12 +146,12 @@ msgstr "%1 被 %2 屏蔽了"
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 被 %2 屏蔽了： %3"
 
-#: src/jwchat.html:839
+#: src/jwchat.html:840
 #. (ouser.name)
 msgid "%1 has been kicked"
 msgstr "%1 被踢出了"
 
-#: src/jwchat.html:837
+#: src/jwchat.html:838
 #. (ouser.name,ouser.actor)
 msgid "%1 has been kicked by %2"
 msgstr "%1 被 %2 踢出了"
@@ -160,17 +160,17 @@ msgstr "%1 被 %2 踢出了"
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 被 %2 屏蔽了： %3"
 
-#: src/jwchat.html:872
+#: src/jwchat.html:873
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 离开了"
 
-#: src/jwchat.html:792
+#: src/jwchat.html:793
 #. (ouser.name, htmlEnc(ouser.nick))
 msgid "%1 is now known as %2"
 msgstr "%1 现在就是 %2"
 
-#: src/roster.js:379 src/roster.js:444 src/roster.js:713
+#: src/roster.js:387 src/roster.js:452 src/roster.js:721
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 条消息"
@@ -208,11 +208,11 @@ msgstr "5 秒"
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> 参与者"
 
-#: src/jwchat.html:771
+#: src/jwchat.html:772
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "新房间已经创建，但没有被配置。您现在想进行配置吗？\\n单击'取消'按钮将使用默认配置。"
 
-#: src/index.html:345
+#: src/index.html:396
 msgid "A web-based Jabber<sup><small>&reg;</small></sup> client"
 msgstr "基于 web 的 Jabber<sup><small>&reg;</small></sup> 客户端"
 
@@ -252,7 +252,7 @@ msgstr "管理员"
 msgid "Admin List"
 msgstr "管理员列表"
 
-#: src/index.html:404
+#: src/index.html:455
 msgid "Advise connection manager to connect through SSL"
 msgstr "建议连接管理器使用 SSL 连接"
 
@@ -264,7 +264,7 @@ msgstr "在您发送邀请之后，该用户就会加入到您的联系人列表
 msgid "Allow"
 msgstr "允许"
 
-#: src/index.html:404
+#: src/index.html:455
 msgid "Allow secure conncetions only"
 msgstr "仅允许安全的连接"
 
@@ -305,7 +305,7 @@ msgstr "对 %1 的备注"
 msgid "Are you sure you want to delete this chat history completely?"
 msgstr "您确定要完全删除此聊天历史吗？"
 
-#: src/jwchat.html:1026
+#: src/jwchat.html:1027
 msgid "Authorization failed"
 msgstr "验证失败"
 
@@ -395,7 +395,7 @@ msgstr "%1 的聊天历史"
 msgid "Chat with %1"
 msgstr "与 %1 聊天"
 
-#: src/index.html:225
+#: src/index.html:270
 msgid "Choose Backend"
 msgstr "后台"
 
@@ -427,7 +427,7 @@ msgstr "关闭"
 msgid "Config"
 msgstr "配置"
 
-#: src/index.html:399
+#: src/index.html:450
 msgid "Connect Host"
 msgstr "主机"
 
@@ -479,7 +479,7 @@ msgstr "销毁"
 msgid "Disconnected."
 msgstr "断开"
 
-#: src/jwchat.html:1057
+#: src/jwchat.html:1058
 msgid "Disconnected\\n\\nReconnect?"
 msgstr "连接断开！\\n重新连接吗？"
 
@@ -552,7 +552,7 @@ msgstr "姓氏"
 msgid "Finished."
 msgstr "完成"
 
-#: src/index.html:415
+#: src/index.html:466
 msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
 msgstr "详情请见： <a href=\"http://jwchat.sourceforge.net\">JWChat 主页</a> 。"
 
@@ -572,7 +572,7 @@ msgstr "全名"
 msgid "Gateway"
 msgstr "网关"
 
-#: src/options.html:427 src/roster.js:296 src/roster.js:325 src/roster.js:347 src/roster.js:414 src/roster.js:419 src/roster.js:573
+#: src/options.html:427 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:581
 msgid "Gateways"
 msgstr "网关"
 
@@ -652,7 +652,7 @@ msgstr ""
 msgid "Information"
 msgstr "信息"
 
-#: src/jwchat.html:1038
+#: src/jwchat.html:1039
 msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
 msgstr "服务器内部错误！\\n\\n连接断开！\\n重新连接吗？"
 
@@ -660,7 +660,7 @@ msgstr "服务器内部错误！\\n\\n连接断开！\\n重新连接吗？"
 msgid "Introduction"
 msgstr "介绍"
 
-#: src/shared.js:129
+#: src/shared.js:131
 #. (prohibited[i])
 msgid "Invalid JID\\n'%1' not allowed in JID.\\nChoose another one!"
 msgstr "非法 JID\\n'%1' 不允许出现在 JID 中。\\n请修改！"
@@ -687,7 +687,7 @@ msgstr "邀请用户加入 %1"
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1518 src/userhist.html:131
+#: src/jwchat.html:1519 src/userhist.html:131
 msgid "JID is missing.\\nAborting..."
 msgstr "JID 错误。\\n中止。"
 
@@ -835,7 +835,7 @@ msgstr "左键单击用户项可以打开消息窗口。"
 msgid "Loading Roster...<br>Please wait!"
 msgstr "载入联系人……<br>请稍候！"
 
-#: src/index.html:356 src/index.html:407
+#: src/index.html:407 src/index.html:458
 msgid "Login"
 msgstr "登录"
 
@@ -855,7 +855,7 @@ msgstr "成员"
 msgid "Member List"
 msgstr "成员列表"
 
-#: src/roster.js:373 src/roster.js:438 src/roster.js:707
+#: src/roster.js:381 src/roster.js:446 src/roster.js:715
 msgid "Message"
 msgstr "消息"
 
@@ -957,11 +957,11 @@ msgstr "所有者列表"
 msgid "Pass"
 msgstr "密码"
 
-#: src/editbookmarks.html:177 src/index.html:368 src/joingroupchat.html:121
+#: src/editbookmarks.html:177 src/index.html:419 src/joingroupchat.html:121
 msgid "Password"
 msgstr "密码"
 
-#: src/jwchat.html:1522
+#: src/jwchat.html:1523
 msgid "Password is missing.\\nAborting..."
 msgstr "密码错误！\\n中止。"
 
@@ -989,7 +989,7 @@ msgstr "请键入要加入的房间"
 msgid "Please enter a server name"
 msgstr "请键入服务器名称"
 
-#: src/index.html:395
+#: src/index.html:446
 msgid "Port"
 msgstr "端口"
 
@@ -1005,7 +1005,7 @@ msgstr "属性"
 msgid "Presence"
 msgstr "在线状态"
 
-#: src/index.html:385
+#: src/index.html:436
 msgid "Priority"
 msgstr "优先级"
 
@@ -1050,7 +1050,7 @@ msgstr "刷新"
 msgid "Register"
 msgstr "注册"
 
-#: src/index.html:371
+#: src/index.html:422
 msgid "Register New Account"
 msgstr "注册新账号"
 
@@ -1058,7 +1058,7 @@ msgstr "注册新账号"
 msgid "Register at"
 msgstr "注册位置"
 
-#: src/jwchat.html:1031
+#: src/jwchat.html:1032
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr "注册失败！\\n\\n请换一个用户名！"
 
@@ -1100,7 +1100,7 @@ msgstr "回复"
 msgid "Request sent to %1.."
 msgstr "发送请求到 %1……"
 
-#: src/index.html:381
+#: src/index.html:432
 msgid "Resource"
 msgstr "资源"
 
@@ -1174,7 +1174,7 @@ msgstr "对 %1 的搜索结果"
 msgid "Select"
 msgstr "选择"
 
-#: src/index.html:359
+#: src/index.html:410
 msgid "Select Jabber server to connect to"
 msgstr "选择要连接的 Jabber 服务器"
 
@@ -1211,7 +1211,7 @@ msgstr "发送邀请到"
 msgid "Sending presence..."
 msgstr "发送在线状态……"
 
-#: src/editbookmarks.html:176 src/index.html:359 src/joingroupchat.html:120
+#: src/editbookmarks.html:176 src/index.html:410 src/joingroupchat.html:120
 msgid "Server"
 msgstr "服务器"
 
@@ -1219,7 +1219,7 @@ msgstr "服务器"
 msgid "Service (optional)"
 msgstr "服务（可选）"
 
-#: src/jwchat.html:1034
+#: src/jwchat.html:1035
 msgid "Service unavailable"
 msgstr "服务不可用"
 
@@ -1243,11 +1243,11 @@ msgstr "显示信息"
 msgid "Show Info: Show the user's profile"
 msgstr "显示信息： 显示用户档案"
 
-#: src/index.html:378 src/index.html:378
+#: src/index.html:429 src/index.html:429
 msgid "Show Less Options"
 msgstr "显示常规选项"
 
-#: src/index.html:374 src/index.html:374
+#: src/index.html:425 src/index.html:425
 msgid "Show More Options"
 msgstr "显示更多选项"
 
@@ -1263,7 +1263,7 @@ msgstr "开始聊天： 为此用户打开聊天对话框"
 msgid "State"
 msgstr "省/州"
 
-#: src/roster.js:368 src/roster.js:433 src/roster.js:702
+#: src/roster.js:376 src/roster.js:441 src/roster.js:710
 msgid "Status"
 msgstr "状态"
 
@@ -1324,7 +1324,7 @@ msgstr "头衔"
 msgid "Topic"
 msgstr "主题"
 
-#: src/roster.js:146 src/userprops.html:80
+#: src/roster.js:153 src/userprops.html:80
 msgid "Unfiled"
 msgstr "未归类"
 
@@ -1401,11 +1401,11 @@ msgstr "用户在线"
 msgid "User is willing to chat"
 msgstr "用户欢迎您与之聊天"
 
-#: src/index.html:363
+#: src/index.html:414
 msgid "Username"
 msgstr "用户名"
 
-#: src/index.html:366
+#: src/index.html:417
 msgid "Username must not contain"
 msgstr "用户名不得包含"
 
@@ -1425,11 +1425,11 @@ msgstr "网站"
 msgid "Welcome to"
 msgstr "欢迎光临"
 
-#: src/index.html:344 src/index.html:4
+#: src/index.html:395 src/index.html:4
 msgid "Welcome to JWChat"
 msgstr "欢迎光临 JWChat"
 
-#: src/index.html:204
+#: src/index.html:249
 #. (SITENAME)
 msgid "Welcome to JWChat at %1"
 msgstr "欢迎光临 %1 上的 JWChat"
@@ -1471,15 +1471,15 @@ msgstr "您可以通过在\"可用的组\"文本框中键入名称来新建一�
 msgid "You have been unsubscribed from %1"
 msgstr "您已经取消了来自 %1 的邀请"
 
-#: src/index.html:57
+#: src/index.html:102
 msgid "You need to supply a jabber server"
 msgstr "您需要提供一个 jabber 服务器"
 
-#: src/index.html:50
+#: src/index.html:95
 msgid "You need to supply a password"
 msgstr "您需要提供一个密码"
 
-#: src/index.html:45
+#: src/index.html:90
 msgid "You need to supply a username"
 msgstr "您需要提供一个用户名"
 
@@ -1487,7 +1487,7 @@ msgstr "您需要提供一个用户名"
 msgid "Your Contact List"
 msgstr "您的联系人列表"
 
-#: src/jwchat.html:1555
+#: src/jwchat.html:1556
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "为使用本程序，您的浏览器必须支持帧与 javascript，请参考我们的 <a href=\"help.html\">帮助</a> 中的支持的浏览器列表。"
 
@@ -1527,7 +1527,7 @@ msgstr "开启聊天时出现错误"
 msgid "free for chat"
 msgstr "欢迎聊天"
 
-#: src/index.html:390
+#: src/index.html:441
 msgid "high"
 msgstr "高"
 
@@ -1543,11 +1543,11 @@ msgstr "JID 错误。\\n中止。"
 msgid "local jabber user"
 msgstr "本地 jabber 用户"
 
-#: src/index.html:388
+#: src/index.html:439
 msgid "low"
 msgstr "低"
 
-#: src/index.html:389
+#: src/index.html:440
 msgid "medium"
 msgstr "中"
 

@@ -36,17 +36,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 
-#: src/jwchat.html:861
+#: src/jwchat.html:862
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 betrad de chatruimte"
 
-#: src/jwchat.html:822
+#: src/jwchat.html:823
 #. (ouser.name)
 msgid "%1 has been banned"
 msgstr "%1 werd verbannen"
 
-#: src/jwchat.html:820
+#: src/jwchat.html:821
 #. (ouser.name,ouser.actor)
 msgid "%1 has been banned by %2"
 msgstr "%1 werd verbannen door %2"
@@ -55,12 +55,12 @@ msgstr "%1 werd verbannen door %2"
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 werd verbannen door %2: %3"
 
-#: src/jwchat.html:839
+#: src/jwchat.html:840
 #. (ouser.name)
 msgid "%1 has been kicked"
 msgstr "%1 werd gekickt"
 
-#: src/jwchat.html:837
+#: src/jwchat.html:838
 #. (ouser.name,ouser.actor)
 msgid "%1 has been kicked by %2"
 msgstr "%1 werd gekickt door %2"
@@ -69,17 +69,17 @@ msgstr "%1 werd gekickt door %2"
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 werd gekickt door %2: %3"
 
-#: src/jwchat.html:872
+#: src/jwchat.html:873
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 verliet de chatruimte"
 
-#: src/jwchat.html:792
+#: src/jwchat.html:793
 #. (ouser.name, htmlEnc(ouser.nick))
 msgid "%1 is now known as %2"
 msgstr "%1 heet nu %2"
 
-#: src/roster.js:343 src/roster.js:446
+#: src/roster.js:387 src/roster.js:452 src/roster.js:721
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 bericht(en) in behandeling"
@@ -117,11 +117,11 @@ msgstr "5 seconden"
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> deelnemers"
 
-#: src/jwchat.html:771
+#: src/jwchat.html:772
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "Een nieuwe chatruimte werd aangemaakt en moet nog geconfigureerd worden door u. Wilt u de configuratie nu aanpassen?\\nOpmerking: Klik op 'Annuleren' om de standaardinstellingen te gebruiken!"
 
-#: src/index.html:347
+#: src/index.html:396
 msgid "A web-based Jabber<sup><small>&reg;</small></sup> client"
 msgstr "Een webgebaseerde Jabber<sup><small>&reg;</small></sup>-client"
 
@@ -133,7 +133,7 @@ msgstr "Over"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: src/roster.html:151
+#: src/roster.html:153
 msgid "Add Contact"
 msgstr "Contactpersoon toevoegen"
 
@@ -161,7 +161,7 @@ msgstr "Beheerder"
 msgid "Admin List"
 msgstr "Beheerderslijst"
 
-#: src/index.html:406
+#: src/index.html:455
 msgid "Advise connection manager to connect through SSL"
 msgstr "Connectiebeheer adviseren om te verbinden via SSL"
 
@@ -172,6 +172,10 @@ msgstr "Nadat dit verzoek verzonden is, wordt de contactpersoon toegevoegd aan u
 #: src/subscriptionRequest.html:88
 msgid "Allow"
 msgstr "Toestaan"
+
+#: src/index.html:455
+msgid "Allow secure conncetions only"
+msgstr ""
 
 #: src/searchrooms.html:47
 msgid "An Error Occured!"
@@ -210,7 +214,7 @@ msgstr "Aantekeningen voor %1"
 msgid "Are you sure you want to delete this chat history completely?"
 msgstr "Wilt u werkelijk de geschiedenis van deze chatsessie volledig verwijderen?"
 
-#: src/jwchat.html:1026
+#: src/jwchat.html:1027
 msgid "Authorization failed"
 msgstr "De autorisatie mislukte"
 
@@ -250,7 +254,7 @@ msgstr "Lijst met gebande chatters"
 msgid "Birthday"
 msgstr "Geboortedatum"
 
-#: src/editbookmarks.html:170 src/joingroupchat.html:115 src/searchrooms.html:203
+#: src/editbookmarks.html:170 src/joingroupchat.html:116 src/searchrooms.html:203
 msgid "Bookmark"
 msgstr "Bladwijzer"
 
@@ -262,19 +266,19 @@ msgstr "Camino 0.7"
 msgid "Can't display User Info:\\nUser not local!"
 msgstr "Info over contactpersoon kan niet weergegeven worden:\\nGeen lokale gebruiker!"
 
-#: src/changestatus.html:92 src/editbookmarks.html:185 src/groupchatconfig.html:107 src/joingroupchat.html:124 src/send.html:105 src/subscription.html:121 src/userprops.html:147 src/vcard.html:177
+#: src/changestatus.html:92 src/editbookmarks.html:185 src/groupchatconfig.html:109 src/joingroupchat.html:125 src/send.html:105 src/subscription.html:121 src/userprops.html:147 src/vcard.html:177
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: src/roster.html:143
+#: src/roster.html:145
 msgid "Change Online Status"
 msgstr "Aanwezigheid veranderen"
 
-#: src/roster.html:144
+#: src/roster.html:146
 msgid "Change Status Message"
 msgstr "Aanwezigheidsbericht veranderen"
 
-#: src/roster.html:143
+#: src/roster.html:145
 msgid "Change User Info"
 msgstr "Persoonlijke info veranderen"
 
@@ -286,7 +290,7 @@ msgstr "U kunt uw globale aanwezigheid veranderen door bovenaan naast uw account
 msgid "Channel/Group"
 msgstr "Chatruimte"
 
-#: src/groupchat.html:275 src/jwchat.html:94
+#: src/groupchat.html:274 src/jwchat.html:94
 msgid "Chat Rooms"
 msgstr "Chatruimtes"
 
@@ -300,11 +304,11 @@ msgstr "Geschiedenis voor %1"
 msgid "Chat with %1"
 msgstr "Chat met %1"
 
-#: src/index.html:228
+#: src/index.html:270
 msgid "Choose Backend"
 msgstr "Verbindingsmethode kiezen"
 
-#: src/editbookmarks.html:170 src/joingroupchat.html:115
+#: src/editbookmarks.html:170 src/joingroupchat.html:116
 msgid "Choose Bookmark"
 msgstr "Bladwijzer kiezen"
 
@@ -332,7 +336,7 @@ msgstr "Sluiten"
 msgid "Config"
 msgstr "Configureren"
 
-#: src/index.html:401
+#: src/index.html:450
 msgid "Connect Host"
 msgstr "Computer verbinden"
 
@@ -376,15 +380,15 @@ msgstr "Ontzeggen"
 msgid "Description"
 msgstr "Beschrijving"
 
-#: src/groupchatconfig.html:107
+#: src/groupchatconfig.html:109
 msgid "Destroy"
 msgstr "Vernietigen"
 
-#: src/groupchat.html:135
+#: src/groupchat.html:134
 msgid "Disconnected."
 msgstr "Niet verbonden."
 
-#: src/jwchat.html:1057
+#: src/jwchat.html:1058
 msgid "Disconnected\\n\\nReconnect?"
 msgstr "Niet verbonden\\n\\nWilt u opnieuw verbinden?"
 
@@ -404,7 +408,7 @@ msgstr "Klaar."
 msgid "E-mail"
 msgstr "E-mail"
 
-#: src/iRoster.html:27 src/joingroupchat.html:115
+#: src/iRoster.html:27 src/joingroupchat.html:116
 msgid "Edit"
 msgstr "Bewerken"
 
@@ -457,11 +461,11 @@ msgstr "Familienaam"
 msgid "Finished."
 msgstr "Voltooid."
 
-#: src/index.html:417
+#: src/index.html:466
 msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
 msgstr "Bezoek <a href=\"http://jwchat.sourceforge.net\">JWChat's webstek</a> voor meer informatie."
 
-#: src/groupchat.html:175
+#: src/groupchat.html:174
 msgid "Forbidden"
 msgstr "Verboden"
 
@@ -477,7 +481,7 @@ msgstr "Volledige naam"
 msgid "Gateway"
 msgstr "Transport"
 
-#: src/options.html:427 src/roster.js:262 src/roster.js:289 src/roster.js:311
+#: src/options.html:427 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:581
 msgid "Gateways"
 msgstr "Transporten"
 
@@ -509,7 +513,7 @@ msgstr "Groep"
 msgid "Groupchat Invitation"
 msgstr "Uitnodiging op chatruimte"
 
-#: src/roster.html:139
+#: src/roster.html:141
 msgid "Help"
 msgstr "Help"
 
@@ -557,7 +561,7 @@ msgstr "Meer informatie over JWChat kunt u terugvinden op <a href=\"http://jwcha
 msgid "Information"
 msgstr "Informatie"
 
-#: src/jwchat.html:1038
+#: src/jwchat.html:1039
 msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
 msgstr "Interne serverfout.\\n\\nVerbinding verbroken.\\n\\nWilt u opnieuw verbinden?"
 
@@ -565,7 +569,7 @@ msgstr "Interne serverfout.\\n\\nVerbinding verbroken.\\n\\nWilt u opnieuw verbi
 msgid "Introduction"
 msgstr "Inleiding"
 
-#: src/shared.js:129
+#: src/shared.js:131
 #. (prohibited[i])
 msgid "Invalid JID\\n'%1' not allowed in JID.\\nChoose another one!"
 msgstr "Ongeldige JID\\n'%1' is niet toegestaan in een JID.\\nKies een andere!"
@@ -592,7 +596,7 @@ msgstr "Contactpersonen uitnodigen op %1"
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1514 src/userhist.html:131
+#: src/jwchat.html:1519 src/userhist.html:131
 msgid "JID is missing.\\nAborting..."
 msgstr "De JID ontbreekt.\\nBezig met afbreken..."
 
@@ -720,11 +724,11 @@ msgstr "JWChat is een  webgebaseerde Jabber-client met veel mogelijkheden. <a hr
 msgid "JWChat is a web based, full featured jabber client. <a href=\"http://www.jabber.org\">Jabber</a> is an advanced instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger."
 msgstr "JWChat is een  webgebaseerde Jabber-client met veel mogelijkheden. <a href=\"http://www.jabber.org\">Jabber</a> is een geadvanceerd  instant messaging systeem zoals ICQ, AOL Instant Messenger of Yahoo! Messenger."
 
-#: src/groupchat_invite.html:65 src/joingroupchat.html:124 src/searchrooms.html:203
+#: src/groupchat_invite.html:65 src/joingroupchat.html:125 src/searchrooms.html:203
 msgid "Join"
 msgstr "Betreden"
 
-#: src/roster.html:151
+#: src/roster.html:153
 msgid "Join Groupchat"
 msgstr "Chatruimte betreden"
 
@@ -740,7 +744,7 @@ msgstr "U kunt de linkermuisknop gebruiken om een optie uit te voeren."
 msgid "Loading Roster...<br>Please wait!"
 msgstr "Bezig met laden van roster...<br>Even geduld!"
 
-#: src/index.html:358 src/index.html:409
+#: src/index.html:407 src/index.html:458
 msgid "Login"
 msgstr "Aanmelden"
 
@@ -760,7 +764,7 @@ msgstr "Lid"
 msgid "Member List"
 msgstr "Ledenlijst"
 
-#: src/roster.js:337 src/roster.js:440
+#: src/roster.js:381 src/roster.js:446 src/roster.js:715
 msgid "Message"
 msgstr "Bericht"
 
@@ -802,7 +806,7 @@ msgstr "Netscape versie 6 & 7"
 msgid "Nick"
 msgstr "Bijnaam"
 
-#: src/editbookmarks.html:174 src/joingroupchat.html:117 src/userprops.html:114 src/vcard.html:131
+#: src/editbookmarks.html:174 src/joingroupchat.html:118 src/userprops.html:114 src/vcard.html:131
 msgid "Nickname"
 msgstr "Bijnaam"
 
@@ -818,15 +822,15 @@ msgstr "Zulke bijnaam bestaat niet"
 msgid "None Given"
 msgstr "Geen opgegeven"
 
-#: src/groupchat.html:172
+#: src/groupchat.html:171
 msgid "Not Allowed"
 msgstr "Niet toegestaan"
 
-#: src/groupchat.html:178
+#: src/groupchat.html:177
 msgid "Not Found"
 msgstr "Niet gevonden"
 
-#: src/groupchatconfig.html:107 src/userprops.html:147
+#: src/groupchatconfig.html:109 src/userprops.html:147
 msgid "OK"
 msgstr "Ok"
 
@@ -834,7 +838,7 @@ msgstr "Ok"
 msgid "Online Status Indicators"
 msgstr "Aanwezigheidsindicatoren"
 
-#: src/joingroupchat.html:113 src/subscription.html:101
+#: src/joingroupchat.html:114 src/subscription.html:101
 msgid "Open Search"
 msgstr "Zoekvenster openen"
 
@@ -862,11 +866,11 @@ msgstr "Lijst met eigenaars"
 msgid "Pass"
 msgstr ""
 
-#: src/editbookmarks.html:177 src/index.html:370 src/joingroupchat.html:120
+#: src/editbookmarks.html:177 src/index.html:419 src/joingroupchat.html:121
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: src/jwchat.html:1518
+#: src/jwchat.html:1523
 msgid "Password is missing.\\nAborting..."
 msgstr "Het wachtwoord ontbreekt.\\nBezig met afbreken..."
 
@@ -894,7 +898,7 @@ msgstr "Voer de naam in van de chatruimte die u wenst te betreden"
 msgid "Please enter a server name"
 msgstr "Voer de naam in van een server"
 
-#: src/index.html:397
+#: src/index.html:446
 msgid "Port"
 msgstr "Poort"
 
@@ -902,7 +906,7 @@ msgstr "Poort"
 msgid "Postal Code"
 msgstr "Postcode"
 
-#: src/roster.html:139
+#: src/roster.html:141
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -910,7 +914,7 @@ msgstr "Voorkeuren"
 msgid "Presence"
 msgstr "Aanwezigheid"
 
-#: src/index.html:387
+#: src/index.html:436
 msgid "Priority"
 msgstr "Prioriteit"
 
@@ -955,7 +959,7 @@ msgstr "Vernieuwen"
 msgid "Register"
 msgstr "Registreren"
 
-#: src/index.html:373
+#: src/index.html:422
 msgid "Register New Account"
 msgstr "Nieuwe account registreren"
 
@@ -963,7 +967,7 @@ msgstr "Nieuwe account registreren"
 msgid "Register at"
 msgstr "Registreren op"
 
-#: src/jwchat.html:1031
+#: src/jwchat.html:1032
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr "De registratie mislukte!\\n\\nProbeer opnieuw met een andere gebruikersnaam!"
 
@@ -1005,7 +1009,7 @@ msgstr "Beantwoorden"
 msgid "Request sent to %1.."
 msgstr "Aanvraag verzonden naar %1..."
 
-#: src/index.html:383
+#: src/index.html:432
 msgid "Resource"
 msgstr "Bron"
 
@@ -1041,7 +1045,7 @@ msgstr "Medezeggenschap intrekken"
 msgid "Role"
 msgstr "Functie"
 
-#: src/editbookmarks.html:175 src/groupchat_invite.html:58 src/joingroupchat.html:118 src/searchrooms.html:60
+#: src/editbookmarks.html:175 src/groupchat_invite.html:58 src/joingroupchat.html:119 src/searchrooms.html:60
 msgid "Room"
 msgstr "Chatruimte"
 
@@ -1057,11 +1061,11 @@ msgstr "Zoeken"
 msgid "Search Server"
 msgstr "Dienst"
 
-#: src/roster.html:151
+#: src/roster.html:153
 msgid "Search User"
 msgstr "Contactpersoon zoeken"
 
-#: src/joingroupchat.html:113 src/searchrooms.html:179
+#: src/joingroupchat.html:114 src/searchrooms.html:179
 msgid "Search for Rooms"
 msgstr "Chatruimtes zoeken"
 
@@ -1079,7 +1083,7 @@ msgstr "Resultaten voor %1"
 msgid "Select"
 msgstr "Selecteren"
 
-#: src/index.html:361
+#: src/index.html:410
 msgid "Select Jabber server to connect to"
 msgstr "Selecteer een Jabber-server waarmee verbonden moet worden"
 
@@ -1116,7 +1120,7 @@ msgstr "Inschrijvingsaanvraag verzenden aan"
 msgid "Sending presence..."
 msgstr "Bezig met verzenden van aanwezigheid..."
 
-#: src/editbookmarks.html:176 src/index.html:361 src/joingroupchat.html:119
+#: src/editbookmarks.html:176 src/index.html:410 src/joingroupchat.html:120
 msgid "Server"
 msgstr "Server"
 
@@ -1124,7 +1128,7 @@ msgstr "Server"
 msgid "Service (optional)"
 msgstr "Dienst (optioneel)"
 
-#: src/jwchat.html:1034
+#: src/jwchat.html:1035
 msgid "Service unavailable"
 msgstr "Dienst niet beschikbaar"
 
@@ -1144,11 +1148,11 @@ msgstr "Info over contactpersoon"
 msgid "Show Info: Show the user's profile"
 msgstr "Info over contactpersoon: deze optie opent een venster met informatie over de contactpersoon"
 
-#: src/index.html:380 src/index.html:380
+#: src/index.html:429 src/index.html:429
 msgid "Show Less Options"
 msgstr "Minder opties"
 
-#: src/index.html:376 src/index.html:376
+#: src/index.html:425 src/index.html:425
 msgid "Show More Options"
 msgstr "Meer opties"
 
@@ -1164,7 +1168,7 @@ msgstr "Chat: deze optie opent een nieuw chatvenster"
 msgid "State"
 msgstr "Provincie"
 
-#: src/roster.js:332 src/roster.js:435
+#: src/roster.js:376 src/roster.js:441 src/roster.js:710
 msgid "Status"
 msgstr "Aanwezigheid"
 
@@ -1221,7 +1225,7 @@ msgstr "Titel"
 msgid "Topic"
 msgstr "Onderwerp"
 
-#: src/roster.js:146 src/userprops.html:80
+#: src/roster.js:153 src/userprops.html:80
 msgid "Unfiled"
 msgstr "Leeg"
 
@@ -1250,7 +1254,7 @@ msgstr "Verversinterval"
 msgid "Updating Roster..."
 msgstr ""
 
-#: src/index.html:406
+#: NOT FOUND IN SOURCE
 msgid "Use SSL"
 msgstr "Met SSL beveiligen"
 
@@ -1298,11 +1302,11 @@ msgstr "De contactpersoon is online"
 msgid "User is willing to chat"
 msgstr "De contactpersoon wil chatten"
 
-#: src/index.html:365
+#: src/index.html:414
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: src/index.html:368
+#: src/index.html:417
 msgid "Username must not contain"
 msgstr "Volgende tekens mogen niet voorkomen in uw gebruikersnaam:"
 
@@ -1322,11 +1326,11 @@ msgstr "Webstek"
 msgid "Welcome to"
 msgstr "Welkom bij"
 
-#: src/index.html:346 src/index.html:4
+#: src/index.html:395 src/index.html:4
 msgid "Welcome to JWChat"
 msgstr "Welkom bij JWChat"
 
-#: src/index.html:207
+#: src/index.html:249
 #. (SITENAME)
 msgid "Welcome to JWChat at %1"
 msgstr "Welkom bij JWChat op %1"
@@ -1368,15 +1372,15 @@ msgstr "U kunt een nieuwe groep aanmaken door een nieuwe naam voor \"Groep\" in 
 msgid "You have been unsubscribed from %1"
 msgstr "Uw inschrijving op de aanwezigheid van %1 is verwijderd."
 
-#: src/index.html:58
+#: src/index.html:102
 msgid "You need to supply a jabber server"
 msgstr "U moet een Jabber-server opgeven"
 
-#: src/index.html:51
+#: src/index.html:95
 msgid "You need to supply a password"
 msgstr "U moet een wachtwoord opgeven"
 
-#: src/index.html:46
+#: src/index.html:90
 msgid "You need to supply a username"
 msgstr "U moet een gebruikersnaam opgeven"
 
@@ -1384,7 +1388,7 @@ msgstr "U moet een gebruikersnaam opgeven"
 msgid "Your Contact List"
 msgstr "Roster"
 
-#: src/jwchat.html:1551
+#: src/jwchat.html:1556
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "Uw webbrowser moet frames en javascript ondersteunen. Raadpleeg de <a href=\"help.html\">handleiding</a> om te zien welke webbrowsers ondersteund worden."
 
@@ -1424,7 +1428,7 @@ msgstr "fout tijdens het beginnen van de chat"
 msgid "free for chat"
 msgstr "chat"
 
-#: src/index.html:392
+#: src/index.html:441
 msgid "high"
 msgstr "hoog"
 
@@ -1436,11 +1440,11 @@ msgstr "onzichtbaar"
 msgid "local jabber user"
 msgstr "lokale Jabber-gebruiker"
 
-#: src/index.html:390
+#: src/index.html:439
 msgid "low"
 msgstr "laag"
 
-#: src/index.html:391
+#: src/index.html:440
 msgid "medium"
 msgstr "gemiddeld"
 
