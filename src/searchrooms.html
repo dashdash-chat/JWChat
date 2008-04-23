@@ -89,16 +89,16 @@ function getDiscoItems(iq) {
 	disco_at = 0;
 	disco_items_length = iq.getQuery().getElementsByTagName('item').length;
 	for (var i=0; i<iq.getQuery().getElementsByTagName('item').length; i++) {
-		var aNode = iq.getQuery().getElementsByTagName('item').item(i);
-		disco_items[aNode.getAttribute('jid')] = aNode;
-		
-		// get vcard
-		var aIQ = new JSJaCIQ();
-		aIQ.setTo(aNode.getAttribute('jid'));
-		aIQ.setType('get');
-		aIQ.getNode().appendChild(aIQ.getDoc().createElement('vCard')).setAttribute('xmlns','vcard-temp');
-
-		srcW.con.send(aIQ, me.getVCard);
+	  var aNode = iq.getQuery().getElementsByTagName('item').item(i);
+	  disco_items[aNode.getAttribute('jid')] = aNode;
+	  
+	  // get vcard
+	  var aIQ = new JSJaCIQ();
+	  aIQ.setTo(aNode.getAttribute('jid'));
+	  aIQ.setType('get');
+	  aIQ.appendNode('vCard', {'xmlns': 'vcard-temp'});
+	  
+	  srcW.con.send(aIQ, me.getVCard);
 	}
 
 	return false;

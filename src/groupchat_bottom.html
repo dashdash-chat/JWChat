@@ -83,8 +83,9 @@ function submitClicked() {
 		var jid = RegExp.$1;
 		var reason = RegExp.$2;
 
-		var x = aMessage.getNode().appendChild(aMessage.getDoc().createElement('x'));
-		x.setAttribute('xmlns','http://jabber.org/protocol/muc#user');
+	var x = 
+	  aMessage.appendNode('x', 
+						  {'xmlns': 'http://jabber.org/protocol/muc#user'});
 		var aNode = x.appendChild(aMessage.getDoc().createElement('invite'));
 		aNode.setAttribute('to',jid);
 		if (reason && reason != '')

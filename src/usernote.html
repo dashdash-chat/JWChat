@@ -41,8 +41,9 @@ function saveNotes() {
   var iq = new JSJaCIQ();
   iq.setType('set');
   var query = iq.setQuery('jabber:iq:private');
-  var jNode = query.appendChild(iq.getDoc().createElement('storage'));
-  jNode.setAttribute('xmlns','storage:rosternotes');
+  var jNode = query.appendChild(
+	iq.buildNode('storage',
+				 {'xmlns': 'storage:rosternotes'}));
 
   for (var i in srcW.annotations) {
     if (typeof(srcW.annotations[i]) != 'string') continue;

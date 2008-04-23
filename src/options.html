@@ -20,18 +20,17 @@ function savePrefs() {
   var iq = new JSJaCIQ();
   iq.setType('set');
   var query = iq.setQuery('jabber:iq:private');
-  var jNode = query.appendChild(iq.getDoc().createElement('jwchat'));
-  jNode.setAttribute('xmlns','jwchat:prefs');
+  var jNode = query.appendChild(
+	iq.buildNode('jwchat', {'xmlns': 'jwchat:prefs'}));
   
   for (var i=0; i<prefs.length; i++) {
-    var item = jNode.appendChild(iq.getDoc().createElement(prefs[i]));
     if (prefs[i] == 'usersHidden')
-      item.appendChild(iq.getDoc().createTextNode(eval("srcW.roster."+prefs[i])));
+	  jNode.appendChild(iq.buildNode(prefs[i], srcW.roster.usersHidden+""));
     else
-      item.appendChild(iq.getDoc().createTextNode(eval("srcW."+prefs[i])));
+	  jNode.appendChild(iq.buildNode(prefs[i], srcW[prefs[i]]+""));
   }
 
-  srcW.Debug.log(iq.getDoc().xml,3);
+  srcW.Debug.log(iq.xml(),2);
 
   srcW.con.send(iq);
 }

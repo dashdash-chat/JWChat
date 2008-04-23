@@ -277,10 +277,12 @@ function cleanUp() {
   var aIQ = new JSJaCIQ();
   aIQ.setType('set');
   aIQ.setTo(jwcMain.loghost);
-  var aStore = aIQ.getNode().appendChild(aIQ.getDoc().createElement('store'));
-  aStore.setAttribute('xmlns','http://jabber.org/protocol/archive');
-  aStore.setAttribute('with',user.jid);
-  aStore.setAttribute('start',jabberDate(cDate));
+  var aStore = 
+	aIQ.appendNode(
+	  'store', 
+	  {'xmlns': 'http://jabber.org/protocol/archive',
+	   'with': user.jid,
+	   'start': jabberDate(cDate)});
 	
   for (var i=0; i<nodes.length; i++) {
     var node = nodes.item(i);

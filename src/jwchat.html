@@ -776,9 +776,8 @@ function handlePresence(presence) {
 	  iq.setType('set');
 	  iq.setTo(user.jid);
 	  var query = iq.setQuery('http://jabber.org/protocol/muc#owner');
-	  var x = query.appendChild(iq.getDoc().createElement('x'));
-	  x.setAttribute('xmlns','jabber:x:data');
-	  x.setAttribute('type','submit');
+	  query.appendChild(
+		iq.buildNode('x', {'xmlns': NS_XDATA, 'type': 'submit'}));
 	  
 	  con.send(iq);
 	}
@@ -1093,33 +1092,40 @@ function getRoster(iq) {
   iq = new JSJaCIQ();
   iq.setIQ(null,'get','jwchat_state');
   var query = iq.setQuery('jabber:iq:private');
-  query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:state');
+  query.appendChild(
+	iq.buildNode('jwchat', {'xmlns': 'jwchat:state'}));
+
   con.send(iq,getSavedState);
 }
 
 function getSavedState(iq) {
-  if (!iq || iq.getType() != 'result')
+  if (!iq || iq.getType() != 'result') {
     if (iq)
-      Debug.log("Error retrieving saved state:\n"+iq.getDoc().xml,1);
+      Debug.log("Error retrieving saved state:\n"+iq.xml(),1);
     else
       Debug.log("Error retrieving saved state",1);
   
-  if (iq && iq.getType() == 'result') {
-    Debug.log(iq.getDoc().xml,3);
+  } else {
+    Debug.log(iq.xml(), 2);
     var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
     for (var i=0; i<jNode.childNodes.length; i++) {
       var item = jNode.childNodes.item(i);
-      if (item.nodeName == 'presence' && item.firstChild && onlstat == '' && 
-      item.firstChild.nodeValue != 'offline')
-	onlstat = item.firstChild.nodeValue;
-      if (item.nodeName == 'onlmsg' && item.firstChild && onlmsg == '')
-	onlmsg = item.firstChild.nodeValue;
-      if (item.nodeName == 'hiddenGroups' && item.firstChild) {
-	var hiddenGroups = item.firstChild.nodeValue.split(',');
-	for (var j=0; j<hiddenGroups.length; j++)
-	  if (hiddenGroups[j] != '')
-	    roster.hiddenGroups[hiddenGroups[j]] = true;
-      }
+	  try {
+		switch (item.nodeName) {
+		case 'presence': 
+		  if (onlstat == '' && item.firstChild.nodeValue != 'offline')
+			onlstat = item.firstChild.nodeValue;
+		  break;
+		case 'onlmsg': 
+		  onlmsg = item.firstChild.nodeValue;
+		  break;
+		case 'hiddenGroups':
+		  var hiddenGroups = item.firstChild.nodeValue.split(',');
+		  for (var j=0; j<hiddenGroups.length; j++)
+			if (hiddenGroups[j] != '')
+			  roster.hiddenGroups[hiddenGroups[j]] = true;
+		}
+	  } catch(e) { Debug.log(e, 1); }
     }
   }
   
@@ -1127,7 +1133,8 @@ function getSavedState(iq) {
   iq = new JSJaCIQ();
   iq.setIQ(null,'get','jwchat_prefs');
   var query = iq.setQuery('jabber:iq:private');
-  query.appendChild(iq.getDoc().createElement('jwchat')).setAttribute('xmlns','jwchat:prefs');
+  query.appendChild(
+	iq.buildNode('jwchat', {'xmlns': 'jwchat:prefs'}));
   
   con.send(iq,getPrefs);
 }
@@ -1135,16 +1142,17 @@ function getSavedState(iq) {
 function getPrefs(iq) {
   if (!iq || iq.getType() != 'result')
     if (iq)
-      Debug.log("Error retrieving preferences:\n"+iq.getDoc().xml,1);
+      Debug.log("Error retrieving preferences:\n"+iq.xml(), 1);
     else
       Debug.log("Error retrieving preferences",1);
   
   if (iq && iq.getType() == 'result') {
-    Debug.log(iq.getDoc().xml,3);
+    Debug.log(iq.xml() ,2);
     if (iq.getNode().getElementsByTagName('jwchat').item(0)) {
       var jNode = iq.getNode().getElementsByTagName('jwchat').item(0);
       for (var i=0; i<jNode.childNodes.length; i++) {
-	switch (jNode.childNodes.item(i).nodeName) {
+		try {
+		  switch (jNode.childNodes.item(i).nodeName) {
 	case 'usersHidden':
 	  if (eval(jNode.childNodes.item(i).firstChild.nodeValue) != usersHidden)
 	    roster.toggleHide();
@@ -1171,7 +1179,8 @@ function getPrefs(iq) {
 	case 'enableLog':
 	  enableLog = eval(jNode.childNodes.item(i).firstChild.nodeValue);
 	  break;
-	}
+		  }
+		} catch(e) { Debug.log(e,1); }
       }
     }
   }
@@ -1202,7 +1211,8 @@ function getPrefs(iq) {
   iq = new JSJaCIQ();
   iq.setIQ(null,'get','storage_bookmarks');
   var query = iq.setQuery('jabber:iq:private');
-  query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:bookmarks');
+  query.appendChild(
+	iq.buildNode('storage', {'xmlns': 'storage:bookmarks'}));
   
   con.send(iq,getBookmarks);
   
@@ -1210,7 +1220,8 @@ function getPrefs(iq) {
   iq = new JSJaCIQ();
   iq.setIQ(null,'get','jwchat_notes');
   var query = iq.setQuery('jabber:iq:private');
-  query.appendChild(iq.getDoc().createElement('storage')).setAttribute('xmlns','storage:rosternotes');
+  query.appendChild(
+	iq.buildNode('storage', {'xmlns': 'storage:rosternotes'}));
   
   con.send(iq,getAnnotations);
 }
@@ -1432,25 +1443,26 @@ function logout() {
   var iq = new JSJaCIQ();
   iq.setIQ(null,'set');
   var query = iq.setQuery('jabber:iq:private');
-  var aNode = query.appendChild(iq.getDoc().createElement('jwchat'));
-  aNode.setAttribute('xmlns','jwchat:state');
+  var aNode = query.appendChild(
+	iq.buildNode('jwchat', {'xmlns': 'jwchat:state'}));
   
   // save presence
   if (onlstat != 'offline')
-    aNode.appendChild(iq.getDoc().createElement('presence')).appendChild(iq.getDoc().createTextNode(onlstat));
+    aNode.appendChild(iq.buildNode('presence', onlstat));
+
   if (onlmsg != '')
-    aNode.appendChild(iq.getDoc().createElement('onlmsg')).appendChild(iq.getDoc().createTextNode(onlmsg));
+    aNode.appendChild(iq.buildNode('onlmsg', onlmsg));
   
   var hiddengroups = '';
   if (typeof(roster) != 'undefined') {
-    for (var i=0; i<roster.hiddenGroups.length; i++)
-      if (roster.hiddenGroups[i])
-	hiddengroups += i+",";
-  }
+    for (var i in roster.hiddenGroups)
+	  hiddengroups += i+",";
+  } 
   
   if (hiddengroups != '')
-    aNode.appendChild(iq.getDoc().createElement('hiddenGroups')).appendChild(iq.getDoc().createTextNode(hiddengroups));
+    aNode.appendChild(iq.buildNode('hiddenGroups', hiddengroups));
   
+  Debug.log(iq.xml(), 2);
   con.send(iq);
   
   var aPresence = new JSJaCPresence();

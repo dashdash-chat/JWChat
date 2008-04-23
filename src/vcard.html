@@ -16,8 +16,7 @@ function sendSub() {
   var iq = new JSJaCIQ();
   iq.setType('set');
   
-  var vCard = iq.getNode().appendChild(iq.getDoc().createElement('vCard'));
-  vCard.setAttribute('xmlns','vcard-temp');
+  var vCard = iq.appendNode('vCard', {'xmlns': 'vcard-temp'});
   
   for (var i=0; i<document.forms[0].elements.length; i++) {
     var item = document.forms[0].elements[i];

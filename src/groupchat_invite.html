@@ -11,20 +11,19 @@
       <!--
 
 function doSub() {
-	if (document.forms[0].invite[0].checked) {
-		srcW.openGroupchat(to,srcW.jid.substring(0,srcW.jid.indexOf('@')),pass);
-	} else { // decline
-		var aMessage = new JSJaCMessage();
-		aMessage.setTo(to);
-		var x = aMessage.getNode().appendChild(aMessage.getDoc().createElement('x'));
-		x.setAttribute('xmlns','http://jabber.org/protocol/muc#user');
-		var decline = x.appendChild(aMessage.getDoc().createElement('decline'));
-		decline.setAttribute('to',from);
-		if (document.forms[0].reason.value != '')
-			decline.appendChild(aMessage.getDoc().createElement('reason')).appendChild(aMessage.getDoc().createTextNode(document.forms[0].reason.value));
-		srcW.con.send(aMessage);
-	}
-	window.close();
+  if (document.forms[0].invite[0].checked) {
+	srcW.openGroupchat(to,srcW.jid.substring(0,srcW.jid.indexOf('@')),pass);
+  } else { // decline
+	var aMessage = new JSJaCMessage();
+	aMessage.setTo(to);
+	var x = aMessage.appendNode('x', {'xmlns': 'http://jabber.org/protocol/muc#user'});
+	var decline = x.appendChild(aMessage.getDoc().createElement('decline'));
+	decline.setAttribute('to',from);
+	if (document.forms[0].reason.value != '')
+	  decline.appendChild(aMessage.getDoc().createElement('reason')).appendChild(aMessage.getDoc().createTextNode(document.forms[0].reason.value));
+	srcW.con.send(aMessage);
+  }
+  window.close();
 }
 
 var srcW, to, from, pass;

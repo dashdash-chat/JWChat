@@ -51,10 +51,12 @@ function rowClicked(e) {
   var aIQ = new JSJaCIQ();
   aIQ.setType('get');
   aIQ.setTo(srcW.loghost);
-  var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('retrieve'));
-  aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-  aNode.setAttribute('with',parent.jid);
-  aNode.setAttribute('start',selectedRow.getAttribute('start'));
+  var aNode = 
+	aIQ.appendNode(
+	  'retrieve', 
+	  {'xmlns': 'http://jabber.org/protocol/archive',
+	   'with': parent.jid,
+	   'start': selectedRow.getAttribute('start')});
 
   srcW.Debug.log(aIQ.xml(),2);
   

@@ -19,8 +19,8 @@ function doSub() {
   var iq = new JSJaCIQ();
   iq.setType('set');
   var query = iq.setQuery('jabber:iq:private');
-  var storage = query.appendChild(iq.getDoc().createElement('storage'));
-  storage.setAttribute('xmlns','storage:bookmarks');
+  var storage = query.appendChild(
+	iq.buildNode('storage', {'xmlns': 'storage:bookmarks'}));
 
   for (var i=0; i<srcW.bookmarks.length; i++) {
     var item = storage.appendChild(iq.getDoc().createElement('conference'));

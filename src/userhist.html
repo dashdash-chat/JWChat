@@ -12,23 +12,24 @@
       <!--
 function reloadHistory(iq) {
 
-	if (iq && iq.getType != 'result')
-		srcW.Debug.log(iq.xml(),1);
+  if (iq && iq.getType != 'result')
+	srcW.Debug.log(iq.xml(),1);
 
-	// clear iframes
-	selected_collection.document.body.innerHTML = '';
-	collections.document.body.innerHTML = '';
+  // clear iframes
+  selected_collection.document.body.innerHTML = '';
+  collections.document.body.innerHTML = '';
 
-	// get collections
-	var aIQ = new JSJaCIQ();
-	aIQ.setType('get');
-	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('list'));
-	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aNode.setAttribute('with',jid);
-	srcW.con.send(aIQ,me.handleCollsGet);
+  // get collections
+  var aIQ = new JSJaCIQ();
+  aIQ.setType('get');
+  aIQ.setTo(srcW.loghost);
+  var aNode = aIQ.appendNode(
+	'list', 
+	{'xmlns': 'http://jabber.org/protocol/archive',
+	 'with': jid});
+  srcW.con.send(aIQ,me.handleCollsGet);
 
-	return false;
+  return false;
 }
 
 function handleCollGet(iq) {
@@ -100,20 +101,21 @@ function handleCollsGet(iq) {
 }
 
 function deleteHistory() {
-	if (!confirm(loc("Are you sure you want to delete this chat history completely?")))
-		return;
+  if (!confirm(loc("Are you sure you want to delete this chat history completely?")))
+	return;
 
-	var aIQ = new JSJaCIQ();
-	aIQ.setType('set');
-	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('remove'));
-	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aNode.setAttribute('with',jid);
+  var aIQ = new JSJaCIQ();
+  aIQ.setType('set');
+  aIQ.setTo(srcW.loghost);
+  var aNode = 
+	aIQ.appendNode('remove',
+				   {'xmlns': 'http://jabber.org/protocol/archive',
+					'with': jid});
 	
-	srcW.Debug.log(aIQ.xml(),2);
+  srcW.Debug.log(aIQ.xml(),2);
 
-	me = this;
-	srcW.con.send(aIQ,me.reloadHistory);
+  me = this;
+  srcW.con.send(aIQ,me.reloadHistory);
 }
 
 var srcW;
@@ -142,11 +144,12 @@ function init() {
 	var aIQ = new JSJaCIQ();
 	aIQ.setType('get');
 	aIQ.setTo(srcW.loghost);
-	var aNode = aIQ.getNode().appendChild(aIQ.getDoc().createElement('list'));
-	aNode.setAttribute('xmlns','http://jabber.org/protocol/archive');
-	aNode.setAttribute('with',jid);
-	me = this;
-	srcW.con.send(aIQ,me.handleCollsGet);
+  var aNode = 
+	aIQ.appendNode('list',
+				   {'xmlns': 'http://jabber.org/protocol/archive',
+					'with': jid});
+  me = this;
+  srcW.con.send(aIQ,me.handleCollsGet);
 }
 
 function keyPressed(e) {

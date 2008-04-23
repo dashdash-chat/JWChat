@@ -250,12 +250,10 @@ function init() {
   var aPresence = new JSJaCPresence();
   aPresence.setTo(group+'/'+nick);
 
-  var x = aPresence.getDoc().createElement('x');
-  x.setAttribute('xmlns','http://jabber.org/protocol/muc');
+  var x = aPresence.appendNode('x', 
+	{'xmlns': 'http://jabber.org/protocol/muc'});
   if (typeof(pass) != 'undefined' && pass != '')
-    x.appendChild(aPresence.getDoc().createElement('password')).appendChild(aPresence.getDoc().createTextNode(pass));
-
-  aPresence.getNode().appendChild(x);
+    x.appendChild(aPresence.buildNode('password' ,pass));
 
   if (srcW.onlstat != 'available' && srcW.onlstat != 'invisible')
     aPresence.setShow(srcW.onlstat);
