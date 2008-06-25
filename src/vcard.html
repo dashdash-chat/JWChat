@@ -34,7 +34,7 @@ function sendSub() {
       vCard.appendChild(iq.getDoc().createElement(item.id)).appendChild(iq.getDoc().createTextNode(item.value));
     }
   }
-  srcW.Debug.log(iq.getDoc().xml,3);
+  srcW.Debug.log(iq.xml(),3);
   srcW.con.send(iq);
   window.close();
 }
@@ -64,8 +64,7 @@ function init() {
   iq.setType('get');
   if (cutResource(jid) != srcW.cutResource(srcW.jid)) // not me
     iq.setTo(jid);
-  var vCard = iq.getNode().appendChild(iq.getDoc().createElement('vCard'));
-  vCard.setAttribute('xmlns','vcard-temp');
+  iq.appendNode('vCard', {'xmlns': 'vcard-temp'});
   me = this;
   srcW.con.send(iq,me.handleVCard);
 }
@@ -76,7 +75,7 @@ function handleVCard(iq) {
     return;
   }
   
-  srcW.Debug.log(iq.getDoc().xml,3);
+  srcW.Debug.log(iq.xml(),3);
   
   if (iq.getNode().getElementsByTagName('vCard').item(0)) {
     for (var i=0; i<iq.getNode().getElementsByTagName('vCard').item(0).childNodes.length; i++) {
