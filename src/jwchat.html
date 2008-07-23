@@ -615,12 +615,11 @@ function handlePresence(presence) {
   // roster subscriptions synchronisation
   var x;
   if (isGateway(from.substring(from.indexOf('@')+1))) {
-    for (var i=0; i<presence.getNode().getElementsByTagName('x').length; i++)
-      if (presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/roster-subsync' ||
-	  presence.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://delx.cjb.net/protocol/roster-subsync') {
-	x = presence.getNode().getElementsByTagName('x').item(i);
-	break;
-      }
+    var x = null;
+    if (presence.getChild('x', 'http://jabber.org/protocol/roster-subsync'))
+      x = presence.getChild('x', 'http://jabber.org/protocol/roster-subsync');
+    else if (presence.getChild('x', 'http://delx.cjb.net/protocol/roster-subsync'))
+      x = presence.getChild('x', 'http://delx.cjb.net/protocol/roster-subsync');
     
     if (x) {
 
