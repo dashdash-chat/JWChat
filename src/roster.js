@@ -478,7 +478,6 @@ function getUserInnerHTML(user, group) {
 }
 
 function updateRoster() {
-  Debug.log('updating roster',2);
   for (var i=0; i<this.groups.length; i++) {
     var group = this.groups[i];
     group.users = group.users.sort(rosterSort);
@@ -489,7 +488,7 @@ function updateRoster() {
         var userElId = getUserElementId(user,group);
         var userEl = this.rosterW.getElementById(userElId);
         if (!userEl) { // add user
-          userEl = document.createElement('div');
+          userEl = this.rosterW.createElement('div');
           userEl.id = userElId;
           userEl.className = getRosterUserClass(this.usersHidden, user, group);
           var onclickHandler = function(el, user, roster) {
@@ -543,7 +542,7 @@ function updateRoster() {
           this.rosterW.getElementById(group.name+'All').innerHTML = group.users.length;
       }
     } else { // add group
-      var groupHeaderEl = document.createElement('div');
+      var groupHeaderEl = this.rosterW.createElement('div');
       groupHeaderEl.id = group.name+"Head";
       groupHeaderEl.className = getRosterGroupHeaderClass(this.usersHidden, group);
       var onclickHandler = function(group) {
@@ -552,6 +551,33 @@ function updateRoster() {
         return toggler;
       }
       groupHeaderEl.onclick = onclickHandler(group);
+
+      groupEl = this.rosterW.createElement('div');
+      groupEl.id = group.name;
+      var rosterGroupClass = (
+            (this.usersHidden && group.onlUserCount == 0 &&
+             group.messagesPending == 0 &&
+             group.name != loc("Gateways"))
+            || this.hiddenGroups[group.name])
+        ? 'hidden':'rosterGroup';
+      groupEl.className = rosterGroupClass;
+
+      var rosterEl = this.rosterW.getElementById("roster");  
+
+      var siblingEl;
+      var j = i + 1;
+      while (!siblingEl && j < this.groups.length) {
+        siblingEl = this.rosterW.getElementById(this.groups[j].name+'Head');
+        j++;
+      }
+      if (!siblingEl) {
+        rosterEl.appendChild(groupHeaderEl)
+        rosterEl.appendChild(groupEl);
+      } else {
+        rosterEl.insertBefore(groupHeaderEl, siblingEl);
+        rosterEl.insertBefore(groupEl, siblingEl);
+      }
+
       var A = new Array();
       A[A.length] = "<nobr>";
       var toggleImg = (this.hiddenGroups[group.name])?'images/group_close.gif':'images/group_open.gif';
@@ -573,15 +599,6 @@ function updateRoster() {
       A[A.length] = "</nobr>";
       groupHeaderEl.innerHTML = A.join('');
 
-      groupEl = document.createElement('div');
-      groupEl.id = group.name;
-      var rosterGroupClass = (
-            (this.usersHidden && group.onlUserCount == 0 &&
-             group.messagesPending == 0 &&
-             group.name != loc("Gateways"))
-            || this.hiddenGroups[group.name])
-        ? 'hidden':'rosterGroup';
-      groupEl.className = rosterGroupClass;
 
       A = new Array();
       for (var j=0; j<group.users.length; j++) {
@@ -603,20 +620,6 @@ function updateRoster() {
       } /* END inner loop */
       groupEl.innerHTML = A.join('');
 
-      var siblingEl;
-      var j = i + 1;
-      while (!siblingEl && j < this.groups.length) {
-        siblingEl = this.rosterW.getElementById(this.groups[j].name+'Head');
-        j++;
-      }
-      var rosterEl = this.rosterW.getElementById("roster");
-      if (!siblingEl) {
-        rosterEl.appendChild(groupHeaderEl)
-        rosterEl.appendChild(groupEl);
-      } else {
-        rosterEl.insertBefore(groupHeaderEl, siblingEl);
-        rosterEl.insertBefore(groupEl, siblingEl);
-      }
     }
   }
 }
