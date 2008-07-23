@@ -90,11 +90,13 @@ function openGroupchat(aJid,nick,pass) {
   nick = nick || '';
 
   var user = roster.getUserByJID(aJid);
+  try {
   if(!user) {
     user = roster.addUser(new RosterUser(aJid,'',[loc('Chat Rooms')],aJid.substring(0,aJid.indexOf('@'))));
     user.type = 'groupchat';
     roster.print();
   }
+  } catch(e) { Debug.log(e.message, 1); }
   if (!user.chatW || user.chatW.closed)
     user.chatW = open("groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=520,height=390,resizable=yes");
   user.chatW.focus();
@@ -138,7 +140,7 @@ function sendCustomPresence(aJid,presence,msg) {
   if (typeof(msg) != 'undefined' && msg != '')
     oPresence.setStatus(msg);
   
-  Debug.log(oPresence.getDoc().xml,2);
+  Debug.log(oPresence.xml(),2);
   con.send(oPresence);
 }
 
@@ -405,7 +407,7 @@ function changeStatus(val,away,prio) {
  */
 function handleMessage(aMessage) {
 
-  Debug.log(aMessage.getDoc().xml,2);
+  Debug.log(aMessage.xml(),2);
 
   if (aMessage.getType() == 'error')
     return;
@@ -568,7 +570,7 @@ function handleMessageError(aJSJaCPacket) {
   if (aJSJaCPacket.getType() != 'error')
     return;
   
-  Debug.log(aJSJaCPacket.getDoc().xml,2);
+  Debug.log(aJSJaCPacket.xml(),2);
   
   var user = roster.getUserByJID(cutResource(aJSJaCPacket.getFrom()));
   
@@ -601,7 +603,7 @@ function handleMessageError(aJSJaCPacket) {
  */
 
 function handlePresence(presence) {
-  Debug.log(presence.getDoc().xml,2);
+  Debug.log(presence.xml(),2);
 
   var from = cutResource(presence.getFrom());
   var type = presence.getType();
@@ -937,14 +939,14 @@ function handlePresence(presence) {
 
 function handleIQSet(iq) {
   if (iq.getType() != "set") {
-    Debug.log("not handling iq:\n"+iq.getDoc().xml,3);
+    Debug.log("not handling iq:\n"+iq.xml(),3);
     return;
   }
   
-  Debug.log("got iq type 'set':\n"+iq.getDoc().xml,2);
+  Debug.log("got iq type 'set':\n"+iq.xml(),2);
   
   if (iq.getQueryXMLNS() != 'jabber:iq:roster') { // only handle roster items so far
-    Debug.log("not handling iq:\n"+iq.getDoc().xml,1);
+    Debug.log("not handling iq:\n"+iq.xml(),1);
     return;
   }
   
@@ -1076,13 +1078,13 @@ function handleConnected() {
 function getRoster(iq) {
   if (!iq || iq.getType() != 'result') {
     if (iq)
-      Debug.log("Error fetching roster:\n"+iq.getDoc().xml,1);
+      Debug.log("Error fetching roster:\n"+iq.xml(),1);
     else
       Debug.log("Error fetching roster",1);
     return;
   }
   
-  Debug.log("got roster:\n"+iq.getDoc().xml,2);
+  Debug.log("got roster:\n"+iq.xml(),2);
   
   roster = new Roster(iq.getQuery().childNodes,fmd);
   roster.usersHidden = usersHidden;
@@ -1125,7 +1127,7 @@ function getSavedState(iq) {
 			if (hiddenGroups[j] != '')
 			  roster.hiddenGroups[hiddenGroups[j]] = true;
 		}
-	  } catch(e) { Debug.log(e, 1); }
+	  } catch(e) { Debug.log(e.toString(), 1); }
     }
   }
   
@@ -1180,7 +1182,7 @@ function getPrefs(iq) {
 	  enableLog = eval(jNode.childNodes.item(i).firstChild.nodeValue);
 	  break;
 		  }
-		} catch(e) { Debug.log(e,1); }
+		} catch(e) { Debug.log(e.toString(),1); }
       }
     }
   }
@@ -1230,7 +1232,7 @@ function getDiscoItems(iq) {
   if (!iq)
     return;
   
-  Debug.log(iq.getDoc().xml,2);
+  Debug.log(iq.xml(),2);
   
   disco = new Object();
   
@@ -1252,7 +1254,7 @@ function getDiscoInfo(iq) {
   if (!iq || iq.getType() != 'result')
     return;
   
-  Debug.log(iq.getDoc().xml,2);
+  Debug.log(iq.xml(),2);
   if (iq.getType() == 'result') {
     disco[iq.getFrom()] = iq;
     
@@ -1279,7 +1281,7 @@ function getBookmarks(iq) {
   if (!iq || iq.getType() != 'result')
     return;
   
-  Debug.log(iq.getDoc().xml,2);
+  Debug.log(iq.xml(),2);
   
   bookmarks = new Array();
 
@@ -1311,7 +1313,7 @@ function getAnnotations(iq) {
   if (!iq || iq.getType() != 'result')
     return;
 	
-  Debug.log(iq.getDoc().xml,2);
+  Debug.log(iq.xml(),2);
 	
   annotations = new Object();
 

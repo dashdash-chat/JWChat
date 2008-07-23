@@ -161,7 +161,7 @@ function changeUserStat(jid,stat,val,confirm,reason) {
 function handleError(iq) {
   // handle error
   if (iq && iq.getType() == 'error') {
-    srcW.Debug.log(iq.getDoc().xml,1);
+    srcW.Debug.log(iq.xml(),1);
     var error = iq.getNode().getElementsByTagName('error').item(0);
     if (error) {
       var msg = '';
@@ -261,7 +261,7 @@ function init() {
   if (srcW.onlmsg != '')
     aPresence.setStatus(srcW.onlmsg);
 
-  srcW.Debug.log("sending muc presence:\n"+aPresence.getDoc().xml,3);
+  srcW.Debug.log("sending muc presence:\n"+aPresence.xml(),3);
 
   srcW.con.send(aPresence);
   
