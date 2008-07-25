@@ -1478,19 +1478,6 @@ function logout() {
  ************************************************************************
  */
 
-/* check for unsupported browsers */
-if (is.b == 'op' || 
-    is.b == 'Konqueror' || 
-    (is.b == 'ns' && is.v < '5') ||
-    (is.ie && is.mac) ||
-    is.ie4
-    ) 
-  {
-    open("unsupported.html","unsupported","width=380,height=180");
-  }
-
-
-/* quick hack - need this info before onload */
 /* get args */
 getArgs();
 
