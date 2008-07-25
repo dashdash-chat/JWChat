@@ -25,14 +25,20 @@ Windows XP/2000/ME/98/95:
 * MS Internet Explorer version >= 5.0
 * Netscape version 6 & 7
 * Mozilla (stable) version >= 1.0.2
+* Firefox 2.x and 3.x
+* Opera since v9.x
   
 Mac OS X:
 * Mozilla (stable) version >= 1.0.2
+* Firefox 2.x and 3.x
 * Camino 0.7
-* Support for safari coming soon...
+* Safari since version 3
 
 Linux:
-* Mozilla (stable) version >= 1.0.2
+* Mozilla since version >= 1.0.2
+* Firefox 2.x and 3.x
+* Konqueror since v?
+* Opera since 9.x
 
 
 Requirements
