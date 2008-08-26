@@ -175,10 +175,66 @@ function tabclicked(e) {
       var tabs = document.getElementById('tabs');
       tabs.childNodes[oldactiveindex].className = 'tabinactive';
       tabs.childNodes[i].className = 'tab';
+      hide_error(tabs.childNodes[i].id);
       tablabels.childNodes[i].className = 'tablabelactive';
       tablabels.childNodes[oldactiveindex].className = 'tablabel';
       oldactiveindex = i;
     }
+}
+
+function hide_error(parent_id) {
+  var el = getChildByClassName(parent_id, 'error_wrap');
+  if (el) el.style.display = 'none';
+}
+
+function show_error(parent_id, text) {
+  var el = getChildByClassName(parent_id, 'error_wrap');
+  
+  if (!el) return false; // well ... not our fault, stupid
+
+  el.innerHTML = text;
+  el.style.display = '';
+
+  return false;
+}
+
+function getChildByClassName(parent, className) {
+  if (document.getElementById(parent))
+    var children = document.getElementById(parent).childNodes
+  else return null;
+  for (var i in children)
+    if (children[i].className == className)
+      return children[i]; // first occurrence
+  return null; // nothing found
+}
+
+function changePassword(form) {
+  hide_error('password_tab');
+
+  if (form.password_new.value != form.password_repeat.value)
+    return show_error('password_tab', loc("Passwords don't match"));
+    
+  var aIQ = new JSJaCIQ();
+  aIQ.setType("set");
+
+  var aQuery = aIQ.setQuery("jabber:iq:register");
+
+  aQuery.appendChild(aIQ.buildNode('username', srcW.nick));
+  aQuery.appendChild(aIQ.buildNode('password', form.password_new.value));
+
+  me = self;
+  srcW.con.sendIQ(aIQ,{
+  result_handler:
+    function() {
+      me.show_error('password_tab', loc("Password changed successfully"));
+    },
+  error_handler:
+    function() {
+      me.show_error("An error occured");
+    }
+  });
+
+  return false;
 }
 
 function registerService(sJid,paneid) {
@@ -415,6 +471,13 @@ onunload = savePrefs;
 			.tab { display: block; }
 			.tabinactive { display: none;	}
 			.pane_el { margin: 4px; }
+            .error_wrap {
+            padding: 8px;
+              margin: 8px;
+            font-weight: bold;
+            background-color: #ffc2c2;
+            border: 1px solid red;
+            }
 		</style>
   </head>
   <body style="margin: 8px;">
@@ -422,7 +485,7 @@ onunload = savePrefs;
 	<table border=0 cellpadding=0 cellspacing=0 height="100%" width="100%">
 		<tr>
 			<td>
-			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class="tablabel" id='gw_label'><l>Gateways</l></span><span class="tablabel" id='dir_label'><l>User Directory</l></span><span class="tablabel"><l>About</l></span></div>
+			<div id="tablabels" class="tablabels"><span class="tablabelactive"><l>General</l></span><span class='tablabel' id='pw_label'><l>Change Password</l></span><span class="tablabel" id='gw_label'><l>Gateways</l></span><span class="tablabel" id='dir_label'><l>User Directory</l></span><span class="tablabel"><l>About</l></span></div>
 			</td></tr>
 		<tr><td height="100%" class="tabs" valign="top">
 			<div id="tabs"><div id="tab1" class="tab">
@@ -476,6 +539,16 @@ onunload = savePrefs;
 						</table>
 					</fieldset>
 				</form>
+            </div><div class="tabinactive" id="password_tab">
+                <div class="error_wrap"></div>
+                <form name="password_form" onSubmit="return changePassword(this);">
+                  <table border="0">
+                    <tr><th>New Password</th>
+                      <td><input type="password" name="password_new" value=""></td></tr>
+                    <tr><th>Retype Password</th>
+                      <td><input type="password" name="password_repeat" value=""></td></tr>
+                    <tr><td></td><td><input type="submit"></td></tr>
+                    </table></form>
 			</div><div class="tabinactive" id="transports_tab"><l>Register at</l> <select id="transports_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Gateway</l> - </option></select><div id="transport_pane"></div></div><div class="tabinactive" id="directory_tab"><l>Register at</l>  <select id="directory_selector" onchange="service_selected(this);"><option value=""> - <l>Choose Directory</l> - </option></select><div id="directory_pane"></div></div><div class="tabinactive" id="about_tab" align="center">
 								<p>
 								<img src="images/jwchat.jpg" style="border:1px solid black;">
