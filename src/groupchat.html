@@ -292,7 +292,7 @@ function keyPressed(e) {
 }
 
 function updateStyleIE() {
-  if (user)
+  if (user && user.roster)
     user.roster.updateStyleIE();
 }
 
