@@ -523,11 +523,18 @@ function updateRoster() {
             if (spanEls[1]) {
               spanEls[1].innerHTML = htmlEnc(user.statusMsg);
             } else {
-              var A = new Array();
-              A[A.length] = "<br clear=all><nobr><span class=\"statusMsg\">";
-              A[A.length] = htmlEnc(user.statusMsg);
-              A[A.length] = "</span></nobr>";
-              userEl.getElementsByTagName('div')[0].innerHTML += A.join('');
+              try {
+                var A = new Array();
+                A[A.length] = "<br clear='all'><nobr><span class='statusMsg'>";
+                A[A.length] = htmlEnc(user.statusMsg);
+                A[A.length] = "</span></nobr>";
+                var html = A.join('');
+                var divEls = userEl.getElementsByTagName('div');
+                if (divEls && divEls[0])
+                  divEls[0].innerHTML += html;
+              } catch(e) {
+                // qnd: somehow IE7 doesn't like the 'nobr' here - why?
+              }                
             }
           }
         }
