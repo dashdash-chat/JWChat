@@ -292,8 +292,10 @@ function keyPressed(e) {
 }
 
 function updateStyleIE() {
-  if (user && user.roster)
-    user.roster.updateStyleIE();
+  try {
+    if (user && user.roster)
+      user.roster.updateStyleIE();
+  } catch(e) {}
 }
 
 onkeydown = keyPressed;
