@@ -10,8 +10,10 @@ function toggleGrp(name) {
 }
 
 function updateStyleIE() {
-  if (parent.top.user && parent.top.user.roster)
-    parent.top.user.roster.updateStyleIE();
+  try {
+    if (parent.top.user && parent.top.user.roster)
+      parent.top.user.roster.updateStyleIE();
+  } catch(e) {}
 }
 onresize = updateStyleIE;
     </script>
