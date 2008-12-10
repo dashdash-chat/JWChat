@@ -11,228 +11,223 @@
       <!--
 
 function back() {
-	document.getElementById('search_form').style.display = '';
-	document.getElementById('search_results').style.display = 'none';
+  document.getElementById('search_form').style.display = '';
+  document.getElementById('search_results').style.display = 'none';
 
-	//	reset form
-	document.getElementById('add_button').disabled = true;
-	document.getElementById('info_button').disabled = true;
-	resultF.selectedRow = null;
+  //	reset form
+  document.getElementById('add_button').disabled = true;
+  document.getElementById('info_button').disabled = true;
+  resultF.selectedRow = null;
 
-	resultF.document.getElementById('results').innerHTML = '';
+  resultF.document.getElementById('results').innerHTML = '';
 
-	return false;
+  return false;
 }
 
 function searchUser() {
-	document.getElementById('search_results').style.display = '';
-	document.getElementById('search_form').style.display = 'none';
+  document.getElementById('search_results').style.display = '';
+  document.getElementById('search_form').style.display = 'none';
 
-	document.getElementById('results_header').innerHTML = loc("Querying ...");
-	// send query
-	var searchstring = '';
-	var jabberXData = (document.forms['searchfields'].elements['jwchat_form_type'] && document.forms['searchfields'].elements['jwchat_form_type'].value == 'jabber:x:data');
+  document.getElementById('results_header').innerHTML = loc("Querying ...");
+  // send query
+  var searchstring = '';
+  var jabberXData = (document.forms['searchfields'].elements['jwchat_form_type'] && document.forms['searchfields'].elements['jwchat_form_type'].value == 'jabber:x:data');
 
-	if (jabberXData)
-		searchstring = genJabberXDataReply(document.forms['searchfields']);
-	else {
-		for (var i=0; i<document.forms['searchfields'].elements.length; i++) 
-			if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].value != '') 
-				searchstring += "<"+document.forms['searchfields'].elements[i].name+">"+document.forms['searchfields'].elements[i].value+"</"+document.forms['searchfields'].elements[i].name+">";
-	}
+  if (jabberXData)
+    searchstring = genJabberXDataReply(document.forms['searchfields']);
+  else {
+    for (var i=0; i<document.forms['searchfields'].elements.length; i++) 
+      if (document.forms['searchfields'].elements[i].name != '' && document.forms['searchfields'].elements[i].value != '') 
+	searchstring += "<"+document.forms['searchfields'].elements[i].name+">"+document.forms['searchfields'].elements[i].value+"</"+document.forms['searchfields'].elements[i].name+">";
+  }
 
-	var to = document.forms['service_select'].elements['service'].options[document.forms['service_select'].elements['service'].selectedIndex].value;
+  var to = document.forms['service_select'].elements['service'].options[document.forms['service_select'].elements['service'].selectedIndex].value;
 
-	srcW.Debug.log("searchstring: "+ searchstring, 3);
+  srcW.Debug.log("searchstring: "+ searchstring, 3);
 
-	var iq = new JSJaCIQ();
+  var iq = new JSJaCIQ();
 
-	if (searchstring == '') {
-		iq.setTo(to+"/users");
-		iq.setType('get');
-		iq.setQuery('jabber:iq:browse');
-	} else {
-		iq.setTo(to);
-		iq.setType('set');
-		var query = iq.setQuery('jabber:iq:search');
+  if (searchstring == '') {
+    iq.setTo(to+"/users");
+    iq.setType('get');
+    iq.setQuery('jabber:iq:browse');
+  } else {
+    iq.setTo(to);
+    iq.setType('set');
+    var query = iq.setQuery('jabber:iq:search');
 
-		var xmldoc = XmlDocument.create('body','foo');
-		xmldoc.loadXML('<body>'+searchstring+'</body>');
+    var xmldoc = XmlDocument.create('','');
+    xmldoc.loadXML(searchstring);
 
-		for (var i=0; i<xmldoc.documentElement.childNodes.length; i++)
-			query.appendChild(xmldoc.firstChild.childNodes.item(i).cloneNode(true));
+    query.appendChild(xmldoc.documentElement.cloneNode(true));
+  }
 
-		query.appendChild(xmldoc.firstChild.cloneNode(true));
-
-	}
-
-	srcW.Debug.log("created query:" + iq.getDoc().xml,2);
-
-	me = this;
-	srcW.con.send(iq,me.getQueryResult);
-	return false;
+  srcW.Debug.log("created query:" + iq.xml(),2);
+  
+  srcW.con.send(iq, getQueryResult);
+  return false;
 }
 
 function getQueryResult(iq) {
-	if (!iq || iq.getType() != 'result') {
-		document.getElementById('results_header').innerHTML = loc("An error has occured");
-		return false;
+  if (!iq || iq.getType() != 'result') {
+    document.getElementById('results_header').innerHTML = loc("An error has occured");
+    return false;
+  }
+
+  srcW.Debug.log("got result: " + iq.getDoc().xml,2);
+
+  var html = "<table width='100%' border=0 cellspacing=0 cellpadding=0>";
+
+  // check if it's jabber:x:data
+  if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
+
+    var x = iq.getNode().getElementsByTagName('x').item(0);
+
+    // get title
+    if (x.getElementsByTagName('title').item(0))
+      document.getElementById('results_header').innerHTML = x.getElementsByTagName('title').item(0).firstChild.nodeValue;
+    else
+      document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
+
+    if (x.getElementsByTagName('reported').item(0) && x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length) { // well - this should be there always
+
+      // get header
+      html += "<tr>";
+      for (var i=0 ; i<x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length; i++) {
+	var aField = x.getElementsByTagName('reported').item(0).getElementsByTagName('field').item(i);
+	html += "<th var='"+aField.getAttribute('var')+"' nowrap>"+aField.getAttribute('label')+"</th>";
+      }
+      html += "</tr>";
+
+      // get items
+      for (var i=0; i<x.getElementsByTagName('item').length; i++) {
+	var item = x.getElementsByTagName('item').item(i);
+	
+	html += "<tr>";
+	for (var j=0 ; j<x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length; j++) {
+	  var rField = x.getElementsByTagName('reported').item(0).getElementsByTagName('field').item(j);
+	  for (var k=0; k<item.getElementsByTagName('field').length; k++) {
+	    var iField = item.getElementsByTagName('field').item(k);
+	    if (rField.getAttribute('var') == iField.getAttribute('var')) { // matched
+	      if (!iField.firstChild.firstChild)
+		html += "<td>&nbsp;</td>";
+	      else
+		html += "<td nowrap>"+iField.firstChild.firstChild.nodeValue+"</td>";
+	    }
+	  }
 	}
+	
+	html += "</tr>";
+      }
+    }
+  } else if (iq.getNode().firstChild.getAttribute('xmlns') == 'jabber:iq:browse') {
+    document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
 
-	srcW.Debug.log("got result: " + iq.getDoc().xml,2);
+    // set header
+    html += "<tr><th>JID</th><th>Name</th></tr>";
 
-	var html = "<table width='100%' border=0 cellspacing=0 cellpadding=0>";
+    // fill in items
+    for (var i=0; i<iq.getNode().firstChild.childNodes.length; i++) {
+      var item = iq.getNode().firstChild.childNodes.item(i);
+      html += "<tr>";
+      html += "<td>"+item.getAttribute('jid')+"</td>";
+      var val = item.getAttribute('name');
+      if (!val || val == '')
+	val = '&nbsp;';
+      html += "<td nowrap>"+val+"</td>";
+      html += "</tr>";
+    }
+  } else if (iq.getQueryXMLNS() == 'jabber:iq:search') {
+    document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
 
-	// check if it's jabber:x:data
-	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
+    // set header
+    html += "<tr><th>JID</th>";
+    for (var j=0; j<document.forms['searchfields'].elements.length; j++)
+      html += "<th>"+document.forms['searchfields'].elements[j].name+"</th>";
+    html += '<tr>';
 
-		var x = iq.getNode().getElementsByTagName('x').item(0);
-
-		// get title
-		if (x.getElementsByTagName('title').item(0))
-			document.getElementById('results_header').innerHTML = x.getElementsByTagName('title').item(0).firstChild.nodeValue;
-		else
-			document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
-
-		if (x.getElementsByTagName('reported').item(0) && x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length) { // well - this should be there always
-
-			// get header
-			html += "<tr>";
-			for (var i=0 ; i<x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length; i++) {
-				var aField = x.getElementsByTagName('reported').item(0).getElementsByTagName('field').item(i);
-				html += "<th var='"+aField.getAttribute('var')+"' nowrap>"+aField.getAttribute('label')+"</th>";
-			}
-			html += "</tr>";
-
-			// get items
-			for (var i=0; i<x.getElementsByTagName('item').length; i++) {
-				var item = x.getElementsByTagName('item').item(i);
-				
-				html += "<tr>";
-				for (var j=0 ; j<x.getElementsByTagName('reported').item(0).getElementsByTagName('field').length; j++) {
-					var rField = x.getElementsByTagName('reported').item(0).getElementsByTagName('field').item(j);
-					for (var k=0; k<item.getElementsByTagName('field').length; k++) {
-						var iField = item.getElementsByTagName('field').item(k);
-						if (rField.getAttribute('var') == iField.getAttribute('var')) { // matched
-							if (!iField.firstChild.firstChild)
-								html += "<td>&nbsp;</td>";
-							else
-								html += "<td nowrap>"+iField.firstChild.firstChild.nodeValue+"</td>";
-						}
-					}
-				}
-				
-				html += "</tr>";
-			}
-		}
-	} else if (iq.getNode().firstChild.getAttribute('xmlns') == 'jabber:iq:browse') {
-		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
-
-		// set header
-		html += "<tr><th>JID</th><th>Name</th></tr>";
-
-		// fill in items
- 		for (var i=0; i<iq.getNode().firstChild.childNodes.length; i++) {
-			var item = iq.getNode().firstChild.childNodes.item(i);
- 			html += "<tr>";
-			html += "<td>"+item.getAttribute('jid')+"</td>";
-			var val = item.getAttribute('name');
-			if (!val || val == '')
-				val = '&nbsp;';
-			html += "<td nowrap>"+val+"</td>";
- 			html += "</tr>";
- 		}
-	} else if (iq.getQueryXMLNS() == 'jabber:iq:search') {
-		document.getElementById('results_header').innerHTML = loc("Search results for [_1]", iq.getFrom());
-
-		// set header
-		html += "<tr><th>JID</th>";
-		for (var j=0; j<document.forms['searchfields'].elements.length; j++)
-			html += "<th>"+document.forms['searchfields'].elements[j].name+"</th>";
-		html += '<tr>';
-
-		// fill in items
- 		for (var i=0; i<iq.getQuery().childNodes.length; i++) {
-			var item = iq.getQuery().childNodes.item(i);
- 			html += "<tr>";
-			html += "<td>"+item.getAttribute('jid')+"</td>";
+    // fill in items
+    for (var i=0; i<iq.getQuery().childNodes.length; i++) {
+      var item = iq.getQuery().childNodes.item(i);
+      html += "<tr>";
+      html += "<td>"+item.getAttribute('jid')+"</td>";
       for (var j=0; j<document.forms['searchfields'].elements.length; j++) {
         if (document.forms['searchfields'].elements[j].name != '' && item.getElementsByTagName(document.forms['searchfields'].elements[j].name).length > 0 && item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0).firstChild)
           html += "<td nowrap>"+item.getElementsByTagName(document.forms['searchfields'].elements[j].name).item(0).firstChild.nodeValue+"</td>";
         else
           html += "<td nowrap>&nbsp;</td>";
       }
-		}
-	}
-	
-	html += "</table>";
-	resultF.document.getElementById('results').innerHTML = html;
-	resultF.init();
-	
-	return false;
+    }
+  }
+  
+  html += "</table>";
+  resultF.document.getElementById('results').innerHTML = html;
+  resultF.init();
+  
+  return false;
 }
 
 function serviceSelected(selbox) {
-	var el = selbox.options[selbox.selectedIndex];
+  var el = selbox.options[selbox.selectedIndex];
 
-	// clear box
-	document.getElementById('searchfields').innerHTML = '';
+  // clear box
+  document.getElementById('searchfields').innerHTML = '';
 
-	if (el.value == '')
-		return;
+  if (el.value == '')
+    return;
 
-	// query service
+  // query service
 
-	var iq = new JSJaCIQ();
-	iq.setType('get');
-	iq.setTo(el.value);
-	iq.setQuery('jabber:iq:search');
+  var iq = new JSJaCIQ();
+  iq.setType('get');
+  iq.setTo(el.value);
+  iq.setQuery('jabber:iq:search');
 
-	me = this;
-	srcW.con.send(iq,me.getSearchForm);
-	return false;
+  me = this;
+  srcW.con.send(iq,me.getSearchForm);
+  return false;
 }
 
 function getSearchForm(iq) {
-	if (!iq || iq.getType() != 'result') {
-		document.getElementById('searchfields').innerHTML = loc("An Error Occured\nAborting...");
-		srcW.Debug.log("empty result",1);
-		return false;
-	}
-	srcW.Debug.log(iq.getDoc().xml,2);
+  if (!iq || iq.getType() != 'result') {
+    document.getElementById('searchfields').innerHTML = loc("An Error Occured\nAborting...");
+    srcW.Debug.log("empty result",1);
+    return false;
+  }
+  srcW.Debug.log(iq.getDoc().xml,2);
 
-	// check if it's jabber:x:data
-	var html = '';
-	if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
-		html += genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0));
-	} else {
+  // check if it's jabber:x:data
+  var html = '';
+  if (iq.getNode().getElementsByTagName('x').length && iq.getNode().getElementsByTagName('x').item(0).getAttribute('xmlns') == 'jabber:x:data') {
+    html += genJabberXDataTable(iq.getNode().getElementsByTagName('x').item(0));
+  } else {
 
-		html = "<table>";
-		if (iq.getNode().getElementsByTagName('instructions').item(0))
-			html += "<tr><th colspan=2>"+iq.getNode().getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</th></tr>";
-		
-		for (var i=0; i<iq.getQuery().childNodes.length; i++) {
-			var aNode = iq.getQuery().childNodes.item(i);
-			if (aNode.nodeName == 'instructions')
-				continue;
-			if (aNode.nodeName == 'key')
-				html += "<tr><td colspan=2><input type=hidden value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
-			else {
-				if (aNode.firstChild)
-					html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\" value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
-				else
-					html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\"></td></tr>";
-			}
+    html = "<table>";
+    if (iq.getNode().getElementsByTagName('instructions').item(0))
+      html += "<tr><th colspan=2>"+iq.getNode().getElementsByTagName('instructions').item(0).firstChild.nodeValue+"</th></tr>";
+    
+    for (var i=0; i<iq.getQuery().childNodes.length; i++) {
+      var aNode = iq.getQuery().childNodes.item(i);
+      if (aNode.nodeName == 'instructions')
+	continue;
+      if (aNode.nodeName == 'key')
+	html += "<tr><td colspan=2><input type=hidden value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
+      else {
+	if (aNode.firstChild)
+	  html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\" value=\""+aNode.firstChild.nodeValue+"\"></td></tr>";
+	else
+	  html += "<tr><td>"+aNode.nodeName+"&nbsp;</td><td><input type=\"text\" name=\""+aNode.nodeName+"\"></td></tr>";
+      }
 
-		}
-		html += "</table>";
-	}
-	html += "<hr noshade size=1><div align=right><button onClick='return searchUser();'>"+loc("Search")+"</button></div>";
+    }
+    html += "</table>";
+  }
+  html += "<hr noshade size=1><div align=right><button onClick='return searchUser();'>"+loc("Search")+"</button></div>";
 
-	var searchfields = document.getElementById('searchfields');
-	searchfields.innerHTML = html;
+  var searchfields = document.getElementById('searchfields');
+  searchfields.innerHTML = html;
 
-	return false;
+  return false;
 }
 
 var searchW = window;
