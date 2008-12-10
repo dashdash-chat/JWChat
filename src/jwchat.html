@@ -21,7 +21,7 @@
 
  /* ***
   * JWChat, a web based jabber client
-  * Copyright (C) 2003-2007 Stefan Strigler <steve@zeank.in-berlin.de>
+  * Copyright (C) 2003-2008 Stefan Strigler <steve@zeank.in-berlin.de>
   *
   * This program is free software; you can redistribute it and/or
   * modify it under the terms of the GNU General Public License
@@ -405,24 +405,19 @@ function changeStatus(val,away,prio) {
  * handleMessage
  ************************************************************************
  */
-function handleMessage(aMessage) {
+function handleMessage(oMsg) {
 
-  Debug.log(aMessage.xml(),2);
+  Debug.log(oMsg.xml(),2);
 
-  if (aMessage.getType() == 'error')
+  if (oMsg.getType() == 'error')
     return;
   
   /* check if this is a groupchat invite */
-  var x;
-  for (var i=0; i<aMessage.getNode().getElementsByTagName('x').length; i++)
-    if (aMessage.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'http://jabber.org/protocol/muc#user') {
-      x = aMessage.getNode().getElementsByTagName('x').item(i);
-      break;
-    }
+  var x oMsg.getChild('x','http://jabber.org/protocol/muc#user');
   
   if (x) {
     var from, to, reason, pass;
-    to = aMessage.getFrom();
+    to = oMsg.getFrom();
     var aInvite = x.getElementsByTagName('invite').item(0);
     from = aInvite.getAttribute('from');
     if (aInvite.firstChild && aInvite.firstChild.nodeName == 'reason' && aInvite.firstChild.firstChild)
@@ -446,9 +441,9 @@ function handleMessage(aMessage) {
     return;
   }
   
-  var from = cutResource(aMessage.getFrom());
-  var type = aMessage.getType();
-  Debug.log("from: "+from+"\naMessage.getFrom(): "+aMessage.getFrom(),3);
+  var from = cutResource(oMsg.getFrom());
+  var type = oMsg.getType();
+  Debug.log("from: "+from+"\noMsg.getFrom(): "+oMsg.getFrom(),3);
 
   var user = roster.getUserByJID(from);
   if (user == null) {// users not in roster (yet)
@@ -461,9 +456,9 @@ function handleMessage(aMessage) {
   Debug.log("got user jid: "+user.jid,3);
 
   var aRoster = roster;
-  if (type != 'groupchat' && user.roster && from != aMessage.getFrom()) { // private groupchat message
+  if (type != 'groupchat' && user.roster && from != oMsg.getFrom()) { // private groupchat message
     aRoster = user.roster;
-    from = aMessage.getFrom(); // use from with resource (had been cut off first)
+    from = oMsg.getFrom(); // use from with resource (had been cut off first)
     user = user.roster.getUserByJID(from);
   }
 
@@ -483,22 +478,22 @@ function handleMessage(aMessage) {
   
   // set current timestamp
   var x;
-  for (var i=0; i<aMessage.getNode().getElementsByTagName('x').length; i++)
-    if (aMessage.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'jabber:x:delay') {
-      x = aMessage.getNode().getElementsByTagName('x').item(i);
+  for (var i=0; i<oMsg.getNode().getElementsByTagName('x').length; i++)
+    if (oMsg.getNode().getElementsByTagName('x').item(i).getAttribute('xmlns') == 'jabber:x:delay') {
+      x = oMsg.getNode().getElementsByTagName('x').item(i);
       break;
     }
   
   if (x) {
     Debug.log("found offline message: "+x.getAttribute('stamp'),3);
     var stamp = x.getAttribute('stamp');
-    aMessage.jwcTimestamp = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
+    oMsg.jwcTimestamp = new Date(Date.UTC(stamp.substring(0,4),stamp.substring(4,6)-1,stamp.substring(6,8),stamp.substring(9,11),stamp.substring(12,14),stamp.substring(15,17)));
   } else
-    aMessage.jwcTimestamp = new Date();
+    oMsg.jwcTimestamp = new Date();
   
   if (type == 'chat') {
     
-    user.chatmsgs = user.chatmsgs.concat(aMessage);
+    user.chatmsgs = user.chatmsgs.concat(oMsg);
     
     if (user.chatW && !user.chatW.closed && user.chatW.popMsgs) {
       user.chatW.popMsgs();
@@ -524,7 +519,7 @@ function handleMessage(aMessage) {
     /* handle groupchat message 
      */
 
-    user.chatmsgs = user.chatmsgs.concat(aMessage);
+    user.chatmsgs = user.chatmsgs.concat(oMsg);
     if (user.chatW && !user.chatW.closed && user.chatW.srcW && typeof(user.chatW.srcW.roster) != 'undefined' && user.chatW.popMsgs) {
       user.chatW.popMsgs();
     } 
@@ -532,8 +527,9 @@ function handleMessage(aMessage) {
     playSound('chat_recv');
     
   } else {
-    
-    user.messages = user.messages.concat(aMessage);
+    if (oMsg.getBody() == '') // don't show empty messages like PEP message or stuff
+      return;
+    user.messages = user.messages.concat(oMsg);
     if (autoPopup && (autoPopupAway || onlstat == "available" || onlstat == "chat") && (!user.mW || user.mW.closed)) {
       aRoster.openMessage(from);
       playSound('message_recv');
@@ -565,27 +561,27 @@ function handleMessage(aMessage) {
  */
 var error_messages = new Array();
 var errorW;
-function handleMessageError(aJSJaCPacket) {
+function handleMessageError(oMsg) {
 
-  if (aJSJaCPacket.getType() != 'error')
+  if (oMsg.getType() != 'error')
     return;
   
-  Debug.log(aJSJaCPacket.xml(),2);
+  Debug.log(oMsg.xml(),2);
   
-  var user = roster.getUserByJID(cutResource(aJSJaCPacket.getFrom()));
+  var user = roster.getUserByJID(cutResource(oMsg.getFrom()));
   
   if (user.chatW && !user.chatW.closed && user.chatW.putMsgHTML) {
-    var error = aJSJaCPacket.getNode().getElementsByTagName('error').item(0);
+    var error = oMsg.getNode().getElementsByTagName('error').item(0);
     if (error) {
       if (error.getElementsByTagName('text').item(0)) {
-	user.chatW.putMsgHTML(aJSJaCPacket);
+	user.chatW.putMsgHTML(oMsg);
 	playSound('error');
 	return;
       }
     }
   }
   
-  error_messages = error_messages.concat(aJSJaCPacket);
+  error_messages = error_messages.concat(oMsg);
   
   if (!errorW || errorW.closed)
     errorW = open("error_message.html","errorW"+makeWindowName(jid),"width=360,height=270,dependent=yes,resizable=yes");
@@ -788,10 +784,10 @@ function handlePresence(presence) {
 	if (!ouser.nick)
 	  return;
 	
-	var aMessage = new JSJaCMessage();
-	aMessage.setFrom(user.jid);
-	aMessage.setBody(loc("[_1] is now known as [_2]",ouser.name, htmlEnc(ouser.nick)));
-	user.chatmsgs = user.chatmsgs.concat(aMessage);
+	var oMsg = new JSJaCMessage();
+	oMsg.setFrom(user.jid);
+	oMsg.setBody(loc("[_1] is now known as [_2]",ouser.name, htmlEnc(ouser.nick)));
+	user.chatmsgs = user.chatmsgs.concat(oMsg);
 	if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 	  user.chatW.popMsgs();
 	
@@ -814,8 +810,8 @@ function handlePresence(presence) {
 	nickChanged = true;
 	break;
       case '301': // user has been kicked
-	var aMessage = new JSJaCMessage();
-	aMessage.setFrom(user.jid);
+	var oMsg = new JSJaCMessage();
+	oMsg.setFrom(user.jid);
 	var body;
 	if (ouser.actor)
 	  body = loc("[_1] has been banned by [_2]",ouser.name,ouser.actor);
@@ -823,16 +819,16 @@ function handlePresence(presence) {
 	  body = loc("[_1] has been banned",ouser.name);
 	if (ouser.reason)
 	  body += ": " + ouser.reason;
-	aMessage.setBody(body);
-	user.chatmsgs = user.chatmsgs.concat(aMessage);
+	oMsg.setBody(body);
+	user.chatmsgs = user.chatmsgs.concat(oMsg);
 	if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 	  user.chatW.popMsgs();			
 	
 	playSound('chat_recv');
 	break;
       case '307': // user has been kicked
-	var aMessage = new JSJaCMessage();
-	aMessage.setFrom(user.jid);
+	var oMsg = new JSJaCMessage();
+	oMsg.setFrom(user.jid);
 	var body;
 	if (ouser.actor)
 	  body = loc("[_1] has been kicked by [_2]",ouser.name,ouser.actor);
@@ -840,8 +836,8 @@ function handlePresence(presence) {
 	  body = loc("[_1] has been kicked",ouser.name);
 	if (ouser.reason)
 	  body += ": " + ouser.reason;
-	aMessage.setBody(body);
-	user.chatmsgs = user.chatmsgs.concat(aMessage);
+	oMsg.setBody(body);
+	user.chatmsgs = user.chatmsgs.concat(oMsg);
 	if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 	  user.chatW.popMsgs();	
 	
@@ -857,10 +853,10 @@ function handlePresence(presence) {
       user.roster.addUser(ouser);
       
       // show join message
-      var aMessage = new JSJaCMessage();
-      aMessage.setFrom(user.jid);
-      aMessage.setBody(loc("[_1] has become available",ouser.name));
-      user.chatmsgs = user.chatmsgs.concat(aMessage);
+      var oMsg = new JSJaCMessage();
+      oMsg.setFrom(user.jid);
+      oMsg.setBody(loc("[_1] has become available",ouser.name));
+      user.chatmsgs = user.chatmsgs.concat(oMsg);
       if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 	user.chatW.popMsgs();			
       
@@ -868,13 +864,13 @@ function handlePresence(presence) {
       
     } else if (presence.getType() == 'unavailable' && !nickChanged) {
       // show part message
-      var aMessage = new JSJaCMessage();
-      aMessage.setFrom(user.jid);
+      var oMsg = new JSJaCMessage();
+      oMsg.setFrom(user.jid);
       var body = loc("[_1] has left",ouser.name);
       if (presence.getStatus())
 	body += ": " + presence.getStatus();
-      aMessage.setBody(body);
-      user.chatmsgs = user.chatmsgs.concat(aMessage);
+      oMsg.setBody(body);
+      user.chatmsgs = user.chatmsgs.concat(oMsg);
       if (user.chatW && !user.chatW.closed && user.chatW.popMsgs)
 	user.chatW.popMsgs();			
       
