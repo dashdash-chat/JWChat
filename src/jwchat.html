@@ -413,7 +413,7 @@ function handleMessage(oMsg) {
     return;
   
   /* check if this is a groupchat invite */
-  var x oMsg.getChild('x','http://jabber.org/protocol/muc#user');
+  var x = oMsg.getChild('x','http://jabber.org/protocol/muc#user');
   
   if (x) {
     var from, to, reason, pass;
