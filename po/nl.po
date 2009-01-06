@@ -36,17 +36,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 
-#: src/jwchat.html:862
+#: src/jwchat.html:858
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 betrad de chatruimte"
 
-#: src/jwchat.html:823
+#: src/jwchat.html:819
 #. (ouser.name)
 msgid "%1 has been banned"
 msgstr "%1 werd verbannen"
 
-#: src/jwchat.html:821
+#: src/jwchat.html:817
 #. (ouser.name,ouser.actor)
 msgid "%1 has been banned by %2"
 msgstr "%1 werd verbannen door %2"
@@ -55,12 +55,12 @@ msgstr "%1 werd verbannen door %2"
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 werd verbannen door %2: %3"
 
-#: src/jwchat.html:840
+#: src/jwchat.html:836
 #. (ouser.name)
 msgid "%1 has been kicked"
 msgstr "%1 werd gekickt"
 
-#: src/jwchat.html:838
+#: src/jwchat.html:834
 #. (ouser.name,ouser.actor)
 msgid "%1 has been kicked by %2"
 msgstr "%1 werd gekickt door %2"
@@ -69,22 +69,22 @@ msgstr "%1 werd gekickt door %2"
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 werd gekickt door %2: %3"
 
-#: src/jwchat.html:873
+#: src/jwchat.html:869
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 verliet de chatruimte"
 
-#: src/jwchat.html:793
+#: src/jwchat.html:789
 #. (ouser.name, htmlEnc(ouser.nick))
 msgid "%1 is now known as %2"
 msgstr "%1 heet nu %2"
 
-#: src/roster.js:387 src/roster.js:452 src/roster.js:724
+#: src/roster.js:387 src/roster.js:452 src/roster.js:731
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 bericht(en) in behandeling"
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "- Choose Directory -"
 msgstr "- Map kiezen -"
 
@@ -117,7 +117,7 @@ msgstr "5 seconden"
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> deelnemers"
 
-#: src/jwchat.html:773
+#: src/jwchat.html:769
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "Een nieuwe chatruimte werd aangemaakt en moet nog geconfigureerd worden door u. Wilt u de configuratie nu aanpassen?\\nOpmerking: Klik op 'Annuleren' om de standaardinstellingen te gebruiken!"
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "An Error Occured!"
 msgstr "Er deed zich een fout voor!"
 
-#: src/search.html:198
+#: src/search.html:193
 msgid "An Error Occured\\nAborting..."
 msgstr "Er deed zich een fout voor\\nBezig moet afbreken..."
 
@@ -193,7 +193,7 @@ msgstr "Er deed zich een fout voor"
 msgid "An Error occured ..."
 msgstr "Er deed zich een fout voor..."
 
-#: src/search.html:78
+#: src/search.html:73
 msgid "An error has occured"
 msgstr "Er deed zich een fout voor"
 
@@ -214,7 +214,7 @@ msgstr "Aantekeningen voor %1"
 msgid "Are you sure you want to delete this chat history completely?"
 msgstr "Wilt u werkelijk de geschiedenis van deze chatsessie volledig verwijderen?"
 
-#: src/jwchat.html:1027
+#: src/jwchat.html:1023
 msgid "Authorization failed"
 msgstr "De autorisatie mislukte"
 
@@ -242,7 +242,7 @@ msgstr "Terug"
 msgid "Bad Request"
 msgstr "Foutieve aanvraag"
 
-#: src/groupchat_iroster.html:27 src/groupchat_roster.html:36
+#: src/groupchat_iroster.html:29 src/groupchat_roster.html:36
 msgid "Ban"
 msgstr "Bannen"
 
@@ -392,7 +392,7 @@ msgstr "Vernietigen"
 msgid "Disconnected."
 msgstr "Niet verbonden."
 
-#: src/jwchat.html:1058
+#: src/jwchat.html:1054
 msgid "Disconnected\\n\\nReconnect?"
 msgstr "Niet verbonden\\n\\nWilt u opnieuw verbinden?"
 
@@ -465,7 +465,11 @@ msgstr "Familienaam"
 msgid "Finished."
 msgstr "Voltooid."
 
-#: src/index.html:466
+#: src/index.html:465
+msgid "For details please visit <a href=\"http://blog.jwchat.org/jwchat/\">JWChat's Homepage</a>."
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
 msgstr "Bezoek <a href=\"http://jwchat.sourceforge.net\">JWChat's webstek</a> voor meer informatie."
 
@@ -485,7 +489,7 @@ msgstr "Volledige naam"
 msgid "Gateway"
 msgstr "Transport"
 
-#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:560
+#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:567
 msgid "Gateways"
 msgstr "Transporten"
 
@@ -493,19 +497,19 @@ msgstr "Transporten"
 msgid "General"
 msgstr "Algemeen"
 
-#: src/groupchat_iroster.html:34
+#: src/groupchat_iroster.html:36
 msgid "Grant Administrative Privilege"
 msgstr "Beheerdersprivilege verlenen"
 
-#: src/groupchat_iroster.html:30
+#: src/groupchat_iroster.html:32
 msgid "Grant Membership"
 msgstr "Deelnemerschap verlenen"
 
-#: src/groupchat_iroster.html:32
+#: src/groupchat_iroster.html:34
 msgid "Grant Moderator Privilege"
 msgstr "Moderatorsprivilege verlenen"
 
-#: src/groupchat_iroster.html:28
+#: src/groupchat_iroster.html:30
 msgid "Grant Voice"
 msgstr "Medezeggenschap verlenen"
 
@@ -565,7 +569,7 @@ msgstr "Meer informatie over JWChat kunt u terugvinden op <a href=\"http://jwcha
 msgid "Information"
 msgstr "Informatie"
 
-#: src/jwchat.html:1039
+#: src/jwchat.html:1035
 msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
 msgstr "Interne serverfout.\\n\\nVerbinding verbroken.\\n\\nWilt u opnieuw verbinden?"
 
@@ -600,7 +604,7 @@ msgstr "Contactpersonen uitnodigen op %1"
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1519 src/userhist.html:132
+#: src/jwchat.html:1515 src/userhist.html:132
 msgid "JID is missing.\\nAborting..."
 msgstr "De JID ontbreekt.\\nBezig met afbreken..."
 
@@ -736,7 +740,7 @@ msgstr "Betreden"
 msgid "Join Groupchat"
 msgstr "Chatruimte betreden"
 
-#: src/groupchat_iroster.html:26
+#: src/groupchat_iroster.html:28
 msgid "Kick"
 msgstr "Kicken"
 
@@ -768,7 +772,7 @@ msgstr "Lid"
 msgid "Member List"
 msgstr "Ledenlijst"
 
-#: src/roster.js:381 src/roster.js:446 src/roster.js:718
+#: src/roster.js:381 src/roster.js:446 src/roster.js:725
 msgid "Message"
 msgstr "Bericht"
 
@@ -882,7 +886,7 @@ msgstr "Wachtwoord"
 msgid "Password changed successfully"
 msgstr ""
 
-#: src/jwchat.html:1523
+#: src/jwchat.html:1519
 msgid "Password is missing.\\nAborting..."
 msgstr "Het wachtwoord ontbreekt.\\nBezig met afbreken..."
 
@@ -890,7 +894,7 @@ msgstr "Het wachtwoord ontbreekt.\\nBezig met afbreken..."
 msgid "Passwords don't match"
 msgstr ""
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "Perform search at"
 msgstr "Zoeken op"
 
@@ -939,7 +943,7 @@ msgstr "Prioriteit"
 msgid "Querying %1. Please stand by..."
 msgstr "Bezig met opvragen van %1. Even geduld alstublieft..."
 
-#: src/search.html:303 src/search.html:31
+#: src/search.html:298 src/search.html:31
 msgid "Querying ..."
 msgstr "Bezig met opvragen..."
 
@@ -983,7 +987,7 @@ msgstr "Nieuwe account registreren"
 msgid "Register at"
 msgstr "Registreren op"
 
-#: src/jwchat.html:1032
+#: src/jwchat.html:1028
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr "De registratie mislukte!\\n\\nProbeer opnieuw met een andere gebruikersnaam!"
 
@@ -1037,11 +1041,11 @@ msgstr "Inschrijving opnieuw aanvragen"
 msgid "Resubscribe: Opens a subscription request for this user"
 msgstr "Inschrijving opnieuw aanvragen: deze optie opent een venster om opnieuw in te schrijven op de aanwezigheid van de contactpersoon"
 
-#: src/groupchat_iroster.html:35
+#: src/groupchat_iroster.html:37
 msgid "Revoke Administrative Privilege"
 msgstr "Beheerdersprivilege intrekken"
 
-#: src/groupchat_iroster.html:31
+#: src/groupchat_iroster.html:33
 msgid "Revoke Membership"
 msgstr "Lidmaatschap intrekken"
 
@@ -1049,11 +1053,11 @@ msgstr "Lidmaatschap intrekken"
 msgid "Revoke Memebership"
 msgstr "Lidmaatschap intrekken"
 
-#: src/groupchat_iroster.html:33
+#: src/groupchat_iroster.html:35
 msgid "Revoke Moderator Privilege"
 msgstr "Moderatorsprivilege intrekken"
 
-#: src/groupchat_iroster.html:29
+#: src/groupchat_iroster.html:31
 msgid "Revoke Voice"
 msgstr "Medezeggenschap intrekken"
 
@@ -1073,7 +1077,7 @@ msgstr ""
 msgid "Save"
 msgstr "Opslaan"
 
-#: src/search.html:230 src/searchrooms.html:189
+#: src/search.html:225 src/searchrooms.html:189
 msgid "Search"
 msgstr "Zoeken"
 
@@ -1093,9 +1097,9 @@ msgstr "Chatruimtes zoeken"
 msgid "Search for a User"
 msgstr "Contactpersoon zoeken"
 
-#: src/search.html:129 src/search.html:146 src/search.html:95 src/searchrooms.html:28
-#. (conference_server)
+#: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
 #. (iq.getFrom())
+#. (conference_server)
 msgid "Search results for %1"
 msgstr "Resultaten voor %1"
 
@@ -1148,7 +1152,7 @@ msgstr "Server"
 msgid "Service (optional)"
 msgstr "Dienst (optioneel)"
 
-#: src/jwchat.html:1035
+#: src/jwchat.html:1031
 msgid "Service unavailable"
 msgstr "Dienst niet beschikbaar"
 
@@ -1160,7 +1164,7 @@ msgstr "Instellen"
 msgid "Show"
 msgstr "Tonen"
 
-#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
+#: src/groupchat_iroster.html:39 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
 msgid "Show Info"
 msgstr "Info over contactpersoon"
 
@@ -1176,7 +1180,7 @@ msgstr "Minder opties"
 msgid "Show More Options"
 msgstr "Meer opties"
 
-#: src/groupchat_iroster.html:24 src/iRoster.html:15 src/message.html:132
+#: src/groupchat_iroster.html:26 src/iRoster.html:15 src/message.html:132
 msgid "Start Chat"
 msgstr "Chat"
 
@@ -1188,7 +1192,7 @@ msgstr "Chat: deze optie opent een nieuw chatvenster"
 msgid "State"
 msgstr "Provincie"
 
-#: src/roster.js:376 src/roster.js:441 src/roster.js:713
+#: src/roster.js:376 src/roster.js:441 src/roster.js:720
 msgid "Status"
 msgstr "Aanwezigheid"
 
@@ -1387,7 +1391,7 @@ msgstr "U kunt een nieuwe groep aanmaken door een nieuwe naam op te geven  bij \
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr "U kunt een nieuwe groep aanmaken door een nieuwe naam voor \"Groep\" in te geven in het veld \"Beschikbare groepen\". Vervolgens moet u op \"&gt;\" klikken. U kunt een contactpersoon uit een groep verwijderen door te klikken op \"&lt;\". Een lege groep wordt automatisch verwijderd van uw roster."
 
-#: src/jwchat.html:694
+#: src/jwchat.html:690
 #. (presence.getFrom())
 msgid "You have been unsubscribed from %1"
 msgstr "Uw inschrijving op de aanwezigheid van %1 is verwijderd."
@@ -1408,7 +1412,7 @@ msgstr "U moet een gebruikersnaam opgeven"
 msgid "Your Contact List"
 msgstr "Roster"
 
-#: src/jwchat.html:1556
+#: src/jwchat.html:1552
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "Uw webbrowser moet frames en javascript ondersteunen. Raadpleeg de <a href=\"help.html\">handleiding</a> om te zien welke webbrowsers ondersteund worden."
 

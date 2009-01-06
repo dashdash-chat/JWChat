@@ -127,17 +127,17 @@ msgid ""
 "Aborting..."
 msgstr ""
 
-#: src/jwchat.html:862
+#: src/jwchat.html:858
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 变为空闲状态"
 
-#: src/jwchat.html:823
+#: src/jwchat.html:819
 #. (ouser.name)
 msgid "%1 has been banned"
 msgstr "%1 被屏蔽了"
 
-#: src/jwchat.html:821
+#: src/jwchat.html:817
 #. (ouser.name,ouser.actor)
 msgid "%1 has been banned by %2"
 msgstr "%1 被 %2 屏蔽了"
@@ -146,12 +146,12 @@ msgstr "%1 被 %2 屏蔽了"
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 被 %2 屏蔽了： %3"
 
-#: src/jwchat.html:840
+#: src/jwchat.html:836
 #. (ouser.name)
 msgid "%1 has been kicked"
 msgstr "%1 被踢出了"
 
-#: src/jwchat.html:838
+#: src/jwchat.html:834
 #. (ouser.name,ouser.actor)
 msgid "%1 has been kicked by %2"
 msgstr "%1 被 %2 踢出了"
@@ -160,22 +160,22 @@ msgstr "%1 被 %2 踢出了"
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 被 %2 屏蔽了： %3"
 
-#: src/jwchat.html:873
+#: src/jwchat.html:869
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 离开了"
 
-#: src/jwchat.html:793
+#: src/jwchat.html:789
 #. (ouser.name, htmlEnc(ouser.nick))
 msgid "%1 is now known as %2"
 msgstr "%1 现在就是 %2"
 
-#: src/roster.js:387 src/roster.js:452 src/roster.js:724
+#: src/roster.js:387 src/roster.js:452 src/roster.js:731
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 条消息"
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "- Choose Directory -"
 msgstr "- 选择目录 -"
 
@@ -208,7 +208,7 @@ msgstr "5 秒"
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> 参与者"
 
-#: src/jwchat.html:773
+#: src/jwchat.html:769
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "新房间已经创建，但没有被配置。您现在想进行配置吗？\\n单击'取消'按钮将使用默认配置。"
 
@@ -272,7 +272,7 @@ msgstr "仅允许安全的连接"
 msgid "An Error Occured!"
 msgstr "有错误发生！"
 
-#: src/search.html:198
+#: src/search.html:193
 msgid "An Error Occured\\nAborting..."
 msgstr "有错误发生！\\n中止。"
 
@@ -284,7 +284,7 @@ msgstr "有错误发生！"
 msgid "An Error occured ..."
 msgstr "有错误发生！"
 
-#: src/search.html:78
+#: src/search.html:73
 msgid "An error has occured"
 msgstr "有错误发生！"
 
@@ -305,7 +305,7 @@ msgstr "对 %1 的备注"
 msgid "Are you sure you want to delete this chat history completely?"
 msgstr "您确定要完全删除此聊天历史吗？"
 
-#: src/jwchat.html:1027
+#: src/jwchat.html:1023
 msgid "Authorization failed"
 msgstr "验证失败"
 
@@ -333,7 +333,7 @@ msgstr "后退"
 msgid "Bad Request"
 msgstr "错误的请求"
 
-#: src/groupchat_iroster.html:27 src/groupchat_roster.html:36
+#: src/groupchat_iroster.html:29 src/groupchat_roster.html:36
 msgid "Ban"
 msgstr "屏蔽"
 
@@ -483,7 +483,7 @@ msgstr "销毁"
 msgid "Disconnected."
 msgstr "断开"
 
-#: src/jwchat.html:1058
+#: src/jwchat.html:1054
 msgid "Disconnected\\n\\nReconnect?"
 msgstr "连接断开！\\n重新连接吗？"
 
@@ -556,7 +556,11 @@ msgstr "姓氏"
 msgid "Finished."
 msgstr "完成"
 
-#: src/index.html:466
+#: src/index.html:465
+msgid "For details please visit <a href=\"http://blog.jwchat.org/jwchat/\">JWChat's Homepage</a>."
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
 msgstr "详情请见： <a href=\"http://jwchat.sourceforge.net\">JWChat 主页</a> 。"
 
@@ -576,7 +580,7 @@ msgstr "全名"
 msgid "Gateway"
 msgstr "网关"
 
-#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:560
+#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:567
 msgid "Gateways"
 msgstr "网关"
 
@@ -584,19 +588,19 @@ msgstr "网关"
 msgid "General"
 msgstr "常规"
 
-#: src/groupchat_iroster.html:34
+#: src/groupchat_iroster.html:36
 msgid "Grant Administrative Privilege"
 msgstr "授予管理权限"
 
-#: src/groupchat_iroster.html:30
+#: src/groupchat_iroster.html:32
 msgid "Grant Membership"
 msgstr "授予成员权限"
 
-#: src/groupchat_iroster.html:32
+#: src/groupchat_iroster.html:34
 msgid "Grant Moderator Privilege"
 msgstr "授予主持人权限"
 
-#: src/groupchat_iroster.html:28
+#: src/groupchat_iroster.html:30
 msgid "Grant Voice"
 msgstr "授予语音权限"
 
@@ -656,7 +660,7 @@ msgstr ""
 msgid "Information"
 msgstr "信息"
 
-#: src/jwchat.html:1039
+#: src/jwchat.html:1035
 msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
 msgstr "服务器内部错误！\\n\\n连接断开！\\n重新连接吗？"
 
@@ -691,7 +695,7 @@ msgstr "邀请用户加入 %1"
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1519 src/userhist.html:132
+#: src/jwchat.html:1515 src/userhist.html:132
 msgid "JID is missing.\\nAborting..."
 msgstr "JID 错误。\\n中止。"
 
@@ -827,7 +831,7 @@ msgstr "加入"
 msgid "Join Groupchat"
 msgstr "加入组聊"
 
-#: src/groupchat_iroster.html:26
+#: src/groupchat_iroster.html:28
 msgid "Kick"
 msgstr "踢出"
 
@@ -859,7 +863,7 @@ msgstr "成员"
 msgid "Member List"
 msgstr "成员列表"
 
-#: src/roster.js:381 src/roster.js:446 src/roster.js:718
+#: src/roster.js:381 src/roster.js:446 src/roster.js:725
 msgid "Message"
 msgstr "消息"
 
@@ -973,7 +977,7 @@ msgstr "密码"
 msgid "Password changed successfully"
 msgstr ""
 
-#: src/jwchat.html:1523
+#: src/jwchat.html:1519
 msgid "Password is missing.\\nAborting..."
 msgstr "密码错误！\\n中止。"
 
@@ -981,7 +985,7 @@ msgstr "密码错误！\\n中止。"
 msgid "Passwords don't match"
 msgstr ""
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "Perform search at"
 msgstr "执行搜索"
 
@@ -1030,7 +1034,7 @@ msgstr "优先级"
 msgid "Querying %1. Please stand by..."
 msgstr "查询 %1，请稍候……"
 
-#: src/search.html:303 src/search.html:31
+#: src/search.html:298 src/search.html:31
 msgid "Querying ..."
 msgstr "查询中……"
 
@@ -1074,7 +1078,7 @@ msgstr "注册新账号"
 msgid "Register at"
 msgstr "注册位置"
 
-#: src/jwchat.html:1032
+#: src/jwchat.html:1028
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr "注册失败！\\n\\n请换一个用户名！"
 
@@ -1128,11 +1132,11 @@ msgstr "重新邀请"
 msgid "Resubscribe: Opens a subscription request for this user"
 msgstr "重新邀请： 打开一个邀请此用户的对话框"
 
-#: src/groupchat_iroster.html:35
+#: src/groupchat_iroster.html:37
 msgid "Revoke Administrative Privilege"
 msgstr "取消管理权限"
 
-#: src/groupchat_iroster.html:31
+#: src/groupchat_iroster.html:33
 msgid "Revoke Membership"
 msgstr "取消成员权限"
 
@@ -1140,11 +1144,11 @@ msgstr "取消成员权限"
 msgid "Revoke Memebership"
 msgstr "取消成员权限"
 
-#: src/groupchat_iroster.html:33
+#: src/groupchat_iroster.html:35
 msgid "Revoke Moderator Privilege"
 msgstr "取消主持人权限"
 
-#: src/groupchat_iroster.html:29
+#: src/groupchat_iroster.html:31
 msgid "Revoke Voice"
 msgstr "取消语音权限"
 
@@ -1164,7 +1168,7 @@ msgstr ""
 msgid "Save"
 msgstr "保存"
 
-#: src/search.html:230 src/searchrooms.html:189
+#: src/search.html:225 src/searchrooms.html:189
 msgid "Search"
 msgstr "搜索"
 
@@ -1184,9 +1188,9 @@ msgstr "搜索房间"
 msgid "Search for a User"
 msgstr "搜索用户"
 
-#: src/search.html:129 src/search.html:146 src/search.html:95 src/searchrooms.html:28
-#. (conference_server)
+#: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
 #. (iq.getFrom())
+#. (conference_server)
 msgid "Search results for %1"
 msgstr "对 %1 的搜索结果"
 
@@ -1239,7 +1243,7 @@ msgstr "服务器"
 msgid "Service (optional)"
 msgstr "服务（可选）"
 
-#: src/jwchat.html:1035
+#: src/jwchat.html:1031
 msgid "Service unavailable"
 msgstr "服务不可用"
 
@@ -1255,7 +1259,7 @@ msgstr "修改状态提示语"
 msgid "Show"
 msgstr "显示"
 
-#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
+#: src/groupchat_iroster.html:39 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
 msgid "Show Info"
 msgstr "显示信息"
 
@@ -1271,7 +1275,7 @@ msgstr "显示常规选项"
 msgid "Show More Options"
 msgstr "显示更多选项"
 
-#: src/groupchat_iroster.html:24 src/iRoster.html:15 src/message.html:132
+#: src/groupchat_iroster.html:26 src/iRoster.html:15 src/message.html:132
 msgid "Start Chat"
 msgstr "开始聊天"
 
@@ -1283,7 +1287,7 @@ msgstr "开始聊天： 为此用户打开聊天对话框"
 msgid "State"
 msgstr "省/州"
 
-#: src/roster.js:376 src/roster.js:441 src/roster.js:713
+#: src/roster.js:376 src/roster.js:441 src/roster.js:720
 msgid "Status"
 msgstr "状态"
 
@@ -1486,7 +1490,7 @@ msgstr "您可以通过在\"可用的组\"文本框中键入名称来新建一�
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr "您可以通过在\"可用的组\"文本框中键入名称来新建一个用户组。单击\"&gt;\"新增组用户，单击\"&lt;\"删除组用户。如果一个组中没有用户了，它可以被删除。"
 
-#: src/jwchat.html:694
+#: src/jwchat.html:690
 #. (presence.getFrom())
 msgid "You have been unsubscribed from %1"
 msgstr "您已经取消了来自 %1 的邀请"
@@ -1507,7 +1511,7 @@ msgstr "您需要提供一个用户名"
 msgid "Your Contact List"
 msgstr "您的联系人列表"
 
-#: src/jwchat.html:1556
+#: src/jwchat.html:1552
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "为使用本程序，您的浏览器必须支持帧与 javascript，请参考我们的 <a href=\"help.html\">帮助</a> 中的支持的浏览器列表。"
 

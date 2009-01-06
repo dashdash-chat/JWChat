@@ -21,17 +21,17 @@ msgstr ""pass is missing.\\n"
 "Code absent.\\n"
 "Annulation..."
 
-#: src/jwchat.html:862
+#: src/jwchat.html:858
 #. (ouser.name)
 msgid "%1 has become available"
 msgstr "%1 est en ligne"
 
-#: src/jwchat.html:823
+#: src/jwchat.html:819
 #. (ouser.name)
 msgid "%1 has been banned"
 msgstr ""
 
-#: src/jwchat.html:821
+#: src/jwchat.html:817
 #. (ouser.name,ouser.actor)
 msgid "%1 has been banned by %2"
 msgstr ""
@@ -40,12 +40,12 @@ msgstr ""
 msgid "%1 has been banned by %2: %3"
 msgstr "%1 a été banni(e) par %2: %3"
 
-#: src/jwchat.html:840
+#: src/jwchat.html:836
 #. (ouser.name)
 msgid "%1 has been kicked"
 msgstr ""
 
-#: src/jwchat.html:838
+#: src/jwchat.html:834
 #. (ouser.name,ouser.actor)
 msgid "%1 has been kicked by %2"
 msgstr ""
@@ -54,22 +54,22 @@ msgstr ""
 msgid "%1 has been kicked by %2: %3"
 msgstr "%1 a été éjecté par %2: %3"
 
-#: src/jwchat.html:873
+#: src/jwchat.html:869
 #. (ouser.name)
 msgid "%1 has left"
 msgstr "%1 est parti(e)"
 
-#: src/jwchat.html:793
+#: src/jwchat.html:789
 #. (ouser.name, htmlEnc(ouser.nick))
 msgid "%1 is now known as %2"
 msgstr "%1 s'appelle désormais %2"
 
-#: src/roster.js:387 src/roster.js:452 src/roster.js:724
+#: src/roster.js:387 src/roster.js:452 src/roster.js:731
 #. ((user.messages.length + user.chatmsgs.length))
 msgid "%1 message(s) pending"
 msgstr "%1 message(s) en attente"
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "- Choose Directory -"
 msgstr "- Choix répertoire -"
 
@@ -102,7 +102,7 @@ msgstr "5 sec."
 msgid "<span id=\"chan_count\">X</span> participants"
 msgstr "<span id=\"chan_count\">X</span> participants"
 
-#: src/jwchat.html:773
+#: src/jwchat.html:769
 msgid "A new room has been created but it awaits configuration from you. Do you want to do a custom configuration now?\\nNote: Click on 'Cancel' to start with a default configuration!"
 msgstr "Un nouveau salon est créé, mais attend que tu le configures. Veux-tu personnaliser la configuration maintenant ?\\nNB: Clique 'Cancel' pour utiliser une configuration par défaut!"
 
@@ -166,7 +166,7 @@ msgstr ""
 msgid "An Error Occured!"
 msgstr "Erreur détectée!"
 
-#: src/search.html:198
+#: src/search.html:193
 msgid "An Error Occured\\nAborting..."
 msgstr "Erreur détecté\\nAbandon..."
 
@@ -178,7 +178,7 @@ msgstr "Erreur détectée"
 msgid "An Error occured ..."
 msgstr "Erreur détectée..."
 
-#: src/search.html:78
+#: src/search.html:73
 msgid "An error has occured"
 msgstr "Erreur détectée"
 
@@ -199,7 +199,7 @@ msgstr "Notes pour %1"
 msgid "Are you sure you want to delete this chat history completely?"
 msgstr ""
 
-#: src/jwchat.html:1027
+#: src/jwchat.html:1023
 msgid "Authorization failed"
 msgstr ""
 
@@ -231,7 +231,7 @@ msgstr "Retour"
 msgid "Bad Request"
 msgstr ""
 
-#: src/groupchat_iroster.html:27 src/groupchat_roster.html:36
+#: src/groupchat_iroster.html:29 src/groupchat_roster.html:36
 msgid "Ban"
 msgstr "Bannir"
 
@@ -381,7 +381,7 @@ msgstr "Détruire"
 msgid "Disconnected."
 msgstr "Déconnecté."
 
-#: src/jwchat.html:1058
+#: src/jwchat.html:1054
 msgid "Disconnected\\n\\nReconnect?"
 msgstr ""
 
@@ -454,7 +454,11 @@ msgstr "Nom de famille"
 msgid "Finished."
 msgstr "Terminé."
 
-#: src/index.html:466
+#: src/index.html:465
+msgid "For details please visit <a href=\"http://blog.jwchat.org/jwchat/\">JWChat's Homepage</a>."
+msgstr ""
+
+#: NOT FOUND IN SOURCE
 msgid "For details please visit <a href=\"http://jwchat.sourceforge.net\">JWChat's Homepage</a>."
 msgstr ""
 
@@ -474,7 +478,7 @@ msgstr "Nom complet"
 msgid "Gateway"
 msgstr "Passerelle"
 
-#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:560
+#: src/options.html:488 src/roster.js:304 src/roster.js:333 src/roster.js:355 src/roster.js:422 src/roster.js:427 src/roster.js:567
 msgid "Gateways"
 msgstr "Passerelles"
 
@@ -482,19 +486,19 @@ msgstr "Passerelles"
 msgid "General"
 msgstr "Général"
 
-#: src/groupchat_iroster.html:34
+#: src/groupchat_iroster.html:36
 msgid "Grant Administrative Privilege"
 msgstr "Accorder privilège d'administration"
 
-#: src/groupchat_iroster.html:30
+#: src/groupchat_iroster.html:32
 msgid "Grant Membership"
 msgstr "Accorder le statut de membre"
 
-#: src/groupchat_iroster.html:32
+#: src/groupchat_iroster.html:34
 msgid "Grant Moderator Privilege"
 msgstr "Accorder privilège de modération"
 
-#: src/groupchat_iroster.html:28
+#: src/groupchat_iroster.html:30
 msgid "Grant Voice"
 msgstr "Accorder la voix"
 
@@ -554,7 +558,7 @@ msgstr "Pour en savoir plus sur JWChat, rendez vous sur notre page d'accueil <a 
 msgid "Information"
 msgstr "Information"
 
-#: src/jwchat.html:1039
+#: src/jwchat.html:1035
 msgid "Internal Server Error.\\n\\nDisconnected.\\n\\nReconnect?"
 msgstr ""
 
@@ -589,7 +593,7 @@ msgstr "Inviter des utilisateurs à %1"
 msgid "JID"
 msgstr "JID"
 
-#: src/jwchat.html:1519 src/userhist.html:132
+#: src/jwchat.html:1515 src/userhist.html:132
 msgid "JID is missing.\\nAborting..."
 msgstr "JID manquant.\\nAbandon..."
 
@@ -725,7 +729,7 @@ msgstr "Entre"
 msgid "Join Groupchat"
 msgstr "Rejoindre la discussion de groupe"
 
-#: src/groupchat_iroster.html:26
+#: src/groupchat_iroster.html:28
 msgid "Kick"
 msgstr "Ejecter"
 
@@ -757,7 +761,7 @@ msgstr "Membre"
 msgid "Member List"
 msgstr "Liste membres"
 
-#: src/roster.js:381 src/roster.js:446 src/roster.js:718
+#: src/roster.js:381 src/roster.js:446 src/roster.js:725
 msgid "Message"
 msgstr "Message"
 
@@ -871,7 +875,7 @@ msgstr "Mot de passe"
 msgid "Password changed successfully"
 msgstr ""
 
-#: src/jwchat.html:1523
+#: src/jwchat.html:1519
 msgid "Password is missing.\\nAborting..."
 msgstr "Mot de passe manquant.\\nAbandon..."
 
@@ -879,7 +883,7 @@ msgstr "Mot de passe manquant.\\nAbandon..."
 msgid "Passwords don't match"
 msgstr ""
 
-#: src/search.html:295
+#: src/search.html:290
 msgid "Perform search at"
 msgstr "Recherche à"
 
@@ -928,7 +932,7 @@ msgstr "Priorité"
 msgid "Querying %1. Please stand by..."
 msgstr "Interrogation de %1. Merci de patienter..."
 
-#: src/search.html:303 src/search.html:31
+#: src/search.html:298 src/search.html:31
 msgid "Querying ..."
 msgstr "Interrogation en cours..."
 
@@ -972,7 +976,7 @@ msgstr "Inscrire nouveau compte"
 msgid "Register at"
 msgstr "Inscrire à"
 
-#: src/jwchat.html:1032
+#: src/jwchat.html:1028
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr ""
 
@@ -1029,11 +1033,11 @@ msgstr "Ré-autoriser"
 msgid "Resubscribe: Opens a subscription request for this user"
 msgstr "Re-autoriser: Ouvre un dialogue d'autorisation pour ce contact"
 
-#: src/groupchat_iroster.html:35
+#: src/groupchat_iroster.html:37
 msgid "Revoke Administrative Privilege"
 msgstr "Révoque privilège d'administration"
 
-#: src/groupchat_iroster.html:31
+#: src/groupchat_iroster.html:33
 msgid "Revoke Membership"
 msgstr ""
 
@@ -1041,11 +1045,11 @@ msgstr ""
 msgid "Revoke Memebership"
 msgstr "Révoque qualité de membre"
 
-#: src/groupchat_iroster.html:33
+#: src/groupchat_iroster.html:35
 msgid "Revoke Moderator Privilege"
 msgstr "Révoque privilège de modération"
 
-#: src/groupchat_iroster.html:29
+#: src/groupchat_iroster.html:31
 msgid "Revoke Voice"
 msgstr "R2voque voix"
 
@@ -1065,7 +1069,7 @@ msgstr ""
 msgid "Save"
 msgstr "Sauve"
 
-#: src/search.html:230 src/searchrooms.html:189
+#: src/search.html:225 src/searchrooms.html:189
 msgid "Search"
 msgstr "Recherche"
 
@@ -1085,9 +1089,9 @@ msgstr "Recherche salons"
 msgid "Search for a User"
 msgstr "Recherche un utilisateur"
 
-#: src/search.html:129 src/search.html:146 src/search.html:95 src/searchrooms.html:28
-#. (conference_server)
+#: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
 #. (iq.getFrom())
+#. (conference_server)
 msgid "Search results for %1"
 msgstr "Cherche %1 dans les résultats"
 
@@ -1140,7 +1144,7 @@ msgstr "Serveur"
 msgid "Service (optional)"
 msgstr "Service (facultatif)"
 
-#: src/jwchat.html:1035
+#: src/jwchat.html:1031
 msgid "Service unavailable"
 msgstr ""
 
@@ -1152,7 +1156,7 @@ msgstr "Choisir"
 msgid "Show"
 msgstr "Montrer"
 
-#: src/groupchat_iroster.html:37 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
+#: src/groupchat_iroster.html:39 src/iRoster.html:19 src/iRoster.html:28 src/iRoster.html:33
 msgid "Show Info"
 msgstr "Montre les Informations"
 
@@ -1168,7 +1172,7 @@ msgstr "Montre moins d'options"
 msgid "Show More Options"
 msgstr "Montre plus d'options"
 
-#: src/groupchat_iroster.html:24 src/iRoster.html:15 src/message.html:132
+#: src/groupchat_iroster.html:26 src/iRoster.html:15 src/message.html:132
 msgid "Start Chat"
 msgstr "Démarrer chat"
 
@@ -1180,7 +1184,7 @@ msgstr "Démarrer chat: Ouvre une fenêtre de chat pour ce contact."
 msgid "State"
 msgstr "Etat"
 
-#: src/roster.js:376 src/roster.js:441 src/roster.js:713
+#: src/roster.js:376 src/roster.js:441 src/roster.js:720
 msgid "Status"
 msgstr "Statut"
 
@@ -1379,7 +1383,7 @@ msgstr "Tu peux créer un nouveau groupe d'utilisateurs, en donnant un nouveau n
 msgid "You can create a new user group by entering a new name for \"Group\" at the \"Available Groups\" box followed by clicking on \"&gt;\". Remove a user from a group by clicking on \"&lt;\". A group is deleted from your contact list if there is no user left for this group."
 msgstr ""
 
-#: src/jwchat.html:694
+#: src/jwchat.html:690
 #. (presence.getFrom())
 msgid "You have been unsubscribed from %1"
 msgstr "On t'a enlevé l'autorisation de %1 ."
@@ -1400,7 +1404,7 @@ msgstr "Tu dois fournir un nom d'utilisateur"
 msgid "Your Contact List"
 msgstr "Ta liste des contacts"
 
-#: src/jwchat.html:1556
+#: src/jwchat.html:1552
 msgid "Your browser must support frames and javascript to use this application. Please refer to our <a href=\"help.html\">online manual</a> for a list of supported browser."
 msgstr "Ton navigateur doit supporter les frames. STP, réfère-toi à notre <a href=\"help.html\">manuel en ligne</a> pour la liste des navigateurs supportés"
 
