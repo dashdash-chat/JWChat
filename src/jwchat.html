@@ -1509,7 +1509,7 @@ else if (passedArgs['jid'])
 if (opener && opener.register)
 	register = opener.register
 else if (passedArgs['register'])
-	register = eval(passedArgs['register']);
+	register = passedArgs['register']=="1"?true:false;
 
 if (!jid) {
 	alert(loc("JID is missing.\nAborting..."));
