@@ -158,8 +158,12 @@ msgstr "Après l'envoi de cette demande d'autorisation, le contact est ajouté a
 msgid "Allow"
 msgstr "Autoriser"
 
-#: src/index.html:455
+#: NOT FOUND IN SOURCE
 msgid "Allow secure conncetions only"
+msgstr ""
+
+#: src/index.html:455
+msgid "Allow secure connections only"
 msgstr ""
 
 #: src/searchrooms.html:46
@@ -1090,8 +1094,8 @@ msgid "Search for a User"
 msgstr "Recherche un utilisateur"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Cherche %1 dans les résultats"
 

@@ -13,16 +13,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: NOT FOUND IN SOURCE
-msgid ""
-msgstr ""Really destroy this room?\\n"
-"\\n"
-"Reason:"
-"
-"Willst Du diesen Raum wirklick zerstören?\\n"
-"\\n"
-"Grund:"
-
 #: src/jwchat.html:858
 #. (ouser.name)
 msgid "%1 has become available"
@@ -153,8 +143,8 @@ msgid "Allow"
 msgstr "Erlauben"
 
 #: src/index.html:455
-msgid "Allow secure conncetions only"
-msgstr ""
+msgid "Allow secure connections only"
+msgstr "Nur verschlüsselte Verbindungen erlauben"
 
 #: src/searchrooms.html:46
 msgid "An Error Occured!"
@@ -175,14 +165,6 @@ msgstr "Ein Fehler ist aufgetreten..."
 #: src/search.html:73
 msgid "An error has occured"
 msgstr "Ein Fehler ist aufgetreten"
-
-#: NOT FOUND IN SOURCE
-msgid "An error occured!\\nAborting..."
-msgstr ""
-
-#: NOT FOUND IN SOURCE
-msgid "An error occured.\\n\\nYou need to restart this application from the login screen."
-msgstr ""
 
 #: src/usernote.html:28
 #. (user.name)
@@ -205,10 +187,6 @@ msgstr "Auto-Popup falls abwesend"
 msgid "Autojoin"
 msgstr "Automatisch betreten"
 
-#~ #: NOT FOUND IN SOURCE
-#~ #, fuzzy
-#~ msgid "Auto-Pop-up if away"
-#~ msgstr "Auto-Popup wenn 'weg'"
 #: src/help.html:113 src/options.html:502
 msgid "Automatically open messages and chats"
 msgstr "&Ouml;ffne Chats und Nachrichten automatisch"
@@ -319,14 +297,6 @@ msgstr "Konfiguration"
 msgid "Connect Host"
 msgstr ""
 
-#: NOT FOUND IN SOURCE
-msgid "Connection lost!\\nReconnect?"
-msgstr ""
-
-#: NOT FOUND IN SOURCE
-msgid "Couldn't log in!\\nCreate new account?"
-msgstr ""
-
 #: src/vcard.html:149
 msgid "Country"
 msgstr "Land"
@@ -411,10 +381,6 @@ msgstr "Gruppen f&uuml;r <span id=\"groupjid\"></span> bearbeiten"
 msgid "Edit nickname for <span id=\"nickjid\"></span>"
 msgstr "&Auml;ndere Chatname f&uuml;r <span id=\"nickjid\"></span>"
 
-#: NOT FOUND IN SOURCE
-msgid "Edit properties for "
-msgstr "Kontakt bearbeiten: %1"
-
 #: src/userprops.html:66
 #. (jid)
 msgid "Edit properties for %1"
@@ -427,10 +393,6 @@ msgstr "Chat-Protkoll aktivieren"
 #: src/error_message.html:84 src/error_message.html:97 src/groupchat_modifylist.html:61 src/options.html:289 src/options.html:338
 msgid "Error"
 msgstr "Fehler"
-
-#: NOT FOUND IN SOURCE
-msgid "Error saving roster preferences"
-msgstr "Fehler beim Speichern der Einstellungen der Kontaktliste"
 
 #: src/vcard.html:127
 msgid "Family Name"
@@ -512,10 +474,6 @@ msgstr "Protokoll: &Ouml;ffnet das Nachrichten-Protokoll f&uuml;r diesen Kontakt
 msgid "I would like to add you to my roster."
 msgstr "Ich m&ouml;chte Dich gerne zu meiner Kontaktliste hinzuf&uuml;gen."
 
-#: NOT FOUND IN SOURCE
-msgid "If don't have an account yet a new one will be created automatically for you on login (Note: If it fails to register this username might be taken already. Try to choose something else)."
-msgstr "Wenn Du noch keinen Account hast, wird automatisch ein neuer für Dich erstellt. (Achtung: Sollte die Registrierung fehlschlagen, hat Dir vielleicht schon jemand anderes den Benutzernamen weggeschnappt. Probier's einfach mal mit 'nem anderen!)"
-
 #: src/help.html:114
 msgid "If selected each time you get a message from an other user the corresponding dialog pops up automatically."
 msgstr "Ist diese Option gew&auml;hlt, werden Nachrichten-, bzw. Chat-Dialoge automatisch ge&ouml;ffnet sobald eine Nachricht von einem anderen Benutzer bei Dir eintrifft."
@@ -523,14 +481,6 @@ msgstr "Ist diese Option gew&auml;hlt, werden Nachrichten-, bzw. Chat-Dialoge au
 #: src/help.html:118
 msgid "If selected short jingles will play for certain actions like incoming messages or users going on- or offline."
 msgstr "Ist diese Option gew&auml;hlt, werden Kl&auml;nge abgespielt, sobald bestimmte Ereignisse- wie \"Nachricht erhalten\" oder \"Ein Benutzer geht off-/online\" - eintreten."
-
-#: NOT FOUND IN SOURCE
-msgid "If you don't have an account yet a new one can be created for you by checking the register flag below."
-msgstr "Wenn Sie noch kein Benutzerkonto haben, können Sie ein neues Anmelden indem Sie im Formular \"Neues Benuterzkonto anlegen\" anwählen."
-
-#: NOT FOUND IN SOURCE
-msgid "If you want to learn more about JWChat please visit our homepage at <a href=\"http://jwchat.sourceforge.net\">http://jwchat.sourceforge.net</a>!"
-msgstr "Wenn Du mehr über JWChat erfahren möchtest, besuche bitte unsere Homepage unter <a href=\"http://jwchat.sourceforge.net\">http://jwchat.sourceforge.net</a>"
 
 #: src/vcard.html:134
 msgid "Information"
@@ -603,10 +553,6 @@ msgstr ""
 msgid "JWChat - Chat History"
 msgstr ""
 
-#: NOT FOUND IN SOURCE
-msgid "JWChat - Chat-Top"
-msgstr ""
-
 #: src/userhist_collections_iframe.html:4
 msgid "JWChat - Collections"
 msgstr ""
@@ -626,10 +572,6 @@ msgstr "JWChat - Einladung"
 #: src/joingroupchat.html:4
 msgid "JWChat - Join group chat"
 msgstr "JWChat - Gruppenchat betreten"
-
-#: NOT FOUND IN SOURCE
-msgid "JWChat - Menubar"
-msgstr ""
 
 #: src/groupchat_modifylist.html:4
 msgid "JWChat - Modify"
@@ -691,10 +633,6 @@ msgstr "JWChat - VCard - "
 msgid "JWChat is a web based instant messenger (IM) just like AIM, MSN Messenger, Yahoo! Messenger or ICQ. This means you can manage your contacts and chat with other users directly. Unlike other IMs you can use this with your web browser without having to install any additional software at all. For a list of <a href=\"#supported\">supported browsers</a> see below. Your contact list is stored on the server. This means that you have access to your contact list from almost any computer as long as you've got access to the internet."
 msgstr "JWChat ist ein web-basierter <i>Instant Messenger</i> (IM) &auml;hnlich wie der AOL Instant Messenger(AIM), MSN Messenger, Yahoo! Messenger oder ICQ. Das hei&szlig;t, Du kannst damit Deine Kontakte verwalten und mit anderen Benutzern direkt chaten. Im Gegensatz zu anderen IMs kannst Du diesen benutzen ohne irgendeine Zusatzsoftware auf Deinem Rechner installieren zu m&uuml;ssen. Es reicht ein halbwegs moderner Web-Browser. Bitte beachte hierzu <a href=\"#supported\">die Liste der unterst&uuml;tzen Browser</a> weiter unten!<br>Deine Kontaktliste wird auf dem Web-Server gespeichert. Das bedeutet, Du hast Zugriff darauf von so gut wie jedem beliebigen Rechner aus, solange ein Internetanschluss vorhanden ist."
 
-#: NOT FOUND IN SOURCE
-msgid "JWChat is a web based, full featured jabber client. <a href=\"http://www.jabber.org\">Jabber</a> is an advanced  instant messaging system comparable to ICQ, AOL Instant Messenger or Yahoo!Messenger."
-msgstr "JWChat ist ein web-basierter, vollständiger Jabber-Client. <a href=\"http://www.jabber.org\">Jabber</a> ist ein fortschritliches Instant-Messaging-System ähnlich wie ICQ, AIM oder Yahoo! Messenger."
-
 #: src/groupchat_invite.html:63 src/joingroupchat.html:125 src/searchrooms.html:202
 msgid "Join"
 msgstr "Betreten"
@@ -711,17 +649,9 @@ msgstr ""
 msgid "Left clicking an user pops up a message dialog."
 msgstr "Ein Links-Klick auf einen Eintrag &ouml;ffnet den Nachricht-Senden-Dialog."
 
-#: NOT FOUND IN SOURCE
-msgid "Loading Roster...<br>Please wait!"
-msgstr "Messenger wird geladen...<br>Bitte warten!"
-
 #: src/index.html:407 src/index.html:458
 msgid "Login"
 msgstr "Anmelden"
-
-#: NOT FOUND IN SOURCE
-msgid "Login failed. Wrong password?"
-msgstr "Anmeldung fehlgeschlagen. Passwort falsch?"
 
 #: src/help.html:43
 msgid "MS Internet Explorer since version 5.0"
@@ -946,17 +876,10 @@ msgstr "Registrieren an"
 msgid "Registration failed!\\n\\nPlease choose a different username!"
 msgstr ""
 
-#: NOT FOUND IN SOURCE
-msgid "Registration failed. You might want to choose another username."
-msgstr "Anmeldung fehlgeschlagen. Probieren Sie es bitte mit einem anderen Benutzernamen!"
-
 #: src/options.html:310
 msgid "Registration successful."
 msgstr ""
 
-#~ #: NOT FOUND IN SOURCE
-#~ msgid "Raise windows when a new message is received"
-#~ msgstr ""
 #: src/iRoster.html:23
 msgid "Remove"
 msgstr "Entfernen"
@@ -1007,10 +930,6 @@ msgstr "Administratoren-Status widerrufen"
 msgid "Revoke Membership"
 msgstr ""
 
-#: NOT FOUND IN SOURCE
-msgid "Revoke Memebership"
-msgstr "Mitgliedschaft wiederrufen"
-
 #: src/groupchat_iroster.html:35
 msgid "Revoke Moderator Privilege"
 msgstr "Moderationsstatus widerrufen"
@@ -1056,8 +975,8 @@ msgid "Search for a User"
 msgstr "Benutzer suchen"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Suchergebnisse für %1"
 
@@ -1167,10 +1086,6 @@ msgstr "Absenden"
 msgid "Subscribe request from %1"
 msgstr "Authentisierungsanfrage von %1"
 
-#: NOT FOUND IN SOURCE
-msgid "Support for safari coming soon..."
-msgstr "Unterst&uuml;tzung f&uuml;r Safari ist unterwegs..."
-
 #: src/help.html:20 src/help.html:37
 msgid "Supported Browsers"
 msgstr "Unterst&uuml;tzte Browser"
@@ -1228,18 +1143,6 @@ msgstr "Aktualisieren"
 msgid "Update interval"
 msgstr "Aktualisierungsintervall"
 
-#: NOT FOUND IN SOURCE
-msgid "Updating Roster..."
-msgstr ""
-
-#: NOT FOUND IN SOURCE
-msgid "Use SSL"
-msgstr ""
-
-#: NOT FOUND IN SOURCE
-msgid "Use the form below to log into jabber and start your own web based client. You don't need to install any software at all to use this program."
-msgstr "Benutze das Formular auf dieser Seite, um Dich am Jabber-Server anzumelden und den Client zu starten. Dazu mußt Du  keine Extra-Software auf Deinem Rechner  installieren."
-
 #: src/options.html:488
 msgid "User Directory"
 msgstr "Benutzerverzeichnis"
@@ -1247,10 +1150,6 @@ msgstr "Benutzerverzeichnis"
 #: src/help.html:88
 msgid "User doesn't want to be disturbed"
 msgstr ""
-
-#: NOT FOUND IN SOURCE
-msgid "User don't wants to be disturbed"
-msgstr "Bitte nicht stören!"
 
 #: src/help.html:91
 msgid "User hasn't authenticated you"
@@ -1300,10 +1199,6 @@ msgstr ""
 msgid "Web Site"
 msgstr "Homepage"
 
-#: NOT FOUND IN SOURCE
-msgid "Welcome to"
-msgstr "Willkommen auf"
-
 #: src/index.html:395 src/index.html:4
 msgid "Welcome to JWChat"
 msgstr ""
@@ -1312,10 +1207,6 @@ msgstr ""
 #. (SITENAME)
 msgid "Welcome to JWChat at %1"
 msgstr "Willkommen zu JWChat auf %1"
-
-#: NOT FOUND IN SOURCE
-msgid "Welcome to JWChat at jwchat.org"
-msgstr ""
 
 #: src/help.html:116
 msgid "Whether to pop up messages although your status is not \"available\" or \"chat\""
@@ -1425,10 +1316,6 @@ msgstr "Offline"
 #: src/changestatus.html:75 src/jwchat.html:74 src/status.html:10
 msgid "online"
 msgstr "Online"
-
-#: NOT FOUND IN SOURCE
-msgid "optional"
-msgstr ""
 
 #: src/error_message.html:103 src/message.html:134
 msgid "prev"

@@ -166,8 +166,12 @@ msgstr "Depois de enviar o pedido o usuario eh adicionado a sua lista e uma caix
 msgid "Allow"
 msgstr "Permitir"
 
-#: src/index.html:455
+#: NOT FOUND IN SOURCE
 msgid "Allow secure conncetions only"
+msgstr ""
+
+#: src/index.html:455
+msgid "Allow secure connections only"
 msgstr ""
 
 #: src/searchrooms.html:46
@@ -1091,8 +1095,8 @@ msgid "Search for a User"
 msgstr "Procurar por um usuario"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Procurar resultados por %1"
 

@@ -33,6 +33,8 @@
 # , 2004.
 # translation of es.po to Espa&ntilde;ol
 # , 2004.
+# translation of es.po to Espa&ntilde;ol
+# , 2004.
 #: NOT FOUND IN SOURCE
 msgid ""
 msgstr ""
@@ -177,8 +179,12 @@ msgstr "Despu&eacute;s de haber enviado la petici&oacute;n de subscripci&oacute;
 msgid "Allow"
 msgstr "Permitir"
 
-#: src/index.html:455
+#: NOT FOUND IN SOURCE
 msgid "Allow secure conncetions only"
+msgstr ""
+
+#: src/index.html:455
+msgid "Allow secure connections only"
 msgstr ""
 
 #: src/searchrooms.html:46
@@ -1094,8 +1100,8 @@ msgid "Search for a User"
 msgstr "Buscar usuario"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Resultados de la b&uacute;squeda para %1"
 

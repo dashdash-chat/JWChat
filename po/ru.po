@@ -169,9 +169,13 @@ msgstr "После отправки запроса на подписку пол�
 msgid "Allow"
 msgstr "Разрешить"
 
-#: src/index.html:455
+#: NOT FOUND IN SOURCE
 msgid "Allow secure conncetions only"
 msgstr "Разрешить только зашифрованные подключения"
+
+#: src/index.html:455
+msgid "Allow secure connections only"
+msgstr ""
 
 #: src/searchrooms.html:46
 msgid "An Error Occured!"
@@ -1094,8 +1098,8 @@ msgid "Search for a User"
 msgstr "Искать пользователя"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "Результаты поиска для %1"
 

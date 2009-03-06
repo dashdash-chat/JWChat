@@ -264,9 +264,13 @@ msgstr "在您发送邀请之后，该用户就会加入到您的联系人列表
 msgid "Allow"
 msgstr "允许"
 
-#: src/index.html:455
+#: NOT FOUND IN SOURCE
 msgid "Allow secure conncetions only"
 msgstr "仅允许安全的连接"
+
+#: src/index.html:455
+msgid "Allow secure connections only"
+msgstr ""
 
 #: src/searchrooms.html:46
 msgid "An Error Occured!"
@@ -1189,8 +1193,8 @@ msgid "Search for a User"
 msgstr "搜索用户"
 
 #: src/search.html:124 src/search.html:141 src/search.html:90 src/searchrooms.html:28
-#. (iq.getFrom())
 #. (conference_server)
+#. (iq.getFrom())
 msgid "Search results for %1"
 msgstr "对 %1 的搜索结果"
 
