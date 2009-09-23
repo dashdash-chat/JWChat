@@ -1185,7 +1185,7 @@ function getPrefs(iq) {
   // print roster
   roster.print();
   
-  if (opener.prio)
+  if (opener && opener.prio)
     onlprio = opener.prio;
   else
     onlprio = DEFAULTPRIORITY;
@@ -1388,9 +1388,9 @@ function init() {
   oArg = {domain:JABBERSERVER,username:jid.substring(0,jid.indexOf('@')),resource:jid.substring(jid.indexOf('/')+1),pass:pass,register:register}
   
   if (BACKEND_TYPE == 'binding') {
-    if (opener.connect_port && !isNaN(opener.connect_port))
+    if (opener && opener.connect_port && !isNaN(opener.connect_port))
       oArg.port = opener.connect_port;
-    if (opener.connect_host && opener.connect_host != '')
+    if (opener && opener.connect_host && opener.connect_host != '')
       oArg.host = opener.connect_host;
     if (opener && opener.connect_secure)
       oArg.secure = true;
