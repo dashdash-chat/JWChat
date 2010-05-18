@@ -9,9 +9,10 @@ function getArgs(){
     for(var i=0; i<argList.length; i++){
       newArg = argList[i];
       newArg = argList[i].split('=');
-      passedArgs[unescape(newArg[0])] = unescape(newArg[1]);
+      passedArgs[decodeURIComponent(newArg[0])] = decodeURIComponent(newArg[1]);
     }
   }
+  return passedArgs;
 }
 
 function cutResource(aJID) { // removes resource from a given jid
