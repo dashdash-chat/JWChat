@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 
-package JWC::I18N;
+package JWCI18N;
 use base qw(Locale::Maketext);
 
 use Locale::Maketext 1.01;

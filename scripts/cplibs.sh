@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ ! -e ./lib/jsjac ]; then
   echo "jsjac is missing, checking out ..."
-  svn co http://svn.jwchat.org/jsjac/trunk lib/jsjac
+  git clone git://github.com/sstrigler/JSJaC.git lib/jsjac
   echo "building jsjac ..."
   make -C lib/jsjac
   echo "done"

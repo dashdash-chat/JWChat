@@ -1,5 +1,5 @@
-package JWC::I18N::en;
-use base qw(JWC::I18N);
+package JWCI18N::en;
+use base qw(JWCI18N);
 %Lexicon = (
 	    '_AUTO' => 1,
 	   );
