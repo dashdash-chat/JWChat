@@ -199,8 +199,7 @@ function RosterRemoveUser(user) {
       this.users = this.users.slice(0,i).concat(this.users.slice(i+1,uLen));
       // remove user element
       for (var j=0; j < user.groups.length; j++) {
-        var groupName = user.groups[j].name || 'Unfiled';
-        var groupEl = this.rosterW.getElementById(groupName);
+        var groupEl = this.rosterW.getElementById(getGroupName(user.groups[j]));
         var userEl = this.rosterW.getElementById(getUserElementId(user, user.groups[j]));
         if (groupEl && userEl) { groupEl.removeChild(userEl); }
       }
@@ -413,9 +412,18 @@ function printRoster() {
   this.updateStyleIE();
 }
 
+function getGroupName(group) {
+  var groupName = 'Unfiled';
+  if (typeof group == 'string') {
+    groupName = group;
+  } else if (group.name) {
+    groupName = group.name;
+  }
+  return groupName;
+}
+
 function getUserElementId(user, group) {
-  var groupName = group.name || 'Unfiled';
-  return htmlEnc(user.jid)+"/"+groupName+"Entry";
+  return htmlEnc(user.jid)+"/"+getGroupName(group)+"Entry";
 }
 
 function getRosterUserClass(usersHidden, user, group) {
