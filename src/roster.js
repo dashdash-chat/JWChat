@@ -309,7 +309,7 @@ function printRoster() {
 		A[A.length] = "' onClick='toggleGrp(\"";
 		A[A.length] = this.groups[i].name;
 		A[A.length] = "\");'><nobr>";
-    var toggleImg = (this.hiddenGroups[this.groups[i].name])?'images/group_close.gif':'images/group_open.gif';
+    var toggleImg = (this.hiddenGroups.length && this.hiddenGroups[this.groups[i].name])?'images/group_close.gif':'images/group_open.gif';
     A[A.length] = "<img src='";
 		A[A.length] = toggleImg;
 		A[A.length] ="' name='";
@@ -330,7 +330,7 @@ function printRoster() {
 			    (this.usersHidden && this.groups[i].onlUserCount == 0 && 
 			     this.groups[i].messagesPending == 0 && 
 			     this.groups[i].name != loc("Gateways")) 
-			    || this.hiddenGroups[this.groups[i].name])
+			    || (this.hiddenGroups.length && this.hiddenGroups[this.groups[i].name]))
       ? 'hidden':'rosterGroup';
 
     A[A.length] =  "<div id='";
