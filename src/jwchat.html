@@ -55,7 +55,7 @@ var onlmsg = '';
 var onlprio = '8';
 var autoPopup = true;
 var autoPopupAway = false;
-var playSounds = true;
+var playSounds = false;
 var focusWindows = true;
 var timestamps = false;
 var usersHidden = false;
@@ -1165,7 +1165,7 @@ function getPrefs(iq) {
 	  autoPopupAway = eval(jNode.childNodes.item(i).firstChild.nodeValue);
 	  break;
 	case 'playSounds':
-	  playSounds = eval(jNode.childNodes.item(i).firstChild.nodeValue);
+	  //playSounds = eval(jNode.childNodes.item(i).firstChild.nodeValue);
 	  break;
 	case 'focusWindows':
 	  focusWindows = eval(jNode.childNodes.item(i).firstChild.nodeValue);
