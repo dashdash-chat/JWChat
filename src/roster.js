@@ -126,7 +126,7 @@ function RosterOpenChat(jid) {
   if (!user.chatW || user.chatW.closed)
     user.chatW = open("chat.html?jid="+escape(jid),
                       "chatW"+makeWindowName(user.jid),
-                      "width=320,height=390,resizable=yes");
+                      "width=518,height=390,resizable=yes");
   else if (user.chatW.popMsgs)
     user.chatW.popMsgs();
 }
