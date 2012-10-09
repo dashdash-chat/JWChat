@@ -168,7 +168,8 @@ function init() {
 
   cFrame = chat.document;
   user = srcW.roster.getUserByJID(jid);
-  document.title = loc("Chat with [_1]",  user.name);
+  var title_name = user.name.replace(" &amp; ", " & ");
+  document.title = loc("Chat with [_1]",  title_name);
 
   document.getElementById('user_name').innerHTML = user.name;
 
