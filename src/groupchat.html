@@ -7,13 +7,13 @@
  // this one's needed to make roster.js work
 var JABBERSERVER = opener.JABBERSERVER;
 </script>
-    <script src="shared.js"></script>
-    <script src="browsercheck.js"></script>
-    <script src="emoticons.js"></script>
-    <script src="config.js"></script>
-    <script src="statusLed.js"></script>
-    <script src="jsjac.js"></script>
-    <script src="roster.js"></script>
+    <script src="/static/jwchat/shared.js"></script>
+    <script src="/static/jwchat/browsercheck.js"></script>
+    <script src="/static/jwchat/emoticons.js"></script>
+    <script src="/static/jwchat/config.js"></script>
+    <script src="/static/jwchat/statusLed.js"></script>
+    <script src="/static/jwchat/jsjac.js"></script>
+    <script src="/static/jwchat/roster.js"></script>
     <script language="JavaScript1.2">
 <!--
 var colors = new Array('maroon','green','olive','navy','purple','teal','red','blue');
@@ -195,7 +195,7 @@ function changeAffiliation(jid,affil,confirm,reason) {
 var configW
 function openConfig() {
   if (!configW || configW.closed)
-    configW = open("groupchatconfig.html","gccW"+makeWindowName(jid),"width=480,height=380,resizable=yes,scrollbars=yes");
+    configW = open("/static/jwchat/groupchatconfig.html","gccW"+makeWindowName(jid),"width=480,height=380,resizable=yes,scrollbars=yes");
   configW.focus();
   return false;
 }
@@ -315,10 +315,10 @@ onresize = updateStyleIE;
 
   <frameset cols="75%,*" frameborder=2 framespacing=2 border=2 bordercolor=black>
     <frameset rows="40,*,90" frameborder=2 framespacing=2 border=2 bordercolor=black>
-      <frame src="groupchat_top.html" name="groupchatTop" scrolling="no" />
-        <frame src="groupchat_chat.html" name="groupchatChat" scrolling="no" />
-          <frame src="groupchat_bottom.html" name="groupchatBottom" scrolling="no" />
+      <frame src="/static/jwchat/groupchat_top.html" name="groupchatTop" scrolling="no" />
+        <frame src="/static/jwchat/groupchat_chat.html" name="groupchatChat" scrolling="no" />
+          <frame src="/static/jwchat/groupchat_bottom.html" name="groupchatBottom" scrolling="no" />
     </frameset>
-    <frame src="groupchat_roster.html" name="groupchatRoster" scrolling="no" />
+    <frame src="/static/jwchat/groupchat_roster.html" name="groupchatRoster" scrolling="no" />
   </frameset>
 </html>

@@ -3,8 +3,8 @@
   <head>
     <title><l>Vine.IM - JWChat - Change Online Status</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js"></script>
-    <script src="switchStyle.js"></script>
+    <script src="/static/jwchat/shared.js"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
     <script>
       <!--
 var jid;
@@ -72,19 +72,19 @@ onload = init;
     <form name="statF">
       <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0 style="margin-bottom: 8px;">
           <tr>
-            <td><input type=radio name="status" value="available" id="available"><label for="available"><img src="images/available.gif"> <l>online</l></label></td>
-            <td><input type=radio name="status" value="xa" id="xa"><label for="xa"><img src="images/xa.gif"> <l>not available</l></label></td>
+            <td><input type=radio name="status" value="available" id="available"><label for="available"><img src="/static/jwchat/images/available.gif"> <l>online</l></label></td>
+            <td><input type=radio name="status" value="xa" id="xa"><label for="xa"><img src="/static/jwchat/images/xa.gif"> <l>not available</l></label></td>
           </tr>
           <tr>
-            <td><input type=radio name="status" value="chat" id="chaty"><label for="chaty"><img src="images/chat.gif"> <l>free for chat</l></label></td>
-            <td><input type=radio name="status" value="dnd" id="dnd"><label for="dnd"><img src="images/dnd.gif"> <l>do not disturb</l></label></td>
+            <td><input type=radio name="status" value="chat" id="chaty"><label for="chaty"><img src="/static/jwchat/images/chat.gif"> <l>free for chat</l></label></td>
+            <td><input type=radio name="status" value="dnd" id="dnd"><label for="dnd"><img src="/static/jwchat/images/dnd.gif"> <l>do not disturb</l></label></td>
           </tr>
           <tr>
-            <td><input type=radio name="status" value="away" id="away"><label for="away"><img src="images/away.gif"> <l>away</l></label></td>
-            <td><input type=radio name="status" value="unavailable" id="unavailable"><label for="unavailable"><img src="images/invisible.gif"> <l>Invisible</l></label></td>
+            <td><input type=radio name="status" value="away" id="away"><label for="away"><img src="/static/jwchat/images/away.gif"> <l>away</l></label></td>
+            <td><input type=radio name="status" value="unavailable" id="unavailable"><label for="unavailable"><img src="/static/jwchat/images/invisible.gif"> <l>Invisible</l></label></td>
           </tr>
           <tr id="offline">
-            <td>&nbsp;</td><td><input type=radio name="status" value="offline" id="offl"><label for="offl"><img src="images/unavailable.gif"> <l>offline</l></label></td>
+            <td>&nbsp;</td><td><input type=radio name="status" value="offline" id="offl"><label for="offl"><img src="/static/jwchat/images/unavailable.gif"> <l>offline</l></label></td>
           </tr>
           <tr><td colspan=2><b><l>Status Message</l>:</b></td></tr>
           <tr height="100%"><td colspan=2><textarea id="msg" wrap="physical" class="msgBox"></textarea></td></tr>

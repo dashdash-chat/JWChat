@@ -4,17 +4,17 @@
     <title><l>Vine.IM - JWChat</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <script type="text/javascript" src="config.js"></script>
-    <script type="text/javascript" src="shared.js"></script>
-    <script type="text/javascript" src="browsercheck.js"></script>
-    <script type="text/javascript" src="sounds.js"></script>
-    <script type="text/javascript" src="statusLed.js"></script>
+    <script type="text/javascript" src="/static/jwchat/config.js"></script>
+    <script type="text/javascript" src="/static/jwchat/shared.js"></script>
+    <script type="text/javascript" src="/static/jwchat/browsercheck.js"></script>
+    <script type="text/javascript" src="/static/jwchat/sounds.js"></script>
+    <script type="text/javascript" src="/static/jwchat/statusLed.js"></script>
 
 <!-- JabberConnection -->
-    <script type="text/javascript" src="jsjac.js"></script>
+    <script type="text/javascript" src="/static/jwchat/jsjac.js"></script>
 
 <!-- Debugger -->
-    <script type="text/javascript" src="Debugger.js"></script>
+    <script type="text/javascript" src="/static/jwchat/Debugger.js"></script>
 
     <script type="text/javascript">
 <!--
@@ -98,14 +98,14 @@ function openGroupchat(aJid,nick,pass) {
   }
   } catch(e) { Debug.log(e.message, 1); }
   if (!user.chatW || user.chatW.closed)
-    user.chatW = open("groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=520,height=390,resizable=yes");
+    user.chatW = open("/static/jwchat/groupchat.html?jid="+escape(aJid)+"&nick="+escape(nick)+"&pass="+escape(pass),"gchatW"+makeWindowName(aJid+"/"+nick),"width=520,height=390,resizable=yes");
   user.chatW.focus();
 }
 
 var subw;
 function openSubscription(aJid) {
   var param = (aJid) ? "?jid="+escape(aJid) : "";
-  subw = open("subscription.html"+param,"sub","width=320,height=240,resizable=yes");
+  subw = open("/static/jwchat/subscription.html"+param,"sub","width=320,height=240,resizable=yes");
   subw.focus();
   return false;
 }
@@ -115,7 +115,7 @@ function openCustomPresence(aJid) {
   if (!user)
     return;
   if (!user.onlStatW || user.onlStatW.closed)
-    user.onlStatW = open("changestatus.html?jid="+escape(aJid),"onlStatW","width=330,height=240,resizable=yes");
+    user.onlStatW = open("/static/jwchat/changestatus.html?jid="+escape(aJid),"onlStatW","width=330,height=240,resizable=yes");
   user.onlStatW.focus();
   return false;
 }
@@ -145,7 +145,7 @@ function sendCustomPresence(aJid,presence,msg) {
 }
 
 function openUserProps(aJid) {
-  open("userprops.html?jid="+escape(aJid),"uProps"+makeWindowName(aJid),"width=480,height=360,resizable=yes");
+  open("/static/jwchat/userprops.html?jid="+escape(aJid),"uProps"+makeWindowName(aJid),"width=480,height=360,resizable=yes");
   return false;
 }
 
@@ -165,7 +165,7 @@ function removeUser(aJid) {
 
 var vcardW; // my vcardW;
 function openUserInfo(aJid) {
-  var newin = open("vcard.html?jid="+escape(aJid),"vcardW"+makeWindowName(aJid),"width=400,height=580,scrollbars=yes");
+  var newin = open("/static/jwchat/vcard.html?jid="+escape(aJid),"vcardW"+makeWindowName(aJid),"width=400,height=580,scrollbars=yes");
 
   if (cutResource(aJid) == cutResource(jid))
     vcardW = newin;
@@ -194,7 +194,7 @@ function openUserHistory(aJid) {
     return;
 
   if (!user.histW || user.histW.closed)
-    user.histW = open("userhist.html?jid="+escape(aJid),"histW"+makeWindowName(aJid),"width=600,height=400,resizable=yes,scrollbars=no");
+    user.histW = open("/static/jwchat/userhist.html?jid="+escape(aJid),"histW"+makeWindowName(aJid),"width=600,height=400,resizable=yes,scrollbars=no");
   user.histW.focus();
 }
 
@@ -205,14 +205,14 @@ function openUserNote(aJid) { /* store annotations to a user */
     return; // unbelievable
   
   if (!user.noteW || user.noteW.closed)
-    user.noteW = open("usernote.html?jid="+escape(aJid),"noteW"+makeWindowName(aJid),"width=300,height=200,resizable=yes,scrollbars=no");
+    user.noteW = open("/static/jwchat/usernote.html?jid="+escape(aJid),"noteW"+makeWindowName(aJid),"width=300,height=200,resizable=yes,scrollbars=no");
   user.noteW.focus();
 }
 
 var searchW;
 function openSearch() {
   if (!searchW || searchW.closed)
-    searchW = open("search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
+    searchW = open("/static/jwchat/search.html","searchW"+makeWindowName(jid),"width=480,height=260,resizable=yes,scrollbars=yes");
   searchW.focus();
   return false;
 }
@@ -220,7 +220,7 @@ function openSearch() {
 var ebW
 function openEditBookmarks() {
   if (!ebW || ebW.closed)
-    ebW = open("editbookmarks.html","ebw"+makeWindowName(jid),"width=330,height=290,resizable=yes");
+    ebW = open("/static/jwchat/editbookmarks.html","ebw"+makeWindowName(jid),"width=330,height=290,resizable=yes");
   return false;
 }
 
@@ -436,7 +436,7 @@ function handleMessage(oMsg) {
     if (typeof(user.iwArr) == 'undefined')
       user.iwArr = new Array();
     
-    user.iwArr[to] = open("groupchat_invite.html?to="+escape(to)+"&from="+escape(from)+"&pass="+escape(pass)+"&reason="+escape(reason),"iw"+makeWindowName(to),"width=320,height=320,resizable=yes");
+    user.iwArr[to] = open("/static/jwchat/groupchat_invite.html?to="+escape(to)+"&from="+escape(from)+"&pass="+escape(pass)+"&reason="+escape(reason),"iw"+makeWindowName(to),"width=320,height=320,resizable=yes");
     
     return;
   }
@@ -584,7 +584,7 @@ function handleMessageError(oMsg) {
   error_messages = error_messages.concat(oMsg);
   
   if (!errorW || errorW.closed)
-    errorW = open("error_message.html","errorW"+makeWindowName(jid),"width=360,height=270,dependent=yes,resizable=yes");
+    errorW = open("/static/jwchat/error_message.html","errorW"+makeWindowName(jid),"width=360,height=270,dependent=yes,resizable=yes");
   else if (error_messages.length > 0 && errorW.document.forms[0])
     errorW.document.forms[0].nextButton.disabled = false;
   
@@ -680,9 +680,9 @@ function handlePresence(presence) {
       con.send(bPresence);
     }	else {
       if (status)
-	window.open("subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(status),"sr"+makeWindowName(from),"width=320,height=240");
+	window.open("/static/jwchat/subscriptionRequest.html?jid="+escape(from)+"&msg="+escape(status),"sr"+makeWindowName(from),"width=320,height=240");
       else
-	window.open("subscriptionRequest.html?jid="+escape(from),"sr"+makeWindowName(from),"width=320,height=240");
+	window.open("/static/jwchat/subscriptionRequest.html?jid="+escape(from),"sr"+makeWindowName(from),"width=320,height=240");
     }
     return;
   case 'unsubscribe':
@@ -1542,11 +1542,11 @@ onresize = updateStyleIE;
 
 //-->
     </script>
-    <script src="roster.js"></script>
+    <script src="/static/jwchat/roster.js"></script>
   </head>
   <frameset rows="100%,0,0,0,0" border="0">
-    <frame src="roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
-    <frame src="empty.html" name="jwc_sound" marginwidth="0" marginheight="0" onLoad="soundLoaded();">
+    <frame src="/static/jwchat/roster.html" name="jwc_main" marginwidth="0" marginheight="0" scrolling="no">
+    <frame src="/static/jwchat/empty.html" name="jwc_sound" marginwidth="0" marginheight="0" onLoad="soundLoaded();">
   </frameset>
   <body>
     <l>Your browser must support frames and javascript to use this application. Please refer to our <a href="help.html">online manual</a> for a list of supported browser.</l>

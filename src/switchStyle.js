@@ -1,4 +1,4 @@
-style = "jwchat.css"; // fallback
+style = "/static/jwchat/jwchat.css"; // fallback
 
 // look for stylesheet
 if (parent.top.stylesheet)

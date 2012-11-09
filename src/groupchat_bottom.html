@@ -3,10 +3,10 @@
   <head>
     <title></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="browsercheck.js"></script>
-    <script src="shared.js"></script>
-    <script src="switchStyle.js"></script>
-    <script src="jsjac.js"></script>
+    <script src="/static/jwchat/browsercheck.js"></script>
+    <script src="/static/jwchat/shared.js"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
+    <script src="/static/jwchat/jsjac.js"></script>
     <script>
       <!--
 
@@ -156,7 +156,7 @@ function submitClicked() {
 var rw;
 function openRegisterRoom() {
 	if (!rw || rw.closed)
-		rw = open("groupchat_register.html","rw"+makeWindowName(parent.jid),"width=300,height=400,resizable=yes");
+		rw = open("/static/jwchat/groupchat_register.html","rw"+makeWindowName(parent.jid),"width=300,height=400,resizable=yes");
 	rw.focus();
 
 	return false;
@@ -165,7 +165,7 @@ function openRegisterRoom() {
 var iw;
 function openInvite() {
 	if (!iw || iw.closed)
-		iw = open("groupchat_invite_dialog.html","iw"+makeWindowName(parent.group),"width=300,height=200");
+		iw = open("/static/jwchat/groupchat_invite_dialog.html","iw"+makeWindowName(parent.group),"width=300,height=200");
 	iw.focus();
 	return false;
 }

@@ -5,7 +5,7 @@
 // creation:	2002-04-07
 
 var emoticons = new Object();
-var emoticonpath = "./images/emoticons/rythmbox/";
+var emoticonpath = "/static/jwchat/images/emoticons/rythmbox/";
 
 emoticons[':cat:'] = 'cat.gif';
 

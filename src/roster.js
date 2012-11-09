@@ -103,11 +103,11 @@ function RosterOpenMessage(jid) {
   var wName = makeWindowName(user.jid); 
 
   if (user.messages.length > 0 && (!user.mW || user.mW.closed)) // display messages
-    user.mW = open('message.html?jid='+escape(jid),
+    user.mW = open('/static/jwchat/message.html?jid='+escape(jid),
                    "mw"+wName,
                    'width=360,height=270,dependent=yes,resizable=yes');
   else if (!user.sW || user.sW.closed) // open send dialog
-    user.sW = open("send.html?jid="+escape(jid),
+    user.sW = open("/static/jwchat/send.html?jid="+escape(jid),
                    "sw"+wName,
                    'width=320,height=200,dependent=yes,resizable=yes');
   return false;
@@ -124,7 +124,7 @@ function RosterOpenChat(jid) {
     this.openMessage(jid);
 		
   if (!user.chatW || user.chatW.closed)
-    user.chatW = open("chat.html?jid="+escape(jid),
+    user.chatW = open("/static/jwchat/chat.html?jid="+escape(jid),
                       "chatW"+makeWindowName(user.jid),
                       "width=518,height=390,resizable=yes");
   else if (user.chatW.popMsgs)
@@ -309,7 +309,7 @@ function printRoster() {
 		A[A.length] = "' onClick='toggleGrp(\"";
 		A[A.length] = this.groups[i].name;
 		A[A.length] = "\");'><nobr>";
-    var toggleImg = (this.hiddenGroups.length && this.hiddenGroups[this.groups[i].name])?'images/group_close.gif':'images/group_open.gif';
+    var toggleImg = (this.hiddenGroups.length && this.hiddenGroups[this.groups[i].name])?'/static/jwchat/images/group_close.gif':'/static/jwchat/images/group_open.gif';
     A[A.length] = "<img src='";
 		A[A.length] = toggleImg;
 		A[A.length] ="' name='";
@@ -595,7 +595,7 @@ function updateRoster() {
 
       var A = new Array();
       A[A.length] = "<nobr>";
-      var toggleImg = (this.hiddenGroups[group.name])?'images/group_close.gif':'images/group_open.gif';
+      var toggleImg = (this.hiddenGroups[group.name])?'/static/jwchat/images/group_close.gif':'/static/jwchat/images/group_open.gif';
       A[A.length] = "<img src='";
       A[A.length] = toggleImg;
       A[A.length] ="' name='";
@@ -822,11 +822,11 @@ GroupchatRoster.prototype = new Roster();
 // some images - no idea why they are defined here
 
 var messageImg = new Image();
-messageImg.src = "images/message.gif";
+messageImg.src = "/static/jwchat/images/message.gif";
 var grp_open_img = new Image();
-grp_open_img.src = 'images/group_open.gif';
+grp_open_img.src = '/static/jwchat/images/group_open.gif';
 var grp_close_img = new Image();
-grp_close_img.src = 'images/group_close.gif';
+grp_close_img.src = '/static/jwchat/images/group_close.gif';
 var arrow_right_blinking = new Image();
-arrow_right_blinking.src = 'images/arrow_right_blinking.gif';
+arrow_right_blinking.src = '/static/jwchat/images/arrow_right_blinking.gif';
 

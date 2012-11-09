@@ -3,12 +3,12 @@
   <head>
     <title><l>Vine.IM - JWChat - Chat</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="shared.js"></script>
-    <script src="browsercheck.js"></script>
-    <script src="emoticons.js"></script>
-    <script src="switchStyle.js"></script>
-    <script src="statusLed.js"></script>
-    <script src="jsjac.js"></script>
+    <script src="/static/jwchat/shared.js"></script>
+    <script src="/static/jwchat/browsercheck.js"></script>
+    <script src="/static/jwchat/emoticons.js"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
+    <script src="/static/jwchat/statusLed.js"></script>
+    <script src="/static/jwchat/jsjac.js"></script>
     <script>
       <!--
 var user;
@@ -195,9 +195,9 @@ function displayTimestamp() {
 
 
 var group_open = new Image();
-group_open.src = 'images/group_open.gif';
+group_open.src = '/static/jwchat/images/group_open.gif';
 var group_close = new Image();
-group_close.src = 'images/group_close.gif';
+group_close.src = '/static/jwchat/images/group_close.gif';
 var msgbox_toggled = false;
 function toggle_msgbox(el) {
   if (msgbox_toggled) {
@@ -306,14 +306,14 @@ onunload = cleanUp;
 		<tr><td colspan=2>
 		<table border=0 cellspacing=0 cellpadding=0 width="100%">
 		<tr>
-		<td width="100%" valign=top><img src="images/unavailable.gif" name="statusLed" width=16 height=16 border=0 align=left><span id="user_name" class="link" onClick="return openUserInfo();" style="padding:2px;" title="<l>Click to show user's vcard</l>"></span><br clear=all>
+		<td width="100%" valign=top><img src="/static/jwchat/images/unavailable.gif" name="statusLed" width=16 height=16 border=0 align=left><span id="user_name" class="link" onClick="return openUserInfo();" style="padding:2px;" title="<l>Click to show user's vcard</l>"></span><br clear=all>
 		<span id="awaymsg" class="statusMsg"></span></td>
 		<td align=right valign=top><button id='hist_button' onClick="return openUserHistory();"><l>History</l></button></td></table>
 		</td></tr>
-    <tr><td width="100%" height="100%" colspan=2><iframe src="chat_iframe.html" id="chat" name="chat" scrolling="auto"></iframe></td></tr>
+    <tr><td width="100%" height="100%" colspan=2><iframe src="/static/jwchat/chat_iframe.html" id="chat" name="chat" scrolling="auto"></iframe></td></tr>
  		<form name="chatform" style="border:0px;margin:0px;padding:0px;">
     <tr>
-      <td valign=top><img id="toggle_icon" src="images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
+      <td valign=top><img id="toggle_icon" src="/static/jwchat/images/group_close.gif" width="14" height="14" onClick="toggle_msgbox(this);"></td>
       <td width="100%">
           <textarea id="msgbox" wrap="virtual" style="width:100%;height:1.4em;" onKeyPress="return msgboxKeyPressed(this,event);" onKeyDown="return msgboxKeyDown(this,event);"></textarea>
       </td>

@@ -3,10 +3,10 @@
   <head>
     <title><l>Welcome to JWChat</l></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="config.js" language="JavaScript1.2"></script>
-    <script src="browsercheck.js" language="JavaScript1.2"></script>
-    <script src="shared.js" language="JavaScript1.2"></script>
-    <script src="switchStyle.js"></script>
+    <script src="/static/jwchat/config.js" language="JavaScript1.2"></script>
+    <script src="/static/jwchat/browsercheck.js" language="JavaScript1.2"></script>
+    <script src="/static/jwchat/shared.js" language="JavaScript1.2"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
     <script language="JavaScript">
 <!--
 
@@ -75,7 +75,7 @@ function tryAutoLogin() {
       prio = DEFAULTPRIORITY;
       connect_secure = false;
 
-      jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
+      jwchats[jid] = window.open('/static/jwchat/jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
 			return true;
     }
   }
@@ -129,7 +129,7 @@ function loginCheck(form) {
   connect_host = form.connect_host.value;
   connect_secure = form.connect_secure.checked;
 
-  jwchats[jid] = window.open('jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
+  jwchats[jid] = window.open('/static/jwchat/jwchat.html',makeWindowName(jid),'width=180,height=390,resizable=yes');
 
   return false;
 }
@@ -404,7 +404,7 @@ onload = init;
         <td height="100%" align=center valign=top id='td_form'>
           <table border=0 cellspacing=0 cellpadding=2 id="lTable" align=center width=380>
               <tr>
-                <td colspan=2><h3><l>Login</l><img src="images/available.gif" width=16 height=16></h3></td>
+                <td colspan=2><h3><l>Login</l><img src="/static/jwchat/images/available.gif" width=16 height=16></h3></td>
               </tr>
               <tr id="tr_server" style="display:none;">
                 <th title="<l>Select Jabber server to connect to</l>"><label for='server'><l>Server</l></label></th>
@@ -422,11 +422,11 @@ onload = init;
               <tr><td>&nbsp;</td><td><input type=checkbox name=register id=register> <label for="register"><l>Register New Account</l></label></td></tr>
               <tr id="showMoreOpts" class="toggleOpts">
                 <td>&nbsp;</td>
-                <td onClick="return toggleMoreOpts(1);"><img src="images/group_close.gif" title="<l>Show More Options</l>"> <l>Show More Options</l></td>
+                <td onClick="return toggleMoreOpts(1);"><img src="/static/jwchat/images/group_close.gif" title="<l>Show More Options</l>"> <l>Show More Options</l></td>
               </tr>
               <tr id="showLessOpts" class="toggleOpts" style="display:none;">
                 <td>&nbsp;</td>
-                <td onClick="return toggleMoreOpts(0);"><img src="images/group_open.gif" title="<l>Show Less Options</l>"> <l>Show Less Options</l></td>
+                <td onClick="return toggleMoreOpts(0);"><img src="/static/jwchat/images/group_open.gif" title="<l>Show Less Options</l>"> <l>Show Less Options</l></td>
               </tr>
               <tr class="moreOpts" style="display:none;">
                 <th><label for='res'><l>Resource</l></label></th>

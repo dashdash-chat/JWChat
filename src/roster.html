@@ -3,14 +3,14 @@
   <head>
     <title></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="switchStyle.js"></script>
-    <script src="shared.js"></script>
-    <script src="pngfix.js"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
+    <script src="/static/jwchat/shared.js"></script>
+    <script src="/static/jwchat/pngfix.js"></script>
     <script>
       <!--
 
 function openHelp(button) {
-  window.open("help.html","help","scrollbars=yes,resizable=yes");
+  window.open("/static/jwchat/help.html","help","scrollbars=yes,resizable=yes");
   button.blur();
   return false;
 }
@@ -18,7 +18,7 @@ function openHelp(button) {
 var ow;
 function openOptions(el) {
   if (!top.ow || top.ow.closed)
-    top.ow = open("options.html","ow"+makeWindowName(parent.jid),"width=380,height=380,resizable=yes");
+    top.ow = open("/static/jwchat/options.html","ow"+makeWindowName(parent.jid),"width=380,height=380,resizable=yes");
   el.blur();
   top.ow.focus();
   return false;
@@ -37,7 +37,7 @@ function addUser() {
 var groupw;
 function openGroupchat() {
   if (!groupw || groupw.closed)
-    groupw = open("joingroupchat.html","joingroupw"+makeWindowName(parent.jid),"width=330,height=250,resizable=yes");
+    groupw = open("/static/jwchat/joingroupchat.html","joingroupw"+makeWindowName(parent.jid),"width=330,height=250,resizable=yes");
   groupw.focus();
   return false;
 }
@@ -45,7 +45,7 @@ function openGroupchat() {
 var onlStatW;
 function openChangeStatus() {
   if (!onlStatW || onlStatW.closed)
-    onlStatW = open("changestatus.html","onlStatW"+makeWindowName(parent.jid),"width=330,height=240,resizable=yes");
+    onlStatW = open("/static/jwchat/changestatus.html","onlStatW"+makeWindowName(parent.jid),"width=330,height=240,resizable=yes");
   onlStatW.focus();
   return false;
 }
@@ -89,17 +89,17 @@ function handleClick(e) {
 }      
 
 var adduser = new Image();
-adduser.src = "images/adduser.png";
+adduser.src = "/static/jwchat/images/adduser.png";
 var adduserOver = new Image();
-adduserOver.src = "images/adduser_over.png";
+adduserOver.src = "/static/jwchat/images/adduser_over.png";
 // var searchuser = new Image();
-// searchuser.src = "images/searchuser.png";
+// searchuser.src = "/static/jwchat/images/searchuser.png";
 // var searchuserOver = new Image();
-// searchuserOver.src = "images/searchuser_over.png";
+// searchuserOver.src = "/static/jwchat/images/searchuser_over.png";
 var groupchat = new Image();
-groupchat.src = "images/groupchat.png";
+groupchat.src = "/static/jwchat/images/groupchat.png";
 var groupchatOver = new Image();
-groupchatOver.src = "images/groupchat_over.png";
+groupchatOver.src = "/static/jwchat/images/groupchat_over.png";
 
 function changePic(oldEl,newEl) {
   if (oldEl.tagName == "SPAN") // from pngfix.js
@@ -128,6 +128,7 @@ onkeydown = keyPressed;
       handleClick(window.event);
     </script>
 
+
     <script for="document" event="onkeydown()" language="JScript">
     if (window.event)
       keyPressed(window.event);
@@ -142,15 +143,15 @@ onkeydown = keyPressed;
 
 <!-- me myself and my microphone -->
 <tr><td colspan=2 class="rosterInnerElement" style="padding-bottom:0px;">
-            <img id="statusLed" name="statusLed" src="images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="myNickname" class="nickName" onClick='return top.openUserInfo(top.cutResource(top.jid))' title="<l>Change User Info</l>"></span><br>
+            <img id="statusLed" name="statusLed" src="/static/jwchat/images/unavailable.gif" align="left" title="<l>Change Online Status</l>" onClick="return openChangeStatus();"><div><span id="myNickname" class="nickName" onClick='return top.openUserInfo(top.cutResource(top.jid))' title="<l>Change User Info</l>"></span><br>
             <input type="text" id="statusMsg" title="<l>Change Status Message</l>" class="myStatusMsg"></div>
           </td></tr>
 
 <!-- the roster himself -->
-<tr><td height="100%" colspan=2 class="rosterInnerElement"><iframe src="iRoster.html" name="iRoster" id="iRoster" scrolling="auto" style="width:100%;height:100%;border:2px groove;" frameborder=0></iframe></td></tr>
+<tr><td height="100%" colspan=2 class="rosterInnerElement"><iframe src="/static/jwchat/iRoster.html" name="iRoster" id="iRoster" scrolling="auto" style="width:100%;height:100%;border:2px groove;" frameborder=0></iframe></td></tr>
 
 <!-- buttonbar -->
-<tr><td colspan=2 class="rosterInnerElement"><img class="actionButton" src="images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><!--img class="actionButton" src="images/searchuser.png" onMouseOver="changePic(this,searchuserOver);" onMouseOut="changePic(this,searchuser);" align="left" onClick="searchUser();" title="<l>Search User</l>"--><img class="actionButton" src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
+<tr><td colspan=2 class="rosterInnerElement"><img class="actionButton" src="/static/jwchat/images/adduser.png" onMouseOver="changePic(this,adduserOver);" onMouseOut="changePic(this,adduser);" align="left" onClick="addUser();" title="<l>Add Contact</l>"><!--img class="actionButton" src="images/searchuser.png" onMouseOver="changePic(this,searchuserOver);" onMouseOut="changePic(this,searchuser);" align="left" onClick="searchUser();" title="<l>Search User</l>"--><img class="actionButton" src="images/groupchat.png" onMouseOver="changePic(this,groupchatOver);" onMouseOut="changePic(this,groupchat);" onClick="openGroupchat();" title="<l>Join Groupchat</l>"></td></tr>
 
 </table>
   </body>

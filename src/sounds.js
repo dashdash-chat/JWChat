@@ -1,10 +1,10 @@
 var SOUNDS = new Object();
 
-SOUNDS['message_recv'] = "./sounds/message_recv.swf"
-SOUNDS['message_queue'] = "./sounds/message_queue.swf"
-SOUNDS['chat_recv'] = "./sounds/chat_recv.swf"
-SOUNDS['chat_queue'] = "./sounds/chat_queue.swf"
-SOUNDS['online'] = "./sounds/online.swf"
-SOUNDS['offline'] = "./sounds/offline.swf"
-SOUNDS['startup'] = "./sounds/startup.swf"
-SOUNDS['connected'] = "./sounds/connected.swf"
+SOUNDS['message_recv'] = "/static/jwchat/sounds/message_recv.swf"
+SOUNDS['message_queue'] = "/static/jwchat/sounds/message_queue.swf"
+SOUNDS['chat_recv'] = "/static/jwchat/sounds/chat_recv.swf"
+SOUNDS['chat_queue'] = "/static/jwchat/sounds/chat_queue.swf"
+SOUNDS['online'] = "/static/jwchat/sounds/online.swf"
+SOUNDS['offline'] = "/static/jwchat/sounds/offline.swf"
+SOUNDS['startup'] = "/static/jwchat/sounds/startup.swf"
+SOUNDS['connected'] = "/static/jwchat/sounds/connected.swf"

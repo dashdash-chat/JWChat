@@ -3,19 +3,19 @@
   <head>
 	<title><l>Vine.IM - JWChat - Show Message</l></title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="switchStyle.js"></script>
+    <script src="/static/jwchat/switchStyle.js"></script>
   </head>
   <body><form name="stat_form">
 		<select id="status" name="status" onChange="return parent.changeStatus(this.value,true);">
-			<option style="background-image:url('images/available.gif');" class="statusbarOpt" value="available"> <l>online</l></option>
-			<option style="background-image:url('images/chat.gif');" class="statusbarOpt" value="chat"> <l>free for chat</l></option>
-			<option style="background-image:url('images/away.gif');" class="statusbarOpt" value="away"> <l>away</l></option>
-			<option style="background-image:url('images/xa.gif');" class="statusbarOpt" value="xa"> <l>not available</l></option>
-			<option style="background-image:url('images/dnd.gif');" class="statusbarOpt" value="dnd"> <l>do not disturb</l></option>
-			<option style="background-image:url('images/invisible.gif');" class="statusbarOpt" value="unavailable"> <l>Invisible</l></option>
+			<option style="background-image:url('/static/jwchat/images/available.gif');" class="statusbarOpt" value="available"> <l>online</l></option>
+			<option style="background-image:url('/static/jwchat/images/chat.gif');" class="statusbarOpt" value="chat"> <l>free for chat</l></option>
+			<option style="background-image:url('/static/jwchat/images/away.gif');" class="statusbarOpt" value="away"> <l>away</l></option>
+			<option style="background-image:url('/static/jwchat/images/xa.gif');" class="statusbarOpt" value="xa"> <l>not available</l></option>
+			<option style="background-image:url('/static/jwchat/images/dnd.gif');" class="statusbarOpt" value="dnd"> <l>do not disturb</l></option>
+			<option style="background-image:url('/static/jwchat/images/invisible.gif');" class="statusbarOpt" value="unavailable"> <l>Invisible</l></option>
         <script language="JavaScript1.2">
         if (typeof(parent.pass)!='undefined')
-        document.write('<option style="background-image:url(\'images/unavailable.gif\');" class="statusbarOpt" selected value="offline"> <l>offline</l></option>');
+        document.write('<option style="background-image:url(\'/static/jwchat/images/unavailable.gif\');" class="statusbarOpt" selected value="offline"> <l>offline</l></option>');
         </script>
 		</select>
 			</form>
