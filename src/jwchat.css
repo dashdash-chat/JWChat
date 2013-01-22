@@ -127,10 +127,7 @@ a.menubar:hover {
 
 #myNickname {
   font-weight: bold;
-  cursor: pointer;
 }
-
-#myNickname:hover { text-decoration: underline; }
 
 .nickName {
   padding: 2px;
